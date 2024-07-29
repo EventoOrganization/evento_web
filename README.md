@@ -79,6 +79,25 @@ We have included some examples to help you get started with dependencies.
 
 Please refer to [Contributing](CONTRIBUTING.md) for guidelines on contributing to this project.
 
+## Code Quality Configuration
+
+### Configuration Files
+
+1. **.editorconfig**: Ensures coding style consistency across different text editors.
+2. **.eslintrc.js**: Configures ESLint to analyze and fix code issues.
+3. **.eslintignore**: Specifies files and directories to be ignored by ESLint.
+4. **.prettierrc**: Configures Prettier to format the code.
+5. **commitlint.config.js**: Configures commitlint to validate commit messages.
+6. **lint-staged.config.js**: Configures lint-staged to run ESLint and Prettier on modified files before committing.
+7. **.gitignore**: Specifies files and directories to be ignored by Git.
+
+### Issue Models
+
+We have provided templates to help you report bugs and request new features.
+
+- [bug_report](https://github.com/EventoOrganization/evento_web/tree/main/ISSUE_TEMPLATE/bug_report.md)
+- [feature_request](https://github.com/EventoOrganization/evento_web/tree/main/ISSUE_TEMPLATE/feature_request.md)
+
 ## License
 
 This project is licensed under the MIT License. See the LICENSE file for details.
