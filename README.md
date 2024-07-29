@@ -13,33 +13,48 @@ Welcome to the Evento Next.js project. This project aims to transition the exist
 - Node.js version 14.x or higher
 - PNPM
 
-## Setup Instructions
+## Installation
 
-1. Clone the repository.
-   ```bash
+1. **Clone the repository**:
+
+   ```sh
    git clone https://github.com/EventoOrganization/evento_web
-   ```
-1. Navigate to the project directory.
-   ```bash
    cd evento-web
    ```
-1. Install dependencies.
 
-   ```bash
+2. **Install dependencies**:
+
+   ```sh
    pnpm install
    ```
 
-1. Start the frontend server.
+3. **Create a `.env` file**:
 
-   ```bash
-   cd /path/to/your/projects/evento-next
-   pnpm run dev
-
+   ```sh
+   cp .env.example .env
    ```
+
+## Usage
+
+1. **Start the development server**:
+
+   ```sh
+   npm run dev
+   ```
+
+2. **Open your browser and go to http://localhost:3000**:
+
+## Examples
+
+We have included some examples to help you get started with dependencies.
+
+### Zod
+
+- [Example](https://github.com/EventoOrganization/evento_web/tree/main/examples/zod)
 
 ## Project Goals
 
-- Transition from Swift to Next.js.
+- Créate a new mobile-first responsive frontend in Next.js to replace Swift.
 - Maintain existing backend in Express.js.
 - Implement PWA features.
 
@@ -47,7 +62,7 @@ Welcome to the Evento Next.js project. This project aims to transition the exist
 
 - User authentication and management.
 - Event creation and management.
-- Real-time notifications.
+- Real-time messaging.
 - Progressive Web App support.
 - Add More...
 

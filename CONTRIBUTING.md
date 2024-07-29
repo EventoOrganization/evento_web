@@ -12,17 +12,14 @@ Please read our [Code of Conduct](CODE_OF_CONDUCT.md) before contributing.
 2. **Clone the repository**:
 
    ```bash
-   git clone https://github.com/yourusername/evento-next
+   git clone https://github.com/EventoOrganization/evento_web
    cd evento-next
-
    ```
 
 3. **Create a new branch**
 
    ```bash
    git checkout -b feature/your-feature-name
-
-
    ```
 
 4. **Make your changes**
