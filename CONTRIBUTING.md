@@ -20,6 +20,8 @@ Please read our [Code of Conduct](CODE_OF_CONDUCT.md) before contributing.
 
    ```bash
    git checkout -b feature/your-feature-name
+   or
+   git checkout -b bug/your-bug-name
    ```
 
 4. **Make your changes**
@@ -37,6 +39,12 @@ Implement your feature or fix the bug.
 6. **Create a Pull Request**
 
    Go to the original repository and create a pull request from your fork.
+
+## Branching and Pull Request Policy
+
+- Branching: Create a new branch for each feature or bug fix. Name your branch using the format feature/your-feature-name or bugfix/your-bugfix-name.
+- Pull Requests: Once your changes are ready, create a Pull Request (PR) to merge your branch into the main branch.
+- Review and Approval: Only the repository owner can approve and merge Pull Requests. Ensure your PR is clear and provides enough context for the review.
 
 ## Guidelines
 

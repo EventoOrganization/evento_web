@@ -79,6 +79,12 @@ We have included some examples to help you get started with dependencies.
 
 Please refer to [Contributing](CONTRIBUTING.md) for guidelines on contributing to this project.
 
+## Branching and Pull Request Policy
+
+- Branching: Create a new branch for each feature or bug fix. Name your branch using the format feature/your-feature-name or bugfix/your-bugfix-name.
+- Pull Requests: Once your changes are ready, create a Pull Request (PR) to merge your branch into the main branch.
+- Review and Approval: Only the repository owner can approve and merge Pull Requests. Ensure your PR is clear and provides enough context for the review.
+
 ## Code Quality Configuration
 
 ### Configuration Files
