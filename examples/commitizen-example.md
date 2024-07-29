@@ -1,23 +1,22 @@
-#Step-by-Step Guide
-Stage Your Changes
+# Step-by-Step Guide
+
+## Stage Your Changes
 
 Add the files you want to commit to the staging area:
 
-sh
-Copier le code
+```sh
 git add .
-Run Commitizen
+```
 
 Use the Commitizen command to create a commit message:
 
-sh
-Copier le code
+```sh
 pnpm run commit
-Follow the Prompts
+```
 
 Commitizen will prompt you to fill out the commit message details. For example:
 
-yaml
+```yaml
 Copier le code
 ? Select the type of change that you're committing: (Use arrow keys)
 feat: A new feature
@@ -36,31 +35,8 @@ revert: Reverts a previous commit
 ? Provide a longer description of the change: (press enter to skip)
 ? Are there any breaking changes? No
 ? Does this change affect any open issues? No
-Automatic Tests and Linting
+```
 
-After you complete the commit message prompts, Husky will automatically run tests and lint your code.
+## Automatic Tests and Linting
 
-Example Workflow
-Stage Changes
-
-sh
-Copier le code
-git add .
-Create a Commit
-
-sh
-Copier le code
-pnpm run commit
-Fill Out Prompts
-
-sh
-Copier le code
-? Select the type of change that you're committing: feat
-? What is the scope of this change (e.g. component or file name): authentication
-? Write a short, imperative tense description of the change (max 94 chars): add login functionality
-? Provide a longer description of the change: (press enter to skip)
-? Are there any breaking changes? No
-? Does this change affect any open issues? No
-Auto Tests and Lint
-
-Husky will run the tests and lint your code automatically after you commit.
+After you complete the commit message prompts, Husky will automatically run tests, lint your code, and commit.

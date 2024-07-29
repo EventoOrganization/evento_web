@@ -50,6 +50,7 @@ We have included some examples to help you get started with dependencies.
 
 - [Zod_example](https://github.com/EventoOrganization/evento_web/tree/main/examples/zod-example.ts)
 - [jest_example](https://github.com/EventoOrganization/evento_web/tree/main/examples/jest-example.ts)
+- [commitizen_example](https://github.com/EventoOrganization/evento_web/tree/main/examples/commitizen-example.md)
 
 ## Project Goals
 
