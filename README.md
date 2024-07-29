@@ -50,7 +50,7 @@ We have included some examples to help you get started with dependencies.
 
 ### Zod
 
-- [Example](https://github.com/EventoOrganization/evento_web/tree/main/examples/zod)
+- [Example](https://github.com/EventoOrganization/evento_web/tree/main/examples/zod-example.ts)
 
 ## Project Goals
 
