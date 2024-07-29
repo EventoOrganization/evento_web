@@ -48,8 +48,8 @@ Welcome to the Evento Next.js project. This project aims to transition the exist
 
 We have included some examples to help you get started with dependencies.
 
-- [Zod_example](https://github.com/EventoOrganization/evento_web/tree/main/lib/zod-example.ts)
-- [jest_example](https://github.com/EventoOrganization/evento_web/tree/main/tests/jest-example.ts)
+- [Zod_example](https://github.com/EventoOrganization/evento_web/tree/main/examples/zod-example.ts)
+- [jest_example](https://github.com/EventoOrganization/evento_web/tree/main/examples/jest-example.ts)
 
 ## Project Goals
 
