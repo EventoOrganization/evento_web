@@ -1,4 +1,4 @@
-// tests/example.test.ts
+// examples/example.test.ts
 import { z } from "zod";
 
 const userSchema = z.object({
