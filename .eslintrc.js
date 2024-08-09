@@ -11,5 +11,6 @@ module.exports = {
   plugins: ["@typescript-eslint", "jest", "react-hooks", "prettier"],
   rules: {
     "prettier/prettier": ["error", { endOfLine: "auto" }],
+    "@typescript-eslint/no-explicit-any": ["off"],
   },
 };
