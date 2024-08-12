@@ -1,5 +1,9 @@
 import type { NextRequest } from "next/server";
-export { default } from "next-auth/middleware";
+//export { default } from "next-auth/middleware";
+import NextAuth from "next-auth";
+import { authConfig } from "../auth.config";
+
+export default NextAuth(authConfig).auth;
 
 export function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;

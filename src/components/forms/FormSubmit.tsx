@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { getStrapiURL } from "../../utils/ApiHelper";
+import { getApiUrl } from "../../utils/ApiHelper";
 
 export default function FormSubmit({
   placeholder,
@@ -27,7 +27,7 @@ export default function FormSubmit({
       return;
     }
 
-    const res = await fetch(getStrapiURL() + "/api/lead-form-submissions", {
+    const res = await fetch(getApiUrl() + "api/lead-form-submissions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
