@@ -1,17 +1,17 @@
 "use server";
 
 import { signIn } from "@/auth";
-import { User } from "@/types/model";
+//import { User } from "@/types/user";
 import AuthError from "next-auth";
 import { z } from "zod";
 import { ResultCode } from "@/utils/Helper";
-import { ApiService } from "@/lib/ApiService";
-import { API } from "@/constants";
+//import { API } from "@/constants";
+import apiService from "@/lib/apiService";
 
 export async function getUser(email: string) {
   //const user = await kv.hgetall<User>(`user:${email}`);
-  const user = await ApiService(API.getSingleUser, { email });
-  return user;
+  //const user = await apiService.get(API.getuserProfile, { email });
+  //return user;
 }
 
 interface Result {

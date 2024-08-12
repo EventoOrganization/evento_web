@@ -1,8 +1,10 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
+//import Apple from "next-auth/providers/apple";
 import { API } from "@/constants";
 //import { z } from "zod";
+import { apiService } from "@/lib/apiService";
 
 interface User {
   id: string;
@@ -45,13 +47,7 @@ const handler = NextAuth({
         // Implement your authentication logic here
         // You can make API calls to verify the credentials and return the user object
         // For example:
-        const response = await fetch(API.signUp, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(credentials),
-        });
+        const response = await apiService.post(API.signUp, { credentials });
 
         const user: User | null = await response.json();
 

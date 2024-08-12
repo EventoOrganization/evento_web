@@ -37,3 +37,8 @@ next-env.d.ts
 
 .eslintcache
 /ios
+/src/components/shared
+src/utils/get-page-by-slug.ts
+src/lib/_ApiService.ts
+src/lib/_apiService.ts
+src/lib/_FetchApiService.tsx

@@ -3,7 +3,7 @@ import Credentials from "next-auth/providers/credentials";
 import { authConfig } from "../auth.config";
 import { z } from "zod";
 import { getStringFromBuffer } from "@/utils/Helper";
-import { getUser } from "./app/login/actions";
+import { getUser } from "./app/(auth)/signin/actions";
 
 export const { auth, signIn, signOut } = NextAuth({
   ...authConfig,
@@ -40,6 +40,7 @@ export const { auth, signIn, signOut } = NextAuth({
 
         return null;
       },
+      credentials: undefined,
     }),
   ],
 });
