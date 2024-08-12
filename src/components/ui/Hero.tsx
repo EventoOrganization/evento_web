@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import HighlightedText from "../HighlightedText";
+import HighlightedText from "../shared/HighlightedText";
 import { getStrapiMedia } from "../../utils/ApiHelper";
 import { renderButtonStyle } from "../../utils/render-button-style";
 

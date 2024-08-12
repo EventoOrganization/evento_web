@@ -1,5 +1,5 @@
 export function getApiUrl(path = "") {
-  return `${process.env.API_URL || "http://localhost:8747"}${path}`;
+  return `${process.env.API_URL || "http://localhost:8747"}/${path}`;
 }
 
 export function getMediaUrl(url: string | null) {
@@ -29,3 +29,16 @@ export function formatDate(dateString: string) {
 // ADDS DELAY TO SIMULATE SLOW API REMOVE FOR PRODUCTION
 export const delay = (time: number) =>
   new Promise((resolve) => setTimeout(() => resolve(1), time));
+
+export function genQueryString(obj: Record<string, any>): string {
+  return Object.entries(obj)
+    .map(
+      ([key, value]) =>
+        `${encodeURIComponent(key)}=${encodeURIComponent(value)}`,
+    )
+    .join("&");
+}
+
+export function getQueryString(obj: Record<string, any>): string {
+  return `?${genQueryString(obj)}`;
+}

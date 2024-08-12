@@ -1,4 +1,4 @@
-import { fetchAPI } from "@/lib/Api";
+import { fetchAPI } from "@/lib/_FetchApiService";
 
 export async function getPageBySlug(slug: string) {
   const token = process.env.API_TOKEN;
