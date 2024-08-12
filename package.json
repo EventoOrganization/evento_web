@@ -14,7 +14,11 @@
     "commit": "cz"
   },
   "dependencies": {
+    "@nextui-org/card": "^2.0.33",
     "@nextui-org/react": "^2.4.6",
+    "@nextui-org/system": "^2.2.5",
+    "@nextui-org/tabs": "^2.0.35",
+    "@nextui-org/theme": "^2.2.9",
     "axios": "^1.7.3",
     "framer-motion": "^11.3.24",
     "next": "14.2.5",
