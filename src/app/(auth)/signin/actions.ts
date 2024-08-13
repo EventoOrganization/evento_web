@@ -3,15 +3,12 @@
 import { signIn } from "@/auth";
 //import { User } from "@/types/user";
 import AuthError from "next-auth";
-import { z } from "zod";
 import { ResultCode } from "@/utils/Helper";
-//import { API } from "@/constants";
+import { API } from "@/constants";
 import apiService from "@/lib/apiService";
 
 export async function getUser(email: string) {
-  //const user = await kv.hgetall<User>(`user:${email}`);
-  //const user = await apiService.get(API.getuserProfile, { email });
-  //return user;
+  return email;
 }
 
 interface Result {
@@ -27,17 +24,11 @@ export async function authenticate(
     const email = formData.get("email");
     const password = formData.get("password");
 
-    const parsedCredentials = z
-      .object({
-        email: z.string().email(),
-        password: z.string().min(6),
-      })
-      .safeParse({
-        email,
-        password,
-      });
-
-    if (parsedCredentials.success) {
+    const res: any = await apiService.post(API.login, {
+      email: email,
+      password: password,
+    });
+    if (res.success === true) {
       await signIn("credentials", {
         email,
         password,
@@ -69,5 +60,9 @@ export async function authenticate(
           };
       }
     }
+    return {
+      type: "error",
+      resultCode: ResultCode.UnknownError,
+    };
   }
 }
