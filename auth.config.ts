@@ -3,7 +3,7 @@ import type { NextAuthConfig } from "next-auth";
 export const authConfig = {
   secret: process.env.AUTH_SECRET,
   pages: {
-    signIn: "/login",
+    signIn: "/signin",
     newUser: "/signup",
   },
   callbacks: {
@@ -39,4 +39,5 @@ export const authConfig = {
     },
   },
   providers: [],
+  session: { strategy: "jwt" },
 } satisfies NextAuthConfig;

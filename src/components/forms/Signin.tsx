@@ -17,6 +17,7 @@ export default function LoginForm() {
     if (result) {
       if (result.type === "error") {
         toast.error(getMessageFromCode(result.resultCode));
+        router.refresh();
       } else {
         toast.success(getMessageFromCode(result.resultCode));
         router.refresh();
