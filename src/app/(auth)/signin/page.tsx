@@ -1,7 +1,7 @@
 import SigninForm from "@/components/forms/Signin";
 import { auth } from "@/auth";
 import { Session } from "@/types/user";
-import { redirect } from "next/navigation";
+//import { redirect } from "next/navigation";
 
 export default async function SigninRoute() {
   const session = (await auth()) as Session;
