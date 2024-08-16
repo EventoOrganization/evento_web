@@ -3,9 +3,9 @@
 import { signIn } from "@/auth";
 import { ResultCode } from "@/utils/Helper";
 //import { getUser } from "../signin/actions";
-import AuthError from "next-auth";
-import apiService from "@/lib/apiService";
 import { API } from "@/constants";
+import apiService from "@/lib/apiService";
+import AuthError from "next-auth";
 
 export async function createUser(
   email: string,
