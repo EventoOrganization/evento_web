@@ -1,13 +1,13 @@
 "use client";
 
-import { useFormState, useFormStatus } from "react-dom";
 import { signup } from "@/app/(auth)/signup/actions";
-import Link from "next/link";
-import { useEffect } from "react";
-import { toast } from "sonner";
-import { Spinner } from "@nextui-org/spinner";
 import { getMessageFromCode } from "@/utils/Helper";
+import { Spinner } from "@nextui-org/react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { useFormState, useFormStatus } from "react-dom";
+import { toast } from "sonner";
 
 export default function SignupForm() {
   const router = useRouter();
