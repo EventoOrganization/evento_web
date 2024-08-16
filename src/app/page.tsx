@@ -1,10 +1,13 @@
 // import Image from "next/image";
 // import { Button } from "@nextui-org/react";
+//import GetCurrentLocation from "@/components/map/GetCurrentLocation";
 import Title from "@/components/ui/partials/title";
-import Address from "@/components/ui/partials/address";
+//import Address from "@/components/ui/partials/address";
 import Search from "@/components/ui/partials/search";
 import Content from "@/components/ui/Content";
 import NavbarApp from "@/components/ui/Navbar";
+//import LocationPicker from "@/components/map/LocationPicker";
+import LocationSelector from "@/components/map/LocationSelector";
 
 export default function Home() {
   return (
@@ -13,7 +16,8 @@ export default function Home() {
         <div className="mx-auto bg-slate-100">
           <Title />
           <div className="ml-1 mr-1">
-            <Address />
+            <LocationSelector />
+            {/* <Address /> */}
             <Search />
           </div>
           <div className="m-1">
