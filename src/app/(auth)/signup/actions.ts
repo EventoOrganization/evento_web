@@ -3,10 +3,12 @@
 import { signIn } from "@/auth";
 import { ResultCode } from "@/utils/Helper";
 //import { getUser } from "../signin/actions";
-import AuthError from "next-auth";
-import apiService from "@/lib/apiService";
 import { API } from "@/constants";
-
+import apiService from "@/lib/apiService";
+import AuthError from "next-auth";
+interface AuthErrorType extends Error {
+  type: string;
+}
 export async function createUser(
   email: string,
   password: string,
@@ -18,8 +20,8 @@ export async function createUser(
     firstName: "khanh vu",
     lastName: "khanh vu",
     email: email,
-    password: "123456",
-    confirmPassword: "123456",
+    password: password,
+    confirmPassword: confirmPassword,
     phoneNumber: "12345678",
     countryCode: "+1",
     DOB: "2024-01-01",
@@ -68,8 +70,9 @@ export async function signup(
 
     return result;
   } catch (error) {
-    if (error instanceof AuthError) {
-      switch (error.type) {
+    const authError = error as AuthErrorType;
+    if (authError instanceof AuthError) {
+      switch (authError.type) {
         case "CredentialsSignin":
           return {
             type: "error",

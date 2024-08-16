@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, FC } from "react";
+import { createContext, useContext, useState } from "react";
 //import Cookies from "js-cookie";
 
 const AuthContext = createContext({});

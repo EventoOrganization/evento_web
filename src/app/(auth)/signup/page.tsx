@@ -1,7 +1,7 @@
 import SignupForm from "@/components/forms/Signup";
 import { auth } from "@/auth";
 import { Session } from "@/types/user";
-import { redirect } from "next/navigation";
+//import { redirect } from "next/navigation";
 
 export default async function SignupRoute() {
   const session = (await auth()) as Session;
