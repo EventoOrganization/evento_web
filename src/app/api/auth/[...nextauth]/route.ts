@@ -4,6 +4,8 @@
 // //import Apple from "next-auth/providers/apple";
 // import { API } from "@/constants";
 // import apiService from "@/lib/apiService";
+export const GET = () => new Response("Not implemented", { status: 501 });
+export const POST = () => new Response("Not implemented", { status: 501 });
 
 // interface User {
 //   id: string;
