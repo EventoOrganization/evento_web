@@ -37,7 +37,7 @@ export default function Banner({ data }: BannerProps) {
       <div
         className={classNames(
           "pointer-events-auto flex items-center justify-between gap-x-6 py-2.5 px-6 sm:rounded-xl sm:py-3 sm:pr-3.5 sm:pl-4",
-          colors(type)
+          colors(type),
         )}
       >
         <p className="text-sm leading-6 text-white">
