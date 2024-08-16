@@ -36,3 +36,11 @@ yarn-error.log*
 next-env.d.ts
 
 .eslintcache
+
+/ios
+/src/views
+/src/components/shared
+src/utils/get-page-by-slug.ts
+src/lib/_ApiService.ts
+src/lib/_apiService.ts
+src/lib/_FetchApiService.tsx

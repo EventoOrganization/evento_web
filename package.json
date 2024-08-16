@@ -14,10 +14,20 @@
     "commit": "cz"
   },
   "dependencies": {
+    "@nextui-org/card": "^2.0.33",
+    "@nextui-org/react": "^2.4.6",
+    "@nextui-org/system": "^2.2.5",
+    "@nextui-org/tabs": "^2.0.35",
+    "@nextui-org/theme": "^2.2.9",
+    "@react-google-maps/api": "^2.19.3",
+    "axios": "^1.7.3",
+    "framer-motion": "^11.3.24",
     "next": "14.2.5",
+    "next-auth": "5.0.0-beta.4",
     "react": "^18",
     "react-dom": "^18",
     "socket.io-client": "^4.7.5",
+    "sonner": "^1.5.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {
@@ -26,6 +36,7 @@
     "@testing-library/jest-dom": "^6.4.8",
     "@testing-library/react": "^16.0.0",
     "@types/jest": "^29.5.12",
+    "@types/jsonwebtoken": "^9.0.6",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
