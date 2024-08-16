@@ -1,6 +1,6 @@
 // components/LocationPicker.tsx
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
 
 interface Location {
@@ -23,6 +23,7 @@ const LocationPicker = () => {
     const lat = event.latLng.lat();
     const lng = event.latLng.lng();
     setLocation({ lat, lng });
+    setMapCenter({ lat, lng });
   };
 
   return (
