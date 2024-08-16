@@ -1,8 +1,7 @@
-import { useIsClient } from "@/hooks/use-is-client";
-import Spinner from "./spinner";
+// import { useIsClient } from "@/hooks/use-is-client";
 
-export function ClientOnly({ children }: { children: React.ReactNode }) {
-  const isClient = useIsClient();
-
-  return isClient ? <>{children}</> : <Spinner />;
+export function ClientOnly() {
+  // const isClient = useIsClient();
+  // return isClient ? <>{children}</> : <Spinner />;
+  return null;
 }

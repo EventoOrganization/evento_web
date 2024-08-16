@@ -5,12 +5,24 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@headlessui/react':
+    specifier: ^2.1.2
+    version: 2.1.2(react-dom@18.3.1)(react@18.3.1)
+  '@heroicons/react':
+    specifier: ^2.1.5
+    version: 2.1.5(react@18.3.1)
   '@nextui-org/card':
     specifier: ^2.0.33
     version: 2.0.33(@nextui-org/system@2.2.5)(@nextui-org/theme@2.2.9)(framer-motion@11.3.28)(react-dom@18.3.1)(react@18.3.1)
+  '@nextui-org/image':
+    specifier: ^2.0.31
+    version: 2.0.31(@nextui-org/system@2.2.5)(@nextui-org/theme@2.2.9)(react-dom@18.3.1)(react@18.3.1)
   '@nextui-org/react':
     specifier: ^2.4.6
     version: 2.4.6(@types/react@18.3.3)(framer-motion@11.3.28)(react-dom@18.3.1)(react@18.3.1)(tailwindcss@3.4.7)
+  '@nextui-org/spinner':
+    specifier: ^2.0.33
+    version: 2.0.33(@nextui-org/theme@2.2.9)(react-dom@18.3.1)(react@18.3.1)
   '@nextui-org/system':
     specifier: ^2.2.5
     version: 2.2.5(@nextui-org/theme@2.2.9)(framer-motion@11.3.28)(react-dom@18.3.1)(react@18.3.1)
@@ -20,12 +32,18 @@ dependencies:
   '@nextui-org/theme':
     specifier: ^2.2.9
     version: 2.2.9(tailwindcss@3.4.7)
+  '@radix-ui/react-icons':
+    specifier: ^1.3.0
+    version: 1.3.0(react@18.3.1)
   '@react-google-maps/api':
     specifier: ^2.19.3
     version: 2.19.3(react-dom@18.3.1)(react@18.3.1)
   axios:
     specifier: ^1.7.3
     version: 1.7.4
+  classnames:
+    specifier: ^2.5.1
+    version: 2.5.1
   framer-motion:
     specifier: ^11.3.24
     version: 11.3.28(react-dom@18.3.1)(react@18.3.1)
@@ -671,6 +689,47 @@ packages:
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dev: true
 
+  /@floating-ui/core@1.6.7:
+    resolution: {integrity: sha512-yDzVT/Lm101nQ5TCVeK65LtdN7Tj4Qpr9RTXJ2vPFLqtLxwOrpoxAHAJI8J3yYWUc40J0BDBheaitK5SJmno2g==}
+    dependencies:
+      '@floating-ui/utils': 0.2.7
+    dev: false
+
+  /@floating-ui/dom@1.6.10:
+    resolution: {integrity: sha512-fskgCFv8J8OamCmyun8MfjB1Olfn+uZKjOKZ0vhYF3gRmEUXcGOjxWL8bBr7i4kIuPZ2KD2S3EUIOxnjC8kl2A==}
+    dependencies:
+      '@floating-ui/core': 1.6.7
+      '@floating-ui/utils': 0.2.7
+    dev: false
+
+  /@floating-ui/react-dom@2.1.1(react-dom@18.3.1)(react@18.3.1):
+    resolution: {integrity: sha512-4h84MJt3CHrtG18mGsXuLCHMrug49d7DFkU0RMIyshRveBeyV2hmV/pDaF2Uxtu8kgq5r46llp5E5FQiR0K2Yg==}
+    peerDependencies:
+      react: '>=16.8.0'
+      react-dom: '>=16.8.0'
+    dependencies:
+      '@floating-ui/dom': 1.6.10
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+    dev: false
+
+  /@floating-ui/react@0.26.22(react-dom@18.3.1)(react@18.3.1):
+    resolution: {integrity: sha512-LNv4azPt8SpT4WW7Kku5JNVjLk2GcS0bGGjFTAgqOONRFo9r/aaGHHPpdiIuQbB1t8shmWyWqTTUDmZ9fcNshg==}
+    peerDependencies:
+      react: '>=16.8.0'
+      react-dom: '>=16.8.0'
+    dependencies:
+      '@floating-ui/react-dom': 2.1.1(react-dom@18.3.1)(react@18.3.1)
+      '@floating-ui/utils': 0.2.7
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+      tabbable: 6.2.0
+    dev: false
+
+  /@floating-ui/utils@0.2.7:
+    resolution: {integrity: sha512-X8R8Oj771YRl/w+c1HqAC1szL8zWQRwFvgDwT129k9ACdBoud/+/rX9V0qiMl6LWUdP9voC2nDVZYPMQQsb6eA==}
+    dev: false
+
   /@formatjs/ecma402-abstract@2.0.0:
     resolution: {integrity: sha512-rRqXOqdFmk7RYvj4khklyqzcfQl9vEL/usogncBHRZfZBDOwMGuSRNFl02fu5KGHXdbinju+YXyuR+Nk8xlr/g==}
     dependencies:
@@ -716,6 +775,29 @@ packages:
     dependencies:
       fast-deep-equal: 3.1.3
       supercluster: 8.0.1
+    dev: false
+
+  /@headlessui/react@2.1.2(react-dom@18.3.1)(react@18.3.1):
+    resolution: {integrity: sha512-Kb3hgk9gRNRcTZktBrKdHhF3xFhYkca1Rk6e1/im2ENf83dgN54orMW0uSKTXFnUpZOUFZ+wcY05LlipwgZIFQ==}
+    engines: {node: '>=10'}
+    peerDependencies:
+      react: ^18
+      react-dom: ^18
+    dependencies:
+      '@floating-ui/react': 0.26.22(react-dom@18.3.1)(react@18.3.1)
+      '@react-aria/focus': 3.18.1(react@18.3.1)
+      '@react-aria/interactions': 3.22.1(react@18.3.1)
+      '@tanstack/react-virtual': 3.9.0(react-dom@18.3.1)(react@18.3.1)
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+    dev: false
+
+  /@heroicons/react@2.1.5(react@18.3.1):
+    resolution: {integrity: sha512-FuzFN+BsHa+7OxbvAERtgBTNeZpUjgM/MIizfVkSCL2/edriN0Hx/DWRCR//aPYwO5QX/YlgLGXk+E3PcfZwjA==}
+    peerDependencies:
+      react: '>= 16'
+    dependencies:
+      react: 18.3.1
     dev: false
 
   /@humanwhocodes/config-array@0.11.14:
@@ -2527,6 +2609,14 @@ packages:
     engines: {node: ^12.20.0 || ^14.18.0 || >=16.0.0}
     dev: true
 
+  /@radix-ui/react-icons@1.3.0(react@18.3.1):
+    resolution: {integrity: sha512-jQxj/0LKgp+j9BiTXz3O3sgs26RNet2iLWmsPyRz2SIcR4q/4SbazXfnYwbAr+vLYKSfc7qxzyGQA1HLlYiuNw==}
+    peerDependencies:
+      react: ^16.x || ^17.x || ^18.x
+    dependencies:
+      react: 18.3.1
+    dev: false
+
   /@react-aria/breadcrumbs@3.5.13(react@18.3.1):
     resolution: {integrity: sha512-G1Gqf/P6kVdfs94ovwP18fTWuIxadIQgHsXS08JEVcFVYMjb9YjqnEBaohUxD1tq2WldMbYw53ahQblT4NTG+g==}
     peerDependencies:
@@ -2536,7 +2626,7 @@ packages:
       '@react-aria/link': 3.7.3(react@18.3.1)
       '@react-aria/utils': 3.24.1(react@18.3.1)
       '@react-types/breadcrumbs': 3.7.5(react@18.3.1)
-      '@react-types/shared': 3.23.1(react@18.3.1)
+      '@react-types/shared': 3.24.1(react@18.3.1)
       '@swc/helpers': 0.5.5
       react: 18.3.1
     dev: false
@@ -2570,7 +2660,7 @@ packages:
       '@react-stately/calendar': 3.5.1(react@18.3.1)
       '@react-types/button': 3.9.4(react@18.3.1)
       '@react-types/calendar': 3.4.6(react@18.3.1)
-      '@react-types/shared': 3.23.1(react@18.3.1)
+      '@react-types/shared': 3.24.1(react@18.3.1)
       '@swc/helpers': 0.5.5
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
@@ -2590,7 +2680,7 @@ packages:
       '@react-stately/form': 3.0.5(react@18.3.1)
       '@react-stately/toggle': 3.7.4(react@18.3.1)
       '@react-types/checkbox': 3.8.1(react@18.3.1)
-      '@react-types/shared': 3.23.1(react@18.3.1)
+      '@react-types/shared': 3.24.1(react@18.3.1)
       '@swc/helpers': 0.5.5
       react: 18.3.1
     dev: false
@@ -2614,7 +2704,7 @@ packages:
       '@react-stately/form': 3.0.5(react@18.3.1)
       '@react-types/button': 3.9.6(react@18.3.1)
       '@react-types/combobox': 3.11.1(react@18.3.1)
-      '@react-types/shared': 3.23.1(react@18.3.1)
+      '@react-types/shared': 3.24.1(react@18.3.1)
       '@swc/helpers': 0.5.5
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
@@ -2642,7 +2732,7 @@ packages:
       '@react-types/calendar': 3.4.8(react@18.3.1)
       '@react-types/datepicker': 3.7.4(react@18.3.1)
       '@react-types/dialog': 3.5.12(react@18.3.1)
-      '@react-types/shared': 3.23.1(react@18.3.1)
+      '@react-types/shared': 3.24.1(react@18.3.1)
       '@swc/helpers': 0.5.5
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
@@ -2698,7 +2788,7 @@ packages:
       '@react-aria/interactions': 3.21.3(react@18.3.1)
       '@react-aria/utils': 3.24.1(react@18.3.1)
       '@react-stately/form': 3.0.5(react@18.3.1)
-      '@react-types/shared': 3.23.1(react@18.3.1)
+      '@react-types/shared': 3.24.1(react@18.3.1)
       '@swc/helpers': 0.5.5
       react: 18.3.1
     dev: false
@@ -2812,7 +2902,7 @@ packages:
       react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0
     dependencies:
       '@react-aria/utils': 3.24.1(react@18.3.1)
-      '@react-types/shared': 3.23.1(react@18.3.1)
+      '@react-types/shared': 3.24.1(react@18.3.1)
       '@swc/helpers': 0.5.5
       react: 18.3.1
     dev: false
@@ -2858,7 +2948,7 @@ packages:
       '@react-stately/collections': 3.10.9(react@18.3.1)
       '@react-stately/list': 3.10.5(react@18.3.1)
       '@react-types/listbox': 3.5.1(react@18.3.1)
-      '@react-types/shared': 3.23.1(react@18.3.1)
+      '@react-types/shared': 3.24.1(react@18.3.1)
       '@swc/helpers': 0.5.5
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
@@ -3004,7 +3094,7 @@ packages:
       '@react-aria/utils': 3.24.1(react@18.3.1)
       '@react-stately/radio': 3.10.4(react@18.3.1)
       '@react-types/radio': 3.8.1(react@18.3.1)
-      '@react-types/shared': 3.23.1(react@18.3.1)
+      '@react-types/shared': 3.24.1(react@18.3.1)
       '@swc/helpers': 0.5.5
       react: 18.3.1
     dev: false
@@ -3020,7 +3110,7 @@ packages:
       '@react-aria/interactions': 3.21.3(react@18.3.1)
       '@react-aria/utils': 3.24.1(react@18.3.1)
       '@react-stately/selection': 3.16.1(react@18.3.1)
-      '@react-types/shared': 3.23.1(react@18.3.1)
+      '@react-types/shared': 3.24.1(react@18.3.1)
       '@swc/helpers': 0.5.5
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
@@ -3163,7 +3253,7 @@ packages:
       '@react-aria/utils': 3.24.1(react@18.3.1)
       '@react-stately/form': 3.0.5(react@18.3.1)
       '@react-stately/utils': 3.10.1(react@18.3.1)
-      '@react-types/shared': 3.23.1(react@18.3.1)
+      '@react-types/shared': 3.24.1(react@18.3.1)
       '@react-types/textfield': 3.9.3(react@18.3.1)
       '@swc/helpers': 0.5.5
       react: 18.3.1
@@ -3298,7 +3388,7 @@ packages:
       '@internationalized/date': 3.5.5
       '@react-stately/utils': 3.10.1(react@18.3.1)
       '@react-types/calendar': 3.4.6(react@18.3.1)
-      '@react-types/shared': 3.23.1(react@18.3.1)
+      '@react-types/shared': 3.24.1(react@18.3.1)
       '@swc/helpers': 0.5.5
       react: 18.3.1
     dev: false
@@ -3311,7 +3401,7 @@ packages:
       '@react-stately/form': 3.0.5(react@18.3.1)
       '@react-stately/utils': 3.10.2(react@18.3.1)
       '@react-types/checkbox': 3.8.1(react@18.3.1)
-      '@react-types/shared': 3.23.1(react@18.3.1)
+      '@react-types/shared': 3.24.1(react@18.3.1)
       '@swc/helpers': 0.5.5
       react: 18.3.1
     dev: false
@@ -3321,7 +3411,7 @@ packages:
     peerDependencies:
       react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0
     dependencies:
-      '@react-types/shared': 3.23.1(react@18.3.1)
+      '@react-types/shared': 3.24.1(react@18.3.1)
       '@swc/helpers': 0.5.5
       react: 18.3.1
     dev: false
@@ -3348,7 +3438,7 @@ packages:
       '@react-stately/select': 3.6.6(react@18.3.1)
       '@react-stately/utils': 3.10.2(react@18.3.1)
       '@react-types/combobox': 3.11.1(react@18.3.1)
-      '@react-types/shared': 3.23.1(react@18.3.1)
+      '@react-types/shared': 3.24.1(react@18.3.1)
       '@swc/helpers': 0.5.5
       react: 18.3.1
     dev: false
@@ -3364,7 +3454,7 @@ packages:
       '@react-stately/overlays': 3.6.9(react@18.3.1)
       '@react-stately/utils': 3.10.2(react@18.3.1)
       '@react-types/datepicker': 3.7.4(react@18.3.1)
-      '@react-types/shared': 3.23.1(react@18.3.1)
+      '@react-types/shared': 3.24.1(react@18.3.1)
       '@swc/helpers': 0.5.5
       react: 18.3.1
     dev: false
@@ -3380,7 +3470,7 @@ packages:
     peerDependencies:
       react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0
     dependencies:
-      '@react-types/shared': 3.23.1(react@18.3.1)
+      '@react-types/shared': 3.24.1(react@18.3.1)
       '@swc/helpers': 0.5.5
       react: 18.3.1
     dev: false
@@ -3416,7 +3506,7 @@ packages:
       '@react-stately/collections': 3.10.9(react@18.3.1)
       '@react-stately/selection': 3.16.1(react@18.3.1)
       '@react-stately/utils': 3.10.2(react@18.3.1)
-      '@react-types/shared': 3.23.1(react@18.3.1)
+      '@react-types/shared': 3.24.1(react@18.3.1)
       '@swc/helpers': 0.5.5
       react: 18.3.1
     dev: false
@@ -3488,7 +3578,7 @@ packages:
       '@react-stately/form': 3.0.5(react@18.3.1)
       '@react-stately/utils': 3.10.2(react@18.3.1)
       '@react-types/radio': 3.8.1(react@18.3.1)
-      '@react-types/shared': 3.23.1(react@18.3.1)
+      '@react-types/shared': 3.24.1(react@18.3.1)
       '@swc/helpers': 0.5.5
       react: 18.3.1
     dev: false
@@ -3601,7 +3691,7 @@ packages:
       '@react-stately/collections': 3.10.9(react@18.3.1)
       '@react-stately/selection': 3.16.1(react@18.3.1)
       '@react-stately/utils': 3.10.2(react@18.3.1)
-      '@react-types/shared': 3.23.1(react@18.3.1)
+      '@react-types/shared': 3.24.1(react@18.3.1)
       '@swc/helpers': 0.5.5
       react: 18.3.1
     dev: false
@@ -3653,7 +3743,7 @@ packages:
     peerDependencies:
       react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0
     dependencies:
-      '@react-types/shared': 3.23.1(react@18.3.1)
+      '@react-types/shared': 3.24.1(react@18.3.1)
       react: 18.3.1
     dev: false
 
@@ -3663,7 +3753,7 @@ packages:
       react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0
     dependencies:
       '@react-types/link': 3.5.7(react@18.3.1)
-      '@react-types/shared': 3.23.1(react@18.3.1)
+      '@react-types/shared': 3.24.1(react@18.3.1)
       react: 18.3.1
     dev: false
 
@@ -3691,7 +3781,7 @@ packages:
       react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0
     dependencies:
       '@internationalized/date': 3.5.5
-      '@react-types/shared': 3.23.1(react@18.3.1)
+      '@react-types/shared': 3.24.1(react@18.3.1)
       react: 18.3.1
     dev: false
 
@@ -3728,7 +3818,7 @@ packages:
     peerDependencies:
       react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0
     dependencies:
-      '@react-types/shared': 3.23.1(react@18.3.1)
+      '@react-types/shared': 3.24.1(react@18.3.1)
       react: 18.3.1
     dev: false
 
@@ -3740,7 +3830,7 @@ packages:
       '@internationalized/date': 3.5.5
       '@react-types/calendar': 3.4.8(react@18.3.1)
       '@react-types/overlays': 3.8.9(react@18.3.1)
-      '@react-types/shared': 3.23.1(react@18.3.1)
+      '@react-types/shared': 3.24.1(react@18.3.1)
       react: 18.3.1
     dev: false
 
@@ -3851,7 +3941,7 @@ packages:
     peerDependencies:
       react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0
     dependencies:
-      '@react-types/shared': 3.23.1(react@18.3.1)
+      '@react-types/shared': 3.24.1(react@18.3.1)
       react: 18.3.1
     dev: false
 
@@ -3860,7 +3950,7 @@ packages:
     peerDependencies:
       react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0
     dependencies:
-      '@react-types/shared': 3.23.1(react@18.3.1)
+      '@react-types/shared': 3.24.1(react@18.3.1)
       react: 18.3.1
     dev: false
 
@@ -3931,7 +4021,7 @@ packages:
     peerDependencies:
       react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0
     dependencies:
-      '@react-types/shared': 3.23.1(react@18.3.1)
+      '@react-types/shared': 3.24.1(react@18.3.1)
       react: 18.3.1
     dev: false
 
@@ -3987,6 +4077,21 @@ packages:
     dependencies:
       '@swc/counter': 0.1.3
       tslib: 2.6.3
+    dev: false
+
+  /@tanstack/react-virtual@3.9.0(react-dom@18.3.1)(react@18.3.1):
+    resolution: {integrity: sha512-5TeTSQBMV1PIFzBP9cduIX5klRaTvbOw+CxRx3LaUhwqiZLEZBZqz8anEIqG4eHNhDAe+BLarRDeNE9cNM1/EA==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
+    dependencies:
+      '@tanstack/virtual-core': 3.9.0
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+    dev: false
+
+  /@tanstack/virtual-core@3.9.0:
+    resolution: {integrity: sha512-Saga7/QRGej/IDCVP5BgJ1oDqlDT2d9rQyoflS3fgMS8ntJ8JGw/LBqK2GorHa06+VrNFc0tGz65XQHJQJetFQ==}
     dev: false
 
   /@testing-library/dom@10.4.0:
@@ -4873,6 +4978,10 @@ packages:
   /cjs-module-lexer@1.3.1:
     resolution: {integrity: sha512-a3KdPAANPbNE4ZUv9h6LckSl9zLsYOP4MBmhIPkRaeyybt+r4UghLvq+xw/YwUcC1gqylCkL4rdVs3Lwupjm4Q==}
     dev: true
+
+  /classnames@2.5.1:
+    resolution: {integrity: sha512-saHYOzhIQs6wy2sVxTM6bUDsQO4F50V9RQ22qBpEdCW+I+/Wmke2HOl6lS6dTpdxVhb88/I6+Hs+438c3lfUow==}
+    dev: false
 
   /cli-cursor@3.1.0:
     resolution: {integrity: sha512-I/zHAwsKf9FqGoXM4WWRACob9+SNukZTd94DWF57E4toouRulbCxcUh6RKUEOQlYTHJnzkPMySvPNaaSLNfLZw==}
@@ -9023,6 +9132,10 @@ packages:
       '@pkgr/core': 0.1.1
       tslib: 2.6.3
     dev: true
+
+  /tabbable@6.2.0:
+    resolution: {integrity: sha512-Cat63mxsVJlzYvN51JmVXIgNoUokrIaT2zLclCXjRd8boZ0004U4KCs/sToJ75C6sdlByWxpYnb5Boif1VSFew==}
+    dev: false
 
   /tailwind-merge@1.14.0:
     resolution: {integrity: sha512-3mFKyCo/MBcgyOTlrY8T7odzZFx+w+qKSMAmdFzRvqBfLlSigU6TZnlFHK0lkMwj9Bj8OYU+9yW9lmGuS0QEnQ==}
