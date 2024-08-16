@@ -6,7 +6,9 @@ import { ResultCode } from "@/utils/Helper";
 import { API } from "@/constants";
 import apiService from "@/lib/apiService";
 import AuthError from "next-auth";
-
+interface AuthErrorType extends Error {
+  type: string;
+}
 export async function createUser(
   email: string,
   password: string,
@@ -68,8 +70,9 @@ export async function signup(
 
     return result;
   } catch (error) {
-    if (error instanceof AuthError) {
-      switch (error.type) {
+    const authError = error as AuthErrorType;
+    if (authError instanceof AuthError) {
+      switch (authError.type) {
         case "CredentialsSignin":
           return {
             type: "error",
