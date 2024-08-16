@@ -1,7 +1,7 @@
 // components/LocationSelector.tsx
 "use client";
-import { useState, useEffect } from "react";
 import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
+import { useEffect, useState } from "react";
 
 interface Location {
   lat: number;
@@ -28,7 +28,11 @@ const LocationSelector = () => {
   const handleMapClick = (event: any) => {
     const lat = event.latLng.lat();
     const lng = event.latLng.lng();
-    setLocation({ lat, lng });
+    const newLocation = { lat, lng };
+    setLocation(newLocation);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("location", JSON.stringify(newLocation));
+    }
     handleClose();
   };
 
@@ -41,44 +45,57 @@ const LocationSelector = () => {
   };
 
   useEffect(() => {
-    const getLocation = async () => {
-      if (navigator.geolocation) {
-        try {
-          navigator.geolocation.getCurrentPosition((position) => {
-            setLocation({
-              lat: position.coords.latitude,
-              lng: position.coords.longitude,
-            });
-            setMapCenter({
-              lat: position.coords.latitude,
-              lng: position.coords.longitude,
-            });
-          });
-        } catch (error: any) {
-          setError(error.message);
-        }
+    if (!location && typeof window !== "undefined") {
+      const storedLocation = localStorage.getItem("location");
+      if (storedLocation) {
+        setLocation(JSON.parse(storedLocation));
+        setMapCenter(JSON.parse(storedLocation));
       } else {
-        setError("Geolocation is not supported by this browser");
+        const getLocation = async () => {
+          if (navigator.geolocation) {
+            try {
+              navigator.geolocation.getCurrentPosition((position) => {
+                const newLocation = {
+                  lat: position.coords.latitude,
+                  lng: position.coords.longitude,
+                };
+                setLocation(newLocation);
+                setMapCenter(newLocation);
+                localStorage.setItem("location", JSON.stringify(newLocation));
+              });
+            } catch (error: any) {
+              setError(error.message);
+            }
+          } else {
+            setError("Geolocation is not supported by this browser");
+          }
+        };
+        getLocation();
       }
-    };
-    getLocation();
-  }, []);
+    }
+  }, [location]);
 
   useEffect(() => {
     async function getAddress(location: Location | null) {
-      if (location) {
+      if (location && !address && typeof window !== "undefined") {
         const geocodingApiUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${location.lat},${location.lng}&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`;
 
         const res = await fetch(geocodingApiUrl);
         const data = await res.json();
-        const addressData = data.results[0];
-        setAddress({
-          formatted_address: addressData.formatted_address,
-        });
+        if (data.results && data.results.length > 0) {
+          const addressData = data.results[0];
+          const newAddress = {
+            formatted_address: addressData.formatted_address,
+          };
+          setAddress(newAddress);
+          localStorage.setItem("address", JSON.stringify(newAddress));
+        } else {
+          setError("Unable to fetch address");
+        }
       }
     }
     getAddress(location);
-  }, [location]);
+  }, [location, address]);
 
   return (
     <div>
