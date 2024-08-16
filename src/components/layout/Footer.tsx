@@ -1,10 +1,10 @@
 "use client";
-import { usePathname } from "next/navigation";
 import Link from "next/link";
-import Logo from "../ui/Logo";
+import { usePathname } from "next/navigation";
+import { AiFillTwitterCircle, AiFillYoutube } from "react-icons/ai";
 import { CgWebsite } from "react-icons/cg";
 import { FaDiscord } from "react-icons/fa";
-import { AiFillTwitterCircle, AiFillYoutube } from "react-icons/ai";
+import Logo from "../ui/Logo";
 
 interface FooterLink {
   id: number;
@@ -12,14 +12,6 @@ interface FooterLink {
   newTab: boolean;
   text: string;
   social?: string;
-}
-
-interface CategoryLink {
-  id: string;
-  attributes: {
-    name: string;
-    slug: string;
-  };
 }
 
 function FooterLink({ url, text }: FooterLink) {
@@ -33,19 +25,6 @@ function FooterLink({ url, text }: FooterLink) {
         }}`}
       >
         {text}
-      </Link>
-    </li>
-  );
-}
-
-function CategoryLink({ attributes }: CategoryLink) {
-  return (
-    <li className="flex">
-      <Link
-        href={`/blog/${attributes.slug}`}
-        className="hover:dark:text-violet-400"
-      >
-        {attributes.name}
       </Link>
     </li>
   );
@@ -81,7 +60,6 @@ export default function Footer({
   //legalLinks: Array<FooterLink>;
   socialLinks: Array<FooterLink>;
 }) {
-
   return (
     <footer className="py-6 dark:bg-black dark:text-gray-50">
       <div className="container px-6 mx-auto space-y-6 divide-y divide-gray-400 md:space-y-12 divide-opacity-50">
