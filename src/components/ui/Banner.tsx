@@ -43,7 +43,7 @@ export default function Banner({ data }: BannerProps) {
         <p className="text-sm leading-6 text-white">
           <a href={link.url} target={link.newTab ? "_blank" : "_self"}>
             <strong className="font-semibold">{heading}</strong> {text}&nbsp;
-            <span aria-hidden="true">&rarr;</span>
+            <span >&rarr;</span>
           </a>
         </p>
       </div>
