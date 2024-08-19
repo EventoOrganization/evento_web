@@ -14,6 +14,7 @@
     "commit": "cz"
   },
   "dependencies": {
+    "@auth/core": "^0.34.2",
     "@headlessui/react": "^2.1.2",
     "@heroicons/react": "^2.1.5",
     "@nextui-org/card": "^2.0.33",

@@ -6,15 +6,16 @@ import Title from "@/components/ui/partials/title";
 import Search from "@/components/events/Search";
 import NavbarApp from "@/components/ui/Navbar";
 //import LocationPicker from "@/components/map/LocationPicker";
-import LocationSelector from "@/components/map/LocationSelector";
+import { auth } from "@/auth";
 import Filter from "@/components/events/Filter";
 import Tabs from "@/components/events/Tabs";
-import { auth } from "@/auth";
+import LocationSelector from "@/components/map/LocationSelector";
 //import { Session } from "@/types/user";
 
 export default async function Home() {
   const session = await auth();
-  console.log("session...", session);
+  console.log("session...", session?.user?.data?.token);
+
   return (
     <>
       <div className="min-h-screen bg-slate-300">

@@ -2,10 +2,10 @@
 
 import { signIn } from "@/auth";
 //import { User } from "@/types/user";
-import AuthError from "next-auth";
-import { ResultCode } from "@/utils/Helper";
 import { API } from "@/constants";
 import apiService from "@/lib/apiService";
+import { ResultCode } from "@/utils/Helper";
+import AuthError from "next-auth";
 
 export async function getUser(email: string) {
   return email;

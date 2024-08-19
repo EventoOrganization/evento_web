@@ -1,20 +1,24 @@
 import { getApiUrl } from "@/utils/ApiHelper";
-import { auth } from "@/auth";
 const apiUrl = getApiUrl();
-let token = "";
 
 const apiService = {
-  async auth() {
-    const session = await auth();
-    if (session) {
-      token = session?.user?.data?.token;
-      console.log("tokenapi", token);
+  async getToken() {
+    try {
+      const response = await fetch("/api/auth/session");
+      if (!response.ok) {
+        throw new Error("Failed to fetch token");
+      }
+      const data = await response.json();
+      return data.token;
+    } catch (error) {
+      console.error("Error fetching token:", error);
+      return null;
     }
   },
-  async init() {
-    await auth();
-  },
   async get<T>(endpoint: string): Promise<T> {
+    const token = await this.getToken();
+    console.log("Token retrieved for GET:", token);
+
     try {
       const response = await fetch(`${apiUrl}${endpoint}`, {
         headers: {
@@ -24,18 +28,22 @@ const apiService = {
         },
         mode: "cors",
       });
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
+
       return await response.json();
     } catch (error) {
-      console.error(error);
+      console.error("GET request error:", error);
       throw error;
     }
   },
 
   async post<T>(endpoint: string, data: any): Promise<T> {
-    //console.log(`${apiUrl}${endpoint}`);
+    const token = await this.getToken();
+    console.log("Token retrieved for POST:", token);
+
     try {
       const response = await fetch(`${apiUrl}${endpoint}`, {
         method: "POST",
@@ -45,17 +53,22 @@ const apiService = {
         },
         body: JSON.stringify(data),
       });
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
+
       return await response.json();
     } catch (error) {
-      console.error(error);
+      console.error("POST request error:", error);
       throw error;
     }
   },
 
   async put<T>(endpoint: string, data: any): Promise<T> {
+    const token = await this.getToken();
+    console.log("Token retrieved for PUT:", token);
+
     try {
       const response = await fetch(`${apiUrl}${endpoint}`, {
         method: "PUT",
@@ -65,17 +78,22 @@ const apiService = {
         },
         body: JSON.stringify(data),
       });
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
+
       return await response.json();
     } catch (error) {
-      console.error(error);
+      console.error("PUT request error:", error);
       throw error;
     }
   },
 
   async delete<T>(endpoint: string): Promise<T> {
+    const token = await this.getToken();
+    console.log("Token retrieved for DELETE:", token);
+
     try {
       const response = await fetch(`${apiUrl}${endpoint}`, {
         method: "DELETE",
@@ -83,12 +101,14 @@ const apiService = {
           Authorization: `Bearer ${token}`,
         },
       });
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
+
       return await response.json();
     } catch (error) {
-      console.error(error);
+      console.error("DELETE request error:", error);
       throw error;
     }
   },

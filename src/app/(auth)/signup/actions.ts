@@ -12,7 +12,7 @@ interface AuthErrorType extends Error {
 export async function createUser(
   email: string,
   password: string,
-  confirmPassword: string,
+  // confirmPassword: string,
 ) {
   //const existingUser = await getUser(email);
   const data = {
@@ -21,8 +21,8 @@ export async function createUser(
     lastName: "khanh vu",
     email: email,
     password: password,
-    confirmPassword: confirmPassword,
-    phoneNumber: "12345678",
+    confirmPassword: password,
+    phoneNumber: "",
     countryCode: "+1",
     DOB: "2024-01-01",
     interest:
@@ -30,6 +30,7 @@ export async function createUser(
     deviceToken: "123",
     deviceType: "web",
   };
+
   const res: any = await apiService.post(API.signUp, data);
   if (res.success === true) {
     return {

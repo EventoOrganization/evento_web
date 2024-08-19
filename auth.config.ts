@@ -31,7 +31,6 @@ export const authConfig = {
       if (token) {
         const { id } = token as { id: string };
         const { user } = session;
-
         session = { ...session, user: { ...user, id, data: token.data } };
       }
       //console.log("session", session);
