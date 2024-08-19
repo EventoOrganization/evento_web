@@ -3,13 +3,18 @@
 //import GetCurrentLocation from "@/components/map/GetCurrentLocation";
 import Title from "@/components/ui/partials/title";
 //import Address from "@/components/ui/partials/address";
-import Search from "@/components/ui/partials/search";
-import Content from "@/components/ui/Content";
+import Search from "@/components/events/Search";
 import NavbarApp from "@/components/ui/Navbar";
 //import LocationPicker from "@/components/map/LocationPicker";
 import LocationSelector from "@/components/map/LocationSelector";
+import Filter from "@/components/events/Filter";
+import Tabs from "@/components/events/Tabs";
+import { auth } from "@/auth";
+//import { Session } from "@/types/user";
 
-export default function Home() {
+export default async function Home() {
+  const session = await auth();
+  console.log("session...", session);
   return (
     <>
       <div className="min-h-screen bg-slate-300">
@@ -17,11 +22,11 @@ export default function Home() {
           <Title />
           <div className="ml-1 mr-1">
             <LocationSelector />
-            {/* <Address /> */}
             <Search />
+            <Filter />
           </div>
           <div className="m-1">
-            <Content />
+            <Tabs />
           </div>
         </div>
       </div>

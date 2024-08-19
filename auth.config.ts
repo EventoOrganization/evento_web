@@ -22,9 +22,9 @@ export const authConfig = {
     },
     async jwt({ token, user }) {
       if (user) {
-        token = { ...token, id: user.id };
+        token = { ...token, id: user.id, data: user };
       }
-
+      //console.log("token", token);
       return token;
     },
     async session({ session, token }) {
@@ -32,9 +32,9 @@ export const authConfig = {
         const { id } = token as { id: string };
         const { user } = session;
 
-        session = { ...session, user: { ...user, id } };
+        session = { ...session, user: { ...user, id, data: token.data } };
       }
-
+      //console.log("session", session);
       return session;
     },
   },

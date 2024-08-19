@@ -18,7 +18,7 @@ export const {
         const res: any | null = await apiService.post(API.login, credentials);
         //const res: any | null = await response.json();
         if (res) {
-          return res;
+          return res.body;
         } else {
           throw new Error("Invalid credentials");
         }

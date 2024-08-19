@@ -1,14 +1,28 @@
 import { getApiUrl } from "@/utils/ApiHelper";
+import { auth } from "@/auth";
 const apiUrl = getApiUrl();
-const token = "your_jwt_bearer_token_here";
+let token = "";
 
 const apiService = {
+  async auth() {
+    const session = await auth();
+    if (session) {
+      token = session?.user?.data?.token;
+      console.log("tokenapi", token);
+    }
+  },
+  async init() {
+    await auth();
+  },
   async get<T>(endpoint: string): Promise<T> {
     try {
       const response = await fetch(`${apiUrl}${endpoint}`, {
         headers: {
           Authorization: `Bearer ${token}`,
+          Accept: "*/*",
+          "Content-Type": "application/json",
         },
+        mode: "cors",
       });
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
