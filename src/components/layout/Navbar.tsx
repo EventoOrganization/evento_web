@@ -25,9 +25,8 @@ function NavLink({ url, text }: NavLink) {
     <li className="flex">
       <Link
         href={url}
-        className={`flex items-center mx-4 -mb-1 border-b-2 dark:border-transparent ${
-          path === url && "dark:text-violet-400 dark:border-violet-400"
-        }}`}
+        className={`flex items-center mx-4 -mb-1 border-b-2 dark:border-transparent ${path === url && "dark:text-violet-400 dark:border-violet-400"
+          }}`}
       >
         {text}
       </Link>
@@ -45,9 +44,8 @@ function MobileNavLink({ url, text, closeMenu }: MobileNavLink) {
       <Link
         href={url}
         onClick={handleClick}
-        className={`-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-100 hover:bg-gray-900 ${
-          path === url && "dark:text-violet-400 dark:border-violet-400"
-        }}`}
+        className={`-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-100 hover:bg-gray-900 ${path === url && "dark:text-violet-400 dark:border-violet-400"
+          }}`}
       >
         {text}
       </Link>
@@ -107,7 +105,7 @@ export default function Navbar({
                 onClick={() => setMobileMenuOpen(false)}
               >
                 <span className="sr-only">Close menu</span>
-                <XMarkIcon className="h-6 w-6" aria-hidden="true" />
+                <XMarkIcon className="h-6 w-6" />
               </button>
             </div>
             <div className="mt-6 flow-root">
@@ -129,7 +127,7 @@ export default function Navbar({
           className="p-4 lg:hidden"
           onClick={() => setMobileMenuOpen(true)}
         >
-          <Bars3Icon className="h-7 w-7 text-gray-100" aria-hidden="true" />
+          <Bars3Icon className="h-7 w-7 text-gray-100" />
         </button>
       </div>
     </div>

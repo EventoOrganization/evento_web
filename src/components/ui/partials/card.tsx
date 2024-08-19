@@ -16,8 +16,8 @@ export default function Cardlist() {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const description =
-    "Khi cuộc đột kích của Ukraine vào Nga bước sang ngày thứ năm, quân đội Ukraine đã tiến được 16km vào khu vực Kursk và đang bắt đầu truy quét bất kỳ linh lính nào họ bỏ qua trong quá trình vội vã mở rộng quyền kiểm soát của mình.";
-  const maxLength = 80; // Độ dài tối đa hiển thị trước khi cắt
+    "Lorem, ipsum dolor sit amet consectetur adipisicing elit. In atque inventore nam deserunt autem quasi numquam cumque quos asperiores repudiandae, animi quas? Esse odio sunt nihil beatae sed natus quo non tempore fugiat error culpa nulla nobis praesentium velit";
+  const maxLength = 80;
 
   const handleToggle = () => {
     setIsExpanded(!isExpanded);
@@ -29,7 +29,7 @@ export default function Cardlist() {
 
   return (
     <>
-      <Card className="max-w-[400px] ">
+      <Card className="max-w-[400px] md:w-full">
         <CardHeader className="justify-between">
           <div className="flex gap-5">
             <Avatar
@@ -65,7 +65,7 @@ export default function Cardlist() {
             </div>
             <div className="flex-none flex items-center">
               <span className="text-xs flex items-center">
-                Nhơn Đức, Nhà Bè, TP.HCM
+                1711 FRANKLIN ST SANTA MONICA CA USA
                 <AddressIcon />
               </span>
             </div>
