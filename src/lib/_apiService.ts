@@ -1,49 +1,77 @@
-// lib/api.ts
-import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
-import { getApiUrl } from "@/utils/ApiHelper";
+import axios from "axios";
+import { baseURL } from "@/constants";
+import { genQueryString } from "@/utils/ApiHelper";
 
-const api = axios.create({
-  baseURL: getApiUrl(),
-});
+interface API {
+  rawValue: string;
+  boundary: string;
+}
 
-api.interceptors.request.use((config: { headers: any }) => {
-  const token = localStorage.getItem("token");
-  if (token) {
-    config.headers = {
-      ...config.headers,
-      Authorization: `Bearer ${token}`,
-    };
+enum methods {
+  post = "POST",
+  get = "GET",
+  delete = "DELETE",
+}
+
+export async function ApiService<Model>(
+  api: API,
+  method: methods = methods.post,
+  response: (model: Model, data: ArrayBuffer, any: any) => void,
+  urlAppendId?: any,
+  param?: any,
+): Promise<void> {
+  if (!navigator.onLine) {
+    console.log("No internet connection");
+    return;
   }
-  return config;
-});
 
-export const get = async <T>(url: string, config?: AxiosRequestConfig) => {
-  const response: AxiosResponse<T> = await api.get(url, config);
-  return response.data;
-};
+  let fullUrlString = baseURL + api.rawValue;
 
-export const post = async <T>(
-  url: string,
-  data?: any,
-  config?: AxiosRequestConfig,
-) => {
-  const response: AxiosResponse<T> = await api.post(url, data, config);
-  return response.data;
-};
+  if (urlAppendId !== undefined) {
+    fullUrlString = baseURL + api.rawValue + `/${urlAppendId}`;
+  }
 
-export const put = async <T>(
-  url: string,
-  data?: any,
-  config?: AxiosRequestConfig,
-) => {
-  const response: AxiosResponse<T> = await api.put(url, data, config);
-  return response.data;
-};
+  if (method === methods.get) {
+    if (param !== undefined) {
+      if (typeof param === "string") {
+        fullUrlString += "?" + param;
+      } else if (typeof param === "object") {
+        fullUrlString += genQueryString(param);
+      } else {
+        console.assert(false, "Parameter must be object or string.");
+      }
+    }
+  }
 
-export const deleteRequest = async <T>(
-  url: string,
-  config?: AxiosRequestConfig,
-) => {
-  const response: AxiosResponse<T> = await api.delete(url, config);
-  return response.data;
-};
+  const encodedString = encodeURI(fullUrlString);
+
+  const headers: Record<string, string> = {
+    Accept: "application/json",
+    secretKey: process.env.API_TOKEN || "",
+    "Content-Type": `multipart/form-data; boundary=${api.boundary}`,
+  };
+
+  const authKey = localStorage.getItem("authKey");
+  if (authKey) {
+    headers["authorization"] = `Bearer ${authKey}`;
+    console.log(`authKey---Bearer ${authKey}`);
+  }
+
+  if (method === methods.delete) {
+    headers["Content-Type"] = "application/x-www-form-urlencoded";
+  }
+
+  try {
+    const axiosResponse = await axios({
+      method: method,
+      url: encodedString,
+      headers: headers,
+      data: param,
+    });
+
+    const model = axiosResponse.data as Model;
+    response(model, axiosResponse.data, axiosResponse);
+  } catch (error) {
+    console.error("Error in network request:", error);
+  }
+}
