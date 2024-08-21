@@ -8,7 +8,7 @@ const apiService = {
       if (!response.ok) {
         throw new Error("Failed to fetch token");
       }
-      const data = await response.json();
+      const data = (await response.json()) || "";
       return data.token;
     } catch (error) {
       console.error("Error fetching token:", error);
@@ -41,9 +41,8 @@ const apiService = {
   },
 
   async post<T>(endpoint: string, data: any): Promise<T> {
-    const token = await this.getToken();
+    const token = (await this.getToken()) || "";
     console.log("Token retrieved for POST:", token);
-
     try {
       const response = await fetch(`${apiUrl}${endpoint}`, {
         method: "POST",
