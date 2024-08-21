@@ -3,8 +3,6 @@
 import { useState } from "react";
 import { useDebounce } from "react-use";
 import { Input } from "@nextui-org/react";
-import apiService from "@/lib/apiService";
-import { API } from "@/constants";
 import { UseDebounceReturn } from "react-use/lib/useDebounce";
 
 interface SearchProps {

@@ -4,7 +4,13 @@ import Search from "./Search";
 import Filter from "./Filter";
 import Tabbar from "./Tabs";
 import LocationSelector from "../map/LocationSelector";
-import { Button, Modal, ModalBody, ModalContent, ModalHeader } from "@nextui-org/react";
+import {
+  Button,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalHeader,
+} from "@nextui-org/react";
 import apiService from "@/lib/apiService";
 import { API } from "@/constants";
 import FilterIcon from "../icons/FilterIcon";
@@ -69,7 +75,11 @@ const HomeContainer = () => {
         <LocationSelector onPicked={handleLocation} />
         <div className="flex items-center bg-white mt-4 p-3 rounded-md">
           <Search onSearch={handleSearch} />
-          <Button isIconOnly variant="light" onClick={() => openModal('Fillter')}>
+          <Button
+            isIconOnly
+            variant="light"
+            onClick={() => openModal("Fillter")}
+          >
             <FilterIcon />
           </Button>
           {/* <Filter
@@ -80,11 +90,18 @@ const HomeContainer = () => {
         </div>
         <div>
           {isOpen && (
-            <Modal isOpen={isOpen} onOpenChange={setIsOpen} size="full" scrollBehavior='inside'>
+            <Modal
+              isOpen={isOpen}
+              onOpenChange={setIsOpen}
+              size="full"
+              scrollBehavior="inside"
+              placement="top-center"
+              className="min-h-full"
+            >
               <ModalContent>
                 {(onClose) => (
                   <>
-                    {modalType === 'Fillter' && (
+                    {modalType === "Fillter" && (
                       <>
                         {/* <ModalHeader className="flex flex-col gap-1 text-center">Interest List</ModalHeader> */}
                         <ModalBody>
