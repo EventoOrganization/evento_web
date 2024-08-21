@@ -4,7 +4,10 @@ const apiUrl = getApiUrl();
 const apiService = {
   async getToken() {
     try {
-      const response = await fetch("/api/auth/session");
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/session`,
+        { method: "GET" },
+      );
       if (!response.ok) {
         throw new Error("Failed to fetch token");
       }
