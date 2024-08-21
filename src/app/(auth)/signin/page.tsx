@@ -27,23 +27,25 @@ export default function SignIn() {
                 onClick={toggleVisibility}
                 aria-label="toggle password visibility"
               >
-                {isVisible ? (
-                  <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
-                ) : (
-                  <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
-                )}
+                {isVisible ? <EyeSlashFilledIcon /> : <EyeFilledIcon />}
               </button>
             }
             type={isVisible ? "text" : "password"}
           />
           <div className="flex justify-between items-center text-xs my-6">
             <div className="flex-1 text-xs">
-              <Checkbox><div className="text-xs">Remember me</div></Checkbox>
+              <Checkbox>
+                <div className="text-xs">Remember me</div>
+              </Checkbox>
             </div>
             <div className="text-right">Forgot password?</div>
           </div>
           <div className="flex justify-center">
-            <Button radius="full" className="bg-gradient-to-tr from-pink-500 to-blue-500 text-white shadow-lg px-10 text-sm" size="lg">
+            <Button
+              radius="full"
+              className="bg-gradient-to-tr from-pink-500 to-blue-500 text-white shadow-lg px-10 text-sm"
+              size="lg"
+            >
               Log in
             </Button>
           </div>
@@ -56,8 +58,11 @@ export default function SignIn() {
             </div>
           </div>
           <div>
-            <p className="text-center mt-20 text-md font-bold">Don't have an account?
-              <Link href="#" className="ml-2">Sign Up</Link>
+            <p className="text-center mt-20 text-md font-bold">
+              Don't have an account?
+              <Link href="#" className="ml-2">
+                Sign Up
+              </Link>
             </p>
           </div>
         </div>

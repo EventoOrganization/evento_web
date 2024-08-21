@@ -13,11 +13,14 @@ import BookmarkIcon from "@/components/icons/BookmarkIcon";
 import ShareIcon from "@/components/icons/ShareIcon";
 import AddressIcon from "@/components/icons/AddressIcon";
 
-export default function Cardlist() {
+interface CardlistProps {
+  data: any;
+}
+
+export default function Cardlist({ data }: CardlistProps) {
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const description =
-    "Khi cuộc đột kích của Ukraine vào Nga bước sang ngày thứ năm, quân đội Ukraine đã tiến được 16km vào khu vực Kursk và đang bắt đầu truy quét bất kỳ linh lính nào họ bỏ qua trong quá trình vội vã mở rộng quyền kiểm soát của mình.";
+  const description = data.description;
   const maxLength = 80; // Độ dài tối đa hiển thị trước khi cắt
 
   const handleToggle = () => {
@@ -26,7 +29,7 @@ export default function Cardlist() {
 
   const displayText = isExpanded
     ? description
-    : `${description.slice(0, maxLength)}`;
+    : `${description?.slice(0, maxLength)}`;
 
   return (
     <>
@@ -41,12 +44,12 @@ export default function Cardlist() {
             />
             <div className="flex flex-col gap-1 items-start justify-center">
               <span className="text-small font-semibold leading-none text-default-600">
-                Jennifer_Anni
+                {data.title}
               </span>
             </div>
           </div>
           <span className="text-xs font-semibold leading-none text-default-600">
-            Thu, 15 Aug 2024
+            {data.date}
           </span>
         </CardHeader>
         <Image
@@ -74,7 +77,7 @@ export default function Cardlist() {
           <div className="text-default-600">
             <div className="text-sm">
               {displayText}
-              {description.length > maxLength && (
+              {description?.length > maxLength && (
                 <a
                   href="#"
                   className="text-blue-500 ml-2"
