@@ -1,133 +1,91 @@
-// components/event/Filter.tsx
-"use client";
-import { useState, useEffect } from "react";
-import apiService from "@/lib/apiService";
-import { API } from "@/constants";
-import {
-  Modal,
-  ModalContent,
-  ModalBody,
-  ModalFooter,
-  ModalHeader,
-  Button,
-  Input,
-  Select,
-} from "@nextui-org/react";
-import React from "react";
+import React, { useState } from 'react'
+import BackButton from '../ui/BackButton'
+import { Button, Checkbox, DatePicker } from '@nextui-org/react'
+import CustomButton from '../ui/CustomButton';
 
-interface FilterProps {
-  onFilterChange: (filter: any) => void;
-  visible: boolean;
-  initialVisible: boolean;
-}
+export default function Filter() {
 
-interface Filter {
-  interest: string[];
-  eventDate: string;
-}
+  const buttonLabels = [
+    '90s Kid',
+    'Self Card',
+    'Hot Yoga',
+    'Writing ',
+    'Meditation',
+    'Sushi',
+    'Hockey',
+    'Basketball',
+    'Slam Poetry',
+    'Home Workout ',
+    'Manga',
+    'Makeup',
+    'Aquarium',
+    'Sneakers',
+    'Instagram',
+    'Hot Springs',
+    'Martial Arts',
+    'Marvel',
+  ];
 
-interface Interest {
-  _id: number;
-  name: string;
-}
+  const [checkedItems, setCheckedItems] = useState({});
 
-const EventFilterModal = ({
-  onFilterChange,
-  visible: initialVisible,
-}: FilterProps) => {
-  const [visible, setVisible] = useState(initialVisible);
-  const [filter, setFilter] = useState<Filter>({
-    interest: [],
-    eventDate: "",
-  });
-  const [interests, setInterests] = useState<Interest[]>([]);
-
-  useEffect(() => {
-    const fetchInterests = async () => {
-      const response: any = await apiService.get(API.getInterestListing);
-      const data = await response.body;
-      setInterests(data);
-    };
-    fetchInterests();
-  }, []);
-
-  const handleFilterChange = (
-    event:
-      | React.ChangeEvent<HTMLInputElement>
-      | React.ChangeEvent<HTMLSelectElement>,
-  ) => {
-    const { name, value } = event.target;
-    setFilter((prevFilter) => ({ ...prevFilter, [name]: value }));
-  };
-
-  const handleInterestChange = (
-    event: React.ChangeEvent<HTMLSelectElement>,
-  ) => {
-    const selectedInterest = event.target.value;
-    setFilter((prevFilter) => ({
-      ...prevFilter,
-      interest: [selectedInterest],
+  const handleChange = (label: string) => {
+    setCheckedItems((prev) => ({
+      ...prev,
+      [label]: !prev[label],
     }));
   };
 
-  const handleEventDateChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    const eventDate = event.target.value;
-    setFilter((prevFilter) => ({ ...prevFilter, eventDate }));
-  };
-
-  const handleApplyFilter = () => {
-    // Apply the filter to the events
-    onFilterChange(filter);
-    setVisible(false);
-  };
-
   return (
-    <Modal
-      aria-labelledby="event-filter-modal"
-      isOpen={visible}
-      onClose={() => setVisible(false)}
-    >
-      <ModalContent>
-        <ModalHeader>
-          <h2 id="event-filter-modal">Event Filter</h2>
-        </ModalHeader>
-        <ModalBody>
-          <form>
-            <Select
-              label="Interest"
-              name="interest"
-              value={filter.interest}
-              onChange={handleInterestChange}
-            >
-              <option value="">Select Interest</option>
-              <React.Fragment>
-                {interests.map((interest) => (
-                  <option key={interest._id} value={interest.name}>
-                    {interest.name}
-                  </option>
-                ))}
-              </React.Fragment>
-            </Select>
-            <Input
-              label="Event Date"
-              name="eventDate"
-              value={filter.eventDate}
-              onChange={handleEventDateChange}
-              type="date"
-            />
-          </form>
-        </ModalBody>
-        <ModalFooter>
-          <Button color="warning" onClick={() => setVisible(false)}>
-            Cancel
-          </Button>
-          <Button onClick={handleApplyFilter}>Apply Filter</Button>
-        </ModalFooter>
-      </ModalContent>
-    </Modal>
-  );
-};
+    <>
+      <div className="bg-white h-screen">
+        <div className="p-9 w-full max-w-lg mx-auto">
+          <div className="flex justify-start items-center mt-16">
+            <div className="flex">
+              <BackButton />
+            </div>
+            <div className="mx-auto font-bold p-3">
+              <h1 className="text-3xl">Event Filter</h1>
+            </div>
+          </div>
 
-export default EventFilterModal;
+          <div className="mt-10">
+            <span className="text-md mb-1">Date</span>
+            <DatePicker
+              size="lg"
+            />
+          </div>
+
+          <div className='mt-10'>
+            <span className="text-md mb-1">Interests</span>
+            <div className="flex flex-wrap gap-3 items-center">
+              {buttonLabels.map(label => (
+                <label
+                  key={label}
+                  className={`flex items-center cursor-pointer px-4 py-2 rounded-full border ${checkedItems[label] ? 'bg-blue-500 text-white border-blue-500' : 'bg-white text-gray-800 border-gray-300'
+                    } hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-300`}
+                  onClick={() => handleChange(label)}
+                >
+                  <input
+                    type="checkbox"
+                    className="hidden"
+                    checked={checkedItems[label]}
+                    onChange={() => handleChange(label)}
+                  />
+                  <span className="ml-2">{label}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+
+          <div className="mt-16">
+            <div className="flex justify-center">
+              <CustomButton size="lg" radius="full" gradient>
+                Apply
+              </CustomButton>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  )
+}
