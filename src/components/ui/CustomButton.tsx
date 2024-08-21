@@ -1,10 +1,12 @@
-import { Button, ButtonProps } from '@nextui-org/react';
+import { Button, ButtonProps } from "@nextui-org/react";
 
 interface CustomButtonProps extends ButtonProps {
   gradient?: boolean;
+  type?: "button" | "submit" | "reset";
 }
 
 const CustomButton: React.FC<CustomButtonProps> = ({
+  type = "button",
   gradient = false,
   className,
   ...props
@@ -14,10 +16,7 @@ const CustomButton: React.FC<CustomButtonProps> = ({
     : "w-40 h-16";
 
   return (
-    <Button
-      className={`${colorClasses} ${className}`}
-      {...props}
-    >
+    <Button type={type} className={`${colorClasses} ${className}`} {...props}>
       {props.children}
     </Button>
   );
