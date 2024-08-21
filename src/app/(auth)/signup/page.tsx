@@ -11,7 +11,7 @@ export default async function SignupRoute() {
   }
 
   return (
-    <main className="flex flex-col p-4">
+    <main className="bg-white w-full">
       <SignupForm />
     </main>
   );

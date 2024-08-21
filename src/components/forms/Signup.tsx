@@ -2,12 +2,14 @@
 
 import { signup } from "@/app/(auth)/signup/actions";
 import { getMessageFromCode } from "@/utils/Helper";
-import { Spinner } from "@nextui-org/react";
+import { Input, Spinner } from "@nextui-org/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useFormState, useFormStatus } from "react-dom";
 import { toast } from "sonner";
+import BackButton from "../ui/BackButton";
+import CustomButton from "../ui/CustomButton";
 
 export default function SignupForm() {
   const router = useRouter();
@@ -27,59 +29,58 @@ export default function SignupForm() {
   return (
     <form
       action={dispatch}
-      className="flex flex-col items-center gap-4 space-y-3"
     >
-      <div className="w-full flex-1 rounded-lg border bg-white px-6 pb-4 pt-8 shadow-md md:w-96 dark:bg-zinc-950">
-        <h1 className="mb-3 text-2xl font-bold">Signup</h1>
-        <div className="w-full">
-          <div>
+      <div className='bg-white h-screen'>
+        <div className="p-9 w-full max-w-lg mx-auto">
+          <div className="mt-16">
+            <BackButton />
+          </div>
+          <div className="text-3xl font-bold mt-8">
+            Sign up
+          </div>
+          <div className="mt-10">
             <label
               className="mb-3 mt-5 block text-xs font-medium text-zinc-400"
               htmlFor="email"
             >
               Email
             </label>
-            <div className="relative">
-              <input
-                className="peer block w-full rounded-md border bg-zinc-50 px-2 py-[9px] text-sm outline-none placeholder:text-zinc-500 dark:border-zinc-800 dark:bg-zinc-950"
-                id="email"
-                type="email"
-                name="email"
-                placeholder="Enter your email address"
-                required
-              />
-            </div>
+            <Input
+              id="email"
+              type="email"
+              name="email"
+              placeholder="Enter your email address"
+              size="lg"
+              required
+            />
           </div>
-          <div className="mt-4">
+          <div className="mt-5">
             <label
               className="mb-3 mt-5 block text-xs font-medium text-zinc-400"
               htmlFor="password"
             >
               Password
             </label>
-            <div className="relative">
-              <input
-                className="peer block w-full rounded-md border bg-zinc-50 px-2 py-[9px] text-sm outline-none placeholder:text-zinc-500 dark:border-zinc-800 dark:bg-zinc-950"
-                id="password"
-                type="password"
-                name="password"
-                placeholder="Enter password"
-                required
-                minLength={6}
-              />
-            </div>
+            <Input
+              id="password"
+              type="password"
+              name="password"
+              placeholder="Enter password"
+              required
+              minLength={6}
+              size="lg"
+            />
+          </div>
+          <div className="flex justify-center mt-16">
+            <LoginButton />
+          </div>
+          <div>
+            <p className="text-center mt-20 text-sm text-zinc-400">Already have an account?
+              <Link href="/signin" className="ml-2 font-semibold underline">Log in</Link>
+            </p>
           </div>
         </div>
-        <LoginButton />
       </div>
-
-      <Link
-        href="/signin"
-        className="flex flex-row gap-1 text-sm text-zinc-400"
-      >
-        Already have an account?
-        <div className="font-semibold underline">Log in</div>
-      </Link>
     </form>
   );
 }
@@ -88,11 +89,10 @@ function LoginButton() {
   const { pending } = useFormStatus();
 
   return (
-    <button
-      className="my-4 flex h-10 w-full flex-row items-center justify-center rounded-md bg-zinc-900 p-2 text-sm font-semibold text-zinc-100 hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
-      aria-disabled={pending}
-    >
-      {pending ? <Spinner /> : "Create account"}
-    </button>
+    <>
+      <CustomButton size="lg" radius="full" gradient aria-disabled={pending}>
+        {pending ? <Spinner /> : "Create account"}
+      </CustomButton>
+    </>
   );
 }
