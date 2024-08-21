@@ -9,7 +9,7 @@ export default function CreateEvent() {
   const [isOpen, setIsOpen] = useState(false);
   const [modalType, setModalType] = useState(null);
 
-  const openModal = (type) => {
+  const openModal = (type: any) => {
     setModalType(type);
     setIsOpen(true);
   };
