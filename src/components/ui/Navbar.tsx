@@ -1,45 +1,69 @@
-import React from "react";
-import { Navbar, NavbarContent, NavbarItem, Link } from "@nextui-org/react";
+"use client";
+import { cn } from "@nextui-org/theme";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import CompassIcon from "../icons/CompassIcon";
 import HomeIcon from "../icons/HomeIcon";
+import MessageIcon from "../icons/MessageIcon";
 import PlusIcon from "../icons/PlusIcon";
 import UserIcon from "../icons/UserIcon";
-import MessageIcon from "../icons/MessageIcon";
-import CompassIcon from "../icons/CompassIcon";
 
 export default function NavbarApp() {
+  const pathname = usePathname();
   return (
-    <Navbar className="rounded-full md:rounded-full">
-      <NavbarContent
-        className="flex gap-5 w-full"
-        justify="center"
-        text-align="center"
-      >
-        <NavbarItem>
-          <Link color="foreground" href="#">
-            <HomeIcon />
-          </Link>
-        </NavbarItem>
-        <NavbarItem isActive>
-          <Link href="#" aria-current="page">
-            <CompassIcon />
-          </Link>
-        </NavbarItem>
-        <NavbarItem>
-          <Link color="foreground" href="#">
-            <PlusIcon />
-          </Link>
-        </NavbarItem>
-        <NavbarItem>
-          <Link color="foreground" href="#">
-            <UserIcon />
-          </Link>
-        </NavbarItem>
-        <NavbarItem>
-          <Link color="foreground" href="#">
-            <MessageIcon />
-          </Link>
-        </NavbarItem>
-      </NavbarContent>
-    </Navbar>
+    <div className="w-full flex justify-center md:hidden">
+      <nav className="fixed bottom-10 bg-background rounded-lg flex justify-evenly w-full shadow max-w-80 mx-auto h-12 items-center">
+        <Link href="/">
+          <HomeIcon
+            className={cn(
+              "hover:text-eventoBlue hover:opacity-80",
+              pathname === "/"
+                ? "text-eventoBlue"
+                : "text-muted-foreground opacity-40",
+            )}
+          />
+        </Link>
+        <Link href="/explore">
+          <CompassIcon
+            className={cn(
+              "hover:text-eventoBlue hover:opacity-80",
+              pathname === "/explore"
+                ? "text-eventoBlue"
+                : "text-muted-foreground opacity-40",
+            )}
+          />
+        </Link>
+        <Link href="/create-event">
+          <PlusIcon
+            className={cn(
+              "hover:text-eventoBlue hover:opacity-80",
+              pathname === "/create-event"
+                ? "text-eventoBlue"
+                : "text-muted-foreground opacity-40",
+            )}
+          />
+        </Link>
+        <Link href="/profile">
+          <UserIcon
+            className={cn(
+              "hover:text-eventoBlue hover:opacity-80",
+              pathname === "/profile"
+                ? "text-eventoBlue"
+                : "text-muted-foreground opacity-40",
+            )}
+          />
+        </Link>
+        <Link href="/messages">
+          <MessageIcon
+            className={cn(
+              pathname === "/message"
+                ? "text-eventoBlue"
+                : "text-muted-foreground opacity-40",
+              "hover:text-eventoBlue hover:opacity-80",
+            )}
+          />
+        </Link>
+      </nav>
+    </div>
   );
 }

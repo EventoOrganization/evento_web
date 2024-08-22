@@ -21,7 +21,7 @@ const apiService = {
   },
 
   async post<T>(endpoint: string, data: any): Promise<T> {
-    //console.log(`${apiUrl}${endpoint}`);
+    console.log(`${apiUrl}${endpoint}`);
     try {
       const response = await fetch(`${apiUrl}${endpoint}`, {
         method: "POST",

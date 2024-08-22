@@ -132,7 +132,7 @@ const SignUpForm = () => {
           <p className="text-sm sm:text-muted-foreground w-full flex justify-center sm:justify-between gap-2">
             Already have an account?
             <Link href={`/signin`} className="underline text-eventoPurple">
-              Sign In
+              Sign Up
             </Link>
           </p>
         </div>

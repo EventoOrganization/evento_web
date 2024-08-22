@@ -4,7 +4,6 @@ import Image from "next/image";
 //import Address from "@/components/ui/partials/address";
 import ComingSoon from "@/components/ComingSoon";
 import Section from "@/components/layout/Section";
-import NavbarApp from "@/components/ui/Navbar";
 //import LocationPicker from "@/components/map/LocationPicker";
 
 export default function Home() {
@@ -23,15 +22,12 @@ export default function Home() {
           alt="logo"
           width={1980}
           height={1024}
-          className="h-screen object-cover object-center w-screen absolute opacity-20"
+          className="h-full object-cover object-center  absolute opacity-20"
         />
       </Section>
       <Section className="">
         <ComingSoon message="Section avec les event" />
       </Section>
-      <div className="fixed bottom-0 left-0 right-0 z-50 mx-10 mb-2 rounded-full md:rounded-full">
-        <NavbarApp />
-      </div>
     </>
   );
 }

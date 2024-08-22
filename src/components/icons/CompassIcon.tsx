@@ -1,8 +1,10 @@
-export default function CompassIcon() {
+import { cn } from "@nextui-org/theme";
+
+export default function CompassIcon({ className }: { className?: string }) {
   return (
     <>
       <svg
-        className="h-6 w-6 text-gray-500"
+        className={cn("w-6 h-6", className)}
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"

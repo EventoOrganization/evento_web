@@ -1,5 +1,6 @@
 import Header from "@/components/layout/Header";
 import Main from "@/components/layout/Main";
+import NavbarApp from "@/components/ui/Navbar";
 import { Toaster } from "@/components/ui/sonner";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
@@ -23,6 +24,7 @@ export default function RootLayout({
         <Toaster position="top-center" />
         <Header />
         <Main className="">{children}</Main>
+        <NavbarApp />
       </body>
     </html>
   );

@@ -1,8 +1,8 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { authConfig } from "../auth.config";
-import apiService from "./lib/apiService";
 import { API } from "./constants";
+import apiService from "./lib/apiService";
 
 export const {
   handlers: { GET, POST },

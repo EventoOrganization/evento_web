@@ -1,5 +1,6 @@
 "use client";
 import PasswordInput from "@/components/PasswordInput";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   FormControl,
   FormField,
@@ -17,7 +18,6 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
-
 const SignInForm = () => {
   const [error, setError] = useState<string | null>(null);
   const [isFetching, setIsFetching] = useState(false);
@@ -34,20 +34,22 @@ const SignInForm = () => {
   const onSubmit: SubmitHandler<z.infer<typeof signInSchema>> = async (
     data,
   ) => {
+    console.log("sign in form data", data);
+
     setIsFetching(true);
+
     const result = await signIn("credentials", {
       redirect: false,
       email: data.email,
       password: data.password,
+      callbackUrl: "/", // Optionally specify a callback URL
     });
-    console.log(isFetching);
 
     if (result?.error) {
       setError(result.error);
       setIsFetching(false);
     } else {
       setIsFetching(false);
-      router.push(`/`);
     }
   };
 
@@ -99,14 +101,21 @@ const SignInForm = () => {
             )}
           />
           <div className="flex flex-col ">
-            <p className="text-sm text-muted-foreground w-full flex justify-between gap-2 items-center mt-1">
-              <Link
-                href={`/forgot-password`}
-                className="text-muted-foreground text-xs hover:underline w-full text-end"
-              >
-                Forgot Password?
-              </Link>
-            </p>
+            <div className="flex justify-between">
+              <span className="flex gap-2 items-center">
+                <Checkbox />
+                <p>Remember me</p>
+              </span>
+
+              <p className="text-sm text-muted-foreground flex justify-between gap-2 items-center mt-1 ">
+                <Link
+                  href={`/forgot-password`}
+                  className="text-muted-foreground text-xs hover:underline w-full text-end"
+                >
+                  Forgot Password?
+                </Link>
+              </p>
+            </div>
             {error && (
               <div className="flex gap-1 items-center">
                 <span className="bg-destructive rounded-full p-1 text-destructive-foreground w-4 h-4 flex justify-center items-center text-xs">
@@ -126,7 +135,7 @@ const SignInForm = () => {
           <p className="text-sm sm:text-muted-foreground w-full flex justify-center sm:justify-between gap-2">
             Don't have an account?
             <Link href={`/signup`} className="underline text-eventoPurple">
-              Sign Up
+              Sign In
             </Link>
           </p>
         </div>
