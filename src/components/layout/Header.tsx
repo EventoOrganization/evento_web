@@ -14,7 +14,7 @@ export const Header = () => {
   return (
     <header
       className={cn(
-        "p-6 z-10 fixed w-full transition-all duration-300 ease-in-out text-white hidden md:flex",
+        "p-6 z-20 fixed w-full transition-all duration-300 ease-in-out text-white hidden md:flex",
         {
           "p-2 bg-evento-gradient": scrollY > 0,
           "bg-evento-gradient": pathname !== "/" || isOpen,
@@ -30,11 +30,24 @@ export const Header = () => {
             </h2>
           </Link>
         </div>
-        <div className=" gap-4 font-semibold text-xs text-[#7858C3] flex">
-          <Button className="rounded-full h-8 px-6" variant={"outline"}>
+        <div className=" gap-4 font-semibold text-xs  flex">
+          <Button
+            className={cn(
+              "bg-evento-gradient-button rounded-full text-xs self-center px-8 border-none  text-white",
+              {
+                "bg-background text-[#7858C3]": scrollY > 0,
+              },
+            )}
+            variant={"outline"}
+          >
             <Link href="/create-event">Create Event</Link>
           </Button>
-          <Button className="rounded-full h-8 px-6" variant={"outline"}>
+          <Button
+            className={cn(
+              "bg-muted rounded-full text-xs self-center px-8 border-none  text-[#7858C3]",
+            )}
+            variant={"outline"}
+          >
             <Link href="/signin">Sign in</Link>
           </Button>
         </div>

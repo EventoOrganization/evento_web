@@ -1,22 +1,22 @@
-import Image from "next/image";
-// import { Button } from "@nextui-org/react";
-//import GetCurrentLocation from "@/components/map/GetCurrentLocation";
-//import Address from "@/components/ui/partials/address";
 import ComingSoon from "@/components/ComingSoon";
 import Section from "@/components/layout/Section";
-//import LocationPicker from "@/components/map/LocationPicker";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import Image from "next/image";
+import Link from "next/link";
 
 export default function Home() {
   return (
     <>
-      <Section className="h-screen bg-evento-gradient text-white">
-        <div className="opacity-0 bg-evento-gradient">
+      <Section className="h-screen bg-evento-gradient gap-10 text-white">
+        <div className="z-10 flex flex-col justify-center items-center mb-10">
           <Image src={"/logo.png"} alt="logo" width={138} height={45} />
-          <h1 className="text-white text-4xl absolute bottom-24">EVENTO</h1>
+          <h1 className=" text-4xl font-bold z-10">EVENTO</h1>
+          <h2 className="text-2xl ">Find events for you</h2>
+          <p className="text-justify mt-10">
+            Create and share your events and see what's happening near you!
+          </p>
         </div>
-        <h1 className=" text-4xl font-bold z-10">EVENTO</h1>
-        <h2>Find events for you</h2>
-        <p>Create and share your events and see what's happening near you!</p>
         <Image
           src={"/hero-bg.jpg"}
           alt="logo"
@@ -24,8 +24,26 @@ export default function Home() {
           height={1024}
           className="h-full object-cover object-center  absolute opacity-20"
         />
+        <div className="z-10 flex gap-4 flex-col md:flex-row">
+          <Button
+            variant="outline"
+            className={cn(
+              "bg-white rounded-full text-xs self-center px-8 border-none  text-[#7858C3]",
+            )}
+          >
+            <Link href="/create-event">Create Event</Link>
+          </Button>
+          <Button
+            variant="outline"
+            className={cn(
+              "bg-muted rounded-full text-xs self-center px-8 border-none  text-[#7858C3]",
+            )}
+          >
+            <Link href="#event">Discover events</Link>
+          </Button>
+        </div>
       </Section>
-      <Section className="">
+      <Section className="" id="event">
         <ComingSoon message="Section avec les event" />
       </Section>
     </>

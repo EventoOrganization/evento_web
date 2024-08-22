@@ -16,7 +16,7 @@ const Section = ({
   return (
     <section
       className={cn(
-        "flex items-center justify-center flex-col flex-grow w-full relative py-10",
+        "flex items-center justify-center flex-col flex-grow w-full relative py-10 px-4",
         className,
       )}
       id={id}
