@@ -1,3 +1,5 @@
+import Header from "@/components/layout/Header";
+import Main from "@/components/layout/Main";
 import { Toaster } from "@/components/ui/sonner";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
@@ -16,11 +18,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning={true}>
       <body className={inter.className}>
         <Toaster position="top-center" />
-        {/* <NextUIProvider>{children}</NextUIProvider> */}
-        {children}
+        <Header />
+        <Main className="">{children}</Main>
       </body>
     </html>
   );

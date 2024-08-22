@@ -1,3 +1,4 @@
+// src\components\layout\Main.tsx
 import { cn } from "@/lib/utils";
 import React from "react";
 
@@ -18,7 +19,7 @@ const Main: React.FC<MainProps> = async ({
   style,
   bgColor = "",
   padding = "",
-  fullHeight = false,
+  fullHeight = true,
 }) => {
   return (
     <main
@@ -28,7 +29,7 @@ const Main: React.FC<MainProps> = async ({
         bgColor,
         padding,
         fullHeight ? "min-h-screen" : "",
-        "flex flex-col items-center justify-center flex-grow ",
+        "flex flex-col items-center w-screen justify-center flex-grow ",
       )}
       style={style}
     >

@@ -1,3 +1,4 @@
+// src\components\layout\Section.tsx
 import { cn } from "@/lib/utils";
 import React from "react";
 
@@ -12,13 +13,6 @@ const Section = ({
   bgImg?: string;
   id?: string;
 }) => {
-  const backgroundStyle = {
-    backgroundImage: bgImg ? `url(${bgImg})` : "none",
-    backgroundSize: "60%",
-    backgroundRepeat: "no-repeat",
-    backgroundPosition: "center",
-  };
-
   return (
     <section
       className={cn(
@@ -26,7 +20,6 @@ const Section = ({
         className,
       )}
       id={id}
-      style={backgroundStyle}
     >
       {children}
     </section>

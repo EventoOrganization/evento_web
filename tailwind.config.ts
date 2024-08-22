@@ -19,7 +19,7 @@ const config = {
     },
     extend: {
       backgroundImage: {
-        "evento-gradient": "linear-gradient(180deg, #AF29A7 0%, #5f6fed 100%)",
+        "evento-gradient": "linear-gradient(160deg, #B127A6 0%, #5973D3 100%)",
       },
       colors: {
         border: "hsl(var(--border))",

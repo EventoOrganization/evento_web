@@ -1,15 +1,31 @@
-interface PageHeaderProps {
-  heading: string;
-  text?: string;
-}
+"use client";
 
-export default function PageHeader({ heading, text }: PageHeaderProps) {
+import useOnScroll from "@/hooks/useOnScroll";
+import { cn } from "@/lib/utils";
+import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+export const Header = () => {
+  const pathname = usePathname();
+  const scrollY = useOnScroll();
   return (
-    <div className="my-16 w-full text-center">
-      {text && <span className="text-violet-400 font-bold">{text}</span>}
-      <h2 className="text-4xl my-4 lg:text-5xl font-bold font-heading">
-        {heading}
-      </h2>
-    </div>
+    <header
+      className={cn("p-6 z-10 fixed w-full text-white", {
+        "p-2 bg-evento-gradient": scrollY > 0,
+      })}
+    >
+      <div className="mx-auto max-w-screen-lg h-fit">
+        <div className="flex flex-wrap items-center justify-between">
+          <Link href="/" className="flex items-center">
+            <Image src="/logo.png" alt="logo" width={45} height={45} />
+            <h2 className="flex items-center text-xl font-semibold my-0">
+              EVENTO
+            </h2>
+          </Link>
+        </div>
+      </div>
+    </header>
   );
-}
+};
+
+export default Header;
