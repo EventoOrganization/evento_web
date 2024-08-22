@@ -20,15 +20,18 @@ const config = {
     extend: {
       backgroundImage: {
         "evento-gradient": "linear-gradient(160deg, #B127A6 0%, #5973D3 100%)",
+        "evento-gradient-button":
+          "linear-gradient(160deg, #894dbc 20%, #5973D3 100%)",
       },
       colors: {
+        eventoPink: "#d5298e",
+        eventoBlue: "#5f6fed",
+        eventoPurple: "#A14CB9",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
-        eventoPink: "#d5298e",
-        eventoBlue: "#5f6fed",
 
         primary: {
           DEFAULT: "hsl(var(--primary))",
