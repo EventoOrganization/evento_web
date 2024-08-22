@@ -34,6 +34,8 @@ const SignInForm = () => {
     data,
   ) => {
     setIsFetching(true);
+    console.log(isFetching);
+
     try {
       // const response = await fetch(`http://localhost:8747/users/login`, {
       const response = await fetch(
