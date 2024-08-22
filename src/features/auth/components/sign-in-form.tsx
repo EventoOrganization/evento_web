@@ -12,7 +12,6 @@ import { cn } from "@/lib/utils";
 import { signInSchema } from "@/lib/zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@nextui-org/react";
-import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -34,21 +33,31 @@ const SignInForm = () => {
   const onSubmit: SubmitHandler<z.infer<typeof signInSchema>> = async (
     data,
   ) => {
-    console.log("sign in form data", data);
-
     setIsFetching(true);
-
-    const result = await signIn("credentials", {
-      redirect: false,
-      email: data.email,
-      password: data.password,
-      callbackUrl: "/", // Optionally specify a callback URL
-    });
-
-    if (result?.error) {
-      setError(result.error);
+    try {
+      const response = await fetch(`http://localhost:8747/users/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          email: data.email,
+          password: data.password,
+        }),
+      });
+      const result = await response.json();
+      if (!response.ok) {
+        throw new Error(result.message || "Login failed");
+      }
       setIsFetching(false);
-    } else {
+      router.push("/");
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("An unexpected error occurred.");
+      }
       setIsFetching(false);
     }
   };
@@ -126,7 +135,10 @@ const SignInForm = () => {
                 </p>
               </div>
             )}
-            <Button className="bg-evento-gradient-button rounded-full text-xs self-center px-8 mt-10  text-white">
+            <Button
+              type="submit"
+              className="bg-evento-gradient-button rounded-full text-xs self-center px-8 mt-10  text-white"
+            >
               Sign in
             </Button>
           </div>

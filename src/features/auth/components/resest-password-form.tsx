@@ -45,6 +45,7 @@ const ResetPasswordForm = () => {
       return;
     }
     setIsFetching(true);
+    console.log(isFetching);
     const result = await fetch("/api/auth/reset-password", {
       method: "POST",
       headers: {

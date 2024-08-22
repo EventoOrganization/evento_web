@@ -32,6 +32,7 @@ const VerifyCodeForm = () => {
     z.infer<typeof resetCodeSchema>
   > = async (data) => {
     setIsFetching(true);
+    console.log(isFetching);
     const result = await fetch("/api/auth/verify-reset-code", {
       method: "POST",
       headers: {

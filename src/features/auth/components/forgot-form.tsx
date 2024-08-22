@@ -31,6 +31,8 @@ const ForgotForm = () => {
 
   const onSubmit: SubmitHandler<z.infer<typeof emailSchema>> = async (data) => {
     setIsFetching(true);
+    console.log(isFetching);
+
     try {
       const result = await fetch("/api/auth/forgot", {
         method: "POST",
