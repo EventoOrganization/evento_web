@@ -18,12 +18,18 @@ const config = {
       },
     },
     extend: {
+      backgroundImage: {
+        "evento-gradient": "linear-gradient(180deg, #AF29A7 0%, #5f6fed 100%)",
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
+        eventoPink: "#d5298e",
+        eventoBlue: "#5f6fed",
+
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",

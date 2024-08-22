@@ -8,7 +8,7 @@ import NavbarApp from "@/components/ui/Navbar";
 export default function Home() {
   return (
     <>
-      <div className="min-h-screen bg-slate-300">
+      <div className="min-h-screen bg-evento-gradient">
         <div className="mx-auto bg-slate-100">
           {/* <Title /> */}
           <div className="ml-1 mr-1">
