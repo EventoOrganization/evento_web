@@ -66,8 +66,8 @@ const ForgotForm = () => {
             Forgot your password?
           </h2>
           <p className="text-muted-foreground text-xs text-center">
-            Enter your email address and we'll send you a code to reset your
-            password.
+            Enter your email address and we&apos;ll send you a code to reset
+            your password.
           </p>
         </div>
         <FormField
@@ -114,7 +114,7 @@ const ForgotForm = () => {
         </div>
         <div className="mt-4 text-justify text-xs w-full">
           <p className="text-sm text-muted-foreground w-full flex justify-between gap-2">
-            Don't have an account?
+            Don&apos;t have an account?
             <Link href={`/sign-up`} className="text-primary underline">
               Sign Up
             </Link>

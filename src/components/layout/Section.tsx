@@ -5,12 +5,10 @@ import React from "react";
 const Section = ({
   children,
   className,
-  bgImg,
   id,
 }: {
   children: React.ReactNode;
   className?: string;
-  bgImg?: string;
   id?: string;
 }) => {
   return (

@@ -5,19 +5,17 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
 import { Button } from "../ui/button";
 export const Header = () => {
   const pathname = usePathname();
   const scrollY = useOnScroll();
-  const [isOpen, setIsOpen] = useState(false);
   return (
     <header
       className={cn(
         "p-6 z-20 fixed w-full transition-all duration-300 ease-in-out text-white hidden md:flex",
         {
           "p-2 bg-evento-gradient": scrollY > 0,
-          "bg-evento-gradient": pathname !== "/" || isOpen,
+          "bg-evento-gradient": pathname !== "/",
         },
       )}
     >

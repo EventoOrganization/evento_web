@@ -35,17 +35,21 @@ const SignInForm = () => {
   ) => {
     setIsFetching(true);
     try {
-      const response = await fetch(`http://localhost:8747/users/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      // const response = await fetch(`http://localhost:8747/users/login`, {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/users/login`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({
+            email: data.email,
+            password: data.password,
+          }),
         },
-        credentials: "include",
-        body: JSON.stringify({
-          email: data.email,
-          password: data.password,
-        }),
-      });
+      );
       const result = await response.json();
       if (!response.ok) {
         throw new Error(result.message || "Login failed");
@@ -145,7 +149,7 @@ const SignInForm = () => {
         </div>
         <div className="mt-4 text-justify text-xs w-full ">
           <p className="text-sm sm:text-muted-foreground w-full flex justify-center sm:justify-between gap-2">
-            Don't have an account?
+            Don&apos;t have an account?
             <Link href={`/signup`} className="underline text-eventoPurple">
               Sign In
             </Link>
