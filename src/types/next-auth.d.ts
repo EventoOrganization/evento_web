@@ -5,4 +5,7 @@ declare module "@auth/core/types" {
   interface User extends DefaultUser {
     data?: any;
   }
+  interface Session extends DefaultSession {
+    data?: any;
+  }
 }

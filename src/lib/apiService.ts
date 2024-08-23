@@ -14,13 +14,13 @@ const apiService = {
       const data = (await response.json()) || "";
       return data.token;
     } catch (error) {
-      console.error("Error fetching token:", error);
+      //console.error("Error fetching token:", error);
       return null;
     }
   },
   async get<T>(endpoint: string): Promise<T> {
     const token = await this.getToken();
-    console.log("Token retrieved for GET:", token);
+    //console.log("Token retrieved for GET:", token);
 
     try {
       const response = await fetch(`${apiUrl}${endpoint}`, {
@@ -45,7 +45,7 @@ const apiService = {
 
   async post<T>(endpoint: string, data: any): Promise<T> {
     const token = (await this.getToken()) || "";
-    console.log("Token retrieved for POST:", token);
+    //console.log("Token retrieved for POST:", token);
     try {
       const response = await fetch(`${apiUrl}${endpoint}`, {
         method: "POST",
@@ -69,7 +69,7 @@ const apiService = {
 
   async put<T>(endpoint: string, data: any): Promise<T> {
     const token = await this.getToken();
-    console.log("Token retrieved for PUT:", token);
+    //console.log("Token retrieved for PUT:", token);
 
     try {
       const response = await fetch(`${apiUrl}${endpoint}`, {
@@ -94,7 +94,7 @@ const apiService = {
 
   async delete<T>(endpoint: string): Promise<T> {
     const token = await this.getToken();
-    console.log("Token retrieved for DELETE:", token);
+    //onsole.log("Token retrieved for DELETE:", token);
 
     try {
       const response = await fetch(`${apiUrl}${endpoint}`, {
@@ -110,7 +110,7 @@ const apiService = {
 
       return await response.json();
     } catch (error) {
-      console.error("DELETE request error:", error);
+      //console.error("DELETE request error:", error);
       throw error;
     }
   },

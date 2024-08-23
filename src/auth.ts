@@ -19,7 +19,10 @@ export const {
         // console.log(res);
         //const res: any | null = await response.json();
         if (res) {
-          console.log("Token received from backend:", res.body.token);
+          console.log(
+            "Authorize - Token received from backend:",
+            res.body.token,
+          );
           // get error localStorate is not defined
           //localStorage.setItem("authToken", res.body.token);
           return res.body;

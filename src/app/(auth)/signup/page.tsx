@@ -1,6 +1,7 @@
 import SignupForm from "@/components/forms/Signup";
 import { auth } from "@/auth";
-import { Session } from "@/types/user";
+//import { Session } from "@/types/user";
+import { Session } from "next-auth/types";
 //import { redirect } from "next/navigation";
 
 export default async function SignupRoute() {

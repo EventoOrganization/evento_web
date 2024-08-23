@@ -7,7 +7,8 @@ export async function GET() {
 
   try {
     const session = await auth();
-    const token = session?.user?.data?.token;
+    const data = JSON.parse(JSON.stringify(session?.user?.id));
+    const token = data.token;
 
     if (token) {
       return NextResponse.json({ token });

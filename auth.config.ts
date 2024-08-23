@@ -1,4 +1,5 @@
 import type { NextAuthConfig } from "next-auth";
+//import type User from "@/types/next-auth.d.ts";
 
 export const authConfig = {
   secret: process.env.AUTH_SECRET,
@@ -24,16 +25,16 @@ export const authConfig = {
       if (user) {
         token = { ...token, id: user.id, data: user };
       }
-      //console.log("token", token);
+      console.log("token", token);
       return token;
     },
     async session({ session, token }) {
       if (token) {
-        const { id } = token as { id: string };
+        //const { id } = token as { id: string };
         const { user } = session;
-        session = { ...session, user: { ...user, id, data: token.data } };
+        session = { ...session, user: { ...user, id: token.data as any } };
       }
-      //console.log("session", session);
+      console.log("session", session);
       return session;
     },
   },
