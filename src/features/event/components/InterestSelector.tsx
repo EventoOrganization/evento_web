@@ -32,7 +32,7 @@ const InterestSelector = () => {
     const fetchInterests = async () => {
       try {
         const response = await fetch(
-          "http://localhost:8747/users/getInterestsListing",
+          `${process.env.NEXT_PUBLIC_API_URL}/users/getInterestsListing`,
         );
         const result = await response.json();
         const data: Interest[] = result.body;

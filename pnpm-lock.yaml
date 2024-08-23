@@ -53,6 +53,9 @@ dependencies:
   '@react-google-maps/api':
     specifier: ^2.19.3
     version: 2.19.3(react-dom@18.3.1)(react@18.3.1)
+  '@types/react-select':
+    specifier: ^5.0.1
+    version: 5.0.1(@types/react@18.3.3)(react-dom@18.3.1)(react@18.3.1)
   '@types/react-swipeable-views':
     specifier: ^0.13.5
     version: 0.13.5
@@ -95,9 +98,6 @@ dependencies:
   react-select:
     specifier: ^5.8.0
     version: 5.8.0(@types/react@18.3.3)(react-dom@18.3.1)(react@18.3.1)
-  react-swipeable-views:
-    specifier: ^0.14.0
-    version: 0.14.0(react@18.3.1)
   socket.io-client:
     specifier: ^4.7.5
     version: 4.7.5
@@ -193,6 +193,9 @@ devDependencies:
   prettier:
     specifier: ^3.3.3
     version: 3.3.3
+  react-swipeable-views:
+    specifier: ^0.14.0
+    version: 0.14.0(react@18.3.1)
   tailwindcss:
     specifier: ^3.4.1
     version: 3.4.7
@@ -493,13 +496,14 @@ packages:
     resolution: {integrity: sha512-7hGhzlcmg01CvH1EHdSPVXYX1aJ8KCEyz6I9xYIi/asDtzBPMyMhVibhM/K6g/5qnKBwjZtp10bNZIEFTRW1MA==}
     dependencies:
       regenerator-runtime: 0.12.1
-    dev: false
+    dev: true
 
   /@babel/runtime@7.25.0:
     resolution: {integrity: sha512-7dRy4DwXwtzBrPbZflqxnvfxLF8kdZXPkhymtDeFoFqE6ldzjQFgYTtYIFARcLEYDrqfBfYcZt1WqFxRoyC9Rw==}
     engines: {node: '>=6.9.0'}
     dependencies:
       regenerator-runtime: 0.14.1
+    dev: true
 
   /@babel/runtime@7.25.4:
     resolution: {integrity: sha512-DSgLeL/FNcpXuzav5wfYvHCGvynXkJbn3Zvc3823AEe9nPwW9IK4UoCSS5yGymmQzN0pCPvivtgS6/8U2kkm1w==}
@@ -2793,6 +2797,18 @@ packages:
     resolution: {integrity: sha512-EhwApuTmMBmXuFOikhQLIBUn6uFg81SwLMOAUgodJF14SOBOCMdU04gDoYi0WOJJHD144TL32z4yDqCW3dnkQg==}
     dependencies:
       '@types/react': 18.3.3
+
+  /@types/react-select@5.0.1(@types/react@18.3.3)(react-dom@18.3.1)(react@18.3.1):
+    resolution: {integrity: sha512-h5Im0AP0dr4AVeHtrcvQrLV+gmPa7SA0AGdxl2jOhtwiE6KgXBFSogWw8az32/nusE6AQHlCOHQWjP1S/+oMWA==}
+    deprecated: This is a stub types definition. react-select provides its own type definitions, so you do not need this installed.
+    dependencies:
+      react-select: 5.8.0(@types/react@18.3.3)(react-dom@18.3.1)(react@18.3.1)
+    transitivePeerDependencies:
+      - '@types/react'
+      - react
+      - react-dom
+      - supports-color
+    dev: false
 
   /@types/react-swipeable-views@0.13.5:
     resolution: {integrity: sha512-ni6WjO7gBq2xB2Y/ZiRdQOgjGOxIik5ow2s7xKieDq8DxsXTdV46jJslSBVK2yoIJHf6mG3uqNTwxwgzbXRRzg==}
@@ -6180,7 +6196,7 @@ packages:
 
   /keycode@2.2.1:
     resolution: {integrity: sha512-Rdgz9Hl9Iv4QKi8b0OlCRQEzp4AgVxyCtz5S/+VIHezDmrDhkp2N2TqBWOLz0/gbeREXOOiI9/4b8BY9uw2vFg==}
-    dev: false
+    dev: true
 
   /keyv@4.5.4:
     resolution: {integrity: sha512-oxVHkHR/EJf2CNXnWxRLW6mg7JyCCUcG0DtEGmL2ctUo1PNTin1PUil+r/+4r5MpVgC/fn1kjsx7mjSujKqIpw==}
@@ -7072,7 +7088,7 @@ packages:
       prop-types: 15.8.1
       react: 18.3.1
       warning: 4.0.3
-    dev: false
+    dev: true
 
   /react-hook-form@7.52.2(react@18.3.1):
     resolution: {integrity: sha512-pqfPEbERnxxiNMPd0bzmt1tuaPcVccywFDpyk2uV5xCIBphHV5T8SVnX9/o3kplPE1zzKt77+YIoq+EMwJp56A==}
@@ -7182,7 +7198,7 @@ packages:
     dependencies:
       '@babel/runtime': 7.0.0
       warning: 4.0.3
-    dev: false
+    dev: true
 
   /react-swipeable-views-utils@0.14.0(react@18.3.1):
     resolution: {integrity: sha512-W+fXBOsDqgFK1/g7MzRMVcDurp3LqO3ksC8UgInh2P/tKgb5DusuuB1geKHFc6o1wKl+4oyER4Zh3Lxmr8xbXA==}
@@ -7196,7 +7212,7 @@ packages:
       shallow-equal: 1.2.1
     transitivePeerDependencies:
       - react
-    dev: false
+    dev: true
 
   /react-swipeable-views@0.14.0(react@18.3.1):
     resolution: {integrity: sha512-wrTT6bi2nC3JbmyNAsPXffUXLn0DVT9SbbcFr36gKpbaCgEp7rX/OFxsu5hPc/NBsUhHyoSRGvwqJNNrWTwCww==}
@@ -7210,7 +7226,7 @@ packages:
       react-swipeable-views-core: 0.14.0
       react-swipeable-views-utils: 0.14.0(react@18.3.1)
       warning: 4.0.3
-    dev: false
+    dev: true
 
   /react-transition-group@4.4.5(react-dom@18.3.1)(react@18.3.1):
     resolution: {integrity: sha512-pZcd1MCJoiKiBR2NRxeCRg13uCXbydPnmB4EOeRrY7480qNWO8IIgQG6zlDkm6uRMsURXPuKq0GWtiM59a5Q6g==}
@@ -7275,7 +7291,7 @@ packages:
 
   /regenerator-runtime@0.12.1:
     resolution: {integrity: sha512-odxIc1/vDlo4iZcfXqRYFj0vpXFNoGdKMAUieAlFYO6m/nl5e9KR/beGf41z4a1FI+aQgtjhuaSlDxQ0hmkrHg==}
-    dev: false
+    dev: true
 
   /regenerator-runtime@0.14.1:
     resolution: {integrity: sha512-dYnhHh0nJoMfnkZs6GmmhFknAGRrLznOu5nc9ML+EJxGvrx6H7teuevqVqCuPcPK//3eDrrjQhehXVx9cnkGdw==}
@@ -7471,7 +7487,7 @@ packages:
 
   /shallow-equal@1.2.1:
     resolution: {integrity: sha512-S4vJDjHHMBaiZuT9NPb616CSmLf618jawtv3sufLl6ivK8WocjAo58cXwbRV1cgqxH0Qbv+iUt6m05eqEa2IRA==}
-    dev: false
+    dev: true
 
   /shebang-command@2.0.0:
     resolution: {integrity: sha512-kHxr2zZpYtdmrN1qDjrrX/Z1rR1kG8Dx+gkpK1G4eXmvXswmcE1hTWBWYUzlraYw1/yZp6YuDY77YtvbN0dmDA==}
@@ -8201,7 +8217,7 @@ packages:
     resolution: {integrity: sha512-rpJyN222KWIvHJ/F53XSZv0Zl/accqHR8et1kpaMTD/fLCRxtV8iX8czMzY7sVZupTI3zcUTg8eycS2kNF9l6w==}
     dependencies:
       loose-envify: 1.4.0
-    dev: false
+    dev: true
 
   /wcwidth@1.0.1:
     resolution: {integrity: sha512-XHPEwS0q6TaxcvG85+8EYkbiCux2XtWG2mkc47Ng2A77BQu9+DqIOJldST4HgPkuea7dvKSj5VgX3P1d4rW8Tg==}

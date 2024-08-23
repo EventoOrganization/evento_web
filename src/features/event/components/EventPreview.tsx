@@ -65,16 +65,17 @@ const EventPreview = ({ classname }: { classname?: string }) => {
           Google Directions
         </Button>
       </div>
+      {/* Replace the unescaped double quotes */}
       <p className="text-sm mb-4">
         Get ready for a fun and light-hearted evening with How to Lose a Guy in
-        10 Days Join us as we turn Saigons rainy days into a night filled with
-        laughter and romance at our outdoor movie event. Dont miss this charming
-        experience!
+        10 Days. Join us as we turn Saigon&apos;s rainy days into a night filled
+        with laughter and romance at our outdoor movie event. Don&apos;t miss
+        this charming experience!
       </p>
       <p className="text-sm font-bold mb-4">Secure your tickets now:</p>
       <ul className="text-sm mb-4">
         <li>- 300,000 VND | Movie + 1 Drink</li>
-        <li>- 500,000 VND | Movie + Burger & Fries + 1 Drink</li>
+        <li>- 500,000 VND | Movie + Burger &amp; Fries + 1 Drink</li>
       </ul>
       <p className="text-sm mb-4">
         To reserve, just send us a message with your name, number of guests,
@@ -82,6 +83,7 @@ const EventPreview = ({ classname }: { classname?: string }) => {
         details:
       </p>
       <p className="text-sm font-bold mb-4">We can&apos;t wait to see you!</p>
+
       <div className="flex justify-evenly mt-6">
         <Button className="bg-gray-300 text-gray-700 p-2 rounded-full">
           <i className="icon-name" /> {/* Remplacez par l&apos;icône réelle */}

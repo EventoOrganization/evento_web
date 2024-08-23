@@ -34,7 +34,7 @@ const EventForm = ({ className }: { className?: string }) => {
     setIsFetching(true);
     try {
       const result = await fetch(
-        "http://localhost:8747/users/createEventAndRSVPform",
+        `${process.env.NEXT_PUBLIC_API_URL}/users/createEventAndRSVPform`,
         {
           method: "POST",
           credentials: "include",
@@ -49,7 +49,7 @@ const EventForm = ({ className }: { className?: string }) => {
       const resultData = await result.json();
       console.log("resultData", resultData);
 
-      // clearEventForm();
+      clearEventForm();
     } catch (error) {
       console.error("Error creating event:", error);
     } finally {

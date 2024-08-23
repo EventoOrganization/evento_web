@@ -204,7 +204,7 @@ const CreateEventRequired = ({ className }: { className?: string }) => {
       />
       <FormField
         name="interestId"
-        render={({ field }) => (
+        render={({}) => (
           <FormItem>
             <FormLabel>Interests*</FormLabel>
             <FormControl>

@@ -48,8 +48,7 @@ const SignInForm = () => {
 
     try {
       const loginResponse = await fetch(
-        // `${process.env.NEXT_PUBLIC_API_URL}/users/login`,
-        `http://localhost:8747/users/login`,
+        `${process.env.NEXT_PUBLIC_API_URL}/users/login`,
         {
           method: "POST",
           headers: {
