@@ -9,6 +9,7 @@ type User = {
   createdAt: string;
   updatedAt: string;
   token: string;
+  profileImage?: string;
 };
 
 type AuthState = {

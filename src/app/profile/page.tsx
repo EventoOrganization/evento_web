@@ -1,41 +1,59 @@
 "use client";
 import ComingSoon from "@/components/ComingSoon";
+import Section from "@/components/layout/Section";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useAuthStore } from "@/store/useAuthStore";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const UserProfile = () => {
   const [isMounted, setIsMounted] = useState(false);
   const router = useRouter();
-  // Access the user and authentication state
   const user = useAuthStore((state) => state.user);
-  console.log("User:", user);
 
   useEffect(() => {
+    // Ensure the component is mounted before checking the user state
     setIsMounted(true);
 
-    if (user === null || user === undefined) {
+    if (isMounted && !user) {
       router.push("/signin");
     }
-  }, [user, router]);
+  }, [user, router, isMounted]);
 
-  // Prevent rendering on server-side
-  if (!isMounted) return null;
+  // Prevent rendering until the component is mounted
+  if (!isMounted) {
+    return null;
+  }
 
   return (
-    <div>
+    <>
+      <h2 className="mt-10 md:mt-32">My profile</h2>
       {user ? (
-        <>
-          <h1>Welcome, {user.name}</h1>
+        <Section className="justify-start">
+          {user.profileImage ? (
+            <Image
+              src={user.profileImage}
+              alt="user image"
+              width={200}
+              height={200}
+            />
+          ) : (
+            <Avatar>
+              <AvatarImage src="https://github.com/shadcn.png" />
+              <AvatarFallback>CN</AvatarFallback>
+            </Avatar>
+          )}
+
           <p>Email: {user.email}</p>
-        </>
+        </Section>
       ) : (
         <>
           <p>No user is logged in.</p>
           <ComingSoon message="This page profile is under construction. Please check back later!" />
         </>
       )}
-    </div>
+    </>
   );
 };
 
