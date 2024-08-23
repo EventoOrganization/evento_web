@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react";
 
 export default function AdjustmentsIcon() {
   return (
@@ -26,5 +26,5 @@ export default function AdjustmentsIcon() {
         <line x1="19" y1="18" x2="20" y2="18" />
       </svg>
     </>
-  )
+  );
 }

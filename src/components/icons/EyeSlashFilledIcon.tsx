@@ -1,7 +1,6 @@
 import React from "react";
 export const EyeSlashFilledIcon = () => (
   <svg
-
     fill="none"
     focusable="false"
     height="1em"

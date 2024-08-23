@@ -1,7 +1,17 @@
-import React, { useState } from 'react';
-import { Switch, Textarea, Autocomplete, AutocompleteItem, Button, Input, Radio, RadioGroup, Link } from '@nextui-org/react';
-import { Tab, Tabs } from '@nextui-org/tabs';
-import XIcon from '../icons/XIcon';
+import React, { useState } from "react";
+import {
+  Switch,
+  Textarea,
+  Autocomplete,
+  AutocompleteItem,
+  Button,
+  Input,
+  Radio,
+  RadioGroup,
+  Link,
+} from "@nextui-org/react";
+import { Tab, Tabs } from "@nextui-org/tabs";
+import XIcon from "../icons/XIcon";
 
 export default function AddAnotherField() {
   const [showContent, setShowContent] = useState(false);
@@ -11,21 +21,21 @@ export default function AddAnotherField() {
   };
 
   const [options, setOptions] = useState([
-    { id: 1, value: 'public', placeholder: 'Enter your open choice' },
-    { id: 2, value: 'public', placeholder: 'Enter your open choice' },
+    { id: 1, value: "public", placeholder: "Enter your open choice" },
+    { id: 2, value: "public", placeholder: "Enter your open choice" },
   ]);
 
   const addOption = () => {
     const newOption = {
       id: options.length + 1,
-      value: 'public',
-      placeholder: 'Enter your open choice',
+      value: "public",
+      placeholder: "Enter your open choice",
     };
     setOptions([...options, newOption]);
   };
 
   const removeOption = (id: number) => {
-    setOptions(options.filter(option => option.id !== id));
+    setOptions(options.filter((option) => option.id !== id));
   };
 
   return (
@@ -55,7 +65,7 @@ export default function AddAnotherField() {
         </div>
         <div className="my-3 w-48">
           <Button onPress={toggleContent} className="mb-4">
-            {showContent ? 'Multiple choice' : 'Open text'}
+            {showContent ? "Multiple choice" : "Open text"}
           </Button>
         </div>
         {showContent ? (
@@ -83,7 +93,10 @@ export default function AddAnotherField() {
               </div>
             ))}
             <div className="mt-10">
-              <Link className="text-lg font-bold text-fuchsia-700" onClick={addOption}>
+              <Link
+                className="text-lg font-bold text-fuchsia-700"
+                onClick={addOption}
+              >
                 + Add other options
               </Link>
             </div>
@@ -99,14 +112,21 @@ export default function AddAnotherField() {
               }}
             />
           </div>
-        )
-        }
+        )}
       </div>
       <div className="flex justify-center">
-        <Button radius="full" className="text-white shadow-lg px-8 text-sm mr-10" size="lg">
+        <Button
+          radius="full"
+          className="text-white shadow-lg px-8 text-sm mr-10"
+          size="lg"
+        >
           Cancel
         </Button>
-        <Button radius="full" className="bg-gradient-to-tr from-pink-500 to-blue-500 text-white shadow-lg px-10 text-sm" size="lg">
+        <Button
+          radius="full"
+          className="bg-gradient-to-tr from-pink-500 to-blue-500 text-white shadow-lg px-10 text-sm"
+          size="lg"
+        >
           Submit
         </Button>
       </div>

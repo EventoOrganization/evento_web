@@ -11,8 +11,7 @@ import HomeContainer from "@/components/events/Container";
 //import { Session } from "@/types/user";
 
 export default async function Home() {
-  const session = await auth();
-  console.log("session...", session?.user?.data?.token);
+  //const session = await auth();
 
   return (
     <>

@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react";
 
 export default function SearchIcon() {
   return (
@@ -19,5 +19,5 @@ export default function SearchIcon() {
         <line x1="21" y1="21" x2="15" y2="15" />
       </svg>
     </>
-  )
+  );
 }

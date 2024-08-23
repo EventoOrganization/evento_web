@@ -27,17 +27,13 @@ export default function SignupForm() {
   }, [result, router]);
 
   return (
-    <form
-      action={dispatch}
-    >
-      <div className='bg-white h-screen'>
+    <form action={dispatch}>
+      <div className="bg-white h-screen">
         <div className="p-9 w-full max-w-lg mx-auto">
           <div className="mt-16">
             <BackButton />
           </div>
-          <div className="text-3xl font-bold mt-8">
-            Sign up
-          </div>
+          <div className="text-3xl font-bold mt-8">Sign up</div>
           <div className="mt-10">
             <label
               className="mb-3 mt-5 block text-xs font-medium text-zinc-400"
@@ -75,8 +71,11 @@ export default function SignupForm() {
             <LoginButton />
           </div>
           <div>
-            <p className="text-center mt-20 text-sm text-zinc-400">Already have an account?
-              <Link href="/signin" className="ml-2 font-semibold underline">Log in</Link>
+            <p className="text-center mt-20 text-sm text-zinc-400">
+              Already have an account?
+              <Link href="/signin" className="ml-2 font-semibold underline">
+                Log in
+              </Link>
             </p>
           </div>
         </div>

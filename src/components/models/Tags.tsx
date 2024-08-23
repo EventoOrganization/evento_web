@@ -1,5 +1,5 @@
-import { Button } from '@nextui-org/react'
-import React from 'react'
+import { Button } from "@nextui-org/react";
+import React from "react";
 
 export default function Tags() {
   return (
@@ -40,12 +40,16 @@ export default function Tags() {
         </div>
         <div className="fixed bottom-0 left-0 right-0 z-50 mx-10 mb-2 rounded-full md:rounded-full">
           <div className="flex justify-center">
-            <Button radius="full" className="bg-gradient-to-tr from-pink-500 to-blue-500 text-white shadow-lg px-10 text-sm" size="lg">
+            <Button
+              radius="full"
+              className="bg-gradient-to-tr from-pink-500 to-blue-500 text-white shadow-lg px-10 text-sm"
+              size="lg"
+            >
               Apply
             </Button>
           </div>
         </div>
       </div>
     </>
-  )
+  );
 }

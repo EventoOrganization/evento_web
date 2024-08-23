@@ -10,15 +10,16 @@ interface SearchProps {
 }
 const Search = ({ onSearch }: SearchProps) => {
   const [query, setQuery] = useState("");
-  const debouncedQuery = useDebounce(() => query, 500);
+  //const debouncedQuery = useDebounce(() => query, 500);
   const buildSearchParams = () => {
-    const params = new URLSearchParams();
+    //const params = new URLSearchParams();
     //params.append("query", debouncedQuery);
-    setQuery(query);
-    return params.toString(); // Convert the URLSearchParams object to a toString
+    //return params.toString(); // Convert the URLSearchParams object to a toString
+    return query;
   };
   const handleSearch = async () => {
     const searchParams = buildSearchParams();
+    //setQuery(query);
     onSearch(searchParams);
   };
 

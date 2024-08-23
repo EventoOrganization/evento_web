@@ -12,7 +12,7 @@ interface Address {
 }
 
 interface LocationSelectorProps {
-  onPicked: (location: string) => void;
+  onPicked: (location: { lat: number; lng: number }) => void;
 }
 
 const LocationSelector = ({ onPicked }: LocationSelectorProps) => {
@@ -34,7 +34,7 @@ const LocationSelector = ({ onPicked }: LocationSelectorProps) => {
     const lng = event.latLng.lng();
     const newLocation = { lat, lng };
     setLocation(newLocation);
-    onPicked(JSON.stringify(newLocation));
+    onPicked(newLocation);
     setMapCenter(newLocation);
     if (typeof window !== "undefined") {
       localStorage.setItem("location", JSON.stringify(newLocation));

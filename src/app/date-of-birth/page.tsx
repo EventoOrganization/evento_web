@@ -1,27 +1,25 @@
-"use client"
-import BackButton from '@/components/ui/BackButton'
-import CustomButton from '@/components/ui/CustomButton'
-import { Button, Link } from '@nextui-org/react'
+"use client";
+import BackButton from "@/components/ui/BackButton";
+import CustomButton from "@/components/ui/CustomButton";
+import { Button, Link } from "@nextui-org/react";
 import {
   Dropdown,
   DropdownTrigger,
   DropdownMenu,
-  DropdownItem
+  DropdownItem,
 } from "@nextui-org/dropdown";
-import React from 'react'
-import SelectorIcon from '@/components/icons/SelectorIcon';
+import React from "react";
+import SelectorIcon from "@/components/icons/SelectorIcon";
 
 export default function page() {
   return (
     <>
-      <div className='bg-white'>
+      <div className="bg-white">
         <div className="p-9 w-full max-w-lg mx-auto">
           <div className="mt-16">
             <BackButton />
           </div>
-          <div className="text-3xl font-bold mt-8">
-            Date of birth
-          </div>
+          <div className="text-3xl font-bold mt-8">Date of birth</div>
           <div className="text-xs text-slate-300 mt-2.5">
             With Evento you won't miss important birthdays!
           </div>
@@ -29,7 +27,10 @@ export default function page() {
             <div className="flex space-x-4">
               <Dropdown>
                 <DropdownTrigger>
-                  <Button className="w-32 bg-gray-100 text-gray-700 rounded-lg shadow-md text-base flex justify-between items-center px-1" size="lg">
+                  <Button
+                    className="w-32 bg-gray-100 text-gray-700 rounded-lg shadow-md text-base flex justify-between items-center px-1"
+                    size="lg"
+                  >
                     <span>Day</span>
                     <SelectorIcon />
                   </Button>
@@ -43,13 +44,29 @@ export default function page() {
 
               <Dropdown>
                 <DropdownTrigger>
-                  <Button className="w-32 bg-gray-100 text-gray-700 rounded-lg shadow-md text-base flex justify-between items-center px-1" size="lg">
+                  <Button
+                    className="w-32 bg-gray-100 text-gray-700 rounded-lg shadow-md text-base flex justify-between items-center px-1"
+                    size="lg"
+                  >
                     <span>Month</span>
                     <SelectorIcon />
                   </Button>
                 </DropdownTrigger>
                 <DropdownMenu className="max-h-96 overflow-y-auto scrollbar-hide">
-                  {["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"].map((month, i) => (
+                  {[
+                    "January",
+                    "February",
+                    "March",
+                    "April",
+                    "May",
+                    "June",
+                    "July",
+                    "August",
+                    "September",
+                    "October",
+                    "November",
+                    "December",
+                  ].map((month, i) => (
                     <DropdownItem key={i}>{month}</DropdownItem>
                   ))}
                 </DropdownMenu>
@@ -57,7 +74,10 @@ export default function page() {
 
               <Dropdown>
                 <DropdownTrigger>
-                  <Button className="w-32 bg-gray-100 text-gray-700 rounded-lg shadow-md text-base flex justify-between items-center px-1" size="lg">
+                  <Button
+                    className="w-32 bg-gray-100 text-gray-700 rounded-lg shadow-md text-base flex justify-between items-center px-1"
+                    size="lg"
+                  >
                     <span>Year</span>
                     <SelectorIcon />
                   </Button>
@@ -76,10 +96,12 @@ export default function page() {
             </CustomButton>
           </div>
           <div className="flex justify-center mt-10">
-            <Link href="#" className="text-slate-500">Skip to later</Link>
+            <Link href="#" className="text-slate-500">
+              Skip to later
+            </Link>
           </div>
         </div>
       </div>
     </>
-  )
+  );
 }

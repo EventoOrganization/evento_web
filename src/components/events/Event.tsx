@@ -19,8 +19,8 @@ interface CardlistProps {
 
 export default function Cardlist({ data }: CardlistProps) {
   const [isExpanded, setIsExpanded] = useState(false);
-
-  const description = data.description;
+  //console.log("data", data);
+  const description = data?.details?.description;
   const maxLength = 80; // Độ dài tối đa hiển thị trước khi cắt
 
   const handleToggle = () => {
@@ -33,7 +33,7 @@ export default function Cardlist({ data }: CardlistProps) {
 
   return (
     <>
-      <Card className="max-w-[400px] ">
+      <Card className="mb-5 max-w-[400px] ">
         <CardHeader className="justify-between">
           <div className="flex gap-5">
             <Avatar
@@ -44,12 +44,12 @@ export default function Cardlist({ data }: CardlistProps) {
             />
             <div className="flex flex-col gap-1 items-start justify-center">
               <span className="text-small font-semibold leading-none text-default-600">
-                {data.title}
+                {data?.title}
               </span>
             </div>
           </div>
           <span className="text-xs font-semibold leading-none text-default-600">
-            {data.date}
+            {data?.date}
           </span>
         </CardHeader>
         <Image
@@ -63,13 +63,11 @@ export default function Cardlist({ data }: CardlistProps) {
         <CardBody>
           <div className="flex flex-row mt-5 mb-3">
             <div className="flex-grow overflow-hidden">
-              <div className="text-lg font-bold truncate">
-                London Tech Entertaiment
-              </div>
+              <div className="text-lg font-bold truncate">{data?.title}</div>
             </div>
             <div className="flex-none flex items-center">
               <span className="text-xs flex items-center">
-                Nhơn Đức, Nhà Bè, TP.HCM
+                {data?.details?.location}
                 <AddressIcon />
               </span>
             </div>
@@ -91,8 +89,11 @@ export default function Cardlist({ data }: CardlistProps) {
               )}
             </div>
             <div className="m-3 flex gap-4 items-center">
-              <Button size="sm">Technology</Button>
-              <Button size="sm">Conferences</Button>
+              {(data?.details?.interest || []).map((item: any) => (
+                <>
+                  <Button size="sm">{item.name}</Button>
+                </>
+              ))}
             </div>
           </div>
           <div className="flex justify-between items-center text-xs">

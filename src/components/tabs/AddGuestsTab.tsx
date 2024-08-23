@@ -1,6 +1,13 @@
 "use client";
-import React, { Input, Switch, Card, Avatar, Checkbox, Button } from '@nextui-org/react';
-import SearchIcon from '@/components/icons/SearchIcon';
+import React, {
+  Input,
+  Switch,
+  Card,
+  Avatar,
+  Checkbox,
+  Button,
+} from "@nextui-org/react";
+import SearchIcon from "@/components/icons/SearchIcon";
 
 export default function AddGuestsTab() {
   return (
@@ -11,15 +18,14 @@ export default function AddGuestsTab() {
         </div>
         <div className="flex items-center bg-white mt-4 p-3 rounded-md">
           <SearchIcon />
-          <Input
-            type="text"
-            placeholder="Search"
-            size="lg"
-          />
+          <Input type="text" placeholder="Search" size="lg" />
         </div>
         <div className="flex my-5">
           <div className="flex-1">
-            <label htmlFor="toggle-switch" className="text-gray-700 text-sm font-bold">
+            <label
+              htmlFor="toggle-switch"
+              className="text-gray-700 text-sm font-bold"
+            >
               Allow guests to invite their friends?
             </label>
           </div>
@@ -36,9 +42,7 @@ export default function AddGuestsTab() {
                 className="mr-4 w-20 h-20 text-large"
               />
               <div>
-                <span className="text-gray-800">
-                  joeclark
-                </span>
+                <span className="text-gray-800">joeclark</span>
               </div>
               <div className="ml-auto">
                 <Checkbox size="lg"></Checkbox>
@@ -55,9 +59,7 @@ export default function AddGuestsTab() {
                 className="mr-4 w-20 h-20 text-large"
               />
               <div>
-                <span className="text-gray-800">
-                  joeclark
-                </span>
+                <span className="text-gray-800">joeclark</span>
               </div>
               <div className="ml-auto">
                 <Checkbox size="lg"></Checkbox>
@@ -65,14 +67,18 @@ export default function AddGuestsTab() {
             </div>
           </Card>
         </div>
-      </div >
+      </div>
       <div className="fixed bottom-0 left-0 right-0 z-50 mx-10 mb-2 rounded-full md:rounded-full">
         <div className="flex justify-center">
-          <Button radius="full" className="bg-gradient-to-tr from-pink-500 to-blue-500 text-white shadow-lg px-10 text-sm" size="lg">
+          <Button
+            radius="full"
+            className="bg-gradient-to-tr from-pink-500 to-blue-500 text-white shadow-lg px-10 text-sm"
+            size="lg"
+          >
             Submit
           </Button>
         </div>
       </div>
     </>
-  )
+  );
 }

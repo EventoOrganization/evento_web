@@ -1,9 +1,9 @@
 "use client";
-import React, { useState } from 'react';
-import { Tabs, Tab, } from "@nextui-org/react";
-import CreateEventTab from '@/components/tabs/CreateEventTab';
-import RsvpFormTab from '@/components/tabs/RsvpFormTab';
-import AddGuestsTab from '@/components/tabs/AddGuestsTab';
+import React, { useState } from "react";
+import { Tabs, Tab } from "@nextui-org/react";
+import CreateEventTab from "@/components/tabs/CreateEventTab";
+import RsvpFormTab from "@/components/tabs/RsvpFormTab";
+import AddGuestsTab from "@/components/tabs/AddGuestsTab";
 
 export default function CreateEvent() {
   const [isOpen, setIsOpen] = useState(false);
@@ -25,7 +25,12 @@ export default function CreateEvent() {
           <h1 className="text-xl">Create Event</h1>
         </div>
         <div className="flex w-full flex-col">
-          <Tabs aria-label="Options" variant="underlined" color="primary" className="font-bold mb-5">
+          <Tabs
+            aria-label="Options"
+            variant="underlined"
+            color="primary"
+            className="font-bold mb-5"
+          >
             <Tab key="createEvent" title="Create Event">
               <div className="mx-3">
                 <CreateEventTab />
@@ -43,7 +48,7 @@ export default function CreateEvent() {
             </Tab>
           </Tabs>
         </div>
-      </div >
+      </div>
     </>
-  )
+  );
 }

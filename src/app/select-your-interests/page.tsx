@@ -1,5 +1,5 @@
-import BackButton from '@/components/ui/BackButton'
-import CustomButton from '@/components/ui/CustomButton'
+import BackButton from "@/components/ui/BackButton";
+import CustomButton from "@/components/ui/CustomButton";
 import React, { Image, Link, Checkbox } from "@nextui-org/react";
 
 export default function page() {
@@ -63,14 +63,12 @@ export default function page() {
   ];
   return (
     <>
-      <div className='bg-white h-screen'>
+      <div className="bg-white h-screen">
         <div className="p-9 w-full mx-auto">
           <div className="mt-16">
             <BackButton />
           </div>
-          <div className="text-3xl font-bold mt-8">
-            Select your interests
-          </div>
+          <div className="text-3xl font-bold mt-8">Select your interests</div>
           <div className="text-xs text-slate-300 mt-2.5">
             To discover in person and online events tailored for you.
           </div>
@@ -103,10 +101,12 @@ export default function page() {
             </CustomButton>
           </div>
           <div className="flex justify-center mt-10">
-            <Link href="#" className="text-slate-500">Skip to later</Link>
+            <Link href="#" className="text-slate-500">
+              Skip to later
+            </Link>
           </div>
         </div>
       </div>
     </>
-  )
+  );
 }

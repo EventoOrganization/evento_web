@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react";
 
 export default function ClockCircleLinearIcon() {
   return (
@@ -13,9 +13,13 @@ export default function ClockCircleLinearIcon() {
       >
         <g fill="none" stroke="currentColor" strokeWidth="1.5">
           <circle cx="12" cy="12" r="10" />
-          <path d="M12 8v4l2.5 2.5" strokeLinecap="round" strokeLinejoin="round" />
+          <path
+            d="M12 8v4l2.5 2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
         </g>
       </svg>
     </>
-  )
+  );
 }
