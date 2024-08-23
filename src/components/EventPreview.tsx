@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button"; // Assurez-vous que vous utilisez le bouton de shadcn
 import { useEventStore } from "@/store/useEventStore";
 import { cn } from "@nextui-org/theme";
-import Image from "next/image";
 import Section from "./layout/Section";
 
 const EventPreview = ({ classname }: { classname?: string }) => {
@@ -14,24 +13,24 @@ const EventPreview = ({ classname }: { classname?: string }) => {
       )}
     >
       <div className="flex items-center mb-4">
-        <Image
+        {/* <Image
           src="/path/to/logo.png" // Remplacez par le chemin réel du logo
           alt="Satsuma House"
           width={40}
           height={40}
           className="rounded-full"
-        />
+        /> */}
         <h2 className="ml-3 font-bold text-lg">
           {event.title || "Event Title"}
         </h2>
       </div>
-      <Image
+      {/* <Image
         src="/path/to/event-image.jpg" // Remplacez par le chemin réel de l&apos;image de l&apos;événement
         alt="Outdoor Cinema - How to lose a guy in 10 days"
         width={600}
         height={300}
         className="rounded-lg mb-4"
-      />
+      /> */}
       <div className="flex flex-col">
         <p>Type: {event.eventType}</p>
         <p>Organizer: {event.name}</p>

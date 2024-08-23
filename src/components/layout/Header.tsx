@@ -12,7 +12,6 @@ export const Header = () => {
   const pathname = usePathname();
   const scrollY = useOnScroll();
   const user = useAuthStore((state) => state.user);
-  console.log("user", user);
 
   return (
     <header
