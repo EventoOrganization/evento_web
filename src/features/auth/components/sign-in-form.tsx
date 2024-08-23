@@ -10,6 +10,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { signInSchema } from "@/lib/zod";
+import { useAuthStore } from "@/store/useAuthStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@nextui-org/react";
 import Link from "next/link";
@@ -17,29 +18,38 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
+
+// Extend signInSchema to include rememberMe
+const extendedSignInSchema = signInSchema.extend({
+  rememberMe: z.boolean().optional(),
+});
+
 const SignInForm = () => {
   const [error, setError] = useState<string | null>(null);
   const [isFetching, setIsFetching] = useState(false);
-  const form = useForm<z.infer<typeof signInSchema>>({
-    resolver: zodResolver(signInSchema),
+  const form = useForm<z.infer<typeof extendedSignInSchema>>({
+    resolver: zodResolver(extendedSignInSchema),
     defaultValues: {
       email: "",
       password: "",
+      rememberMe: false,
     },
   });
   const router = useRouter();
+  const setUser = useAuthStore((state) => state.setUser);
   const formStyle =
-    "sm:bg-accent sm:border sm:shadow justify-between flex flex-col rounded-md p-4 h-full sm:h-auto  max-w-[400px] w-full mx-auto";
-  const onSubmit: SubmitHandler<z.infer<typeof signInSchema>> = async (
+    "sm:bg-accent sm:border sm:shadow justify-between flex flex-col rounded-md p-4 h-full sm:h-auto max-w-[400px] w-full mx-auto";
+
+  const onSubmit: SubmitHandler<z.infer<typeof extendedSignInSchema>> = async (
     data,
   ) => {
     setIsFetching(true);
     console.log(isFetching);
 
     try {
-      // const response = await fetch(`http://localhost:8747/users/login`, {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/users/login`,
+        // `http://localhost:8747/users/login`,
         {
           method: "POST",
           headers: {
@@ -52,10 +62,16 @@ const SignInForm = () => {
           }),
         },
       );
+
       const result = await response.json();
       if (!response.ok) {
         throw new Error(result.message || "Login failed");
       }
+
+      // Store user and token using Zustand, considering the "Remember Me" option
+      setUser(result.body);
+      console.log("User normally stored in Zustand:", result.body);
+
       setIsFetching(false);
       router.push("/");
     } catch (err) {
@@ -76,9 +92,6 @@ const SignInForm = () => {
             <h2 className={cn("sm:text-center text-xl font-semibold")}>
               Sign In
             </h2>
-            {/* <p className="text-muted-foreground text-xs text-center">
-              Welcome back! Please sign in to continue
-            </p> */}
           </div>
           <FormField
             control={form.control}
@@ -117,10 +130,23 @@ const SignInForm = () => {
           />
           <div className="flex flex-col ">
             <div className="flex justify-between">
-              <span className="flex gap-2 items-center">
-                <Checkbox />
-                <p>Remember me</p>
-              </span>
+              <FormField
+                control={form.control}
+                name="rememberMe"
+                render={({ field }) => (
+                  <FormItem>
+                    <span className="flex gap-2 items-center">
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={(checked: boolean | string | null) =>
+                          field.onChange(!!checked)
+                        }
+                      />
+                      <p>Remember me</p>
+                    </span>
+                  </FormItem>
+                )}
+              />
 
               <p className="text-sm text-muted-foreground flex justify-between gap-2 items-center mt-1 ">
                 <Link
@@ -153,7 +179,7 @@ const SignInForm = () => {
           <p className="text-sm sm:text-muted-foreground w-full flex justify-center sm:justify-between gap-2">
             Don&apos;t have an account?
             <Link href={`/signup`} className="underline text-eventoPurple">
-              Sign In
+              Sign Up
             </Link>
           </p>
         </div>
