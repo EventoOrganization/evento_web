@@ -64,7 +64,7 @@ const InterestSelector = () => {
       }
     };
     fetchInterests();
-  }, [options]);
+  }, []);
 
   const handleChange = (selectedOptions: MultiValue<Option>) => {
     setSelectedInterests(selectedOptions);

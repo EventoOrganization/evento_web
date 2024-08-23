@@ -3,6 +3,7 @@ import ComingSoon from "@/components/ComingSoon";
 import Section from "@/components/layout/Section";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import Event from "@/features/event/components/Event";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/store/useAuthStore";
 import { eventoBtn } from "@/styles/eventoBtn";
@@ -14,7 +15,7 @@ const UserProfile = () => {
   const [isMounted, setIsMounted] = useState(false);
   const router = useRouter();
   const user = useAuthStore((state) => state.user);
-
+  const sectionStyle = "flex flex-col items-start gap-4  p-0";
   useEffect(() => {
     // Ensure the component is mounted before checking the user state
     setIsMounted(true);
@@ -33,9 +34,9 @@ const UserProfile = () => {
     <>
       <h2 className="mt-10 md:mt-32">My profile</h2>
       {user ? (
-        <Section className="">
+        <Section className="gap-6">
           <div className="w-full  max-w-xl mx-auto">
-            <div className="flex items-center w-full justify-evenly  pt-10 pb-4 ">
+            <div className="flex items-center w-full justify-evenly pt-10 pb-4 ">
               {user.profileImage ? (
                 <Image
                   src={user.profileImage}
@@ -92,13 +93,11 @@ const UserProfile = () => {
               </li>
             </ul>
           </div>
-          <Section className="flex flex-col items-start">
+          <Section className={sectionStyle}>
             <h3 className="font-bold text-lg">Upcoming Events</h3>
             {user?.upcomingEvents && user.upcomingEvents.length > 0 ? (
               user.upcomingEvents.map((event, index) => (
-                <div key={index}>
-                  <p>{event.title}</p>
-                </div>
+                <Event key={index} event={event} />
               ))
             ) : (
               <p>
@@ -108,15 +107,12 @@ const UserProfile = () => {
             )}
           </Section>
 
-          <Section className="flex flex-col items-start">
+          <Section className={sectionStyle}>
             <h3 className="font-bold text-lg">Events Hosting</h3>
             {user.filteredUpcomingEventsAttened &&
             user.filteredUpcomingEventsAttened?.length > 0 ? (
               user.filteredUpcomingEventsAttened.map((event, index) => (
-                <div key={index}>
-                  <p>{event.title}</p>
-                  {/* Autres détails de l'événement */}
-                </div>
+                <Event key={index} event={event} />
               ))
             ) : (
               <p>
@@ -126,15 +122,12 @@ const UserProfile = () => {
             )}
           </Section>
 
-          <Section className="flex flex-col items-start">
+          <Section className={sectionStyle}>
             <h3 className="font-bold text-lg">Past Events Attended</h3>
             {user.filteredPastEventsAttended &&
             user.filteredPastEventsAttended?.length > 0 ? (
               user.filteredPastEventsAttended.map((event, index) => (
-                <div key={index}>
-                  <p>{event.title}</p>
-                  {/* Autres détails de l'événement */}
-                </div>
+                <Event key={index} event={event} />
               ))
             ) : (
               <p>
@@ -144,14 +137,11 @@ const UserProfile = () => {
             )}
           </Section>
 
-          <Section className="flex flex-col items-start">
+          <Section className={sectionStyle}>
             <h3 className="font-bold text-lg">Past Events Hosted</h3>
             {user.pastEvents && user.pastEvents?.length > 0 ? (
               user.pastEvents.map((event, index) => (
-                <div key={index}>
-                  <p>{event.title}</p>
-                  {/* Autres détails de l'événement */}
-                </div>
+                <Event key={index} event={event} />
               ))
             ) : (
               <p>
