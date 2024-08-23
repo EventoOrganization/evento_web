@@ -12,6 +12,10 @@ type User = {
   profileImage?: string;
   eventsAttended?: number;
   following?: number;
+  upcomingEvents?: Array<{ title: string }>;
+  filteredUpcomingEventsAttened?: Array<{ title: string }>;
+  filteredPastEventsAttended?: Array<{ title: string }>;
+  pastEvents?: Array<{ title: string }>;
 };
 
 type AuthState = {

@@ -102,6 +102,12 @@ const SignInForm = () => {
         profileImage: userInfo.profileImage, // Par exemple, vous pouvez choisir de stocker ou non certaines informations
         eventsAttended: profileResult.body.totalEventAttended,
         following: profileResult.body.following,
+        upcomingEvents: profileResult.body.upcomingEvents,
+        filteredUpcomingEventsAttened:
+          profileResult.body.filteredUpcomingEventsAttened,
+        filteredPastEventsAttended:
+          profileResult.body.filteredPastEventsAttended,
+        pastEvents: profileResult.body.pastEvents,
       };
 
       console.log("User data to store in Zustand:", userToStore);

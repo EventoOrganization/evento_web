@@ -3,6 +3,7 @@
 import useOnScroll from "@/hooks/useOnScroll";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/store/useAuthStore";
+import { eventoBtn } from "@/styles/eventoBtn";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -34,12 +35,9 @@ export const Header = () => {
         </div>
         <div className=" gap-4 font-semibold text-xs  flex">
           <Button
-            className={cn(
-              "bg-evento-gradient-button rounded-full text-xs self-center px-8 border-none  text-white",
-              {
-                "bg-background text-[#7858C3]": scrollY > 0,
-              },
-            )}
+            className={cn(eventoBtn, "", {
+              "bg-background text-[#7858C3]": scrollY > 0,
+            })}
             variant={"outline"}
           >
             <Link href="/create-event">Create Event</Link>
