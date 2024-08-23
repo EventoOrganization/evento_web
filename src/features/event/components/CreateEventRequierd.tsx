@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
 import { useEventStore } from "@/store/useEventStore";
 import { useFormContext } from "react-hook-form";
 import InterestSelector from "./InterestSelector";
@@ -23,7 +24,12 @@ const CreateEventRequired = ({ className }: { className?: string }) => {
   };
 
   return (
-    <div className="space-y-4 max-w-xl mx-auto bg-muted shadow border p-4 rounded-lg">
+    <div
+      className={cn(
+        "space-y-4 max-w-xl mx-auto bg-muted shadow border p-4 rounded-lg",
+        className,
+      )}
+    >
       <FormField
         name="title"
         render={({ field }) => (

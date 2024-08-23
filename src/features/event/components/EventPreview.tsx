@@ -66,10 +66,10 @@ const EventPreview = ({ classname }: { classname?: string }) => {
         </Button>
       </div>
       <p className="text-sm mb-4">
-        Get ready for a fun and light-hearted evening with "How to Lose a Guy in
-        10 Days" Join us as we turn Saigon’s rainy days into a night filled with
-        laughter and romance at our outdoor movie event. Don’t miss this
-        charming experience!
+        Get ready for a fun and light-hearted evening with How to Lose a Guy in
+        10 Days Join us as we turn Saigons rainy days into a night filled with
+        laughter and romance at our outdoor movie event. Dont miss this charming
+        experience!
       </p>
       <p className="text-sm font-bold mb-4">Secure your tickets now:</p>
       <ul className="text-sm mb-4">

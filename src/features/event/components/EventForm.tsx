@@ -29,6 +29,8 @@ const EventForm = ({ className }: { className?: string }) => {
 
   const onSubmit = async (data: any) => {
     data.interestId = JSON.stringify(data.interestId);
+    console.log(isFetching);
+
     setIsFetching(true);
     try {
       const result = await fetch(
