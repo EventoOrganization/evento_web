@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { createEventSchema } from "@/lib/zod";
+import { useEventStore } from "@/store/useEventStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@nextui-org/react";
 import { useState } from "react";
@@ -28,6 +29,8 @@ const EventForm = ({ className }: { className?: string }) => {
       createRSVP: false,
     },
   });
+  const setEventField = useEventStore((state) => state.setEventField);
+  const clearEventForm = useEventStore((state) => state.clearEventForm);
 
   const onSubmit: SubmitHandler<z.infer<typeof createEventSchema>> = async (
     data,
@@ -60,13 +63,17 @@ const EventForm = ({ className }: { className?: string }) => {
 
       const result = await response.json();
       console.log("Event created successfully:", result);
+
+      // clearEventForm();
     } catch (error) {
       console.error("Error creating event:", error);
     } finally {
       setIsFetching(false);
     }
   };
-
+  const handleFieldChange = (key: string, value: any) => {
+    setEventField(key, value);
+  };
   return (
     <FormProvider {...form}>
       <form
@@ -81,12 +88,16 @@ const EventForm = ({ className }: { className?: string }) => {
           name="title"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Title</FormLabel>
+              <FormLabel>Title*</FormLabel>
               <FormControl>
                 <Input
                   placeholder="Event Title"
                   {...field}
                   className="rounded-xl bg-muted sm:bg-background"
+                  onChange={(e) => {
+                    field.onChange(e);
+                    handleFieldChange("title", e.target.value);
+                  }}
                 />
               </FormControl>
             </FormItem>
@@ -99,7 +110,14 @@ const EventForm = ({ className }: { className?: string }) => {
             <FormItem>
               <FormLabel>Event Type</FormLabel>
               <FormControl>
-                <select {...field} className="rounded-xl bg-muted">
+                <select
+                  {...field}
+                  className="rounded-xl bg-muted"
+                  onChange={(e) => {
+                    field.onChange(e);
+                    handleFieldChange("eventType", e.target.value);
+                  }}
+                >
                   <option value="public">Public</option>
                   <option value="private">Private</option>
                 </select>
@@ -112,12 +130,16 @@ const EventForm = ({ className }: { className?: string }) => {
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Name</FormLabel>
+              <FormLabel>Name*</FormLabel>
               <FormControl>
                 <Input
                   placeholder="Organizer Name"
                   {...field}
                   className="rounded-xl bg-muted sm:bg-background"
+                  onChange={(e) => {
+                    field.onChange(e);
+                    handleFieldChange("name", e.target.value);
+                  }}
                 />
               </FormControl>
             </FormItem>
@@ -128,9 +150,16 @@ const EventForm = ({ className }: { className?: string }) => {
           name="mode"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Mode</FormLabel>
+              <FormLabel>Mode*</FormLabel>
               <FormControl>
-                <select {...field} className="rounded-xl bg-muted">
+                <select
+                  {...field}
+                  className="rounded-xl bg-muted"
+                  onChange={(e) => {
+                    field.onChange(e);
+                    handleFieldChange("mode", e.target.value);
+                  }}
+                >
                   <option value="virtual">Virtual</option>
                   <option value="in-person">In-Person</option>
                 </select>
@@ -143,12 +172,16 @@ const EventForm = ({ className }: { className?: string }) => {
           name="date"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Date</FormLabel>
+              <FormLabel>Date*</FormLabel>
               <FormControl>
                 <Input
                   type="date"
                   {...field}
                   className="rounded-xl bg-muted sm:bg-background"
+                  onChange={(e) => {
+                    field.onChange(e);
+                    handleFieldChange("date", e.target.value);
+                  }}
                 />
               </FormControl>
             </FormItem>
@@ -159,12 +192,16 @@ const EventForm = ({ className }: { className?: string }) => {
           name="startTime"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Start Time</FormLabel>
+              <FormLabel>Start Time*</FormLabel>
               <FormControl>
                 <Input
                   type="time"
                   {...field}
                   className="rounded-xl bg-muted sm:bg-background"
+                  onChange={(e) => {
+                    field.onChange(e);
+                    handleFieldChange("startTime", e.target.value);
+                  }}
                 />
               </FormControl>
             </FormItem>
@@ -175,12 +212,16 @@ const EventForm = ({ className }: { className?: string }) => {
           name="endTime"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>End Time</FormLabel>
+              <FormLabel>End Time*</FormLabel>
               <FormControl>
                 <Input
                   type="time"
                   {...field}
                   className="rounded-xl bg-muted sm:bg-background"
+                  onChange={(e) => {
+                    field.onChange(e);
+                    handleFieldChange("endTime", e.target.value);
+                  }}
                 />
               </FormControl>
             </FormItem>
@@ -191,12 +232,16 @@ const EventForm = ({ className }: { className?: string }) => {
           name="description"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Description</FormLabel>
+              <FormLabel>Description*</FormLabel>
               <FormControl>
                 <Textarea
                   placeholder="Event Description"
                   {...field}
                   className="rounded-xl bg-muted sm:bg-background"
+                  onChange={(e) => {
+                    field.onChange(e);
+                    handleFieldChange("description", e.target.value);
+                  }}
                 />
               </FormControl>
             </FormItem>

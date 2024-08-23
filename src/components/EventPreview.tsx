@@ -1,9 +1,11 @@
 import { Button } from "@/components/ui/button"; // Assurez-vous que vous utilisez le bouton de shadcn
+import { useEventStore } from "@/store/useEventStore";
 import { cn } from "@nextui-org/theme";
 import Image from "next/image";
 import Section from "./layout/Section";
 
 const EventPreview = ({ classname }: { classname?: string }) => {
+  const event = useEventStore((state) => state);
   return (
     <Section
       className={cn(
@@ -19,15 +21,28 @@ const EventPreview = ({ classname }: { classname?: string }) => {
           height={40}
           className="rounded-full"
         />
-        <h2 className="ml-3 font-bold text-lg">Satsuma House</h2>
+        <h2 className="ml-3 font-bold text-lg">
+          {event.title || "Event Title"}
+        </h2>
       </div>
       <Image
-        src="/path/to/event-image.jpg" // Remplacez par le chemin réel de l'image de l'événement
+        src="/path/to/event-image.jpg" // Remplacez par le chemin réel de l&apos;image de l&apos;événement
         alt="Outdoor Cinema - How to lose a guy in 10 days"
         width={600}
         height={300}
         className="rounded-lg mb-4"
       />
+      <div className="flex flex-col">
+        <p>Type: {event.eventType}</p>
+        <p>Organizer: {event.name}</p>
+        <p>Mode: {event.mode}</p>
+        <p>Date: {event.date}</p>
+        <p>Start Time: {event.startTime}</p>
+        <p>End Time: {event.endTime}</p>
+        <p>Description: {event.description}</p>
+        <p>Include Chat: {event.includeChat ? "Yes" : "No"}</p>
+        <p>Create RSVP: {event.createRSVP ? "Yes" : "No"}</p>
+      </div>
       <h3 className="font-bold text-xl mb-2">
         Outdoor Cinema - How to lose a guy in 10 days
       </h3>
@@ -67,16 +82,16 @@ const EventPreview = ({ classname }: { classname?: string }) => {
         ticket type, and a screenshot of your payment to the following bank
         details:
       </p>
-      <p className="text-sm font-bold mb-4">We can't wait to see you!</p>
+      <p className="text-sm font-bold mb-4">We can&apos;t wait to see you!</p>
       <div className="flex justify-evenly mt-6">
         <Button className="bg-gray-300 text-gray-700 p-2 rounded-full">
-          <i className="icon-name" /> {/* Remplacez par l'icône réelle */}
+          <i className="icon-name" /> {/* Remplacez par l&apos;icône réelle */}
         </Button>
         <Button className="bg-gray-300 text-gray-700 p-2 rounded-full">
-          <i className="icon-name" /> {/* Remplacez par l'icône réelle */}
+          <i className="icon-name" /> {/* Remplacez par l&apos;icône réelle */}
         </Button>
         <Button className="bg-gray-300 text-gray-700 p-2 rounded-full">
-          <i className="icon-name" /> {/* Remplacez par l'icône réelle */}
+          <i className="icon-name" /> {/* Remplacez par l&apos;icône réelle */}
         </Button>
       </div>
       <Button className="mt-6 w-full bg-purple-500 text-white">
