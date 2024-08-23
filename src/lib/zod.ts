@@ -73,3 +73,39 @@ export const newPasswordSchema = z
     message: "passwordsdonotmatch",
     path: ["confirmPassword"],
   });
+
+// Schema for validating the create event form
+export const createEventSchema = z.object({
+  title: z.string().min(1, "Title is required"),
+  eventType: z.enum(["public", "private"]),
+  name: z.string().min(1, "Name is required"),
+  mode: z.enum(["virtual", "in-person"]),
+  date: z.string().min(1, "Date is required"),
+  endDate: z.string().optional(),
+  URLlink: z.string().url().optional(),
+  startTime: z.string().min(1, "Start time is required"),
+  endTime: z.string().min(1, "End time is required"),
+  description: z.string().min(1, "Description is required"),
+  includeChat: z.boolean().default(false),
+  createRSVP: z.boolean().default(false),
+  latitude: z.string().min(1, "Latitude is required"),
+  longitude: z.string().min(1, "Longitude is required"),
+  location: z.string().min(1, "Location is required"),
+  coHosts: z.array(z.string()).optional(),
+  guests: z.array(z.string()).optional(),
+  interestId: z.array(z.string()).min(1, "Interest is required"),
+  privateEventLink: z.string().url().optional(),
+  images: z.any().optional(),
+  questions: z
+    .array(
+      z.object({
+        question: z.string(),
+        answer: z.string(),
+        required: z.boolean(),
+        options: z.array(z.string()).optional(),
+      }),
+    )
+    .optional(),
+  additionalField: z.any().optional(),
+  video: z.string().optional(),
+});
