@@ -24,7 +24,7 @@ export default function Home() {
           height={1024}
           className="h-full object-cover object-center  absolute opacity-20"
         />
-        <div className="z-10 flex gap-4 flex-col md:flex-row">
+        <div className="z-10 flex gap-4 flex-col md:flex-row mb-10">
           <Button
             variant="outline"
             className={cn(

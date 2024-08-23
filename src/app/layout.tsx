@@ -1,6 +1,6 @@
 import Header from "@/components/layout/Header";
 import Main from "@/components/layout/Main";
-import NavbarApp from "@/components/ui/Navbar";
+import NavbarApp from "@/components/Navbar";
 import { Toaster } from "@/components/ui/sonner";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";

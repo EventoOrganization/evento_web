@@ -10,6 +10,8 @@ type User = {
   updatedAt: string;
   token: string;
   profileImage?: string;
+  eventsAttended?: number;
+  following?: number;
 };
 
 type AuthState = {

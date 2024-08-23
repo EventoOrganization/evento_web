@@ -30,7 +30,7 @@ const UserProfile = () => {
     <>
       <h2 className="mt-10 md:mt-32">My profile</h2>
       {user ? (
-        <Section className="justify-start">
+        <Section className="justify-start flex-shrink flex-row">
           {user.profileImage ? (
             <Image
               src={user.profileImage}
@@ -44,8 +44,14 @@ const UserProfile = () => {
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
           )}
-
-          <p>Email: {user.email}</p>
+          <div>
+            <span>{user.eventsAttended}</span>
+            <p>Event Attended</p>
+          </div>
+          <div>
+            <span>{user.following}</span>
+            <p>Following</p>
+          </div>
         </Section>
       ) : (
         <>

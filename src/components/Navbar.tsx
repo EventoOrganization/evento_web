@@ -2,17 +2,17 @@
 import { cn } from "@nextui-org/theme";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import CompassIcon from "../icons/CompassIcon";
-import HomeIcon from "../icons/HomeIcon";
-import MessageIcon from "../icons/MessageIcon";
-import PlusIcon from "../icons/PlusIcon";
-import UserIcon from "../icons/UserIcon";
+import CompassIcon from "./icons/CompassIcon";
+import HomeIcon from "./icons/HomeIcon";
+import MessageIcon from "./icons/MessageIcon";
+import PlusIcon from "./icons/PlusIcon";
+import UserIcon from "./icons/UserIcon";
 
 export default function NavbarApp() {
   const pathname = usePathname();
   return (
     <div className="w-full flex justify-center md:hidden z-20">
-      <nav className="fixed bottom-10 bg-background rounded-lg flex justify-evenly w-full shadow max-w-80 mx-auto h-12 items-center">
+      <nav className="fixed bottom-6 bg-background rounded-lg flex justify-evenly w-full shadow max-w-80 mx-auto h-12 items-center">
         <Link href="/">
           <HomeIcon
             className={cn(

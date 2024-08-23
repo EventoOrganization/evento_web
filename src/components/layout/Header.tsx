@@ -2,6 +2,7 @@
 
 import useOnScroll from "@/hooks/useOnScroll";
 import { cn } from "@/lib/utils";
+import { useAuthStore } from "@/store/useAuthStore";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -9,6 +10,9 @@ import { Button } from "../ui/button";
 export const Header = () => {
   const pathname = usePathname();
   const scrollY = useOnScroll();
+  const user = useAuthStore((state) => state.user);
+  console.log("user", user);
+
   return (
     <header
       className={cn(
@@ -40,14 +44,25 @@ export const Header = () => {
           >
             <Link href="/create-event">Create Event</Link>
           </Button>
-          <Button
-            className={cn(
-              "bg-muted rounded-full text-xs self-center px-8 border-none  text-[#7858C3]",
-            )}
-            variant={"outline"}
-          >
-            <Link href="/signin">Sign in</Link>
-          </Button>
+          {user ? (
+            <Button
+              className={cn(
+                "bg-muted rounded-full text-xs self-center px-8 border-none  text-[#7858C3]",
+              )}
+              variant={"outline"}
+            >
+              <Link href="/profile">{user?.name ? user.name : "Profile"}</Link>
+            </Button>
+          ) : (
+            <Button
+              className={cn(
+                "bg-muted rounded-full text-xs self-center px-8 border-none  text-[#7858C3]",
+              )}
+              variant={"outline"}
+            >
+              <Link href="/signin">Sign in</Link>
+            </Button>
+          )}
         </div>
       </div>
     </header>
