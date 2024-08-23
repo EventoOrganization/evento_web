@@ -74,7 +74,6 @@ export const newPasswordSchema = z
     path: ["confirmPassword"],
   });
 
-// Schema for validating the create event form
 export const createEventSchema = z.object({
   title: z.string().min(1, "Title is required"),
   eventType: z.enum(["public", "private"]),
@@ -82,18 +81,17 @@ export const createEventSchema = z.object({
   mode: z.enum(["virtual", "in-person"]),
   date: z.string().min(1, "Date is required"),
   endDate: z.string().optional(),
-  URLlink: z.string().url().optional(),
   startTime: z.string().min(1, "Start time is required"),
   endTime: z.string().min(1, "End time is required"),
   description: z.string().min(1, "Description is required"),
   includeChat: z.boolean().default(false),
   createRSVP: z.boolean().default(false),
-  latitude: z.string().min(1, "Latitude is required"),
-  longitude: z.string().min(1, "Longitude is required"),
-  location: z.string().min(1, "Location is required"),
+  latitude: z.string().min(1, "Latitude is required").optional(),
+  longitude: z.string().min(1, "Longitude is required").optional(),
+  location: z.string().min(1, "Location is required").optional(),
   coHosts: z.array(z.string()).optional(),
   guests: z.array(z.string()).optional(),
-  interestId: z.array(z.string()).min(1, "Interest is required"),
+  interestId: z.array(z.string()).min(1, "Interest is required").optional(),
   privateEventLink: z.string().url().optional(),
   images: z.any().optional(),
   questions: z

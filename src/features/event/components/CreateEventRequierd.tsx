@@ -1,6 +1,5 @@
 "use client";
 
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   FormControl,
   FormField,
@@ -9,79 +8,53 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { cn } from "@/lib/utils";
 import { createEventSchema } from "@/lib/zod";
 import { useEventStore } from "@/store/useEventStore";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@nextui-org/react";
 import { useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
+import InterestSelector from "./InterestSelector";
 
-const EventForm = ({ className }: { className?: string }) => {
+const CreateEventRequired = ({ className }: { className?: string }) => {
   const [isFetching, setIsFetching] = useState(false);
+  const eventStore = useEventStore();
+
   const form = useForm<z.infer<typeof createEventSchema>>({
     resolver: zodResolver(createEventSchema),
     defaultValues: {
-      eventType: "public",
-      mode: "virtual",
-      includeChat: false,
-      createRSVP: false,
+      title: eventStore.title,
+      eventType: eventStore.eventType,
+      name: eventStore.name,
+      mode: eventStore.mode,
+      date: eventStore.date,
+      startTime: eventStore.startTime,
+      endTime: eventStore.endTime,
+      description: eventStore.description,
+      interestId: eventStore.interestId,
     },
   });
+
   const setEventField = useEventStore((state) => state.setEventField);
-  const clearEventForm = useEventStore((state) => state.clearEventForm);
 
   const onSubmit: SubmitHandler<z.infer<typeof createEventSchema>> = async (
     data,
   ) => {
+    console.log("data", data);
     setIsFetching(true);
-    try {
-      const formData = new FormData();
-      Object.entries(data).forEach(([key, value]) => {
-        if (Array.isArray(value)) {
-          formData.append(key, JSON.stringify(value));
-        } else {
-          formData.append(key, value as string | Blob);
-        }
-      });
-
-      const response = await fetch(
-        `http://localhost:8747/users/createEventAndRSVPform`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`, // Utilisation du token pour l'authentification
-          },
-          body: formData,
-        },
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to create event");
-      }
-
-      const result = await response.json();
-      console.log("Event created successfully:", result);
-
-      clearEventForm();
-    } catch (error) {
-      console.error("Error creating event:", error);
-    } finally {
-      setIsFetching(false);
-    }
+    // Logique pour soumettre les données
+    setIsFetching(false);
   };
+
   const handleFieldChange = (key: string, value: any) => {
     setEventField(key, value);
   };
+
   return (
     <FormProvider {...form}>
-      <form
+      <div
         onSubmit={form.handleSubmit(onSubmit)}
-        className={cn(
-          "space-y-4 max-w-xl mx-auto bg-muted shadow border p-4 rounded-lg",
-          className,
-        )}
+        className="space-y-4 max-w-xl mx-auto bg-muted shadow border p-4 rounded-lg"
       >
         <FormField
           control={form.control}
@@ -93,6 +66,7 @@ const EventForm = ({ className }: { className?: string }) => {
                 <Input
                   placeholder="Event Title"
                   {...field}
+                  value={eventStore.title} // Set the value from the store
                   className="rounded-xl bg-muted sm:bg-background"
                   onChange={(e) => {
                     field.onChange(e);
@@ -108,10 +82,11 @@ const EventForm = ({ className }: { className?: string }) => {
           name="eventType"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Event Type</FormLabel>
+              <FormLabel>Event Type*</FormLabel>
               <FormControl>
                 <select
                   {...field}
+                  value={eventStore.eventType} // Set the value from the store
                   className="rounded-xl bg-muted"
                   onChange={(e) => {
                     field.onChange(e);
@@ -135,6 +110,7 @@ const EventForm = ({ className }: { className?: string }) => {
                 <Input
                   placeholder="Organizer Name"
                   {...field}
+                  value={eventStore.name} // Set the value from the store
                   className="rounded-xl bg-muted sm:bg-background"
                   onChange={(e) => {
                     field.onChange(e);
@@ -154,6 +130,7 @@ const EventForm = ({ className }: { className?: string }) => {
               <FormControl>
                 <select
                   {...field}
+                  value={eventStore.mode} // Set the value from the store
                   className="rounded-xl bg-muted"
                   onChange={(e) => {
                     field.onChange(e);
@@ -177,6 +154,7 @@ const EventForm = ({ className }: { className?: string }) => {
                 <Input
                   type="date"
                   {...field}
+                  value={eventStore.date} // Set the value from the store
                   className="rounded-xl bg-muted sm:bg-background"
                   onChange={(e) => {
                     field.onChange(e);
@@ -197,6 +175,7 @@ const EventForm = ({ className }: { className?: string }) => {
                 <Input
                   type="time"
                   {...field}
+                  value={eventStore.startTime} // Set the value from the store
                   className="rounded-xl bg-muted sm:bg-background"
                   onChange={(e) => {
                     field.onChange(e);
@@ -217,6 +196,7 @@ const EventForm = ({ className }: { className?: string }) => {
                 <Input
                   type="time"
                   {...field}
+                  value={eventStore.endTime} // Set the value from the store
                   className="rounded-xl bg-muted sm:bg-background"
                   onChange={(e) => {
                     field.onChange(e);
@@ -237,6 +217,7 @@ const EventForm = ({ className }: { className?: string }) => {
                 <Textarea
                   placeholder="Event Description"
                   {...field}
+                  value={eventStore.description} // Set the value from the store
                   className="rounded-xl bg-muted sm:bg-background"
                   onChange={(e) => {
                     field.onChange(e);
@@ -249,48 +230,19 @@ const EventForm = ({ className }: { className?: string }) => {
         />
         <FormField
           control={form.control}
-          name="includeChat"
+          name="interestId"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Include Chat</FormLabel>
+              <FormLabel>Interests*</FormLabel>
               <FormControl>
-                <Checkbox
-                  checked={field.value}
-                  onCheckedChange={(checked: boolean) =>
-                    field.onChange(!!checked)
-                  }
-                />
+                <InterestSelector />
               </FormControl>
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="createRSVP"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Create RSVP</FormLabel>
-              <FormControl>
-                <Checkbox
-                  checked={field.value}
-                  onCheckedChange={(checked: boolean) =>
-                    field.onChange(!!checked)
-                  }
-                />
-              </FormControl>
-            </FormItem>
-          )}
-        />
-        <Button
-          type="submit"
-          className="bg-evento-gradient-button rounded-full text-xs self-center px-8 mt-10 text-white"
-          isLoading={isFetching}
-        >
-          Create Event
-        </Button>
-      </form>
+      </div>
     </FormProvider>
   );
 };
 
-export default EventForm;
+export default CreateEventRequired;

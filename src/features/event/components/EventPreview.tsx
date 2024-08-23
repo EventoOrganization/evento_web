@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button"; // Assurez-vous que vous utilisez le bouton de shadcn
 import { useEventStore } from "@/store/useEventStore";
 import { cn } from "@nextui-org/theme";
-import Section from "./layout/Section";
+import Section from "../../../components/layout/Section";
 
 const EventPreview = ({ classname }: { classname?: string }) => {
   const event = useEventStore((state) => state);
