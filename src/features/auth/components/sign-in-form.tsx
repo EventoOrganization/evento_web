@@ -1,5 +1,6 @@
 "use client";
 import PasswordInput from "@/components/PasswordInput";
+import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   FormControl,
@@ -12,7 +13,6 @@ import { cn } from "@/lib/utils";
 import { signInSchema } from "@/lib/zod";
 import { useAuthStore } from "@/store/useAuthStore";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@nextui-org/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";

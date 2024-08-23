@@ -1,80 +1,60 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { createEventSchema } from "@/lib/zod";
+import { useAuthStore } from "@/store/useAuthStore";
 import { useEventStore } from "@/store/useEventStore";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@nextui-org/react";
 import { useState } from "react";
-import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import { z } from "zod";
+import { FormProvider, useForm } from "react-hook-form";
 import CreateEventRequired from "./CreateEventRequierd";
 
 const EventForm = ({ className }: { className?: string }) => {
   const [isFetching, setIsFetching] = useState(false);
-  const [step, setStep] = useState(1);
-  const form = useForm<z.infer<typeof createEventSchema>>({
-    resolver: zodResolver(createEventSchema),
+  const eventStore = useEventStore();
+  const user = useAuthStore((state) => state.user);
+  const form = useForm({
     defaultValues: {
-      title: "",
-      eventType: "public",
-      name: "",
-      date: "",
-      startTime: "",
-      endTime: "",
-      description: "",
-      mode: "virtual",
-      includeChat: false,
-      createRSVP: false,
+      title: eventStore.title || "",
+      eventType: eventStore.eventType || "public",
+      name: eventStore.name || "",
+      date: eventStore.date || "",
+      startTime: eventStore.startTime || "",
+      endTime: eventStore.endTime || "",
+      description: eventStore.description || "",
+      mode: eventStore.mode || "virtual",
+      interestId: eventStore.interestId || [],
     },
   });
-  const setEventField = useEventStore((state) => state.setEventField);
   const clearEventForm = useEventStore((state) => state.clearEventForm);
-  const nextStep = () => setStep((prev) => prev + 1);
-  const prevStep = () => setStep((prev) => prev - 1);
-  const onSubmit: SubmitHandler<z.infer<typeof createEventSchema>> = async (
-    data,
-  ) => {
-    console.log("data", data);
+
+  const onSubmit = async (data: any) => {
+    data.interestId = JSON.stringify(data.interestId);
     setIsFetching(true);
     try {
-      const formData = new FormData();
-      Object.entries(data).forEach(([key, value]) => {
-        if (Array.isArray(value)) {
-          formData.append(key, JSON.stringify(value));
-        } else {
-          formData.append(key, value as string | Blob);
-        }
-      });
-
-      const response = await fetch(
-        `http://localhost:8747/users/createEventAndRSVPform`,
+      const result = await fetch(
+        "http://localhost:8747/users/createEventAndRSVPform",
         {
           method: "POST",
+          credentials: "include",
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`, // Utilisation du token pour l'authentification
+            Authorization: `Bearer ${user?.token}`,
+            "Content-Type": "application/json",
           },
-          body: formData,
+          body: JSON.stringify(data),
         },
       );
 
-      if (!response.ok) {
-        throw new Error("Failed to create event");
-      }
+      const resultData = await result.json();
+      console.log("resultData", resultData);
 
-      const result = await response.json();
-      console.log("Event created successfully:", result);
-
-      clearEventForm();
+      // clearEventForm();
     } catch (error) {
       console.error("Error creating event:", error);
     } finally {
       setIsFetching(false);
     }
   };
-  const handleFieldChange = (key: string, value: any) => {
-    setEventField(key, value);
-  };
+
   return (
     <FormProvider {...form}>
       <form
@@ -84,22 +64,11 @@ const EventForm = ({ className }: { className?: string }) => {
           className,
         )}
       >
-        {step === 1 && (
-          <>
-            <CreateEventRequired />
-          </>
-        )}
-        {step === 2 && (
-          <>
-            <Button onClick={prevStep}>Back</Button>
-            <Button onClick={nextStep}>Next</Button>
-          </>
-        )}
+        <CreateEventRequired />
 
         <Button
           type="submit"
           className="bg-evento-gradient-button rounded-full text-xs self-center px-8 mt-10 text-white"
-          isLoading={isFetching}
         >
           Create Event
         </Button>

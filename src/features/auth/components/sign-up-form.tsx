@@ -1,5 +1,6 @@
 "use client";
 import PasswordInput from "@/components/PasswordInput";
+import { Button } from "@/components/ui/button";
 import {
   FormControl,
   FormField,
@@ -7,9 +8,9 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 import { signUpSchema } from "@/lib/zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, cn } from "@nextui-org/react";
 import Link from "next/link";
 import { useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";

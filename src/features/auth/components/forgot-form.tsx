@@ -1,14 +1,15 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import {
   FormControl,
   FormField,
   FormItem,
   FormLabel,
 } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import { emailSchema } from "@/lib/zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Input } from "@nextui-org/react";
 import { cn } from "@nextui-org/theme";
 import Link from "next/link";
 import { useRouter } from "next/router";
