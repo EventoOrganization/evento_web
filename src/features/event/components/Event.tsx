@@ -54,18 +54,30 @@ const Event = ({ className, event }: { className?: string; event?: any }) => {
             : formatDate(createEvent?.date)}
         </span>
       </div>
-      <div className="bg-evento-gradient">
-        <Image
-          src={
-            event?.details.images[0] ||
-            "https://evento-media-bucket.s3.ap-southeast-2.amazonaws.com/evento-bg.jpg"
-          }
-          alt="event image"
-          width={50}
-          height={50}
-          layout="responsive"
-          className={cn({ "opacity-20": !event?.details.images[0] })}
-        />
+      <div
+        className={cn("", {
+          "bg-evento-gradient":
+            !event &&
+            !(createEvent?.imagePreviews && createEvent.imagePreviews[0]),
+        })}
+      >
+        <div className="relative w-full pb-[56.25%]">
+          <Image
+            src={
+              event?.details?.images?.[0] ||
+              (createEvent?.imagePreviews && createEvent.imagePreviews[0]) ||
+              "https://evento-media-bucket.s3.ap-southeast-2.amazonaws.com/evento-bg.jpg"
+            }
+            alt="event image"
+            layout="fill"
+            objectFit="cover"
+            className={cn({
+              "opacity-20":
+                !event &&
+                !(createEvent?.imagePreviews && createEvent.imagePreviews[0]),
+            })}
+          />
+        </div>
       </div>
       <div className="flex flex-col gap-2">
         <h3>{event ? event?.title : createEvent?.title}</h3>
@@ -75,7 +87,7 @@ const Event = ({ className, event }: { className?: string; event?: any }) => {
               key={interest._id}
               className="bg-eventoPurple/30 w-fit px-2 py-1 rounded-lg"
             >
-              {interest.name}
+              {interest.name}lorem50
             </li>
           ))}
         </ul>

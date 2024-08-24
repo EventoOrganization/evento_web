@@ -74,48 +74,9 @@ const SignInForm = () => {
         token: token,
       };
 
-      // Étape 2 : Utilisation du token pour récupérer le profil complet
-      const profileResponse = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/users/getProfile`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`, // Utilisation du token pour l'authentification
-          },
-          credentials: "include",
-        },
-      );
-
-      const profileResult = await profileResponse.json();
-      if (!profileResponse.ok) {
-        throw new Error(profileResult.message || "Profile fetch failed");
-      }
-      console.log("Full profile data received:", profileResult.body);
-      const userInfo = profileResult.body.userInfo;
-      const userToStore = {
-        ...loginUserData, // Inclure les données de la connexion (comme le token)
-        countryCode: userInfo.countryCode,
-        createdAt: userInfo.createdAt,
-        updatedAt: userInfo.updatedAt,
-        profileImage: userInfo.profileImage, // Par exemple, vous pouvez choisir de stocker ou non certaines informations
-        eventsAttended: profileResult.body.totalEventAttended,
-        following: profileResult.body.following,
-        upcomingEvents: profileResult.body.upcomingEvents,
-        filteredUpcomingEventsAttened:
-          profileResult.body.filteredUpcomingEventsAttened,
-        filteredPastEventsAttended:
-          profileResult.body.filteredPastEventsAttended,
-        pastEvents: profileResult.body.pastEvents,
-      };
-
-      console.log("User data to store in Zustand:", userToStore);
-
-      // Étape 3 : Stocker le profil utilisateur complet dans Zustand
-      setUser(userToStore);
-
+      setUser(loginUserData);
       setIsFetching(false);
-      router.push("/");
+      router.push("/"); // Redirect to profile page
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);

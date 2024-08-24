@@ -6,7 +6,6 @@ import { useAuthStore } from "@/store/useAuthStore";
 import { useEventStore } from "@/store/useEventStore";
 import { useEffect, useState } from "react";
 import { FormProvider, useForm, useFormContext } from "react-hook-form";
-import { clearEventForm } from "../eventActions";
 import EventDateInput from "./EventDateInput";
 import EventDescriptionArea from "./EventDescriptionArea";
 import EventImageUpload from "./EventImageUpload";
@@ -32,8 +31,8 @@ const useSyncFormWithStore = () => {
       description: eventStore.description || "",
       mode: eventStore.mode || "virtual",
       interestId: eventStore.interestId || [],
-      images: eventStore.images || null,
-      video: eventStore.video || null,
+      images: [],
+      video: "",
     });
   }, [eventStore, reset]);
 };
@@ -53,15 +52,15 @@ const EventForm = ({ className }: { className?: string }) => {
       description: eventStore.description || "",
       mode: eventStore.mode || "virtual",
       interestId: eventStore.interestId || [],
-      images: eventStore.images || null,
-      video: eventStore.video || null,
+      images: [],
+      video: "",
     },
   });
-  console.log(form.formState.defaultValues);
 
   const onSubmit = async (data: any) => {
     data.interestId = JSON.stringify(data.interestId);
     console.log(isFetching);
+    console.log(data);
 
     setIsFetching(true);
     try {
@@ -81,7 +80,7 @@ const EventForm = ({ className }: { className?: string }) => {
       const resultData = await result.json();
       console.log("resultData", resultData);
 
-      clearEventForm();
+      // clearEventForm();
     } catch (error) {
       console.error("Error creating event:", error);
     } finally {

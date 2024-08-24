@@ -5,9 +5,22 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useEventStore } from "@/store/useEventStore";
 import { Camera } from "lucide-react";
-
+import Image from "next/image";
+import { useState } from "react";
 const EventImageUpload = () => {
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+  const eventStore = useEventStore();
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    const imageUrls = files.map((file) => URL.createObjectURL(file));
+    setImagePreviews(imageUrls);
+    eventStore.setEventField("imagePreviews", imageUrls);
+    console.log(imageUrls);
+  };
+
   return (
     <FormField
       name="images"
@@ -23,14 +36,27 @@ const EventImageUpload = () => {
                 type="file"
                 accept="image/*"
                 multiple
-                // onChange={(e) => {
-                //   field.onChange(e);
-                //   handleFileUpload(e.target.files!);
-                // }}
+                onChange={(e) => {
+                  field.onChange(e);
+                  handleImageChange(e);
+                }}
                 className="text-sm text-muted-foreground"
               />
             </>
           </FormControl>
+          <div className="image-preview-container mt-4 grid grid-cols-3 gap-2 max-w-96">
+            {imagePreviews.map((src, index) => (
+              <Image
+                key={index}
+                src={src}
+                alt={`Image preview ${index}`}
+                width={100}
+                height={100}
+                layout="responsive"
+                className="rounded-lg"
+              />
+            ))}
+          </div>
         </FormItem>
       )}
     />

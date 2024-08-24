@@ -20,8 +20,8 @@ type EventFormState = {
   guests?: string[];
   interestId?: string[];
   privateEventLink?: string;
-  images: string[]; // Store image URLs as an array
-  video?: string; // Store video URL as a single string
+  imagePreviews?: string[];
+  videoPreview?: string;
   questions?: {
     question: string;
     answer: string;
@@ -50,11 +50,11 @@ export const useEventStore = create<EventFormState>()(
       latitude: undefined,
       longitude: undefined,
       location: undefined,
+      imagePreviews: [],
+      videoPreview: undefined,
       coHosts: [],
       guests: [],
       interestId: [],
-      images: [], // Initialize images as an empty array
-      video: undefined, // Initialize video as undefined
       questions: [],
       additionalField: undefined,
       setEventField: (key, value) =>
@@ -75,11 +75,11 @@ export const useEventStore = create<EventFormState>()(
           latitude: undefined,
           longitude: undefined,
           location: undefined,
+          imagePreviews: [],
+          videoPreview: undefined,
           coHosts: [],
           guests: [],
           interestId: [],
-          images: [], // Clear images array
-          video: undefined, // Clear video
           questions: [],
           additionalField: undefined,
         }),

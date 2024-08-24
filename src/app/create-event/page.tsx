@@ -15,10 +15,11 @@ const CreateEventPage = () => {
         index={activeIndex}
         onChangeIndex={(index: number) => setActiveIndex(index)}
       >
+        <Event />
         <EventForm className="" />
       </SwipeableViews>
       <div className="hidden md:flex md:space-x-4 w-full">
-        <Event className="" />
+        <Event />
         <EventForm className="min-w-96" />
       </div>
     </Section>
