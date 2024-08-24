@@ -18,11 +18,14 @@ export default function Home() {
           </p>
         </div>
         <Image
-          src={"/hero-bg.jpg"}
-          alt="logo"
-          width={1980}
-          height={1024}
-          className="h-full object-cover object-center  absolute opacity-20"
+          src={
+            "https://evento-media-bucket.s3.ap-southeast-2.amazonaws.com/evento-bg.jpg"
+          }
+          alt="evento-background"
+          width={250}
+          height={50}
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          className="h-full w-full object-cover object-center  absolute opacity-20"
         />
         <div className="z-10 flex gap-4 flex-col md:flex-row mb-10">
           <Button
