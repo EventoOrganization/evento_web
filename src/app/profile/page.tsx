@@ -32,9 +32,9 @@ const UserProfile = () => {
 
   return (
     <>
-      <h2 className="mt-10 md:mt-32">My profile</h2>
+      {/* <h2 className="mt-10 md:mt-32">My profile</h2> */}
       {user ? (
-        <Section className="gap-6">
+        <Section className="gap-6 md:mt-20">
           <div className="w-full  max-w-xl mx-auto">
             <div className="flex items-center w-full justify-evenly pt-10 pb-4 ">
               {user.profileImage ? (
@@ -68,13 +68,26 @@ const UserProfile = () => {
 
             <ul className=" flex justify-evenly">
               <li>
-                <Button className={eventoBtn}>Edit Profile</Button>
+                <Button
+                  className={eventoBtn}
+                  onClick={() => router.push("/profile/edit")}
+                >
+                  Edit Profile
+                </Button>
               </li>
               <li>
-                <Button className={eventoBtn}>Share Profile</Button>
+                <Button
+                  className={eventoBtn}
+                  onClick={() => alert("Share?? que fait l'actuel?")}
+                >
+                  Share Profile
+                </Button>
               </li>
               <li>
-                <Button className={cn(eventoBtn, "p-0 w-10")}>
+                <Button
+                  className={cn(eventoBtn, "p-0 w-10")}
+                  onClick={() => router.push("/profile/settings")}
+                >
                   <svg
                     width="24"
                     height="24"

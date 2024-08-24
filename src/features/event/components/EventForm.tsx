@@ -6,7 +6,14 @@ import { useAuthStore } from "@/store/useAuthStore";
 import { useEventStore } from "@/store/useEventStore";
 import { useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import CreateEventRequired from "./CreateEventRequierd";
+import EventDateInput from "./EventDateInput";
+import EventDescriptionArea from "./EventDescriptionArea";
+import EventImageUpload from "./EventImageUpload";
+import EventInterestSelect from "./EventInterestSelect";
+import EventModeSelect from "./EventModeSelect";
+import EventTitleInput from "./EventTitleInput";
+import EventTypeSelect from "./EventTypeSelect";
+import EventVideoUpload from "./EventVideoUpload";
 
 const EventForm = ({ className }: { className?: string }) => {
   const [isFetching, setIsFetching] = useState(false);
@@ -23,6 +30,8 @@ const EventForm = ({ className }: { className?: string }) => {
       description: eventStore.description || "",
       mode: eventStore.mode || "virtual",
       interestId: eventStore.interestId || [],
+      images: eventStore.images || null,
+      video: eventStore.video || null,
     },
   });
   const clearEventForm = useEventStore((state) => state.clearEventForm);
@@ -66,11 +75,21 @@ const EventForm = ({ className }: { className?: string }) => {
           className,
         )}
       >
-        <CreateEventRequired />
-
+        <EventTitleInput />
+        <div className="grid grid-cols-2 gap-4">
+          <EventTypeSelect />
+          <EventModeSelect />
+        </div>
+        <EventDateInput />
+        <div className="grid grid-cols-2 gap-4">
+          <EventVideoUpload />
+          <EventImageUpload />
+        </div>
+        <EventDescriptionArea />
+        <EventInterestSelect />
         <Button
           type="submit"
-          className="bg-evento-gradient-button rounded-full text-xs self-center px-8 mt-10 text-white"
+          className="bg-evento-gradient-button rounded-full text-xs self-center px-8 mt-20 text-white"
         >
           Create Event
         </Button>

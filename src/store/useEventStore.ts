@@ -20,7 +20,8 @@ type EventFormState = {
   guests?: string[];
   interestId?: string[];
   privateEventLink?: string;
-  images?: any[];
+  images: string[]; // Store image URLs as an array
+  video?: string; // Store video URL as a single string
   questions?: {
     question: string;
     answer: string;
@@ -28,7 +29,6 @@ type EventFormState = {
     options?: string[];
   }[];
   additionalField?: any;
-  video?: string;
   setEventField: (key: string, value: any) => void;
   clearEventForm: () => void;
 };
@@ -53,11 +53,10 @@ export const useEventStore = create<EventFormState>()(
       coHosts: [],
       guests: [],
       interestId: [],
-      privateEventLink: undefined,
-      images: [],
+      images: [], // Initialize images as an empty array
+      video: undefined, // Initialize video as undefined
       questions: [],
       additionalField: undefined,
-      video: undefined,
       setEventField: (key, value) =>
         set((state) => ({ ...state, [key]: value })),
       clearEventForm: () =>
@@ -79,15 +78,14 @@ export const useEventStore = create<EventFormState>()(
           coHosts: [],
           guests: [],
           interestId: [],
-          privateEventLink: undefined,
-          images: [],
+          images: [], // Clear images array
+          video: undefined, // Clear video
           questions: [],
           additionalField: undefined,
-          video: undefined,
         }),
     }),
     {
-      name: "event-form-storage", // Nom de la clé sous laquelle les données seront stockées dans le localStorage
+      name: "event-form-storage",
     },
   ),
 );
