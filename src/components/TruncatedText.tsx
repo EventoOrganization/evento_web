@@ -1,21 +1,24 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 
-const TruncatedText = ({ text = "" }: { text?: string }) => {
+const TruncatedText = ({ text = "" }: { text: string }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const textRef = useRef(null);
+
+  const toggleText = () => setIsExpanded(!isExpanded);
 
   return (
-    <div>
-      <p className={`text-sm ${!isExpanded ? "truncate-2-lines" : ""}`}>
+    <div className=" p-4 text-sm w-full">
+      <p
+        ref={textRef}
+        className={`${isExpanded ? "" : "line-clamp-2"} break-words w-full whitespace-normal`}
+      >
         {text}
       </p>
-      {text.length > 100 && (
-        <button
-          className="text-blue-500 underline"
-          onClick={() => setIsExpanded(!isExpanded)}
-        >
-          {isExpanded ? "See less" : "See more"}
+      <div className="w-full flex justify-end items-start">
+        <button onClick={toggleText} className="text-blue-500 underline">
+          {isExpanded ? "Read Less" : "Read More"}
         </button>
-      )}
+      </div>
     </div>
   );
 };

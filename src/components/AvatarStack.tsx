@@ -1,6 +1,7 @@
 "use client";
 import { useAuthStore } from "@/store/useAuthStore";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 interface Friend {
   user: {
@@ -12,8 +13,9 @@ interface Friend {
 const AvatarStack = ({ eventId }: { eventId: string }) => {
   const [friends, setFriends] = useState<Friend[]>([]);
   const token = useAuthStore((state) => state.user?.token || null);
-
+  const pathname = usePathname();
   useEffect(() => {
+    if (pathname === "/create-event") return;
     const fetchFriends = async () => {
       try {
         const response = await fetch(

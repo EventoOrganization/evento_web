@@ -8,18 +8,18 @@ import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { MapPin } from "lucide-react";
 import Image from "next/image";
 import EventActionIcons from "./EventActionIcons";
-
 const Event = ({ className, event }: { className?: string; event?: any }) => {
   const createEvent = useEventStore((state) => state);
   const user = useAuthStore((state) => state.user);
-  const startDate = new Date(event?.details.date);
-  const formattedStartDate = startDate.toLocaleDateString("en-US", {
-    weekday: "short", // Affiche le jour de la semaine (ex: Wed)
-    year: "numeric", // Affiche l'année (ex: 2024)
-    month: "short", // Affiche le mois (ex: Aug)
-    day: "numeric", // Affiche le jour (ex: 21)
-  });
-
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const options: Intl.DateTimeFormatOptions = {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    };
+    return date.toLocaleDateString("en-US", options);
+  };
   return (
     <div
       className={cn(
@@ -49,7 +49,9 @@ const Event = ({ className, event }: { className?: string; event?: any }) => {
           <h4 className="ml-2">{event ? event?.user.name : user?.name}</h4>
         </div>
         <span className="ml-4">
-          {event ? formattedStartDate : createEvent?.date}
+          {event
+            ? formatDate(event?.details.date)
+            : formatDate(createEvent?.date)}
         </span>
       </div>
       <div className="bg-evento-gradient">
@@ -89,10 +91,13 @@ const Event = ({ className, event }: { className?: string; event?: any }) => {
             {event?.details.location}
           </Button>
           <p>
-            {event?.details.startTime} - {event?.details.endTime}
+            {event?.details.startTime || createEvent?.startTime} -{" "}
+            {event?.details.endTime || createEvent?.endTime}
           </p>
         </div>
-        <TruncatedText text={event?.details.description} />
+        <TruncatedText
+          text={event?.details.description || createEvent?.description}
+        />
       </div>
       <div className="flex justify-between items-center">
         <div>

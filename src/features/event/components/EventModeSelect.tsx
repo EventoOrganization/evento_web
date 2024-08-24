@@ -11,9 +11,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useEventStore } from "@/store/useEventStore";
+import { useFormContext } from "react-hook-form";
 import { handleFieldChange } from "../eventActions";
 
 const EventModeSelect = () => {
+  const eventStore = useEventStore();
+  const { register } = useFormContext();
   return (
     <FormField
       name="mode"
@@ -26,9 +30,10 @@ const EventModeSelect = () => {
                 field.onChange(value);
                 handleFieldChange("mode", value);
               }}
+              {...register("eventType")}
             >
               <SelectTrigger className="">
-                <SelectValue placeholder="Select mode" />
+                <SelectValue placeholder={eventStore.mode || "Select mode"} />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="virtual">Virtual</SelectItem>

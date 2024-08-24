@@ -14,7 +14,6 @@ const EventDateInput = () => {
   const { register } = useFormContext();
   return (
     <>
-      {" "}
       <FormField
         name="date"
         render={({ field }) => (
