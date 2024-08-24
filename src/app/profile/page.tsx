@@ -94,9 +94,10 @@ const UserProfile = () => {
             </ul>
           </div>
           <Section className={sectionStyle}>
-            <h3 className="font-bold text-lg">Upcoming Events</h3>
-
-            <div className="flex flex-col gap-4 md:flex-row  md:py-4 md:overflow-x-auto md:max-w-full">
+            <h3 className="font-bold text-lg">
+              Upcoming Events ({user?.upcomingEvents?.length})
+            </h3>
+            <div className="flex flex-col gap-4 md:flex-row md:py-4 md:overflow-x-auto md:max-w-full overflow-y-auto max-h-[450px] md:max-h-full">
               {user?.upcomingEvents && user.upcomingEvents.length > 0 ? (
                 user.upcomingEvents.map((event, index) => (
                   <>
@@ -113,8 +114,10 @@ const UserProfile = () => {
           </Section>
 
           <Section className={sectionStyle}>
-            <h3 className="font-bold text-lg">Events Hosting</h3>
-            <div className="flex flex-col gap-4 md:py-4 md:flex-row md:overflow-x-auto md:max-w-full">
+            <h3 className="font-bold text-lg">
+              Events Hosting ({user?.filteredUpcomingEventsAttened?.length})
+            </h3>
+            <div className="flex flex-col gap-4 md:flex-row md:py-4 md:overflow-x-auto md:max-w-full overflow-y-auto max-h-[450px] md:max-h-full">
               {user.filteredUpcomingEventsAttened &&
               user.filteredUpcomingEventsAttened?.length > 0 ? (
                 user.filteredUpcomingEventsAttened.map((event, index) => (
@@ -130,8 +133,10 @@ const UserProfile = () => {
           </Section>
 
           <Section className={sectionStyle}>
-            <h3 className="font-bold text-lg">Past Events Attended</h3>
-            <div className="flex flex-col gap-4 md:py-4 md:flex-row md:overflow-x-auto md:max-w-full">
+            <h3 className="font-bold text-lg">
+              Past Events Attended ({user?.filteredPastEventsAttended?.length})
+            </h3>
+            <div className="flex flex-col gap-4 md:flex-row md:py-4 md:overflow-x-auto md:max-w-full overflow-y-auto max-h-[450px] md:max-h-full">
               {user.filteredPastEventsAttended &&
               user.filteredPastEventsAttended?.length > 0 ? (
                 user.filteredPastEventsAttended.map((event, index) => (
@@ -147,8 +152,10 @@ const UserProfile = () => {
           </Section>
 
           <Section className={sectionStyle}>
-            <h3 className="font-bold text-lg">Past Events Hosted</h3>
-            <div className="flex flex-col gap-4 md:flex-row md:py-4 md:overflow-x-auto md:max-w-full">
+            <h3 className="font-bold text-lg">
+              Past Events Hosted ({user?.pastEvents?.length})
+            </h3>
+            <div className="flex flex-col gap-4 md:flex-row md:py-4 md:overflow-x-auto md:max-w-full overflow-y-auto max-h-[450px] md:max-h-full">
               {user.pastEvents && user.pastEvents?.length > 0 ? (
                 user.pastEvents.map((event, index) => (
                   <Event key={index} event={event} />
