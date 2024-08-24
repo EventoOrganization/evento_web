@@ -6,7 +6,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Camera } from "lucide-react";
-import { handleFileUpload } from "../eventActions";
 
 const EventImageUpload = () => {
   return (
@@ -24,10 +23,10 @@ const EventImageUpload = () => {
                 type="file"
                 accept="image/*"
                 multiple
-                onChange={(e) => {
-                  field.onChange(e);
-                  handleFileUpload(e.target.files!);
-                }}
+                // onChange={(e) => {
+                //   field.onChange(e);
+                //   handleFileUpload(e.target.files!);
+                // }}
                 className="text-sm text-muted-foreground"
               />
             </>

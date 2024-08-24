@@ -6,7 +6,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Film } from "lucide-react";
-import { handleFileUpload } from "../eventActions";
 
 const EventVideoUpload = () => {
   return (
@@ -23,10 +22,10 @@ const EventVideoUpload = () => {
               <Input
                 type="file"
                 accept="video/*"
-                onChange={(e) => {
-                  field.onChange(e);
-                  handleFileUpload(e.target.files!);
-                }}
+                // onChange={(e) => {
+                //   field.onChange(e);
+                //   handleFileUpload(e.target.files!);
+                // }}
                 className="text-sm text-muted-foreground"
               />
             </>

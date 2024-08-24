@@ -4,16 +4,39 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useEventStore } from "@/store/useEventStore";
-import { useState } from "react";
-import { FormProvider, useForm } from "react-hook-form";
+import { useEffect, useState } from "react";
+import { FormProvider, useForm, useFormContext } from "react-hook-form";
+import { clearEventForm } from "../eventActions";
 import EventDateInput from "./EventDateInput";
 import EventDescriptionArea from "./EventDescriptionArea";
 import EventImageUpload from "./EventImageUpload";
 import EventInterestSelect from "./EventInterestSelect";
 import EventModeSelect from "./EventModeSelect";
+import EventNameInput from "./EventNameInput";
 import EventTitleInput from "./EventTitleInput";
 import EventTypeSelect from "./EventTypeSelect";
 import EventVideoUpload from "./EventVideoUpload";
+
+const useSyncFormWithStore = () => {
+  const { reset } = useFormContext();
+  const eventStore = useEventStore();
+  const user = useAuthStore((state) => state.user);
+  useEffect(() => {
+    reset({
+      title: eventStore.title || "",
+      eventType: eventStore.eventType || "public",
+      name: eventStore.name || user?.name,
+      date: eventStore.date || "",
+      startTime: eventStore.startTime || "",
+      endTime: eventStore.endTime || "",
+      description: eventStore.description || "",
+      mode: eventStore.mode || "virtual",
+      interestId: eventStore.interestId || [],
+      images: eventStore.images || null,
+      video: eventStore.video || null,
+    });
+  }, [eventStore, reset]);
+};
 
 const EventForm = ({ className }: { className?: string }) => {
   const [isFetching, setIsFetching] = useState(false);
@@ -23,7 +46,7 @@ const EventForm = ({ className }: { className?: string }) => {
     defaultValues: {
       title: eventStore.title || "",
       eventType: eventStore.eventType || "public",
-      name: eventStore.name || "",
+      name: eventStore.name || user?.name,
       date: eventStore.date || "",
       startTime: eventStore.startTime || "",
       endTime: eventStore.endTime || "",
@@ -34,7 +57,7 @@ const EventForm = ({ className }: { className?: string }) => {
       video: eventStore.video || null,
     },
   });
-  const clearEventForm = useEventStore((state) => state.clearEventForm);
+  console.log(form.formState.defaultValues);
 
   const onSubmit = async (data: any) => {
     data.interestId = JSON.stringify(data.interestId);
@@ -68,6 +91,8 @@ const EventForm = ({ className }: { className?: string }) => {
 
   return (
     <FormProvider {...form}>
+      {" "}
+      <SyncFormWithStore />
       <form
         onSubmit={form.handleSubmit(onSubmit)}
         className={cn(
@@ -76,15 +101,14 @@ const EventForm = ({ className }: { className?: string }) => {
         )}
       >
         <EventTitleInput />
+        {form.formState.defaultValues?.name ? null : <EventNameInput />}
         <div className="grid grid-cols-2 gap-4">
           <EventTypeSelect />
           <EventModeSelect />
         </div>
         <EventDateInput />
-        <div className="grid grid-cols-2 gap-4">
-          <EventVideoUpload />
-          <EventImageUpload />
-        </div>
+        <EventVideoUpload />
+        <EventImageUpload />
         <EventDescriptionArea />
         <EventInterestSelect />
         <Button
@@ -97,5 +121,8 @@ const EventForm = ({ className }: { className?: string }) => {
     </FormProvider>
   );
 };
-
+const SyncFormWithStore = () => {
+  useSyncFormWithStore(); // Custom hook call inside a component that will be called after FormProvider is ready
+  return null; // This component does not render anything
+};
 export default EventForm;
