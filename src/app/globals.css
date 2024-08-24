@@ -5,7 +5,7 @@
 @layer base {
   :root {
     --evento-pink: #d5298e;
-    --evento-purple: #a14cb9;
+    --evento-purple: #7858c3;
     --evento-blue: #5f6fed;
     --evento-gradient-button: linear-gradient(180deg, #894dbc 0%, #5f6fed 100%);
     --evento-gradient: linear-gradient(180deg, #d5298e 0%, #5f6fed 100%);
@@ -76,5 +76,11 @@
   }
   h2 {
     @apply text-2xl font-bold;
+  }
+  h3 {
+    @apply text-xl font-bold;
+  }
+  h4 {
+    @apply font-bold;
   }
 }

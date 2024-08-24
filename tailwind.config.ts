@@ -26,7 +26,7 @@ const config = {
       colors: {
         eventoPink: "#d5298e",
         eventoBlue: "#5f6fed",
-        eventoPurple: "#A14CB9",
+        eventoPurple: "#7858C3",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

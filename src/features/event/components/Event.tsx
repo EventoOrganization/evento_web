@@ -1,21 +1,15 @@
+import AvatarStack from "@/components/AvatarStack";
+import GoingIcon from "@/components/icons/GoingIncon";
+import ShareIcon from "@/components/icons/ShareIcon";
+import TruncatedText from "@/components/TruncatedText";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
+import { Bookmark, MapPin } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
-const Event = ({
-  classname,
-  key,
-  event,
-}: {
-  classname?: string;
-  key: number;
-  event: any;
-}) => {
-  console.log("event", event);
-  console.log("key", key);
-
+const Event = ({ classname, event }: { classname?: string; event: any }) => {
   // Convertir la date ISO en objet Date
   const startDate = new Date(event.details.date);
 
@@ -26,7 +20,6 @@ const Event = ({
     month: "short", // Affiche le mois (ex: Aug)
     day: "numeric", // Affiche le jour (ex: 21)
   });
-
   return (
     <div
       className={cn(
@@ -57,32 +50,62 @@ const Event = ({
         </div>
         <span className="ml-4">{formattedStartDate}</span>
       </div>
-      <Image
-        src={event.details.images[0] || ""}
-        alt="event image"
-        width={500}
-        height={300}
-        className="bg-red-500 ratio-16/9 h-auto w-full"
-      />
-      <h3>{event.title}</h3>
-      <ul>
-        {event.interest.map((interest: any) => (
-          <li key={interest._id}>{interest.name}</li>
-        ))}
-      </ul>
-      <h4>Date & time</h4>
-      <p>{formattedStartDate}</p>
+      <div className="bg-evento-gradient">
+        <Image
+          src={
+            event.details.images[0] ||
+            "https://evento-media-bucket.s3.ap-southeast-2.amazonaws.com/evento-bg.jpg"
+          }
+          alt="event image"
+          width={50}
+          height={50}
+          layout="responsive"
+          className={cn({ "opacity-20": !event.details.images[0] })}
+        />
+      </div>
+      <div className="flex flex-col gap-2">
+        <h3>{event.title}</h3>
+        <ul>
+          {event.interest.map((interest: any) => (
+            <li
+              key={interest._id}
+              className="bg-eventoPurple/30 w-fit px-2 py-1 rounded-lg"
+            >
+              {interest.name}
+            </li>
+          ))}
+        </ul>
+        <div className="flex justify-between">
+          <Button
+            variant={"ghost"}
+            className="flex gap-2 pl-0"
+            onClick={() => {
+              alert("Ouvrira google map, in progress...");
+            }}
+          >
+            <MapPin fill="#7858C3" className="text-muted" />
+            {event.details.location}
+          </Button>
+          <p>
+            {event.details.startTime} - {event.details.endTime}
+          </p>
+        </div>
+        <TruncatedText text={event.details.description} />
+      </div>
+      <div className="flex justify-between">
+        <div>
+          <AvatarStack eventId={event._id} />{" "}
+        </div>
+        <div className="flex gap-2">
+          <GoingIcon />
+          <Bookmark
+            className="text-eventoPurple"
+            onClick={() => alert("Enregistrera dans calendar, in progress...")}
+          />
+          <ShareIcon />
+        </div>
+      </div>
 
-      <p>
-        {event.details.startTime} - {event.details.endTime}
-      </p>
-      <h4>Location</h4>
-      <p>{event.details.location}</p>
-      <Button>Maps</Button>
-      <p>{event.details.description}</p>
-      <Button>Join</Button>
-      <Button>refuse</Button>
-      <Button>book</Button>
       <Link href="#">download to calendar</Link>
     </div>
   );
