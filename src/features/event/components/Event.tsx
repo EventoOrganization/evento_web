@@ -87,7 +87,7 @@ const Event = ({ className, event }: { className?: string; event?: any }) => {
               key={interest._id}
               className="bg-eventoPurple/30 w-fit px-2 py-1 rounded-lg"
             >
-              {interest.name}lorem50
+              {interest.name}
             </li>
           ))}
         </ul>
@@ -100,7 +100,7 @@ const Event = ({ className, event }: { className?: string; event?: any }) => {
             }}
           >
             <MapPin fill="#7858C3" className="text-muted" />
-            {event?.details.location}
+            {event ? event?.details.location : createEvent?.location}
           </Button>
           <p>
             {event?.details.startTime || createEvent?.startTime} -{" "}

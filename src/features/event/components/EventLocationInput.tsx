@@ -1,4 +1,3 @@
-import { useEventStore } from "@/store/useEventStore";
 import {
   FormControl,
   FormField,
@@ -6,53 +5,71 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import React, { useState } from "react";
-import GooglePlacesAutocomplete from "react-google-autocomplete";
+import { useEventStore } from "@/store/useEventStore";
+import { useState } from "react";
+import { useFormContext } from "react-hook-form";
+import { handleFieldChange } from "../eventActions";
 
 const EventLocationInput = () => {
   const eventStore = useEventStore();
-  const [location, setLocation] = useState("");
-  const [coordinates, setCoordinates] = useState<{
-    lat: number;
-    lng: number;
-  } | null>(null);
+  const setEventField = eventStore.setEventField;
+  const { register } = useFormContext();
+  const [location, setLocation] = useState<any>("");
+  console.log(location);
+  // const handlePlaceSelected = (value: any) => {
+  //   if (value) {
 
-  const handlePlaceSelected = (place: any) => {
-    const address = place.formatted_address;
-    const lat = place.geometry.location.lat();
-    const lng = place.geometry.location.lng();
+  //     const address = value.label;
+  //     setLocation(value);
 
-    setLocation(address);
-    setCoordinates({ lat, lng });
+  //     const geocoder = new window.google.maps.Geocoder();
+  //     geocoder.geocode({ address: address }, (results, status) => {
+  //       if (status === "OK" && results) {
+  //         const lat = results[0].geometry.location.lat();
+  //         const lng = results[0].geometry.location.lng();
 
-    // Stocker l'adresse et les coordonnées dans le store
-    eventStore.setEventField("location", address);
-    eventStore.setEventField("latitude", lat.toString());
-    eventStore.setEventField("longitude", lng.toString());
-  };
+  //         setEventField("location", address);
+  //         setEventField("latitude", lat.toString());
+  //         setEventField("longitude", lng.toString());
+  //       } else {
+  //         console.error(
+  //           "Geocode was not successful for the following reason: " + status,
+  //         );
+  //       }
+  //     });
+  //   }
+  // };
 
   return (
     <FormField
       name="location"
       render={({ field }) => (
         <FormItem>
-          <FormLabel className="flex gap-2 items-center">
-            <i className="icon-location" />
-            Event Location
-          </FormLabel>
+          <FormLabel className="sr-only">Event Location</FormLabel>
           <FormControl>
             <>
-              <GooglePlacesAutocomplete
-                apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
+              <Input
+                placeholder="Location"
+                {...field}
+                {...register("location")}
+                value={eventStore.location}
+                onChange={(e) => {
+                  field.onChange(e);
+                  handleFieldChange("location", e.target.value);
+                }}
+              />
+              {/* <GooglePlacesAutocomplete
+                apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ""}
                 selectProps={{
                   value: location,
-                  onChange: (value) => setLocation(value),
+                  onChange: (value) => {
+                    setLocation(value);
+                    console.log(value);
+                  },
                   placeholder: "Enter event location...",
+                  onSelect: handlePlaceSelected,
                 }}
-                onPlaceSelected={handlePlaceSelected}
-                types={["address"]}
-                className="text-sm text-muted-foreground"
-              />
+              /> */}
             </>
           </FormControl>
         </FormItem>

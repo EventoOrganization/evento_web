@@ -10,6 +10,7 @@ import EventDateInput from "./EventDateInput";
 import EventDescriptionArea from "./EventDescriptionArea";
 import EventImageUpload from "./EventImageUpload";
 import EventInterestSelect from "./EventInterestSelect";
+import EventLocationInput from "./EventLocationInput";
 import EventModeSelect from "./EventModeSelect";
 import EventNameInput from "./EventNameInput";
 import EventTitleInput from "./EventTitleInput";
@@ -31,6 +32,9 @@ const useSyncFormWithStore = () => {
       description: eventStore.description || "",
       mode: eventStore.mode || "virtual",
       interestId: eventStore.interestId || [],
+      location: eventStore.location || "",
+      latitude: eventStore.latitude || "",
+      longitude: eventStore.longitude || "",
       images: [],
       video: "",
     });
@@ -52,6 +56,9 @@ const EventForm = ({ className }: { className?: string }) => {
       description: eventStore.description || "",
       mode: eventStore.mode || "virtual",
       interestId: eventStore.interestId || [],
+      location: eventStore.location || "",
+      latitude: eventStore.latitude || "",
+      longitude: eventStore.longitude || "",
       images: [],
       video: "",
     },
@@ -60,7 +67,7 @@ const EventForm = ({ className }: { className?: string }) => {
   const onSubmit = async (data: any) => {
     data.interestId = JSON.stringify(data.interestId);
     console.log(isFetching);
-    console.log(data);
+    console.log("data", data);
 
     setIsFetching(true);
     try {
@@ -106,6 +113,7 @@ const EventForm = ({ className }: { className?: string }) => {
           <EventModeSelect />
         </div>
         <EventDateInput />
+        <EventLocationInput />
         <EventVideoUpload />
         <EventImageUpload />
         <EventDescriptionArea />

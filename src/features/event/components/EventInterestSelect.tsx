@@ -1,5 +1,10 @@
 "use client";
-import { FormControl, FormItem, FormLabel } from "@/components/ui/form";
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+} from "@/components/ui/form";
 import { useEventStore } from "@/store/useEventStore";
 import { useEffect, useState } from "react";
 import Select, { MultiValue, StylesConfig } from "react-select";
@@ -108,22 +113,27 @@ const EventInterestSelect = () => {
   };
 
   return (
-    <FormItem>
-      <FormLabel className="sr-only">Event Type</FormLabel>
-      <FormControl>
-        <Select
-          isMulti
-          value={selectedInterests}
-          options={options}
-          onChange={handleChange}
-          placeholder="Select Interests..."
-          className="react-select-container"
-          classNamePrefix="react-select"
-          styles={customStyles}
-          menuPlacement="top" // Open dropdown upwards
-        />
-      </FormControl>
-    </FormItem>
+    <FormField
+      name="interests"
+      render={({}) => (
+        <FormItem>
+          <FormLabel className="sr-only">Event Type</FormLabel>
+          <FormControl>
+            <Select
+              isMulti
+              value={selectedInterests}
+              options={options}
+              onChange={handleChange}
+              placeholder="Select Interests..."
+              className="react-select-container"
+              classNamePrefix="react-select"
+              styles={customStyles}
+              menuPlacement="top" // Open dropdown upwards
+            />
+          </FormControl>
+        </FormItem>
+      )}
+    />
   );
 };
 

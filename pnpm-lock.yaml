@@ -95,6 +95,9 @@ dependencies:
   react-google-autocomplete:
     specifier: ^2.7.3
     version: 2.7.3(react@18.3.1)
+  react-google-places-autocomplete:
+    specifier: ^4.0.1
+    version: 4.0.1(@types/react@18.3.3)(react-dom@18.3.1)(react@18.3.1)
   react-hook-form:
     specifier: ^7.52.2
     version: 7.52.2(react@18.3.1)
@@ -7120,6 +7123,23 @@ packages:
       react: 18.3.1
     dev: false
 
+  /react-google-places-autocomplete@4.0.1(@types/react@18.3.3)(react-dom@18.3.1)(react@18.3.1):
+    resolution: {integrity: sha512-BA/+8eky8pvnXjuBiqcPS6CdwPOEM38hjUkh+iOE6D/ctrQVTTFdm5ylQyWOGOD+1LeuB/INE8SwIp/Gre0A9A==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
+    dependencies:
+      '@googlemaps/js-api-loader': 1.16.2
+      '@types/google.maps': 3.55.2
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+      react-select: 5.8.0(@types/react@18.3.3)(react-dom@18.3.1)(react@18.3.1)
+      use-debounce: 3.4.3(react@18.3.1)
+    transitivePeerDependencies:
+      - '@types/react'
+      - supports-color
+    dev: false
+
   /react-hook-form@7.52.2(react@18.3.1):
     resolution: {integrity: sha512-pqfPEbERnxxiNMPd0bzmt1tuaPcVccywFDpyk2uV5xCIBphHV5T8SVnX9/o3kplPE1zzKt77+YIoq+EMwJp56A==}
     engines: {node: '>=18.0.0'}
@@ -8186,6 +8206,14 @@ packages:
       '@types/react': 18.3.3
       react: 18.3.1
       tslib: 2.6.3
+    dev: false
+
+  /use-debounce@3.4.3(react@18.3.1):
+    resolution: {integrity: sha512-nxy+opOxDccWfhMl36J5BSCTpvcj89iaQk2OZWLAtBJQj7ISCtx1gh+rFbdjGfMl6vtCZf6gke/kYvrkVfHMoA==}
+    peerDependencies:
+      react: '>=16.8.0'
+    dependencies:
+      react: 18.3.1
     dev: false
 
   /use-isomorphic-layout-effect@1.1.2(@types/react@18.3.3)(react@18.3.1):
