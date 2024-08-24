@@ -15,7 +15,7 @@ const UserProfile = () => {
   const [isMounted, setIsMounted] = useState(false);
   const router = useRouter();
   const user = useAuthStore((state) => state.user);
-  const sectionStyle = "flex flex-col items-start gap-4  p-0";
+  const sectionStyle = "flex flex-col items-start gap-4 p-0";
   useEffect(() => {
     // Ensure the component is mounted before checking the user state
     setIsMounted(true);
@@ -95,60 +95,71 @@ const UserProfile = () => {
           </div>
           <Section className={sectionStyle}>
             <h3 className="font-bold text-lg">Upcoming Events</h3>
-            {user?.upcomingEvents && user.upcomingEvents.length > 0 ? (
-              user.upcomingEvents.map((event, index) => (
-                <Event key={index} event={event} />
-              ))
-            ) : (
-              <p>
-                There are no events at the moment. Explore Evento and create or
-                host an event easily.
-              </p>
-            )}
+
+            <div className="flex flex-col gap-4 md:flex-row  md:py-4 md:overflow-x-auto md:max-w-full">
+              {user?.upcomingEvents && user.upcomingEvents.length > 0 ? (
+                user.upcomingEvents.map((event, index) => (
+                  <>
+                    <Event key={index} event={event} />
+                  </>
+                ))
+              ) : (
+                <p>
+                  There are no events at the moment. Explore Evento and create
+                  or host an event easily.
+                </p>
+              )}
+            </div>
           </Section>
 
           <Section className={sectionStyle}>
             <h3 className="font-bold text-lg">Events Hosting</h3>
-            {user.filteredUpcomingEventsAttened &&
-            user.filteredUpcomingEventsAttened?.length > 0 ? (
-              user.filteredUpcomingEventsAttened.map((event, index) => (
-                <Event key={index} event={event} />
-              ))
-            ) : (
-              <p>
-                There are no events at the moment. Explore Evento and create or
-                host an event easily
-              </p>
-            )}
+            <div className="flex flex-col gap-4 md:py-4 md:flex-row md:overflow-x-auto md:max-w-full">
+              {user.filteredUpcomingEventsAttened &&
+              user.filteredUpcomingEventsAttened?.length > 0 ? (
+                user.filteredUpcomingEventsAttened.map((event, index) => (
+                  <Event key={index} event={event} />
+                ))
+              ) : (
+                <p>
+                  There are no events at the moment. Explore Evento and create
+                  or host an event easily
+                </p>
+              )}
+            </div>
           </Section>
 
           <Section className={sectionStyle}>
             <h3 className="font-bold text-lg">Past Events Attended</h3>
-            {user.filteredPastEventsAttended &&
-            user.filteredPastEventsAttended?.length > 0 ? (
-              user.filteredPastEventsAttended.map((event, index) => (
-                <Event key={index} event={event} />
-              ))
-            ) : (
-              <p>
-                There are no events at the moment. Explore Evento and create or
-                host an event easily
-              </p>
-            )}
+            <div className="flex flex-col gap-4 md:py-4 md:flex-row md:overflow-x-auto md:max-w-full">
+              {user.filteredPastEventsAttended &&
+              user.filteredPastEventsAttended?.length > 0 ? (
+                user.filteredPastEventsAttended.map((event, index) => (
+                  <Event key={index} event={event} />
+                ))
+              ) : (
+                <p>
+                  There are no events at the moment. Explore Evento and create
+                  or host an event easily
+                </p>
+              )}
+            </div>
           </Section>
 
           <Section className={sectionStyle}>
             <h3 className="font-bold text-lg">Past Events Hosted</h3>
-            {user.pastEvents && user.pastEvents?.length > 0 ? (
-              user.pastEvents.map((event, index) => (
-                <Event key={index} event={event} />
-              ))
-            ) : (
-              <p>
-                There are no events at the moment. Explore Evento and create or
-                host an event easily
-              </p>
-            )}
+            <div className="flex flex-col gap-4 md:flex-row md:py-4 md:overflow-x-auto md:max-w-full">
+              {user.pastEvents && user.pastEvents?.length > 0 ? (
+                user.pastEvents.map((event, index) => (
+                  <Event key={index} event={event} />
+                ))
+              ) : (
+                <p>
+                  There are no events at the moment. Explore Evento and create
+                  or host an event easily
+                </p>
+              )}
+            </div>
           </Section>
         </Section>
       ) : (

@@ -1,13 +1,11 @@
 import AvatarStack from "@/components/AvatarStack";
-import GoingIcon from "@/components/icons/GoingIncon";
-import ShareIcon from "@/components/icons/ShareIcon";
 import TruncatedText from "@/components/TruncatedText";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
-import { Bookmark, MapPin } from "lucide-react";
+import { MapPin } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
+import EventActionIcons from "./EventActionIcons";
 
 const Event = ({ classname, event }: { classname?: string; event: any }) => {
   // Convertir la date ISO en objet Date
@@ -23,7 +21,7 @@ const Event = ({ classname, event }: { classname?: string; event: any }) => {
   return (
     <div
       className={cn(
-        "bg-muted border shadow rounded p-4 w-full flex flex-col gap-4",
+        "bg-muted border shadow rounded p-4 w-full flex flex-col gap-4 md:min-w-96",
         classname,
       )}
     >
@@ -65,7 +63,7 @@ const Event = ({ classname, event }: { classname?: string; event: any }) => {
       </div>
       <div className="flex flex-col gap-2">
         <h3>{event.title}</h3>
-        <ul>
+        <ul className="flex gap-2 flex-wrap">
           {event.interest.map((interest: any) => (
             <li
               key={interest._id}
@@ -92,21 +90,12 @@ const Event = ({ classname, event }: { classname?: string; event: any }) => {
         </div>
         <TruncatedText text={event.details.description} />
       </div>
-      <div className="flex justify-between">
+      <div className="flex justify-between items-center">
         <div>
           <AvatarStack eventId={event._id} />{" "}
         </div>
-        <div className="flex gap-2">
-          <GoingIcon />
-          <Bookmark
-            className="text-eventoPurple"
-            onClick={() => alert("Enregistrera dans calendar, in progress...")}
-          />
-          <ShareIcon />
-        </div>
+        <EventActionIcons event={event} />
       </div>
-
-      <Link href="#">download to calendar</Link>
     </div>
   );
 };

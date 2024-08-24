@@ -1,5 +1,5 @@
 const GoingIcon = ({
-  fill = "#606CCF",
+  fill = "#5f6fed",
   strokeWidth = 2,
   className = "",
   ...props
