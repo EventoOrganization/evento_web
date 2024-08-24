@@ -14,16 +14,20 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
 }) => {
   const handleGoing = (event: any) => {
     alert("Going action for event:");
+    console.log(event);
+
     // Add your logic here
   };
 
   const handleBooking = (event: any) => {
     alert("Booking action for event:");
+    console.log(event);
     // Add your logic here
   };
 
   const handleSend = (event: any) => {
     alert("Send action for event:");
+    console.log(event);
     // Add your logic here
   };
   return (

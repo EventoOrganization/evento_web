@@ -30,13 +30,13 @@ const AvatarStack = ({ eventId }: { eventId: string }) => {
           },
         );
         const result = await response.json();
-        console.log("Result:", result);
+        // console.log("Result:", result);
 
         // Access the array within the 'body' key
         const friendList = result.body.filter(
           (friend: Friend) => friend.status === "follow-each-other",
         );
-        console.log("Friend list:", friendList);
+        // console.log("Friend list:", friendList);
 
         setFriends(friendList);
       } catch (error) {

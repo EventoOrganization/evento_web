@@ -30,7 +30,7 @@ const UserProfile = () => {
   const fetchUserProfile = async (token: string) => {
     try {
       const profileResponse = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/users/getProfile`,
+        `${process.env.NEXT_PUBLIC_API_URL}/users/getProfileUser`,
         {
           method: "GET",
           headers: {
@@ -45,6 +45,7 @@ const UserProfile = () => {
       if (!profileResponse.ok) {
         throw new Error(profileResult.message || "Profile fetch failed");
       }
+      console.log(profileResult);
 
       const userInfo = profileResult.body.userInfo;
       const userToStore = {

@@ -12,10 +12,10 @@ import { handleFieldChange } from "../eventActions";
 
 const EventLocationInput = () => {
   const eventStore = useEventStore();
-  const setEventField = eventStore.setEventField;
   const { register } = useFormContext();
   const [location, setLocation] = useState<any>("");
   console.log(location);
+  setLocation("");
   // const handlePlaceSelected = (value: any) => {
   //   if (value) {
 
@@ -28,9 +28,9 @@ const EventLocationInput = () => {
   //         const lat = results[0].geometry.location.lat();
   //         const lng = results[0].geometry.location.lng();
 
-  //         setEventField("location", address);
-  //         setEventField("latitude", lat.toString());
-  //         setEventField("longitude", lng.toString());
+  //         eventStore.setEventField("location", address);
+  //         eventStore.setEventField("latitude", lat.toString());
+  //         eventStore.setEventField("longitude", lng.toString());
   //       } else {
   //         console.error(
   //           "Geocode was not successful for the following reason: " + status,
