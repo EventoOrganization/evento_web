@@ -18,19 +18,20 @@ const UserProfile = () => {
   const setUser = useAuthStore((state) => state.setUser);
   const sectionStyle = "flex flex-col items-start gap-4 p-0";
   useEffect(() => {
-    // Ensure the component is mounted before checking the user state
-    setIsMounted(true);
-
-    if (isMounted && user) {
+    // Assurez-vous que le composant est monté et que l'utilisateur est disponible
+    if (!isMounted && user) {
+      setIsMounted(true);
       fetchUserProfile(user.token);
     } else if (isMounted && !user) {
       router.push("/signin");
     }
-  }, []);
+  }, [isMounted, user]);
   const fetchUserProfile = async (token: string) => {
+    console.log("Fetching user profile...");
+
     try {
       const profileResponse = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/users/getProfileUser`,
+        `${process.env.NEXT_PUBLIC_API_URL}/users/getProfile`,
         {
           method: "GET",
           headers: {
@@ -45,7 +46,7 @@ const UserProfile = () => {
       if (!profileResponse.ok) {
         throw new Error(profileResult.message || "Profile fetch failed");
       }
-      console.log(profileResult);
+      console.log("Full profile data received:", profileResult.body);
 
       const userInfo = profileResult.body.userInfo;
       const userToStore = {
@@ -56,7 +57,7 @@ const UserProfile = () => {
         countryCode: userInfo.countryCode,
         createdAt: userInfo.createdAt,
         updatedAt: userInfo.updatedAt,
-        profileImage: userInfo.profileImage,
+        profileImage: userInfo.profileImage, // Par exemple, vous pouvez choisir de stocker ou non certaines informations
         eventsAttended: profileResult.body.totalEventAttended,
         following: profileResult.body.following,
         upcomingEvents: profileResult.body.upcomingEvents,
@@ -66,7 +67,7 @@ const UserProfile = () => {
           profileResult.body.filteredPastEventsAttended,
         pastEvents: profileResult.body.pastEvents,
       };
-
+      console.log("User data to store in Zustand:", userToStore);
       setUser(userToStore);
     } catch (error) {
       console.error("Error fetching profile:", error);
