@@ -6,16 +6,13 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useEventStore } from "@/store/useEventStore";
-import { useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { handleFieldChange } from "../eventActions";
 
 const EventLocationInput = () => {
   const eventStore = useEventStore();
   const { register } = useFormContext();
-  const [location, setLocation] = useState<any>("");
-  console.log(location);
-  setLocation("");
+  // const [location, setLocation] = useState<any>("");
   // const handlePlaceSelected = (value: any) => {
   //   if (value) {
 
