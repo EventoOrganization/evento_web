@@ -3,7 +3,7 @@ import ComingSoon from "@/components/ComingSoon";
 import Section from "@/components/layout/Section";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import Event from "@/features/event/components/Event";
+import EventSection from "@/features/event/components/EventSection";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/store/useAuthStore";
 import { eventoBtn } from "@/styles/eventoBtn";
@@ -16,7 +16,8 @@ const UserProfile = () => {
   const router = useRouter();
   const user = useAuthStore((state) => state.user);
   const setUser = useAuthStore((state) => state.setUser);
-  const sectionStyle = "flex flex-col items-start gap-4 p-0";
+  const sectionStyle =
+    "flex flex-col items-start gap-4 p-0 md:bg-muted/50 p-4 lg: max-w-7xl";
   useEffect(() => {
     // Assurez-vous que le composant est monté et que l'utilisateur est disponible
     if (!isMounted && user) {
@@ -156,81 +157,30 @@ const UserProfile = () => {
               </li>
             </ul>
           </div>
-          <Section className={sectionStyle}>
-            <h3 className="font-bold text-lg">
-              Upcoming Events ({user?.upcomingEvents?.length})
-            </h3>
-            <div className="flex flex-col gap-4 md:flex-row md:py-4 md:overflow-x-auto md:max-w-full overflow-y-auto max-h-[450px] md:max-h-full">
-              {user?.upcomingEvents && user.upcomingEvents.length > 0 ? (
-                user.upcomingEvents.map((event, index) => (
-                  <>
-                    <Event key={index} event={event} />
-                  </>
-                ))
-              ) : (
-                <p>
-                  There are no events at the moment. Explore Evento and create
-                  or host an event easily.
-                </p>
-              )}
-            </div>
-          </Section>
-
-          <Section className={sectionStyle}>
-            <h3 className="font-bold text-lg">
-              Events Hosting ({user?.filteredUpcomingEventsAttened?.length})
-            </h3>
-            <div className="flex flex-col gap-4 md:flex-row md:py-4 md:overflow-x-auto md:max-w-full overflow-y-auto max-h-[450px] md:max-h-full">
-              {user.filteredUpcomingEventsAttened &&
-              user.filteredUpcomingEventsAttened?.length > 0 ? (
-                user.filteredUpcomingEventsAttened.map((event, index) => (
-                  <Event key={index} event={event} />
-                ))
-              ) : (
-                <p>
-                  There are no events at the moment. Explore Evento and create
-                  or host an event easily
-                </p>
-              )}
-            </div>
-          </Section>
-
-          <Section className={sectionStyle}>
-            <h3 className="font-bold text-lg">
-              Past Events Attended ({user?.filteredPastEventsAttended?.length})
-            </h3>
-            <div className="flex flex-col gap-4 md:flex-row md:py-4 md:overflow-x-auto md:max-w-full overflow-y-auto max-h-[450px] md:max-h-full">
-              {user.filteredPastEventsAttended &&
-              user.filteredPastEventsAttended?.length > 0 ? (
-                user.filteredPastEventsAttended.map((event, index) => (
-                  <Event key={index} event={event} />
-                ))
-              ) : (
-                <p>
-                  There are no events at the moment. Explore Evento and create
-                  or host an event easily
-                </p>
-              )}
-            </div>
-          </Section>
-
-          <Section className={sectionStyle}>
-            <h3 className="font-bold text-lg">
-              Past Events Hosted ({user?.pastEvents?.length})
-            </h3>
-            <div className="flex flex-col gap-4 md:flex-row md:py-4 md:overflow-x-auto md:max-w-full overflow-y-auto max-h-[450px] md:max-h-full">
-              {user.pastEvents && user.pastEvents?.length > 0 ? (
-                user.pastEvents.map((event, index) => (
-                  <Event key={index} event={event} />
-                ))
-              ) : (
-                <p>
-                  There are no events at the moment. Explore Evento and create
-                  or host an event easily
-                </p>
-              )}
-            </div>
-          </Section>
+          <EventSection
+            title="Upcoming Events"
+            events={user?.upcomingEvents}
+            sectionStyle={sectionStyle}
+            noEventsMessage="There are no events at the moment. Explore Evento and create or host an event easily."
+          />
+          <EventSection
+            title="Events Hosting"
+            events={user?.filteredUpcomingEventsAttened}
+            sectionStyle={sectionStyle}
+            noEventsMessage="There are no events at the moment. Explore Evento and create or host an event easily."
+          />
+          <EventSection
+            title="Past Events Attended"
+            events={user?.filteredPastEventsAttended}
+            sectionStyle={sectionStyle}
+            noEventsMessage="There are no events at the moment. Explore Evento and create or host an event easily."
+          />
+          <EventSection
+            title="Past Events Hosted"
+            events={user?.pastEvents}
+            sectionStyle={sectionStyle}
+            noEventsMessage="There are no events at the moment. Explore Evento and create or host an event easily."
+          />
         </Section>
       ) : (
         <>

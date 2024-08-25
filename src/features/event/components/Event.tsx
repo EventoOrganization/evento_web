@@ -23,7 +23,7 @@ const Event = ({ className, event }: { className?: string; event?: any }) => {
   return (
     <div
       className={cn(
-        "bg-muted border shadow rounded p-4 w-full flex flex-col h-fit gap-4 md:min-w-96",
+        "bg-muted border shadow rounded p-4 w-full flex flex-col h-fit gap-4",
         className,
       )}
     >
