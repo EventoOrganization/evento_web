@@ -1,6 +1,13 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useEventStore } from "@/store/useEventStore";
@@ -8,15 +15,12 @@ import { useEffect, useState } from "react";
 import { FormProvider, useForm, useFormContext } from "react-hook-form";
 import EventDateInput from "./EventDateInput";
 import EventDescriptionArea from "./EventDescriptionArea";
-import EventImageUpload from "./EventImageUpload";
 import EventInterestSelect from "./EventInterestSelect";
-import EventLocationInput from "./EventLocationInput";
 import EventModeSelect from "./EventModeSelect";
 import EventNameInput from "./EventNameInput";
 import EventTitleInput from "./EventTitleInput";
 import EventTypeSelect from "./EventTypeSelect";
-import EventVideoUpload from "./EventVideoUpload";
-
+import OpenStreetMapGeocoding from "./OpenStreetMapGeocoding";
 const useSyncFormWithStore = () => {
   const { reset } = useFormContext();
   const eventStore = useEventStore();
@@ -36,8 +40,6 @@ const useSyncFormWithStore = () => {
       location: eventStore.location || "",
       latitude: eventStore.latitude || "",
       longitude: eventStore.longitude || "",
-      images: [],
-      video: "",
     });
   }, [eventStore, reset]);
 };
@@ -61,15 +63,36 @@ const EventForm = ({ className }: { className?: string }) => {
       location: eventStore.location || "",
       latitude: eventStore.latitude || "",
       longitude: eventStore.longitude || "",
-      images: [],
+      images: [] as File[],
       video: "",
     },
   });
 
   const onSubmit = async (data: any) => {
-    data.interestId = JSON.stringify(data.interestId);
-    console.log(isFetching);
-    console.log("data", data);
+    console.log("Initial form data:", data);
+    const formData = new FormData();
+    formData.append("title", data.title);
+    formData.append("name", data.name);
+    formData.append("date", data.date);
+    formData.append("endDate", data.endDate);
+    formData.append("startTime", data.startTime);
+    formData.append("endTime", data.endTime);
+    formData.append("description", data.description);
+    formData.append("mode", data.mode);
+    formData.append("interestId", JSON.stringify(data.interestId));
+    formData.append("location", data.location);
+    formData.append("latitude", data.latitude);
+    formData.append("longitude", data.longitude);
+    // Ajout des fichiers d'image au FormData
+    data.images.forEach((image: File, index: number) => {
+      formData.append(`images[${index}]`, image);
+    });
+
+    // Ajout de la vidéo au FormData
+    if (data.video) {
+      formData.append("video", data.video);
+    }
+    console.log("Form Data before submission:", Array.from(formData.entries()));
 
     setIsFetching(true);
     try {
@@ -80,9 +103,8 @@ const EventForm = ({ className }: { className?: string }) => {
           credentials: "include",
           headers: {
             Authorization: `Bearer ${user?.token}`,
-            "Content-Type": "application/json",
           },
-          body: JSON.stringify(data),
+          body: formData,
         },
       );
 
@@ -104,7 +126,7 @@ const EventForm = ({ className }: { className?: string }) => {
       <form
         onSubmit={form.handleSubmit(onSubmit)}
         className={cn(
-          "space-y-4 max-w-xl mx-auto bg-muted shadow border p-4 rounded-lg",
+          "space-y-4 max-w-xl mx-auto bg-muted shadow border p-4 rounded-lg mb-20",
           className,
         )}
       >
@@ -115,9 +137,60 @@ const EventForm = ({ className }: { className?: string }) => {
           <EventModeSelect />
         </div>
         <EventDateInput />
-        <EventLocationInput />
-        <EventVideoUpload />
-        <EventImageUpload />
+        {/* <EventLocationInput /> */}
+        <OpenStreetMapGeocoding />
+        <FormField
+          name="images"
+          control={form.control}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Images</FormLabel>
+              <FormControl>
+                <Input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={(e) => {
+                    const files = Array.from(e.target.files || []);
+                    field.onChange(files);
+                  }}
+                />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          name="video"
+          control={form.control}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Video</FormLabel>
+              <FormControl>
+                <Input
+                  type="file"
+                  accept="video/*"
+                  multiple
+                  onChange={(e) => {
+                    const files = Array.from(e.target.files || []);
+                    field.onChange(files);
+                  }}
+                />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+        {/* <FormField
+          name="images"
+          control={form.control}
+          render={({ field }) => <EventImageUpload field={field} />}
+        />
+
+        <FormField
+          name="video"
+          control={form.control}
+          render={({ field }) => <EventVideoUpload field={field} />}
+        /> */}
         <EventDescriptionArea />
         <EventInterestSelect />
         <Button
