@@ -107,7 +107,7 @@ const EventForm = ({ className }: { className?: string }) => {
         )}
       >
         <EventTitleInput />
-        {form.formState.defaultValues?.name ? null : <EventNameInput />}
+        <EventNameInput />
         <div className="grid grid-cols-2 gap-4">
           <EventTypeSelect />
           <EventModeSelect />

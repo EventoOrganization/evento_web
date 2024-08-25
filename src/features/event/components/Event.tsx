@@ -46,7 +46,9 @@ const Event = ({ className, event }: { className?: string; event?: any }) => {
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
           )}
-          <h4 className="ml-2">{event ? event?.user.name : user?.name}</h4>
+          <h4 className="ml-2">
+            {user?.name ? event?.user.name : createEvent?.name}
+          </h4>
         </div>
         <span className="ml-4">
           {event

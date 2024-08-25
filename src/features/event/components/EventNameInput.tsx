@@ -25,7 +25,7 @@ const EventNameInput = ({ className }: { className?: string }) => {
               placeholder="Name"
               {...field}
               {...register("name")}
-              value={eventStore.title}
+              value={eventStore.name}
               className={cn("", className)}
               onChange={(e) => {
                 field.onChange(e);
