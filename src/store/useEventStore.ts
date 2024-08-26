@@ -1,6 +1,10 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-
+export type TimeSlot = {
+  date: string;
+  startTime: string;
+  endTime: string;
+};
 type EventFormState = {
   title: string;
   eventType: "public" | "private";
@@ -19,6 +23,7 @@ type EventFormState = {
   coHosts?: string[];
   guests?: string[];
   interestId?: string[];
+  timeSlots: TimeSlot[];
   privateEventLink?: string;
   imagePreviews?: string[];
   videoPreview?: string;
@@ -52,6 +57,7 @@ export const useEventStore = create<EventFormState>()(
       location: undefined,
       imagePreviews: [],
       videoPreview: undefined,
+      timeSlots: [],
       coHosts: [],
       guests: [],
       interestId: [],
@@ -78,6 +84,7 @@ export const useEventStore = create<EventFormState>()(
           imagePreviews: [],
           videoPreview: undefined,
           coHosts: [],
+          timeSlots: [],
           guests: [],
           interestId: [],
           questions: [],

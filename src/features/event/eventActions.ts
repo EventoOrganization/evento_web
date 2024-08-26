@@ -11,6 +11,17 @@ export const clearEventForm = () => {
   const eventStore = useEventStore.getState();
   eventStore.clearEventForm();
 };
-export const handleFieldChange = (key: string, value: any) => {
-  setEventField(key, value);
+export const handleFieldChange = (key: string, value: any, index?: number) => {
+  useEventStore.setState((state) => {
+    // Vérifiez si la clé est 'timeSlots' et qu'un index est fourni
+    if (key === "timeSlots" && index !== undefined) {
+      // Mettez à jour le timeslot spécifique
+      const updatedTimeSlots = [...state.timeSlots];
+      updatedTimeSlots[index] = { ...updatedTimeSlots[index], ...value };
+      return { timeSlots: updatedTimeSlots };
+    } else {
+      // Sinon, mettez à jour le champ normal
+      return { [key]: value };
+    }
+  });
 };

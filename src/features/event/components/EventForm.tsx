@@ -31,7 +31,7 @@ const useSyncFormWithStore = () => {
       eventType: eventStore.eventType || "public",
       name: eventStore.name || user?.name,
       date: eventStore.date || "",
-      endDate: eventStore.endDate || eventStore.date || "",
+      endDate: eventStore.endDate ? eventStore.endDate : eventStore.date || "",
       startTime: eventStore.startTime || "",
       endTime: eventStore.endTime || "",
       description: eventStore.description || "",
@@ -40,6 +40,7 @@ const useSyncFormWithStore = () => {
       location: eventStore.location || "",
       latitude: eventStore.latitude || "",
       longitude: eventStore.longitude || "",
+      timeSlots: eventStore.timeSlots || [],
     });
   }, [eventStore, reset]);
 };
@@ -54,7 +55,7 @@ const EventForm = ({ className }: { className?: string }) => {
       eventType: eventStore.eventType || "public",
       name: eventStore.name || user?.name,
       date: eventStore.date || "",
-      endDate: eventStore.endDate || eventStore.date || "",
+      endDate: eventStore.endDate ? eventStore.endDate : eventStore.date || "",
       startTime: eventStore.startTime || "",
       endTime: eventStore.endTime || "",
       description: eventStore.description || "",
@@ -63,12 +64,16 @@ const EventForm = ({ className }: { className?: string }) => {
       location: eventStore.location || "",
       latitude: eventStore.latitude || "",
       longitude: eventStore.longitude || "",
+      timeSlots: eventStore.timeSlots || [],
       images: [] as File[],
       video: "",
     },
   });
+  console.log(form.formState.defaultValues);
 
   const onSubmit = async (data: any) => {
+    console.log(isFetching);
+
     console.log("Initial form data:", data);
     const formData = new FormData();
     formData.append("title", data.title);
@@ -83,6 +88,7 @@ const EventForm = ({ className }: { className?: string }) => {
     formData.append("location", data.location);
     formData.append("latitude", data.latitude);
     formData.append("longitude", data.longitude);
+    formData.append("timeSlots", JSON.stringify(data.timeSlots));
     // Ajout des fichiers d'image au FormData
     data.images.forEach((image: File, index: number) => {
       formData.append(`images[${index}]`, image);
