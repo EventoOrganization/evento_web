@@ -77,6 +77,9 @@ dependencies:
   clsx:
     specifier: ^2.1.1
     version: 2.1.1
+  cookie:
+    specifier: ^0.6.0
+    version: 0.6.0
   framer-motion:
     specifier: ^11.3.24
     version: 11.3.28(react-dom@18.3.1)(react@18.3.1)
@@ -148,6 +151,9 @@ devDependencies:
   '@testing-library/react':
     specifier: ^16.0.0
     version: 16.0.0(@testing-library/dom@10.4.0)(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1)(react@18.3.1)
+  '@types/cookie':
+    specifier: ^0.6.0
+    version: 0.6.0
   '@types/jest':
     specifier: ^29.5.12
     version: 29.5.12
@@ -2817,6 +2823,10 @@ packages:
     requiresBuild: true
     dependencies:
       '@types/node': 20.14.13
+    dev: true
+
+  /@types/cookie@0.6.0:
+    resolution: {integrity: sha512-4Kh9a6B2bQciAhf7FSuMRRkUWecJgJu9nPnx3yzpsfXX/c50REIqpHY4C82bXP90qrLtXtkDxTZosYO3UpOwlA==}
     dev: true
 
   /@types/google.maps@3.55.2:

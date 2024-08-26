@@ -2,6 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 
 export function middleware(req: NextRequest) {
   const pathname = req.nextUrl.pathname;
+  console.log("Cookies reçus:", req.cookies);
   const token = req.cookies.get("token");
   console.log("Token:", token);
 
@@ -28,5 +29,5 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/profile/:path*", "/dashboard/:path*"], // Routes that need authentication
+  matcher: ["/profile/:path*"], // Routes that need authentication
 };

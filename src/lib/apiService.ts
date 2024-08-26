@@ -5,7 +5,7 @@ const apiUrl = getApiUrl();
 const apiService = {
   async fetchToken(): Promise<string | null> {
     try {
-      const response = await fetch("/api/auth");
+      const response = await fetch(`/api/auth`);
       if (!response.ok) {
         throw new Error("Failed to fetch token");
       }
@@ -16,10 +16,13 @@ const apiService = {
       return null;
     }
   },
-
   async get<T>(endpoint: string): Promise<T> {
     try {
       const token = await this.fetchToken();
+      // const user = useAuthStore.getState().user;
+      // const token = user?.token;
+      console.log("Token:", token);
+
       const response = await fetch(`${apiUrl}${endpoint}`, {
         headers: {
           Authorization: `Bearer ${token}`,

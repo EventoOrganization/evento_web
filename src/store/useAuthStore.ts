@@ -8,7 +8,7 @@ type User = {
   countryCode?: string;
   createdAt?: string;
   updatedAt?: string;
-  // token: string;
+  token: string;
   profileImage?: string;
   eventsAttended?: number;
   following?: number;
