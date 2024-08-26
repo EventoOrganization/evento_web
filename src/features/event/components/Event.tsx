@@ -20,6 +20,25 @@ const Event = ({ className, event }: { className?: string; event?: any }) => {
     };
     return date.toLocaleDateString("en-US", options);
   };
+  const renderDate = () => {
+    const startDate = event ? event?.details.date : createEvent?.date;
+    const endDate = event ? event?.details.endDate : createEvent?.endDate;
+
+    if (startDate === endDate || !endDate) {
+      return `le ${formatDate(startDate)}`; // Single date
+    } else {
+      const startDay = new Date(startDate).getDate();
+      const endDay = new Date(endDate).getDate();
+      const startDateObj = new Date(startDate);
+
+      const monthYear = startDateObj.toLocaleDateString("fr-FR", {
+        month: "long",
+        year: "numeric",
+      });
+
+      return `du ${startDay} au ${endDay} ${monthYear}`; // e.g., "du 10 au 12 septembre 2024"
+    }
+  };
   return (
     <div
       className={cn(
@@ -51,9 +70,10 @@ const Event = ({ className, event }: { className?: string; event?: any }) => {
           </h4>
         </div>
         <span className="ml-4">
-          {event
+          {/* {event
             ? formatDate(event?.details.date)
-            : formatDate(createEvent?.date)}
+            : formatDate(createEvent?.date)} */}
+          {renderDate()}
         </span>
       </div>
       <div

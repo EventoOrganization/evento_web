@@ -1,4 +1,3 @@
-"use client";
 import {
   FormControl,
   FormField,
@@ -7,19 +6,25 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useEventStore } from "@/store/useEventStore";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { handleFieldChange } from "../eventActions";
 
 const EventDateInput = () => {
   const eventStore = useEventStore((state) => state);
-  const { register } = useFormContext();
-  const [timeSlots, setTimeSlots] = useState([
-    { date: "", startTime: "", endTime: "" },
-  ]);
+  const { register, setValue } = useFormContext();
+  const [timeSlots, setTimeSlots] = useState(
+    eventStore.timeSlots.length > 0
+      ? eventStore.timeSlots
+      : [{ date: "", startTime: "", endTime: "" }],
+  );
   const [useMultipleTimes, setUseMultipleTimes] = useState(false);
 
-  // Fonction pour générer une plage de dates entre deux dates
+  useEffect(() => {
+    // Ensure the form's timeSlots are kept in sync with the store's timeSlots
+    setValue("timeSlots", timeSlots);
+  }, [timeSlots, setValue]);
+
   const generateDateRange = (start: string, end: string) => {
     const dates = [];
     const currentDate = new Date(start);
@@ -43,34 +48,25 @@ const EventDateInput = () => {
     setUseMultipleTimes(!useMultipleTimes);
     if (!useMultipleTimes && eventStore.date && eventStore.endDate) {
       const dateRange = generateDateRange(eventStore.date, eventStore.endDate);
-      console.log("Generating timeSlots for multiple dates:", dateRange);
       const slots = dateRange.map((date) => ({
         date,
         startTime: eventStore.startTime,
         endTime: eventStore.endTime,
       }));
       setTimeSlots(slots);
-      slots.forEach((slot, index) => {
-        handleFieldChange("timeSlots", slot, index);
-      });
+      eventStore.setEventField("timeSlots", slots);
     } else {
-      const dateRange = generateDateRange(
-        eventStore.date,
-        eventStore.endDate || "",
-      );
-      console.log("Resetting to single timeSlot for date:", eventStore.date);
-      const slots = dateRange.map((date) => ({
-        date,
-        startTime: eventStore.startTime,
-        endTime: eventStore.endTime,
-      }));
+      const slots = [
+        {
+          date: eventStore.date,
+          startTime: eventStore.startTime,
+          endTime: eventStore.endTime,
+        },
+      ];
       setTimeSlots(slots);
-      slots.forEach((slot, index) => {
-        handleFieldChange("timeSlots", slot, index);
-      });
+      eventStore.setEventField("timeSlots", slots);
     }
   };
-  // console.log("Rendering timeSlots:", timeSlots);
 
   return (
     <>
@@ -210,6 +206,7 @@ const EventDateInput = () => {
                     { startTime: e.target.value },
                     index,
                   );
+                  eventStore.setEventField("timeSlots", newTimeSlots); // Sync with store
                 }}
               />
               <Input
@@ -227,6 +224,7 @@ const EventDateInput = () => {
                     { endTime: e.target.value },
                     index,
                   );
+                  eventStore.setEventField("timeSlots", newTimeSlots); // Sync with store
                 }}
               />
             </div>
