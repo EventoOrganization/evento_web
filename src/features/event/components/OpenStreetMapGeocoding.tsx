@@ -16,6 +16,8 @@ const OpenStreetMapGeocoding = () => {
   const [locationInput, setLocationInput] = useState("");
 
   const handleGeocode = async (address: string) => {
+    console.log(locationInput);
+
     const response = await fetch(
       `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(address)}&format=json&limit=1`,
     );
@@ -39,7 +41,7 @@ const OpenStreetMapGeocoding = () => {
               placeholder="Full Address"
               {...field}
               {...register("location")}
-              value={locationInput}
+              value={eventStore.location}
               onChange={(e) => {
                 const newLocation = e.target.value;
                 setLocationInput(newLocation);

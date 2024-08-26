@@ -148,6 +148,8 @@ const EventForm = ({ className }: { className?: string }) => {
         <EventDateInput />
         {/* <EventLocationInput /> */}
         <OpenStreetMapGeocoding />
+        <EventDescriptionArea />
+        <EventInterestSelect />
         <FormField
           name="images"
           control={form.control}
@@ -200,8 +202,7 @@ const EventForm = ({ className }: { className?: string }) => {
           control={form.control}
           render={({ field }) => <EventVideoUpload field={field} />}
         /> */}
-        <EventDescriptionArea />
-        <EventInterestSelect />
+
         <Button
           type="submit"
           className="bg-evento-gradient-button rounded-full text-xs self-center px-8 mt-20 text-white"
