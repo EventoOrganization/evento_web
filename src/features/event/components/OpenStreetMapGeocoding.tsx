@@ -5,6 +5,7 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 import { useEventStore } from "@/store/useEventStore";
 import { useState } from "react";
 import { useFormContext } from "react-hook-form";
@@ -62,11 +63,15 @@ const OpenStreetMapGeocoding = () => {
                 setLocationInput(newLocation);
                 field.onChange(e);
                 handleFieldChange("location", newLocation);
+                handleGeocode(newLocation);
               }}
-              onBlur={() => {
-                handleGeocode(locationInput);
-              }}
-              className=""
+              // onBlur={() => {
+              //   handleGeocode(locationInput);
+              // }}
+              className={cn({
+                "bg-evento-gradient ":
+                  eventStore.longitude && eventStore.latitude,
+              })}
             />
           </FormControl>
         </FormItem>

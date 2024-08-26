@@ -1,5 +1,5 @@
 "use client";
-import apiService from "@/lib/apiService";
+import { useAuthStore } from "@/store/useAuthStore";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -11,7 +11,7 @@ interface Friend {
   status: string;
 }
 const AvatarStack = ({ eventId }: { eventId: string }) => {
-  const token = apiService.fetchToken();
+  const token = useAuthStore((state) => state.user?.token);
   const [friends, setFriends] = useState<Friend[]>([]);
   const pathname = usePathname();
   useEffect(() => {

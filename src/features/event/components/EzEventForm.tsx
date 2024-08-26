@@ -1,4 +1,4 @@
-import apiService from "@/lib/apiService";
+import { useAuthStore } from "@/store/useAuthStore";
 import { useState } from "react";
 
 const EzEventForm = () => {
@@ -6,7 +6,7 @@ const EzEventForm = () => {
   const [description, setDescription] = useState("");
   const [images, setImages] = useState<File[]>([]);
   const [video, setVideo] = useState<File | null>(null);
-  const token = apiService.fetchToken();
+  const user = useAuthStore((state) => state.user);
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     console.log("Images sélectionnées:", images);
@@ -30,9 +30,10 @@ const EzEventForm = () => {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/users/createEventAndRSVPform`,
         {
+          credentials: "include",
           method: "POST",
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${user?.token}`,
           },
           body: formData,
         },

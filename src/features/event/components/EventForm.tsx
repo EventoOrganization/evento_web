@@ -8,7 +8,6 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import apiService from "@/lib/apiService";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useEventStore } from "@/store/useEventStore";
@@ -83,8 +82,6 @@ const EventForm = ({ className }: { className?: string }) => {
     // setIsFetching(true);
 
     try {
-      const token = await apiService.fetchToken();
-      console.log("Token:", token);
       console.log("Form Data:", form.getValues("images"));
       const formData = new FormData();
       formData.append("title", data.title);
@@ -124,12 +121,12 @@ const EventForm = ({ className }: { className?: string }) => {
       );
 
       const result = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/users/createEventAndRSVPfor`,
+        `${process.env.NEXT_PUBLIC_API_URL}/users/createEventAndRSVPform`,
         {
           method: "POST",
           credentials: "include",
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${user?.token}`,
           },
           body: formData,
         },
@@ -141,6 +138,7 @@ const EventForm = ({ className }: { className?: string }) => {
       console.error("Error creating event:", error);
     } finally {
       // setIsFetching(false);
+      eventStore.clearEventForm();
     }
   };
 

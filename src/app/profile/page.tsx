@@ -3,9 +3,7 @@ import ComingSoon from "@/components/ComingSoon";
 import Section from "@/components/layout/Section";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { API } from "@/constants";
 import EventSection from "@/features/event/components/EventSection";
-import apiService from "@/lib/apiService";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/store/useAuthStore";
 import { eventoBtn } from "@/styles/eventoBtn";
@@ -23,26 +21,40 @@ const UserProfile = () => {
     "flex flex-col items-start gap-4 p-0 md:bg-muted/50 p-4 lg: max-w-7xl";
   const fetchUserProfile = async () => {
     try {
-      const profileResult = await apiService.get<any>(API.getProfile);
-      const userInfo = profileResult.body.userInfo;
+      const profileResult = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/users/getProfile`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user?.token}`,
+          },
+        },
+      );
+
+      if (!profileResult.ok) {
+        throw new Error(profileResult.statusText);
+      }
+      const profileData = await profileResult.json();
+      const userInfo = profileData.body.userInfo;
 
       const userToStore = {
+        ...user,
         _id: userInfo._id,
         name: userInfo.name,
         email: userInfo.email,
-        token: userInfo.token,
+        token: user?.token || "",
         countryCode: userInfo.countryCode,
         createdAt: userInfo.createdAt,
         updatedAt: userInfo.updatedAt,
         profileImage: userInfo.profileImage,
-        eventsAttended: profileResult.body.totalEventAttended,
-        following: profileResult.body.following,
-        upcomingEvents: profileResult.body.upcomingEvents,
+        eventsAttended: profileData.body.totalEventAttended,
+        following: profileData.body.following,
+        upcomingEvents: profileData.body.upcomingEvents,
         filteredUpcomingEventsAttened:
-          profileResult.body.filteredUpcomingEventsAttened,
-        filteredPastEventsAttended:
-          profileResult.body.filteredPastEventsAttended,
-        pastEvents: profileResult.body.pastEvents,
+          profileData.body.filteredUpcomingEventsAttened,
+        filteredPastEventsAttended: profileData.body.filteredPastEventsAttended,
+        pastEvents: profileData.body.pastEvents,
       };
       setUser(userToStore);
       setProfileFetched(true);
@@ -52,6 +64,9 @@ const UserProfile = () => {
   };
 
   useEffect(() => {
+    if (!user) {
+      router.push("/signin");
+    }
     if (!profileFetched && user) {
       setIsMounted(true);
       fetchUserProfile();

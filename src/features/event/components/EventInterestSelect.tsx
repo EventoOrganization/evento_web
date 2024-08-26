@@ -5,8 +5,7 @@ import {
   FormItem,
   FormLabel,
 } from "@/components/ui/form";
-import { API } from "@/constants";
-import apiService from "@/lib/apiService";
+import { useAuthStore } from "@/store/useAuthStore";
 import { useEventStore } from "@/store/useEventStore";
 import { useEffect, useState } from "react";
 import Select, { MultiValue, StylesConfig } from "react-select";
@@ -25,6 +24,7 @@ type Interest = {
 
 const EventInterestSelect = () => {
   const eventStore = useEventStore();
+  const token = useAuthStore((state) => state.user?.token);
   const [options, setOptions] = useState<Option[]>([]);
   const [selectedInterests, setSelectedInterests] = useState<
     MultiValue<Option>
@@ -33,10 +33,24 @@ const EventInterestSelect = () => {
   useEffect(() => {
     const fetchInterests = async () => {
       try {
-        const result = await apiService.get<any>(API.getInterestListing);
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/users/getInterestsListing`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            credentials: "include",
+          },
+        );
 
-        // Accédez directement au tableau dans `body`
+        const result = await response.json();
+        if (!response.ok) {
+          throw new Error(result.message || "Failed to fetch interests");
+        }
         const data: Interest[] = result.body;
+        console.log("Interests:", data);
 
         if (Array.isArray(data)) {
           const mappedOptions = data.map((interest) => ({
@@ -122,6 +136,7 @@ const EventInterestSelect = () => {
           <FormControl>
             <Select
               isMulti
+              instanceId={"interests"}
               value={selectedInterests}
               options={options}
               onChange={handleChange}

@@ -5,7 +5,7 @@ const apiUrl = getApiUrl();
 const apiService = {
   async fetchToken(): Promise<string | null> {
     try {
-      const response = await fetch(`/api/auth`);
+      const response = await fetch(`/api/auth`, { credentials: "include" });
       if (!response.ok) {
         throw new Error("Failed to fetch token");
       }
@@ -24,6 +24,7 @@ const apiService = {
       console.log("Token:", token);
 
       const response = await fetch(`${apiUrl}${endpoint}`, {
+        credentials: "include",
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -48,6 +49,7 @@ const apiService = {
         throw new Error("Token is not available");
       }
       const response = await fetch(`${apiUrl}${endpoint}`, {
+        credentials: "include",
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -74,6 +76,7 @@ const apiService = {
         throw new Error("Token is not available");
       }
       const response = await fetch(`${apiUrl}${endpoint}`, {
+        credentials: "include",
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -99,6 +102,7 @@ const apiService = {
         throw new Error("Token is not available");
       }
       const response = await fetch(`${apiUrl}${endpoint}`, {
+        credentials: "include",
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,

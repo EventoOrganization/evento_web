@@ -7,8 +7,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { API } from "@/constants";
-import apiService from "@/lib/apiService";
+import { useAuthStore } from "@/store/useAuthStore";
 import { useEventStore } from "@/store/useEventStore";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import Image from "next/image";
@@ -28,12 +27,28 @@ const EventGuestsModal = () => {
   const [guests, setGuests] = useState<User[]>([]);
   const eventStore = useEventStore();
   const [isOpen, setIsOpen] = useState(false);
+  const token = useAuthStore((state) => state.user?.token);
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await apiService.get<any>(API.followStatusForAllUsers);
-        console.log("Users:", response);
-        const sortedUsers = response.body.sort((a: any, b: any) => {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/users/userListWithFollowingStatus`,
+          {
+            credentials: "include",
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const result = await response.json(); // Parse la réponse en JSON
+        console.log("Users:", result);
+        const sortedUsers = result.body.sort((a: any, b: any) => {
           if (
             a.status === "follow-each-other" &&
             b.status !== "follow-each-other"
