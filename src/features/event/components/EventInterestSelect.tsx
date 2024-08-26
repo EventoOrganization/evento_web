@@ -5,6 +5,8 @@ import {
   FormItem,
   FormLabel,
 } from "@/components/ui/form";
+import { API } from "@/constants";
+import apiService from "@/lib/apiService";
 import { useEventStore } from "@/store/useEventStore";
 import { useEffect, useState } from "react";
 import Select, { MultiValue, StylesConfig } from "react-select";
@@ -29,13 +31,11 @@ const EventInterestSelect = () => {
   >([]);
 
   useEffect(() => {
-    // Fetch interests from the API
     const fetchInterests = async () => {
       try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/users/getInterestsListing`,
-        );
-        const result = await response.json();
+        const result = await apiService.get<any>(API.getInterestListing);
+
+        // Accédez directement au tableau dans `body`
         const data: Interest[] = result.body;
 
         if (Array.isArray(data)) {
@@ -59,7 +59,7 @@ const EventInterestSelect = () => {
           );
           setSelectedInterests(initialSelectedInterests as MultiValue<Option>);
         } else {
-          console.error("Unexpected data format:", data);
+          console.error("Unexpected data format:", result);
         }
       } catch (error) {
         console.error("Error fetching interests:", error);

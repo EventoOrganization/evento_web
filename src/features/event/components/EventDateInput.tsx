@@ -70,7 +70,7 @@ const EventDateInput = () => {
       });
     }
   };
-  console.log("Rendering timeSlots:", timeSlots);
+  // console.log("Rendering timeSlots:", timeSlots);
 
   return (
     <>

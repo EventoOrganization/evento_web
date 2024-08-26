@@ -71,7 +71,7 @@ const Event = ({ className, event }: { className?: string; event?: any }) => {
               "https://evento-media-bucket.s3.ap-southeast-2.amazonaws.com/evento-bg.jpg"
             }
             alt="event image"
-            layout="fill"
+            fill
             objectFit="cover"
             className={cn({
               "opacity-20":

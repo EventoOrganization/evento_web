@@ -1,4 +1,5 @@
 "use client";
+import apiService from "@/lib/apiService";
 import { useAuthStore } from "@/store/useAuthStore";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -11,8 +12,8 @@ interface Friend {
   status: string;
 }
 const AvatarStack = ({ eventId }: { eventId: string }) => {
+  const token = apiService.fetchToken();
   const [friends, setFriends] = useState<Friend[]>([]);
-  const token = useAuthStore((state) => state.user?.token || null);
   const pathname = usePathname();
   useEffect(() => {
     if (pathname === "/create-event") return;

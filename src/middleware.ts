@@ -1,26 +1,32 @@
-import type { NextRequest } from "next/server";
-//export { default } from "next-auth/middleware";
-import NextAuth from "next-auth";
-import { authConfig } from "../auth.config";
+import { NextResponse, type NextRequest } from "next/server";
 
-export default NextAuth(authConfig).auth;
+export function middleware(req: NextRequest) {
+  const pathname = req.nextUrl.pathname;
+  const token = req.cookies.get("token");
+  console.log("Token:", token);
 
-export function middleware(request: NextRequest) {
-  const pathname = request.nextUrl.pathname;
-
-  // // `/_next/` and `/api/` are ignored by the watcher, but we need to ignore files in `public` manually.
-  // // If you have one
+  // Ignore requests to public files, API routes, and Next.js internals
   if (
+    pathname.startsWith("/_next") ||
+    pathname.startsWith("/api") ||
     [
       "/manifest.json",
       "/favicon.ico",
-      // Your other files in `public`
+      // Add more public files if needed
     ].includes(pathname)
-  )
-    return;
+  ) {
+    return NextResponse.next();
+  }
+
+  // Redirect to login if the token is missing
+  if (!token) {
+    return NextResponse.redirect(new URL("/signin", req.url));
+  }
+
+  // Proceed with the request if the token is present
+  return NextResponse.next();
 }
 
 export const config = {
-  // Matcher ignoring `/_next/` and `/api/`
-  matcher: ["/((?!_next).*)"],
+  matcher: ["/profile/:path*", "/dashboard/:path*"], // Routes that need authentication
 };

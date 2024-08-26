@@ -1,4 +1,4 @@
-import { useAuthStore } from "@/store/useAuthStore";
+import apiService from "@/lib/apiService";
 import { useState } from "react";
 
 const EzEventForm = () => {
@@ -6,7 +6,7 @@ const EzEventForm = () => {
   const [description, setDescription] = useState("");
   const [images, setImages] = useState<File[]>([]);
   const [video, setVideo] = useState<File | null>(null);
-  const user = useAuthStore((state) => state.user);
+  const token = apiService.fetchToken();
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     console.log("Images sélectionnées:", images);
@@ -32,7 +32,7 @@ const EzEventForm = () => {
         {
           method: "POST",
           headers: {
-            Authorization: `Bearer ${user?.token}`,
+            Authorization: `Bearer ${token}`,
           },
           body: formData,
         },

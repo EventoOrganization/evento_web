@@ -47,7 +47,7 @@ const EventImageUpload = ({ field }: { field: any }) => {
             alt={`Image preview ${index}`}
             width={100}
             height={100}
-            layout="responsive"
+            fill
             className="rounded-lg"
           />
         ))}

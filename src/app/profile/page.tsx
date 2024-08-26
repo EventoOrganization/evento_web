@@ -3,7 +3,9 @@ import ComingSoon from "@/components/ComingSoon";
 import Section from "@/components/layout/Section";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { API } from "@/constants";
 import EventSection from "@/features/event/components/EventSection";
+import apiService from "@/lib/apiService";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/store/useAuthStore";
 import { eventoBtn } from "@/styles/eventoBtn";
@@ -14,51 +16,25 @@ import { useEffect, useState } from "react";
 const UserProfile = () => {
   const [isMounted, setIsMounted] = useState(false);
   const router = useRouter();
+  const [profileFetched, setProfileFetched] = useState(false);
   const user = useAuthStore((state) => state.user);
   const setUser = useAuthStore((state) => state.setUser);
   const sectionStyle =
     "flex flex-col items-start gap-4 p-0 md:bg-muted/50 p-4 lg: max-w-7xl";
-  useEffect(() => {
-    // Assurez-vous que le composant est monté et que l'utilisateur est disponible
-    if (!isMounted && user) {
-      setIsMounted(true);
-      fetchUserProfile(user.token);
-    } else if (isMounted && !user) {
-      router.push("/signin");
-    }
-  }, [isMounted, user]);
-  const fetchUserProfile = async (token: string) => {
-    console.log("Fetching user profile...");
-
+  const fetchUserProfile = async () => {
     try {
-      const profileResponse = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/users/getProfile`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          credentials: "include",
-        },
-      );
-
-      const profileResult = await profileResponse.json();
-      if (!profileResponse.ok) {
-        throw new Error(profileResult.message || "Profile fetch failed");
-      }
-      console.log("Full profile data received:", profileResult.body);
-
+      const profileResult = await apiService.get<any>(API.getProfile);
       const userInfo = profileResult.body.userInfo;
+
       const userToStore = {
-        _id: user?._id || "",
-        name: user?.name || "",
-        email: user?.email || "",
-        token: user?.token || "",
+        _id: userInfo._id,
+        name: userInfo.name,
+        email: userInfo.email,
+        token: userInfo.token,
         countryCode: userInfo.countryCode,
         createdAt: userInfo.createdAt,
         updatedAt: userInfo.updatedAt,
-        profileImage: userInfo.profileImage, // Par exemple, vous pouvez choisir de stocker ou non certaines informations
+        profileImage: userInfo.profileImage,
         eventsAttended: profileResult.body.totalEventAttended,
         following: profileResult.body.following,
         upcomingEvents: profileResult.body.upcomingEvents,
@@ -68,25 +44,32 @@ const UserProfile = () => {
           profileResult.body.filteredPastEventsAttended,
         pastEvents: profileResult.body.pastEvents,
       };
-      console.log("User data to store in Zustand:", userToStore);
       setUser(userToStore);
+      setProfileFetched(true);
     } catch (error) {
       console.error("Error fetching profile:", error);
-      router.push("/signin"); // Redirect to sign-in if the profile fetch fails
+      router.push("/signin");
     }
   };
 
-  // Prevent rendering until the component is mounted
+  useEffect(() => {
+    if (!profileFetched && user) {
+      setIsMounted(true);
+      fetchUserProfile();
+    } else if (!user) {
+      router.push("/signin");
+    }
+  }, [user, profileFetched]); // Add profileFetched to dependencies
+
   if (!isMounted) {
     return null;
   }
 
   return (
     <>
-      {/* <h2 className="mt-10 md:mt-32">My profile</h2> */}
       {user ? (
         <Section className="gap-6 md:mt-20">
-          <div className="w-full  max-w-xl mx-auto">
+          <div className="w-full max-w-xl mx-auto">
             <div className="flex items-center w-full justify-evenly pt-10 pb-4 ">
               {user.profileImage ? (
                 <Image
@@ -98,7 +81,7 @@ const UserProfile = () => {
                 />
               ) : (
                 <div className="flex flex-col">
-                  <Avatar className="w-20 h-20  md:w-36 md:h-36">
+                  <Avatar className="w-20 h-20 md:w-36 md:h-36">
                     <AvatarImage src="https://github.com/shadcn.png" />
                     <AvatarFallback>CN</AvatarFallback>
                   </Avatar>
@@ -117,7 +100,7 @@ const UserProfile = () => {
               </div>
             </div>
 
-            <ul className=" flex justify-evenly">
+            <ul className="flex justify-evenly">
               <li>
                 <Button
                   className={eventoBtn}

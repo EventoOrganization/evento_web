@@ -8,6 +8,7 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import apiService from "@/lib/apiService";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useEventStore } from "@/store/useEventStore";
@@ -25,6 +26,7 @@ const useSyncFormWithStore = () => {
   const { reset } = useFormContext();
   const eventStore = useEventStore();
   const user = useAuthStore((state) => state.user);
+
   useEffect(() => {
     reset({
       title: eventStore.title || "",
@@ -49,6 +51,7 @@ const EventForm = ({ className }: { className?: string }) => {
   const [isFetching, setIsFetching] = useState(false);
   const eventStore = useEventStore();
   const user = useAuthStore((state) => state.user);
+  const token = apiService.fetchToken();
   const form = useForm({
     defaultValues: {
       title: eventStore.title || "",
@@ -69,7 +72,7 @@ const EventForm = ({ className }: { className?: string }) => {
       video: "",
     },
   });
-  console.log(form.formState.defaultValues);
+  console.log("Form default values:", form.formState.defaultValues);
 
   const onSubmit = async (data: any) => {
     console.log(isFetching);
@@ -108,7 +111,7 @@ const EventForm = ({ className }: { className?: string }) => {
           method: "POST",
           credentials: "include",
           headers: {
-            Authorization: `Bearer ${user?.token}`,
+            Authorization: `Bearer ${token}`,
           },
           body: formData,
         },
