@@ -13,6 +13,7 @@ import { useAuthStore } from "@/store/useAuthStore";
 import { useEventStore } from "@/store/useEventStore";
 import { useEffect, useState } from "react";
 import { FormProvider, useForm, useFormContext } from "react-hook-form";
+import EventCoHostsModal from "./EventCoHostsModal";
 import EventDateInput from "./EventDateInput";
 import EventDescriptionArea from "./EventDescriptionArea";
 import EventGuestsModal from "./EventGuestsModal";
@@ -44,6 +45,7 @@ const useSyncFormWithStore = () => {
       longitude: eventStore.longitude || "",
       timeSlots: eventStore.timeSlots || [],
       guests: eventStore.guests || [],
+      coHosts: eventStore.coHosts || [],
       images: getValues("images") || [], // Preserve current images
       video: getValues("video") || "", // Preserve current video
     });
@@ -73,6 +75,7 @@ const EventForm = ({ className }: { className?: string }) => {
       longitude: eventStore.longitude || "",
       timeSlots: eventStore.timeSlots || [],
       guests: eventStore.guests || [],
+      coHosts: eventStore.coHosts || [],
       images: [] as File[],
       video: "",
     },
@@ -98,6 +101,7 @@ const EventForm = ({ className }: { className?: string }) => {
       formData.append("longitude", data.longitude);
       formData.append("timeSlots", JSON.stringify(data.timeSlots));
       formData.append("guests", JSON.stringify(data.guests));
+      formData.append("coHosts", JSON.stringify(data.coHosts));
       const images = form.getValues("images");
       console.log("Images in form before submission:", images);
       if (data.images && data.images.length > 0) {
@@ -108,10 +112,8 @@ const EventForm = ({ className }: { className?: string }) => {
       if (data.video) {
         formData.append("video", data.video[0]);
       }
-      // formData.append("eventType", data.eventType);
       // formData.append("questions", JSON.stringify(data.questions));
       // formData.append("additionalField", JSON.stringify(data.additionalField));
-      // formData.append("coHosts", JSON.stringify(data.coHosts));
       // formData.append("privateEventLink", data.privateEventLink);
       // formData.append("guestsAllowFriend", data.guestsAllowFriend);
       // formData.append("includeChat", data.includeChat);
@@ -228,7 +230,10 @@ const EventForm = ({ className }: { className?: string }) => {
             </FormItem>
           )}
         />
-        <EventGuestsModal />
+        <div>
+          <EventGuestsModal />
+          <EventCoHostsModal />
+        </div>
         <Button
           type="submit"
           className="bg-evento-gradient-button rounded-full text-xs self-center px-8 mt-20 text-white"
