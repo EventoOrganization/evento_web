@@ -2,7 +2,6 @@
 import Section from "@/components/layout/Section";
 import Event from "@/features/event/components/Event";
 import EventForm from "@/features/event/components/EventForm";
-import { useState } from "react";
 const CreateEventPage = () => {
   return (
     <Section className="md:mt-24 py-4 max-w-5xl w-full">
