@@ -44,6 +44,7 @@ const useSyncFormWithStore = () => {
       latitude: eventStore.latitude || "",
       longitude: eventStore.longitude || "",
       timeSlots: eventStore.timeSlots || [],
+      guests: eventStore.guests || [],
       images: getValues("images") || [], // Preserve current images
       video: getValues("video") || "", // Preserve current video
     });
@@ -72,6 +73,7 @@ const EventForm = ({ className }: { className?: string }) => {
       latitude: eventStore.latitude || "",
       longitude: eventStore.longitude || "",
       timeSlots: eventStore.timeSlots || [],
+      guests: eventStore.guests || [],
       images: [] as File[],
       video: "",
     },
@@ -98,6 +100,7 @@ const EventForm = ({ className }: { className?: string }) => {
       formData.append("latitude", data.latitude);
       formData.append("longitude", data.longitude);
       formData.append("timeSlots", JSON.stringify(data.timeSlots));
+      formData.append("guests", JSON.stringify(data.guests));
       const images = form.getValues("images");
       console.log("Images in form before submission:", images);
       if (data.images && data.images.length > 0) {
@@ -111,7 +114,6 @@ const EventForm = ({ className }: { className?: string }) => {
       // formData.append("eventType", data.eventType);
       // formData.append("questions", JSON.stringify(data.questions));
       // formData.append("additionalField", JSON.stringify(data.additionalField));
-      // formData.append("guests", JSON.stringify(data.guests));
       // formData.append("coHosts", JSON.stringify(data.coHosts));
       // formData.append("privateEventLink", data.privateEventLink);
       // formData.append("guestsAllowFriend", data.guestsAllowFriend);

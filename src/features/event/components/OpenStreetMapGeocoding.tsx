@@ -15,15 +15,23 @@ const OpenStreetMapGeocoding = () => {
   const { register } = useFormContext();
   const [locationInput, setLocationInput] = useState("");
 
-  const handleGeocode = async (address: string) => {
+  const handleGeocode = async (address: string, retries = 3) => {
     try {
       const response = await fetch(
         `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(address)}&format=json&limit=1`,
       );
       if (!response.ok) {
-        throw new Error("Geocoding failed");
+        if (retries > 0) {
+          console.warn(
+            `Geocoding failed, retrying... (${retries} retries left)`,
+          );
+          return handleGeocode(address, retries - 1); // Retry the fetch
+        } else {
+          throw new Error("Geocoding failed after multiple attempts");
+        }
       }
       const data = await response.json();
+
       if (data && data.length > 0) {
         const { lat, lon } = data[0];
         handleFieldChange("latitude", lat);
