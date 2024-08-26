@@ -47,6 +47,7 @@ const OpenStreetMapGeocoding = () => {
                 handleFieldChange("location", newLocation);
                 handleGeocode(newLocation);
               }}
+              className=""
             />
           </FormControl>
         </FormItem>

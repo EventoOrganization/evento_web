@@ -47,7 +47,7 @@ const Event = ({ className, event }: { className?: string; event?: any }) => {
             </Avatar>
           )}
           <h4 className="ml-2">
-            {user?.name ? event?.user.name : createEvent?.name}
+            {user?.name ? createEvent?.name : event?.user.name}
           </h4>
         </div>
         <span className="ml-4">
@@ -93,18 +93,30 @@ const Event = ({ className, event }: { className?: string; event?: any }) => {
             </li>
           ))}
         </ul>
-        <div className="flex justify-between">
+        <div className="flex justify-between items-center">
           <Button
             variant={"ghost"}
-            className="flex gap-2 pl-0"
+            className="flex gap-2 pl-0 max-w-xs truncate"
             onClick={() => {
-              alert("Ouvrira google map, in progress...");
+              const address = event
+                ? event?.details.location
+                : createEvent?.location;
+              if (address) {
+                const encodedAddress = encodeURIComponent(address);
+                const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`;
+                window.open(googleMapsUrl, "_blank");
+              } else {
+                alert("Address is not available.");
+              }
             }}
           >
             <MapPin fill="#7858C3" className="text-muted" />
-            {event ? event?.details.location : createEvent?.location}
+            <span className="truncate">
+              {event ? event?.details.location : createEvent?.location}
+            </span>
           </Button>
-          <p>
+
+          <p className="whitespace-nowrap">
             {event?.details.startTime || createEvent?.startTime} -{" "}
             {event?.details.endTime || createEvent?.endTime}
           </p>
