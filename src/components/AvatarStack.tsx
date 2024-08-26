@@ -1,6 +1,5 @@
 "use client";
 import apiService from "@/lib/apiService";
-import { useAuthStore } from "@/store/useAuthStore";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";

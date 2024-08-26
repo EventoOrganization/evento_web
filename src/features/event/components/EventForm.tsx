@@ -104,11 +104,17 @@ const EventForm = ({ className }: { className?: string }) => {
           formData.append(`images[${index}]`, image);
         });
       }
-
       if (data.video) {
         formData.append("video", data.video[0]);
       }
-
+      // formData.append("eventType", data.eventType);
+      // formData.append("questions", JSON.stringify(data.questions));
+      // formData.append("additionalField", JSON.stringify(data.additionalField));
+      // formData.append("guests", JSON.stringify(data.guests));
+      // formData.append("coHosts", JSON.stringify(data.coHosts));
+      // formData.append("privateEventLink", data.privateEventLink);
+      // formData.append("guestsAllowFriend", data.guestsAllowFriend);
+      // formData.append("includeChat", data.includeChat);
       console.log(
         "Form Data before submission:",
         Array.from(formData.entries()),

@@ -69,12 +69,7 @@ const Event = ({ className, event }: { className?: string; event?: any }) => {
             {user?.name ? createEvent?.name : event?.user.name}
           </h4>
         </div>
-        <span className="ml-4">
-          {/* {event
-            ? formatDate(event?.details.date)
-            : formatDate(createEvent?.date)} */}
-          {renderDate()}
-        </span>
+        <span className="ml-4">{renderDate()}</span>
       </div>
       <div
         className={cn("", {
