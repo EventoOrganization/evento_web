@@ -29,7 +29,7 @@ const apiService = {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const result = (await response.json()) as T;
-      console.log("result", result);
+      // console.log("result", result);
       return result;
     } catch (error) {
       console.error(error);

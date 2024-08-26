@@ -115,7 +115,7 @@ const EventForm = ({ className }: { className?: string }) => {
       );
 
       const result = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/users/createEventAndRSVPform`,
+        `${process.env.NEXT_PUBLIC_API_URL}/users/createEventAndRSVPfor`,
         {
           method: "POST",
           credentials: "include",

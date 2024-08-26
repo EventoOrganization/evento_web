@@ -16,17 +16,24 @@ const OpenStreetMapGeocoding = () => {
   const [locationInput, setLocationInput] = useState("");
 
   const handleGeocode = async (address: string) => {
-    console.log(locationInput);
-
-    const response = await fetch(
-      `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(address)}&format=json&limit=1`,
-    );
-    const data = await response.json();
-    if (data && data.length > 0) {
-      const { lat, lon } = data[0];
-      eventStore.setEventField("latitude", lat);
-      eventStore.setEventField("longitude", lon);
-      console.log({ lat, lon });
+    try {
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(address)}&format=json&limit=1`,
+      );
+      if (!response.ok) {
+        throw new Error("Geocoding failed");
+      }
+      const data = await response.json();
+      if (data && data.length > 0) {
+        const { lat, lon } = data[0];
+        handleFieldChange("latitude", lat);
+        handleFieldChange("longitude", lon);
+        console.log({ lat, lon });
+      } else {
+        console.warn("No geocoding results found");
+      }
+    } catch (error) {
+      console.error("Error during geocoding:", error);
     }
   };
 
@@ -47,7 +54,9 @@ const OpenStreetMapGeocoding = () => {
                 setLocationInput(newLocation);
                 field.onChange(e);
                 handleFieldChange("location", newLocation);
-                handleGeocode(newLocation);
+              }}
+              onBlur={() => {
+                handleGeocode(locationInput);
               }}
               className=""
             />
