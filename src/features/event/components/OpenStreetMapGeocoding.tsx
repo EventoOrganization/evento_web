@@ -65,9 +65,9 @@ const OpenStreetMapGeocoding = () => {
                 handleFieldChange("location", newLocation);
                 handleGeocode(newLocation);
               }}
-              // onBlur={() => {
-              //   handleGeocode(locationInput);
-              // }}
+              onBlur={() => {
+                handleGeocode(locationInput);
+              }}
               className={cn({
                 "bg-evento-gradient ":
                   eventStore.longitude && eventStore.latitude,
