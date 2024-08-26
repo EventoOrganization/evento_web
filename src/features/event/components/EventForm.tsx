@@ -22,6 +22,7 @@ import EventModeSelect from "./EventModeSelect";
 import EventNameInput from "./EventNameInput";
 import EventTitleInput from "./EventTitleInput";
 import EventTypeSelect from "./EventTypeSelect";
+import GuestsAllowFriendCheckbox from "./GuestsAllowFriendCheckbox";
 import OpenStreetMapGeocoding from "./OpenStreetMapGeocoding";
 const useSyncFormWithStore = () => {
   const { reset, getValues } = useFormContext();
@@ -46,6 +47,7 @@ const useSyncFormWithStore = () => {
       timeSlots: eventStore.timeSlots || [],
       guests: eventStore.guests || [],
       coHosts: eventStore.coHosts || [],
+      guestsAllowFriend: eventStore.guestsAllowFriend || false,
       images: getValues("images") || [], // Preserve current images
       video: getValues("video") || "", // Preserve current video
     });
@@ -76,6 +78,7 @@ const EventForm = ({ className }: { className?: string }) => {
       timeSlots: eventStore.timeSlots || [],
       guests: eventStore.guests || [],
       coHosts: eventStore.coHosts || [],
+      guestsAllowFriend: eventStore.guestsAllowFriend || false,
       images: [] as File[],
       video: "",
     },
@@ -102,6 +105,7 @@ const EventForm = ({ className }: { className?: string }) => {
       formData.append("timeSlots", JSON.stringify(data.timeSlots));
       formData.append("guests", JSON.stringify(data.guests));
       formData.append("coHosts", JSON.stringify(data.coHosts));
+      formData.append("guestsAllowFriend", data.guestsAllowFriend);
       const images = form.getValues("images");
       console.log("Images in form before submission:", images);
       if (data.images && data.images.length > 0) {
@@ -115,7 +119,6 @@ const EventForm = ({ className }: { className?: string }) => {
       // formData.append("questions", JSON.stringify(data.questions));
       // formData.append("additionalField", JSON.stringify(data.additionalField));
       // formData.append("privateEventLink", data.privateEventLink);
-      // formData.append("guestsAllowFriend", data.guestsAllowFriend);
       // formData.append("includeChat", data.includeChat);
       console.log(
         "Form Data before submission:",
@@ -123,7 +126,7 @@ const EventForm = ({ className }: { className?: string }) => {
       );
 
       const result = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/users/createEventAndRSVPform`,
+        `${process.env.NEXT_PUBLIC_API_URL}/users/createEventAndRSVPfor`,
         {
           method: "POST",
           credentials: "include",
@@ -140,7 +143,7 @@ const EventForm = ({ className }: { className?: string }) => {
       console.error("Error creating event:", error);
     } finally {
       // setIsFetching(false);
-      eventStore.clearEventForm();
+      // eventStore.clearEventForm();
     }
   };
 
@@ -234,6 +237,7 @@ const EventForm = ({ className }: { className?: string }) => {
           <EventGuestsModal />
           <EventCoHostsModal />
         </div>
+        <GuestsAllowFriendCheckbox />
         <Button
           type="submit"
           className="bg-evento-gradient-button rounded-full text-xs self-center px-8 mt-20 text-white"

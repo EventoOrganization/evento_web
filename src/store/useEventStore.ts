@@ -38,6 +38,7 @@ type EventFormState = {
     required: boolean;
     options?: string[];
   }[];
+  guestsAllowFriend: boolean;
   additionalField?: any;
   setEventField: (key: string, value: any) => void;
   clearEventForm: () => void;
@@ -69,6 +70,7 @@ export const useEventStore = create<EventFormState>()(
       interests: [],
       questions: [],
       additionalField: undefined,
+      guestsAllowFriend: false,
       setEventField: (key, value) =>
         set((state) => ({ ...state, [key]: value })),
       clearEventForm: () =>
@@ -95,6 +97,7 @@ export const useEventStore = create<EventFormState>()(
           interestId: [],
           interests: [],
           questions: [],
+          guestsAllowFriend: false,
           additionalField: undefined,
         }),
     }),
