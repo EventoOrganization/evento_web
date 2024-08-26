@@ -16,6 +16,7 @@ import { useEffect, useState } from "react";
 import { FormProvider, useForm, useFormContext } from "react-hook-form";
 import EventDateInput from "./EventDateInput";
 import EventDescriptionArea from "./EventDescriptionArea";
+import EventGuestsModal from "./EventGuestsModal";
 import EventInterestSelect from "./EventInterestSelect";
 import EventModeSelect from "./EventModeSelect";
 import EventNameInput from "./EventNameInput";
@@ -227,7 +228,8 @@ const EventForm = ({ className }: { className?: string }) => {
             </FormItem>
           )}
         />
-
+        {/* <EventGuestsInput /> */}
+        <EventGuestsModal />
         <Button
           type="submit"
           className="bg-evento-gradient-button rounded-full text-xs self-center px-8 mt-20 text-white"

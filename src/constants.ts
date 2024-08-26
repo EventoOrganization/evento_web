@@ -53,6 +53,8 @@ export const API = {
   allowAllGuestUploadPhotoVideo: "users/allowAllGuestUploadPhotoVideo",
   updateEvent: "users/updateEvent",
   clearNotification: "users/clearNotification",
+  allUserListing: "users/allUserListing",
+  followStatusForAllUsers: "users/userListWithFollowingStatus",
 };
 
 export const dateFormat = {

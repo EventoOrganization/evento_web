@@ -28,6 +28,7 @@ const apiService = {
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
+      console.log(apiUrl + endpoint, status, response);
       const result = (await response.json()) as T;
       // console.log("result", result);
       return result;
@@ -54,8 +55,8 @@ const apiService = {
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
+      console.log(apiUrl + endpoint, status, response);
       const result = (await response.json()) as T;
-      console.log("result", result);
       return result;
     } catch (error) {
       console.error(error);
@@ -80,6 +81,7 @@ const apiService = {
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
+      console.log(apiUrl + endpoint, status, response);
       return await response.json();
     } catch (error) {
       console.error(error);
@@ -102,6 +104,7 @@ const apiService = {
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
+      console.log(apiUrl + endpoint, status, response);
       return await response.json();
     } catch (error) {
       console.error(error);
