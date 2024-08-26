@@ -230,7 +230,6 @@ const EventForm = ({ className }: { className?: string }) => {
             </FormItem>
           )}
         />
-        {/* <EventGuestsInput /> */}
         <EventGuestsModal />
         <Button
           type="submit"
