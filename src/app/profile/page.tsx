@@ -48,7 +48,6 @@ const UserProfile = () => {
       setProfileFetched(true);
     } catch (error) {
       console.error("Error fetching profile:", error);
-      router.push("/signin");
     }
   };
 
@@ -56,8 +55,6 @@ const UserProfile = () => {
     if (!profileFetched && user) {
       setIsMounted(true);
       fetchUserProfile();
-    } else if (!user) {
-      router.push("/signin");
     }
   }, [user, profileFetched]); // Add profileFetched to dependencies
 

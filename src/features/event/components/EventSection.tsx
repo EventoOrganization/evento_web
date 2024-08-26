@@ -1,5 +1,5 @@
 import Section from "@/components/layout/Section";
-import Event from "./Event";
+import EventPreview from "./EventPreview";
 const EventSection = ({
   title,
   events,
@@ -13,7 +13,7 @@ const EventSection = ({
     <div className="flex flex-col gap-4 md:grid md:grid-cols-2 lg:grid-cols-3 md:overflow-x-auto w-full overflow-y-auto">
       {events && events.length > 0 ? (
         events.map((event: any, index: number) => (
-          <Event key={index} event={event} />
+          <EventPreview key={index} event={event} />
         ))
       ) : (
         <p>{noEventsMessage}</p>

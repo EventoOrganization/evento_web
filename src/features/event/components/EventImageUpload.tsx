@@ -15,6 +15,7 @@ const EventImageUpload = () => {
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const eventStore = useEventStore();
   const { register } = useFormContext();
+
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
     console.log("Selected Images:", files);
@@ -22,6 +23,9 @@ const EventImageUpload = () => {
     const imageUrls = files.map((file) => URL.createObjectURL(file));
     setImagePreviews(imageUrls);
     eventStore.setEventField("imagePreviews", imageUrls);
+
+    // Log the files here, ensuring they're handled correctly
+    console.log("Images in Form State:", files);
   };
 
   useEffect(() => {
@@ -42,12 +46,13 @@ const EventImageUpload = () => {
           <FormControl>
             <Input
               type="file"
-              {...field}
+              // The field value should not be passed here to avoid the error
               {...register("images")}
               accept="image/*"
               multiple
               onChange={(e) => {
-                field.onChange(e);
+                // Call field.onChange with the files array directly
+                field.onChange(e.target.files);
                 handleImageChange(e);
               }}
               className="text-sm text-muted-foreground"
@@ -59,7 +64,7 @@ const EventImageUpload = () => {
                 <Image
                   src={src}
                   alt={`Image preview ${index}`}
-                  layout="fill"
+                  fill
                   objectFit="cover"
                   className="rounded-lg"
                 />

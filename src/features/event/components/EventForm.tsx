@@ -1,6 +1,13 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import apiService from "@/lib/apiService";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/store/useAuthStore";
@@ -9,16 +16,14 @@ import { useEffect, useState } from "react";
 import { FormProvider, useForm, useFormContext } from "react-hook-form";
 import EventDateInput from "./EventDateInput";
 import EventDescriptionArea from "./EventDescriptionArea";
-import EventImageUpload from "./EventImageUpload";
 import EventInterestSelect from "./EventInterestSelect";
 import EventModeSelect from "./EventModeSelect";
 import EventNameInput from "./EventNameInput";
 import EventTitleInput from "./EventTitleInput";
 import EventTypeSelect from "./EventTypeSelect";
-import EventVideoUpload from "./EventVideoUpload";
 import OpenStreetMapGeocoding from "./OpenStreetMapGeocoding";
 const useSyncFormWithStore = () => {
-  const { reset } = useFormContext();
+  const { reset, getValues } = useFormContext();
   const eventStore = useEventStore();
   const user = useAuthStore((state) => state.user);
 
@@ -38,15 +43,18 @@ const useSyncFormWithStore = () => {
       latitude: eventStore.latitude || "",
       longitude: eventStore.longitude || "",
       timeSlots: eventStore.timeSlots || [],
+      images: getValues("images") || [], // Preserve current images
+      video: getValues("video") || "", // Preserve current video
     });
   }, [eventStore, reset]);
 };
 
 const EventForm = ({ className }: { className?: string }) => {
-  const [isFetching, setIsFetching] = useState(false);
+  // const [isFetching, setIsFetching] = useState(false);
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const eventStore = useEventStore();
   const user = useAuthStore((state) => state.user);
-  const token = apiService.fetchToken();
+
   const form = useForm({
     defaultValues: {
       title: eventStore.title || "",
@@ -67,39 +75,45 @@ const EventForm = ({ className }: { className?: string }) => {
       video: "",
     },
   });
-  console.log("Form default values:", form.formState.defaultValues);
 
   const onSubmit = async (data: any) => {
-    console.log(isFetching);
+    // setIsFetching(true);
 
-    console.log("Initial form data:", data);
-    const formData = new FormData();
-    formData.append("title", data.title);
-    formData.append("name", data.name);
-    formData.append("date", data.date);
-    formData.append("endDate", data.endDate);
-    formData.append("startTime", data.startTime);
-    formData.append("endTime", data.endTime);
-    formData.append("description", data.description);
-    formData.append("mode", data.mode);
-    formData.append("interestId", JSON.stringify(data.interestId));
-    formData.append("location", data.location);
-    formData.append("latitude", data.latitude);
-    formData.append("longitude", data.longitude);
-    formData.append("timeSlots", JSON.stringify(data.timeSlots));
-    // Ajout des fichiers d'image au FormData
-    data.images.forEach((image: File, index: number) => {
-      formData.append(`images[${index}]`, image);
-    });
-
-    // Ajout de la vidéo au FormData
-    if (data.video) {
-      formData.append("video", data.video);
-    }
-    console.log("Form Data before submission:", Array.from(formData.entries()));
-
-    setIsFetching(true);
     try {
+      const token = await apiService.fetchToken();
+      console.log("Token:", token);
+      console.log("Form Data:", form.getValues("images"));
+      const formData = new FormData();
+      formData.append("title", data.title);
+      formData.append("name", data.name);
+      formData.append("date", data.date);
+      formData.append("endDate", data.endDate);
+      formData.append("startTime", data.startTime);
+      formData.append("endTime", data.endTime);
+      formData.append("description", data.description);
+      formData.append("mode", data.mode);
+      formData.append("interestId", JSON.stringify(data.interestId));
+      formData.append("location", data.location);
+      formData.append("latitude", data.latitude);
+      formData.append("longitude", data.longitude);
+      formData.append("timeSlots", JSON.stringify(data.timeSlots));
+      const images = form.getValues("images");
+      console.log("Images in form before submission:", images);
+      if (data.images && data.images.length > 0) {
+        data.images.forEach((image: File, index: number) => {
+          formData.append(`images[${index}]`, image);
+        });
+      }
+
+      if (data.video) {
+        formData.append("video", data.video[0]);
+      }
+
+      console.log(
+        "Form Data before submission:",
+        Array.from(formData.entries()),
+      );
+
       const result = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/users/createEventAndRSVPform`,
         {
@@ -114,14 +128,31 @@ const EventForm = ({ className }: { className?: string }) => {
 
       const resultData = await result.json();
       console.log("resultData", resultData);
-
-      // clearEventForm();
     } catch (error) {
       console.error("Error creating event:", error);
     } finally {
-      setIsFetching(false);
+      // setIsFetching(false);
     }
   };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    console.log("Selected Images:", files);
+    // Set images in form state
+    form.setValue("images", files);
+
+    // Immediately log to ensure images are set
+    console.log("Images after setValue:", form.getValues("images"));
+    const imageUrls = files.map((file) => URL.createObjectURL(file));
+    setImagePreviews(imageUrls);
+    eventStore.setEventField("imagePreviews", imageUrls);
+  };
+
+  useEffect(() => {
+    return () => {
+      imagePreviews.forEach((url) => URL.revokeObjectURL(url));
+    };
+  }, [imagePreviews]);
 
   return (
     <FormProvider {...form}>
@@ -145,9 +176,9 @@ const EventForm = ({ className }: { className?: string }) => {
         <OpenStreetMapGeocoding />
         <EventDescriptionArea />
         <EventInterestSelect />
-        <EventImageUpload />
-        <EventVideoUpload />
-        {/* <FormField
+        {/* <EventImageUpload />
+        <EventVideoUpload /> */}
+        <FormField
           name="images"
           control={form.control}
           render={({ field }) => (
@@ -161,14 +192,15 @@ const EventForm = ({ className }: { className?: string }) => {
                   onChange={(e) => {
                     const files = Array.from(e.target.files || []);
                     field.onChange(files);
+                    handleImageChange(e);
                   }}
                 />
               </FormControl>
             </FormItem>
           )}
-        /> */}
+        />
 
-        {/* <FormField
+        <FormField
           name="video"
           control={form.control}
           render={({ field }) => (
@@ -182,12 +214,13 @@ const EventForm = ({ className }: { className?: string }) => {
                   onChange={(e) => {
                     const files = Array.from(e.target.files || []);
                     field.onChange(files);
+                    console.log("Selected Files:", files);
                   }}
                 />
               </FormControl>
             </FormItem>
           )}
-        /> */}
+        />
 
         <Button
           type="submit"
