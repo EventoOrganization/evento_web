@@ -7,11 +7,11 @@ import {
 import { useEventStore } from "@/store/useEventStore";
 import { useState } from "react";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
-import { useFormContext } from "react-hook-form";
+// import { useFormContext } from "react-hook-form";
 
 const EventLocationInput = () => {
   const eventStore = useEventStore();
-  const { register } = useFormContext();
+  // const { register } = useFormContext();
   const [location, setLocation] = useState<any>("");
   const handlePlaceSelected = (value: any) => {
     if (value) {

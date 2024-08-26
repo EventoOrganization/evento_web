@@ -22,7 +22,7 @@ const EventDateInput = () => {
   // Fonction pour générer une plage de dates entre deux dates
   const generateDateRange = (start: string, end: string) => {
     const dates = [];
-    let currentDate = new Date(start);
+    const currentDate = new Date(start);
     const lastDate = new Date(end);
 
     while (currentDate <= lastDate) {

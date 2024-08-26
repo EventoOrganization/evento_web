@@ -86,7 +86,7 @@ const EzEventForm = () => {
           }}
         />
       </div>
-      <button type="submit">Créer l'événement</button>
+      <button type="submit">Créer l&apos;événement</button>
     </form>
   );
 };
