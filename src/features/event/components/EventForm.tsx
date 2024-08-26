@@ -1,13 +1,6 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import apiService from "@/lib/apiService";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/store/useAuthStore";
@@ -16,11 +9,13 @@ import { useEffect, useState } from "react";
 import { FormProvider, useForm, useFormContext } from "react-hook-form";
 import EventDateInput from "./EventDateInput";
 import EventDescriptionArea from "./EventDescriptionArea";
+import EventImageUpload from "./EventImageUpload";
 import EventInterestSelect from "./EventInterestSelect";
 import EventModeSelect from "./EventModeSelect";
 import EventNameInput from "./EventNameInput";
 import EventTitleInput from "./EventTitleInput";
 import EventTypeSelect from "./EventTypeSelect";
+import EventVideoUpload from "./EventVideoUpload";
 import OpenStreetMapGeocoding from "./OpenStreetMapGeocoding";
 const useSyncFormWithStore = () => {
   const { reset } = useFormContext();
@@ -150,7 +145,9 @@ const EventForm = ({ className }: { className?: string }) => {
         <OpenStreetMapGeocoding />
         <EventDescriptionArea />
         <EventInterestSelect />
-        <FormField
+        <EventImageUpload />
+        <EventVideoUpload />
+        {/* <FormField
           name="images"
           control={form.control}
           render={({ field }) => (
@@ -169,9 +166,9 @@ const EventForm = ({ className }: { className?: string }) => {
               </FormControl>
             </FormItem>
           )}
-        />
+        /> */}
 
-        <FormField
+        {/* <FormField
           name="video"
           control={form.control}
           render={({ field }) => (
@@ -190,17 +187,6 @@ const EventForm = ({ className }: { className?: string }) => {
               </FormControl>
             </FormItem>
           )}
-        />
-        {/* <FormField
-          name="images"
-          control={form.control}
-          render={({ field }) => <EventImageUpload field={field} />}
-        />
-
-        <FormField
-          name="video"
-          control={form.control}
-          render={({ field }) => <EventVideoUpload field={field} />}
         /> */}
 
         <Button

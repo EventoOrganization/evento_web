@@ -110,6 +110,7 @@ const EventInterestSelect = () => {
     setSelectedInterests(selectedOptions);
     const interestIds = selectedOptions.map((option: Option) => option.value);
     eventStore.setEventField("interestId", interestIds);
+    eventStore.setEventField("interests", selectedOptions);
   };
 
   return (

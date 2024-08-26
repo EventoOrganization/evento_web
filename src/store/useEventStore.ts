@@ -5,6 +5,10 @@ export type TimeSlot = {
   startTime: string;
   endTime: string;
 };
+type Interest = {
+  value: string;
+  label: string;
+};
 type EventFormState = {
   title: string;
   eventType: "public" | "private";
@@ -23,6 +27,7 @@ type EventFormState = {
   coHosts?: string[];
   guests?: string[];
   interestId?: string[];
+  interests?: Interest[];
   timeSlots: TimeSlot[];
   privateEventLink?: string;
   imagePreviews?: string[];
@@ -61,6 +66,7 @@ export const useEventStore = create<EventFormState>()(
       coHosts: [],
       guests: [],
       interestId: [],
+      interests: [],
       questions: [],
       additionalField: undefined,
       setEventField: (key, value) =>
@@ -87,6 +93,7 @@ export const useEventStore = create<EventFormState>()(
           timeSlots: [],
           guests: [],
           interestId: [],
+          interests: [],
           questions: [],
           additionalField: undefined,
         }),

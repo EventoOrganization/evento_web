@@ -84,15 +84,27 @@ const Event = ({ className, event }: { className?: string; event?: any }) => {
       <div className="flex flex-col gap-2">
         <h3>{event ? event?.title : createEvent?.title}</h3>
         <ul className="flex gap-2 flex-wrap">
-          {event?.interest.map((interest: any) => (
-            <li
-              key={interest._id}
-              className="bg-eventoPurple/30 w-fit px-2 py-1 rounded-lg"
-            >
-              {interest.name}
-            </li>
-          ))}
+          {event
+            ? event?.interest.map((interest: any) => (
+                <li
+                  key={interest._id}
+                  className="bg-eventoPurple/30 w-fit px-2 py-1 rounded-lg"
+                >
+                  {interest.name}
+                </li>
+              ))
+            : createEvent?.interests?.map(
+                (interest: { value: string; label: string }) => (
+                  <li
+                    key={interest.value}
+                    className="bg-eventoPurple/30 w-fit px-2 py-1 rounded-lg"
+                  >
+                    {interest.label}
+                  </li>
+                ),
+              )}
         </ul>
+
         <div className="flex justify-between items-center">
           <Button
             variant={"ghost"}
@@ -115,7 +127,6 @@ const Event = ({ className, event }: { className?: string; event?: any }) => {
               {event ? event?.details.location : createEvent?.location}
             </span>
           </Button>
-
           <p className="whitespace-nowrap">
             {event?.details.startTime || createEvent?.startTime} -{" "}
             {event?.details.endTime || createEvent?.endTime}
