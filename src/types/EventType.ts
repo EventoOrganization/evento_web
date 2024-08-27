@@ -15,14 +15,6 @@ export type Option = {
   value: string;
   label: string;
 };
-export type Question = {
-  id: string;
-  question: string;
-  answer: string;
-  required: boolean;
-  options?: string[];
-  type: "text" | "multiple-choice" | "checkbox"; // Ajout du type ici
-};
 
 export type Event = {
   title: string;

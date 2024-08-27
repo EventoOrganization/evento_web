@@ -3,7 +3,7 @@ import { NextResponse, type NextRequest } from "next/server";
 export function middleware(req: NextRequest) {
   const pathname = req.nextUrl.pathname;
   console.log("Received request for:", pathname);
-  const cookies = req.cookies;
+  // const cookies = req.cookies;
   // console.log("Middleware Cookies detected:", cookies);
 
   const sessionCookie = req.cookies.get("connect.sid");

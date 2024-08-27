@@ -16,7 +16,6 @@ import { User } from "@/types/UserType";
 import { useEffect, useState } from "react";
 import { FormProvider, useForm, useFormContext } from "react-hook-form";
 import EnableChatCheckbox from "./EnableChatCheckbox";
-import EventAdditionalFieldsInput from "./EventAdditionalFieldsInput";
 import EventCoHostsModal from "./EventCoHostsModal";
 import EventDateInput from "./EventDateInput";
 import EventDescriptionArea from "./EventDescriptionArea";
@@ -249,7 +248,7 @@ const EventForm = ({
         </div>
         {/* <EventQuestionsInput /> */}
         <QuestionInput />
-        <EventAdditionalFieldsInput />
+        {/* <EventAdditionalFieldsInput /> */}
         <GuestsAllowFriendCheckbox />
         <EnableChatCheckbox />
         <Button

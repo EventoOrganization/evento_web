@@ -1,15 +1,25 @@
-import { Question } from "@/types/EventType";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+
+export type Question = {
+  id: string;
+  question: string;
+  type: "text" | "multiple-choice" | "checkbox";
+  options?: string[];
+  required: boolean;
+};
+
 export type TimeSlot = {
   date: string;
   startTime: string;
   endTime: string;
 };
+
 type Interest = {
   value: string;
   label: string;
 };
+
 type EventFormState = {
   title: string;
   eventType: "public" | "private";
@@ -33,23 +43,22 @@ type EventFormState = {
   privateEventLink?: string;
   imagePreviews?: string[];
   videoPreview?: string;
-  questions?: {
-    question: string;
-    answer: string;
-    required: boolean;
-    options?: string[];
-  }[];
+  questions: Question[];
   guestsAllowFriend: boolean;
-  additionalField?: [];
+  additionalField?: any[];
   setEventField: (key: string, value: any) => void;
-  updateQuestion: (index: number, value: Partial<Question>) => void;
-  addChoiceToQuestion: (index: number, choice: string) => void;
-  removeChoiceFromQuestion: (index: number, choiceIndex: number) => void;
-  addQuestion: () => void;
-  removeQuestion: (index: number) => void;
   clearEventForm: () => void;
+  addQuestion: () => void;
+  updateQuestion: (index: number, updatedQuestion: Partial<Question>) => void;
+  removeQuestion: (index: number) => void;
+  addOption: (questionIndex: number) => void;
+  updateOption: (
+    questionIndex: number,
+    optionIndex: number,
+    value: string,
+  ) => void;
+  removeOption: (questionIndex: number, optionIndex: number) => void;
 };
-
 export const useEventStore = create<EventFormState>()(
   persist(
     (set) => ({
@@ -81,52 +90,70 @@ export const useEventStore = create<EventFormState>()(
       setEventField: (key, value) =>
         set((state) => ({ ...state, [key]: value })),
 
-      updateQuestion: (index, value) =>
-        set((state) => {
-          const updatedQuestions = [...(state.questions || [])];
-          updatedQuestions[index] = { ...updatedQuestions[index], ...value };
-          return { questions: updatedQuestions };
-        }),
-
-      addChoiceToQuestion: (index, choice) =>
-        set((state) => {
-          const updatedQuestions = [...(state.questions || [])];
-          const updatedChoices = [
-            ...(updatedQuestions[index].options || []),
-            choice,
-          ];
-          updatedQuestions[index].options = updatedChoices;
-          return { questions: updatedQuestions };
-        }),
-
-      removeChoiceFromQuestion: (index, choiceIndex) =>
-        set((state) => {
-          const updatedQuestions = [...(state.questions || [])];
-          const updatedChoices = updatedQuestions[index].options?.filter(
-            (_, i) => i !== choiceIndex,
-          );
-          updatedQuestions[index].options = updatedChoices;
-          return { questions: updatedQuestions };
-        }),
-
       addQuestion: () =>
         set((state) => ({
           questions: [
-            ...(state.questions || []),
+            ...state.questions,
             {
+              id: Date.now().toString(),
               question: "",
-              answer: "",
+              type: "text",
               required: false,
               options: [],
-              type: "text",
             },
           ],
         })),
 
+      updateQuestion: (index, updatedQuestion) =>
+        set((state) => {
+          const updatedQuestions = Array.isArray(state.questions)
+            ? [...state.questions]
+            : [];
+          updatedQuestions[index] = {
+            ...updatedQuestions[index],
+            ...updatedQuestion,
+          };
+          return { questions: updatedQuestions };
+        }),
+
       removeQuestion: (index) =>
         set((state) => ({
-          questions: state.questions?.filter((_, i) => i !== index),
+          questions: state.questions.filter((_, i) => i !== index),
         })),
+
+      addOption: (questionIndex) =>
+        set((state) => {
+          const updatedQuestions = Array.isArray(state.questions)
+            ? [...state.questions]
+            : [];
+          const options = updatedQuestions[questionIndex].options || [];
+          updatedQuestions[questionIndex].options = [...options, ""];
+          return { questions: updatedQuestions };
+        }),
+
+      updateOption: (questionIndex, optionIndex, value) =>
+        set((state) => {
+          const updatedQuestions = Array.isArray(state.questions)
+            ? [...state.questions]
+            : [];
+          if (updatedQuestions[questionIndex].options) {
+            updatedQuestions[questionIndex].options![optionIndex] = value;
+          }
+          return { questions: updatedQuestions };
+        }),
+
+      removeOption: (questionIndex, optionIndex) =>
+        set((state) => {
+          const updatedQuestions = Array.isArray(state.questions)
+            ? [...state.questions]
+            : [];
+          if (updatedQuestions[questionIndex].options) {
+            updatedQuestions[questionIndex].options = updatedQuestions[
+              questionIndex
+            ].options!.filter((_, i) => i !== optionIndex);
+          }
+          return { questions: updatedQuestions };
+        }),
 
       clearEventForm: () =>
         set({
@@ -151,7 +178,7 @@ export const useEventStore = create<EventFormState>()(
           guests: [],
           interestId: [],
           interests: [],
-          questions: [],
+          questions: [], // Réinitialisé à un tableau vide
           guestsAllowFriend: false,
           additionalField: [],
         }),

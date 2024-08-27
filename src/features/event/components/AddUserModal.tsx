@@ -39,7 +39,7 @@ const AddUserModal = ({
 }: AddUserModalProps) => {
   const users = allUsers;
   const [isOpen, setIsOpen] = useState(false);
-  console.log(allUsers, selectedUsers);
+  // console.log(allUsers, selectedUsers);
   // Filter out selected users from the list of available users
   const availableUsers = users.filter(
     (user) =>
