@@ -5,26 +5,29 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import Switch from "@/components/ui/Switch";
+import { useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { handleFieldChange } from "../eventActions";
 
 const EnableChatCheckbox = () => {
   const { control } = useFormContext();
+  const [checked, setChecked] = useState(false);
+  const handleCheckboxChange = () => {
+    setChecked((prevState) => {
+      const newState = !prevState;
+      handleFieldChange("includeChat", newState);
+      return newState;
+    });
+  };
   return (
     <FormField
       control={control}
       name="includeChat"
-      render={({ field }) => (
+      render={({}) => (
         <FormItem>
           <FormLabel>Enable Chat</FormLabel>
           <FormControl>
-            <Switch
-              checked={field.value}
-              onCheckedChange={(checked: boolean) => {
-                field.onChange(checked);
-                handleFieldChange("includeChat", true);
-              }}
-            />
+            <Switch checked={checked} onCheckedChange={handleCheckboxChange} />
           </FormControl>
         </FormItem>
       )}

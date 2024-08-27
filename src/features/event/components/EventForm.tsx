@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import {
   FormControl,
   FormField,
@@ -21,6 +20,7 @@ import EventDateInput from "./EventDateInput";
 import EventDescriptionArea from "./EventDescriptionArea";
 import EventGuestsModal from "./EventGuestsModal";
 import EventInterestSelect from "./EventInterestSelect";
+import EventModalValidation from "./EventModalValidation";
 import EventModeSelect from "./EventModeSelect";
 import EventNameInput from "./EventNameInput";
 import QuestionInput from "./EventQuestionsInput";
@@ -52,6 +52,9 @@ const useSyncFormWithStore = () => {
       guests: eventStore.guests || [],
       coHosts: eventStore.coHosts || [],
       guestsAllowFriend: eventStore.guestsAllowFriend || false,
+      questions: eventStore.questions || [],
+      additionalField: eventStore.additionalField || [],
+      includeChat: eventStore.includeChat || false,
       images: getValues("images") || [], // Preserve current images
       video: getValues("video") || "", // Preserve current video
     });
@@ -91,6 +94,9 @@ const EventForm = ({
       guests: eventStore.guests || [],
       coHosts: eventStore.coHosts || [],
       guestsAllowFriend: eventStore.guestsAllowFriend || false,
+      questions: eventStore.questions || [],
+      additionalField: eventStore.additionalField || [],
+      includeChat: eventStore.includeChat || false,
       images: [] as File[],
       video: "",
     },
@@ -138,7 +144,7 @@ const EventForm = ({
       );
 
       const result = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/users/createEventAndRSVPfor`,
+        `${process.env.NEXT_PUBLIC_API_URL}/users/createEventAndRSVPform`,
         {
           method: "POST",
           credentials: "include",
@@ -188,6 +194,11 @@ const EventForm = ({
           "space-y-4 max-w-xl mx-auto bg-muted shadow border p-4 rounded-lg mb-20",
           className,
         )}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+          }
+        }}
       >
         <EventTitleInput />
         <EventNameInput />
@@ -251,12 +262,7 @@ const EventForm = ({
         {/* <EventAdditionalFieldsInput /> */}
         <GuestsAllowFriendCheckbox />
         <EnableChatCheckbox />
-        <Button
-          type="submit"
-          className="bg-evento-gradient-button rounded-full text-xs self-center px-8 mt-20 text-white"
-        >
-          Create Event
-        </Button>
+        <EventModalValidation onSubmit={form.handleSubmit(onSubmit)} />
       </form>
     </FormProvider>
   );

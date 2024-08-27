@@ -24,7 +24,13 @@ const extendedSignInSchema = signInSchema.extend({
   rememberMe: z.boolean().optional(),
 });
 
-const SignInForm = () => {
+const SignInForm = ({
+  onAuthSuccess = () => {},
+  shouldRedirect = true,
+}: {
+  onAuthSuccess?: () => void;
+  shouldRedirect?: boolean;
+}) => {
   const [error, setError] = useState<string | null>(null);
   const [isFetching, setIsFetching] = useState(false);
   const form = useForm<z.infer<typeof extendedSignInSchema>>({
@@ -77,9 +83,11 @@ const SignInForm = () => {
 
       // Set user data in the store
       setUser(loginUserData);
-
+      onAuthSuccess();
       // Redirect to home or profile page after login
-      router.push("/");
+      if (shouldRedirect) {
+        router.push("/");
+      }
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);
@@ -175,7 +183,8 @@ const SignInForm = () => {
               </div>
             )}
             <Button
-              type="submit"
+              type="button"
+              onClick={() => form.handleSubmit(onSubmit)()}
               className="bg-evento-gradient-button rounded-full text-xs self-center px-8 mt-10  text-white"
               disabled={isFetching} // Disable button while fetching
             >
@@ -184,12 +193,14 @@ const SignInForm = () => {
           </div>
         </div>
         <div className="mt-4 text-justify text-xs w-full ">
-          <p className="text-sm sm:text-muted-foreground w-full flex justify-center sm:justify-between gap-2">
-            Don&apos;t have an account?
-            <Link href={`/signup`} className="underline text-eventoPurple">
-              Sign Up
-            </Link>
-          </p>
+          {shouldRedirect && (
+            <p className="text-sm sm:text-muted-foreground w-full flex justify-center sm:justify-between gap-2">
+              Don&apos;t have an account?
+              <Link href={`/signup`} className="underline text-eventoPurple">
+                Sign Up
+              </Link>
+            </p>
+          )}
         </div>
       </form>
     </FormProvider>

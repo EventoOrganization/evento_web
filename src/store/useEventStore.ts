@@ -62,6 +62,7 @@ type EventFormState = {
 export const useEventStore = create<EventFormState>()(
   persist(
     (set) => ({
+      questions: [],
       title: "",
       eventType: "public",
       name: "",
@@ -83,7 +84,6 @@ export const useEventStore = create<EventFormState>()(
       guests: [],
       interestId: [],
       interests: [],
-      questions: [],
       guestsAllowFriend: false,
       additionalField: [],
 
@@ -103,50 +103,37 @@ export const useEventStore = create<EventFormState>()(
             },
           ],
         })),
-
       updateQuestion: (index, updatedQuestion) =>
         set((state) => {
-          const updatedQuestions = Array.isArray(state.questions)
-            ? [...state.questions]
-            : [];
+          const updatedQuestions = [...state.questions];
           updatedQuestions[index] = {
             ...updatedQuestions[index],
             ...updatedQuestion,
           };
           return { questions: updatedQuestions };
         }),
-
       removeQuestion: (index) =>
         set((state) => ({
           questions: state.questions.filter((_, i) => i !== index),
         })),
-
       addOption: (questionIndex) =>
         set((state) => {
-          const updatedQuestions = Array.isArray(state.questions)
-            ? [...state.questions]
-            : [];
+          const updatedQuestions = [...state.questions];
           const options = updatedQuestions[questionIndex].options || [];
           updatedQuestions[questionIndex].options = [...options, ""];
           return { questions: updatedQuestions };
         }),
-
       updateOption: (questionIndex, optionIndex, value) =>
         set((state) => {
-          const updatedQuestions = Array.isArray(state.questions)
-            ? [...state.questions]
-            : [];
+          const updatedQuestions = [...state.questions];
           if (updatedQuestions[questionIndex].options) {
             updatedQuestions[questionIndex].options![optionIndex] = value;
           }
           return { questions: updatedQuestions };
         }),
-
       removeOption: (questionIndex, optionIndex) =>
         set((state) => {
-          const updatedQuestions = Array.isArray(state.questions)
-            ? [...state.questions]
-            : [];
+          const updatedQuestions = [...state.questions];
           if (updatedQuestions[questionIndex].options) {
             updatedQuestions[questionIndex].options = updatedQuestions[
               questionIndex
@@ -178,7 +165,7 @@ export const useEventStore = create<EventFormState>()(
           guests: [],
           interestId: [],
           interests: [],
-          questions: [], // Réinitialisé à un tableau vide
+          questions: [],
           guestsAllowFriend: false,
           additionalField: [],
         }),

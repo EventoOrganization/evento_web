@@ -10,14 +10,23 @@ import {
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { signUpSchema } from "@/lib/zod";
+import { useAuthStore } from "@/store/useAuthStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 
-const SignUpForm = () => {
+const SignUpForm = ({
+  onAuthSuccess = () => {},
+  shouldRedirect = true,
+}: {
+  onAuthSuccess?: () => void;
+  shouldRedirect?: boolean;
+}) => {
   const [isFetching, setIsFetching] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const form = useForm<z.infer<typeof signUpSchema>>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
@@ -26,35 +35,81 @@ const SignUpForm = () => {
       confirmPassword: "",
     },
   });
-  console.log(isFetching);
+
+  const setUser = useAuthStore((state) => state.setUser);
+  const router = useRouter();
 
   const onSubmit: SubmitHandler<z.infer<typeof signUpSchema>> = async (
     data,
   ) => {
     setIsFetching(true);
+    console.log(data);
     try {
-      const res = await fetch("/api/auth/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      // Sign-up request
+      const signUpRes = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/users/signup`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
         },
-        body: JSON.stringify(data),
-      });
+      );
 
-      if (!res.ok) {
+      if (!signUpRes.ok) {
         setIsFetching(false);
-        const errorData = await res.json();
+        const errorData = await signUpRes.json();
         throw new Error(errorData.message);
       }
 
-      setIsFetching(false);
+      // Automatically log in the user after sign-up
+      const loginRes = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/users/login`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include", // This ensures that cookies are sent/received
+          body: JSON.stringify({
+            email: data.email,
+            password: data.password,
+          }),
+        },
+      );
+
+      const loginResult = await loginRes.json();
+      if (!loginRes.ok) {
+        throw new Error(loginResult.message || "Login failed after signup");
+      }
+
+      const token = loginResult.body.token;
+      const loginUserData = {
+        _id: loginResult.body._id,
+        name: loginResult.body.name,
+        email: loginResult.body.email,
+        token: token,
+      };
+
+      // Set user data in the store
+      setUser(loginUserData);
+
+      onAuthSuccess();
+
+      // Redirect to home or profile page after login
+      if (shouldRedirect) {
+        router.push("/");
+      }
     } catch (error: unknown) {
-      console.error("signup", error);
+      console.error("signup or login error", error);
       if (error instanceof Error) {
         form.setError("email", { type: "manual", message: error.message });
       } else {
         form.setError("email", { type: "manual", message: "Signup failed" });
       }
+    } finally {
+      setIsFetching(false); // Ensure isFetching is false after the request completes
     }
   };
 
@@ -64,15 +119,11 @@ const SignUpForm = () => {
         onSubmit={form.handleSubmit(onSubmit)}
         className="sm:bg-accent sm:border sm:shadow justify-between flex flex-col rounded-md p-4 h-full sm:h-auto  max-w-[400px] w-full mx-auto"
       >
-        {" "}
         <div className="justify-center flex flex-col gap-4">
           <div>
             <h2 className={cn("sm:text-center text-xl font-semibold")}>
               Sign Up
             </h2>
-            {/* <p className="text-muted-foreground text-xs text-center">
-              Welcome! Please fill in the details to get started.
-            </p> */}
           </div>
           <FormField
             control={form.control}
@@ -125,17 +176,41 @@ const SignUpForm = () => {
               </FormItem>
             )}
           />
-          <Button className="bg-evento-gradient-button rounded-full text-xs self-center px-8 mt-10  text-white">
-            Sign up
+          {error && (
+            <div className="flex gap-1 items-center">
+              <span className="bg-destructive rounded-full p-1 text-destructive-foreground w-4 h-4 flex justify-center items-center text-xs">
+                !
+              </span>
+              <p className="text-destructive text-sm font-semibold text-start">
+                {error}
+              </p>
+            </div>
+          )}
+          <Button
+            type="button"
+            onClick={() => {
+              console.log("Button clicked");
+              onSubmit({
+                email: "test@example.com",
+                password: "password",
+                confirmPassword: "password",
+              });
+            }}
+            className="bg-evento-gradient-button rounded-full text-xs self-center px-8 mt-10 text-white"
+            disabled={isFetching}
+          >
+            {isFetching ? "Signing up..." : "Sign up"}
           </Button>
         </div>
         <div className="mt-4 text-center w-full text-xs">
-          <p className="text-sm sm:text-muted-foreground w-full flex justify-center sm:justify-between gap-2">
-            Already have an account?
-            <Link href={`/signin`} className="underline text-eventoPurple">
-              Sign Up
-            </Link>
-          </p>
+          {shouldRedirect && (
+            <p className="text-sm sm:text-muted-foreground w-full flex justify-center sm:justify-between gap-2">
+              Already have an account?
+              <Link href={`/signin`} className="underline text-eventoPurple">
+                Sign In
+              </Link>
+            </p>
+          )}
         </div>
       </form>
     </FormProvider>

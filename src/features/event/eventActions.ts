@@ -5,7 +5,18 @@ export const setEventField = (key: string, value: any) => {
   const eventStore = useEventStore.getState();
   eventStore.setEventField(key, value);
 };
-
+export const isUserLoggedInCSR = (): boolean => {
+  console.log("isUserLoggedInCSR called");
+  if (typeof window !== "undefined") {
+    const token = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("token="))
+      ?.split("=")[1];
+    console.log("token", token);
+    return !!token;
+  }
+  return false;
+};
 // Fonction pour réinitialiser le formulaire d'événement
 export const clearEventForm = () => {
   const eventStore = useEventStore.getState();

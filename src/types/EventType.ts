@@ -1,3 +1,5 @@
+import { Question } from "@/store/useEventStore";
+
 // src/types/EventType.ts
 export type TimeSlot = {
   date: string;
@@ -39,12 +41,7 @@ export type Event = {
   privateEventLink?: string;
   imagePreviews?: string[];
   videoPreview?: string;
-  questions?: {
-    question: string;
-    answer: string;
-    required: boolean;
-    options?: string[];
-  }[];
+  questions?: Question[];
   guestsAllowFriend: boolean;
   additionalField?: any;
 };
