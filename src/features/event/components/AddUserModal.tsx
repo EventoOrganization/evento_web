@@ -37,7 +37,7 @@ const AddUserModal = ({
   onAddUser,
   onRemoveUser,
 }: AddUserModalProps) => {
-  const [users, setUsers] = useState<User[]>(allUsers);
+  const users = allUsers;
   const [isOpen, setIsOpen] = useState(false);
 
   // Filter out selected users from the list of available users

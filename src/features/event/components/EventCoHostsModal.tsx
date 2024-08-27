@@ -9,7 +9,7 @@ interface User {
   lastName?: string;
   firstName?: string;
 }
-const EventCoHostsModal = ({allUsers}: {allUsers: User[]}) => {
+const EventCoHostsModal = ({ allUsers }: { allUsers: User[] }) => {
   const eventStore = useEventStore();
   const [coHosts, setCoHosts] = useState<User[]>([]);
 
