@@ -2,32 +2,33 @@ import { NextResponse, type NextRequest } from "next/server";
 
 export function middleware(req: NextRequest) {
   const pathname = req.nextUrl.pathname;
-  console.log("Cookies reçus:", req.cookies);
-  // const token = req.cookies.get("token");
-  // console.log("Token:", token);
+  console.log("Received request for:", pathname);
 
-  // Ignore requests to public files, API routes, and Next.js internals
+  const sessionCookie = req.cookies.get("connect.sid");
+  console.log(" Middleware Session Cookie detected:", sessionCookie);
+  const token = req.cookies.get("token");
+  console.log("Middleware Token detected:", token);
   if (
     pathname.startsWith("/_next") ||
     pathname.startsWith("/api") ||
-    [
-      "/manifest.json",
-      "/favicon.ico",
-      // Add more public files if needed
-    ].includes(pathname)
+    ["/manifest.json", "/favicon.ico"].includes(pathname)
   ) {
     return NextResponse.next();
   }
 
-  // Redirect to login if the token is missing
-  // if (!token) {
-  //   return NextResponse.redirect(new URL("/signin", req.url));
-  // }
+  if (!sessionCookie) {
+    console.warn(
+      `No session cookie found for request ${pathname}. Redirecting to the sign-in page.`,
+    );
+    return NextResponse.redirect(new URL("/signin", req.url));
+  }
 
-  // Proceed with the request if the token is present
+  // console.log(
+  //   `Session cookie found: ${sessionCookie.value}. Proceeding with the request to ${pathname}`,
+  // );
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/profile/:path*"], // Routes that need authentication
+  matcher: ["/profile/:path*"],
 };

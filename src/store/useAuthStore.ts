@@ -1,31 +1,24 @@
-// src/store/useAuthStore.ts
+import { User } from "@/types/UserType";
 import { create } from "zustand";
 import { persist, PersistStorage } from "zustand/middleware";
-type User = {
-  _id: string;
-  name: string;
-  email: string;
-  countryCode?: string;
-  createdAt?: string;
-  updatedAt?: string;
-  token: string;
-  profileImage?: string;
-  eventsAttended?: number;
-  following?: number;
-  upcomingEvents?: Array<{ title: string }>;
-  filteredUpcomingEventsAttened?: Array<{ title: string }>;
-  filteredPastEventsAttended?: Array<{ title: string }>;
-  pastEvents?: Array<{ title: string }>;
-};
 
-type AuthState = {
+export type AuthState = {
   user: User | null;
   setUser: (user: User) => void;
   clearUser: () => void;
 };
-// Création d'un adaptateur pour le localStorage
+
+const isServer = typeof window === "undefined";
+const isClient = typeof window !== "undefined";
+
 const zustandLocalStorage: PersistStorage<AuthState> = {
   getItem: (name) => {
+    if (isServer) {
+      console.log("getItem called on SSR");
+    } else {
+      console.log("getItem called on Client");
+    }
+
     const storedValue = localStorage.getItem(name);
     if (storedValue) {
       return JSON.parse(storedValue);
@@ -33,18 +26,37 @@ const zustandLocalStorage: PersistStorage<AuthState> = {
     return null;
   },
   setItem: (name, value) => {
+    if (isServer) {
+      console.log("setItem called on SSR");
+    } else {
+      console.log("setItem called on Client");
+    }
+
     localStorage.setItem(name, JSON.stringify(value));
   },
   removeItem: (name) => {
+    if (isServer) {
+      console.log("removeItem called on SSR");
+    } else {
+      console.log("removeItem called on Client");
+    }
+
     localStorage.removeItem(name);
   },
 };
+
 export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
       user: null,
-      setUser: (user: User) => set({ user }),
-      clearUser: () => set({ user: null }),
+      setUser: (user: User) => {
+        // console.log("setUser called");
+        set({ user });
+      },
+      clearUser: () => {
+        // console.log("clearUser called");
+        set({ user: null });
+      },
     }),
     {
       name: "auth-storage",
