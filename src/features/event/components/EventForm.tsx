@@ -21,11 +21,13 @@ import EventDescriptionArea from "./EventDescriptionArea";
 import EventGuestsModal from "./EventGuestsModal";
 import EventInterestSelect from "./EventInterestSelect";
 import EventModeSelect from "./EventModeSelect";
-import GuestsAllowFriendCheckbox from "./GuestsAllowFriendCheckbox";
-import OpenStreetMapGeocoding from "./OpenStreetMapGeocoding";
 import EventNameInput from "./EventNameInput";
 import EventTitleInput from "./EventTitleInput";
 import EventTypeSelect from "./EventTypeSelect";
+import GuestsAllowFriendCheckbox from "./GuestsAllowFriendCheckbox";
+import OpenStreetMapGeocoding from "./OpenStreetMapGeocoding";
+import EventAdditionalFieldsInput from "./EventAdditionalFieldsInput";
+import EventQuestionsInput from "./EventQuestionsInput";
 const useSyncFormWithStore = () => {
   const { reset, getValues } = useFormContext();
   const eventStore = useEventStore();
@@ -244,6 +246,8 @@ const EventForm = ({
           <EventGuestsModal allUsers={allUsers as User[]} />
           <EventCoHostsModal allUsers={allUsers as User[]} />
         </div>
+        <EventQuestionsInput />
+        <EventAdditionalFieldsInput />
         <GuestsAllowFriendCheckbox />
         <Button
           type="submit"

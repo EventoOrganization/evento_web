@@ -2,25 +2,41 @@ import Section from "@/components/layout/Section";
 import Event from "@/features/event/components/Event";
 import EventForm from "@/features/event/components/EventForm";
 import { Interest, Option } from "@/types/EventType";
+import { User } from "@/types/UserType";
 import fetchWithToken from "@/utils/fetchWithToken";
+import { cookies } from "next/headers";
 
 const CreateEventPage = async () => {
   let mappedOptions: Option[] = [];
-
-  // Fetching users with SSR
-  const allUsersResult = await fetchWithToken(
-    `/users/userListWithFollowingStatus`,
-  );
-  const sortedUsers = allUsersResult.body.sort((a: any, b: any) => {
-    if (a.status === "follow-each-other" && b.status !== "follow-each-other") {
-      return -1;
-    }
-    if (a.status !== "follow-each-other" && b.status === "follow-each-other") {
-      return 1;
-    }
-    return 0;
-  });
-  const extractedUsers = sortedUsers.map((item: any) => item.user);
+  let users: User[] = [];
+  const token = cookies().get("token");
+  if (!token) {
+    // Fetching users for visitor
+    console.log("AllUsersResult");
+    const allUsersResult = await fetchWithToken(`/users/allUserListing`);
+    users = allUsersResult.allUserListing || [];
+  } else {
+    // Fetching users for user
+    const allUsersAndStatusResult = await fetchWithToken(
+      `/users/userListWithFollowingStatus`,
+    );
+    const sortedUsers = allUsersAndStatusResult.body.sort((a: any, b: any) => {
+      if (
+        a.status === "follow-each-other" &&
+        b.status !== "follow-each-other"
+      ) {
+        return -1;
+      }
+      if (
+        a.status !== "follow-each-other" &&
+        b.status === "follow-each-other"
+      ) {
+        return 1;
+      }
+      return 0;
+    });
+    users = sortedUsers.map((item: any) => item.user);
+  }
   // fetching interests with SSR
   try {
     const result = await fetchWithToken(`/users/getInterestsListing`);
@@ -44,7 +60,7 @@ const CreateEventPage = async () => {
         <Event />
         <EventForm
           className="w-full min-w-96"
-          allUsers={extractedUsers}
+          allUsers={users}
           interests={mappedOptions}
         />
       </div>

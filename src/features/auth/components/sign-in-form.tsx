@@ -44,7 +44,6 @@ const SignInForm = () => {
     data,
   ) => {
     setIsFetching(true);
-    console.log(isFetching);
 
     try {
       const loginResponse = await fetch(
@@ -54,18 +53,20 @@ const SignInForm = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          credentials: "include",
+          credentials: "include", // This ensures that cookies are sent/received
           body: JSON.stringify({
             email: data.email,
             password: data.password,
           }),
         },
       );
+
       const loginResult = await loginResponse.json();
       if (!loginResponse.ok) {
         throw new Error(loginResult.message || "Login failed");
       }
 
+      // Assuming the server sets the cookies properly, you don't need to manually check them
       const token = loginResult.body.token;
       const loginUserData = {
         _id: loginResult.body._id,
@@ -74,16 +75,19 @@ const SignInForm = () => {
         token: token,
       };
 
+      // Set user data in the store
       setUser(loginUserData);
-      setIsFetching(false);
-      router.push("/"); // Redirect to profile page
+
+      // Redirect to home or profile page after login
+      router.push("/");
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);
       } else {
         setError("An unexpected error occurred.");
       }
-      setIsFetching(false);
+    } finally {
+      setIsFetching(false); // Ensure isFetching is false after the request completes
     }
   };
 
@@ -173,8 +177,9 @@ const SignInForm = () => {
             <Button
               type="submit"
               className="bg-evento-gradient-button rounded-full text-xs self-center px-8 mt-10  text-white"
+              disabled={isFetching} // Disable button while fetching
             >
-              Sign in
+              {isFetching ? "Signing in..." : "Sign in"}
             </Button>
           </div>
         </div>
