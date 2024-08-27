@@ -59,7 +59,7 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: "auth-storage",
-      storage: zustandLocalStorage,
+      storage: isServer ? undefined : zustandLocalStorage,
     },
   ),
 );

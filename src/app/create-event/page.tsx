@@ -12,9 +12,9 @@ const CreateEventPage = async () => {
   const token = cookies().get("token");
   if (!token) {
     // Fetching users for visitor
-    console.log("AllUsersResult");
+    console.log("REQUESTING ALL USERS");
     const allUsersResult = await fetchWithToken(`/users/allUserListing`);
-    users = allUsersResult.allUserListing || [];
+    users = allUsersResult.body.allUserListing || [];
   } else {
     // Fetching users for user
     const allUsersAndStatusResult = await fetchWithToken(
@@ -54,6 +54,10 @@ const CreateEventPage = async () => {
   } catch (error) {
     console.error("Error fetching interests:", error);
   }
+
+  // console.log("users:", users);
+  // console.log("interests", mappedOptions);
+
   return (
     <Section className="md:mt-24 py-4 max-w-5xl w-full">
       <div className="flex flex-col md:flex-row gap-4 w-full">
