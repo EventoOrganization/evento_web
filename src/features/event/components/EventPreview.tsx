@@ -1,10 +1,15 @@
-import TruncatedText from "@/components/TruncatedText";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import CalendarIcon from "@/components/icons/CalendarIcon";
+import MapPinIcon from "@/components/icons/MapPinIcon";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useEventStore } from "@/store/useEventStore";
-import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
-import { MapPin } from "lucide-react";
 import Image from "next/image";
 const EventPreview = ({
   className,
@@ -15,6 +20,7 @@ const EventPreview = ({
 }) => {
   const createEvent = useEventStore((state) => state);
   const user = useAuthStore((state) => state.user);
+  // console.log(event);
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     const options: Intl.DateTimeFormatOptions = {
@@ -25,128 +31,33 @@ const EventPreview = ({
     return date.toLocaleDateString("en-US", options);
   };
   return (
-    <div
-      className={cn(
-        "bg-muted border shadow rounded p-4 w-full flex flex-col h-fit gap-4",
-        className,
-      )}
-    >
-      <div className="flex items-center justify-between">
-        <div className="flex items-center">
-          {event?.user.profileImage ? (
-            <Image
-              src={event.user.profileImage}
-              alt="user image"
-              width={500}
-              height={500}
-              className="w-6 h-6 rounded-full"
-            />
-          ) : (
-            <Avatar>
-              <AvatarImage
-                src={user?.profileImage || "https://github.com/shadcn.png"}
-                className="rounded-full w-6 h-6"
-              />
-              <AvatarFallback>CN</AvatarFallback>
-            </Avatar>
-          )}
-          <h4 className="ml-2">
-            {user?.name ? createEvent?.name : event?.user.name}
-          </h4>
-        </div>
-        <span className="ml-4">
-          {event
-            ? formatDate(event?.details.date)
-            : formatDate(createEvent?.date)}
-        </span>
-      </div>
-      <div
-        className={cn("", {
-          "bg-evento-gradient":
-            !event &&
-            !(createEvent?.imagePreviews && createEvent.imagePreviews[0]),
-        })}
-      >
-        <div className="relative w-full pb-[56.25%]">
-          <Image
-            src={
-              event?.details?.images?.[0] ||
-              (createEvent?.imagePreviews && createEvent.imagePreviews[0]) ||
-              "https://evento-media-bucket.s3.ap-southeast-2.amazonaws.com/evento-bg.jpg"
-            }
-            alt="event image"
-            fill
-            objectFit="cover"
-            className={cn({
-              "opacity-20":
-                !event &&
-                !(createEvent?.imagePreviews && createEvent.imagePreviews[0]),
-            })}
-          />
-        </div>
-      </div>
-      <div className="flex flex-col gap-2">
-        <h3>{event ? event?.title : createEvent?.title}</h3>
-        <ul className="flex gap-2 flex-wrap">
-          {event
-            ? event?.interest.map((interest: any) => (
-                <li
-                  key={interest._id}
-                  className="bg-eventoPurple/30 w-fit px-2 py-1 rounded-lg"
-                >
-                  {interest.name}
-                </li>
-              ))
-            : createEvent?.interests?.map(
-                (interest: { value: string; label: string }) => (
-                  <li
-                    key={interest.value}
-                    className="bg-eventoPurple/30 w-fit px-2 py-1 rounded-lg"
-                  >
-                    {interest.label}
-                  </li>
-                ),
-              )}
-        </ul>
-
-        <div className="flex justify-between items-center">
-          <Button
-            variant={"ghost"}
-            className="flex gap-2 pl-0 max-w-xs truncate"
-            onClick={() => {
-              const address = event
-                ? event?.details.location
-                : createEvent?.location;
-              if (address) {
-                const encodedAddress = encodeURIComponent(address);
-                const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`;
-                window.open(googleMapsUrl, "_blank");
-              } else {
-                alert("Address is not available.");
-              }
-            }}
-          >
-            <MapPin fill="#7858C3" className="text-muted" />
-            <span className="truncate">
-              {event ? event?.details.location : createEvent?.location}
-            </span>
-          </Button>
-          <p className="whitespace-nowrap">
-            {event?.details.startTime || createEvent?.startTime} -{" "}
-            {event?.details.endTime || createEvent?.endTime}
-          </p>
-        </div>
-        <TruncatedText
-          text={event?.details.description || createEvent?.description}
+    <Card className="relative flex flex-col justify-between aspect-square bg-evento-gradient">
+      <CardHeader>
+        <CardTitle></CardTitle>
+        <CardDescription></CardDescription>
+      </CardHeader>
+      <CardContent>
+        <Image
+          src={event.details.images[0]}
+          alt="Event Image"
+          width={245}
+          height={245}
+          className="w-full inset-0 h-full absolute object-cover"
         />
-      </div>
-      {/* <div className="flex justify-between items-center">
-        <div>
-          <AvatarStack eventId={event?._id} />{" "}
-        </div>
-        <EventActionIcons event={event} />
-      </div> */}
-    </div>
+      </CardContent>
+      <CardFooter className="p-0 h-32  bg-black/60 font-bold text-white z-10">
+        <ul className=" p-5 flex flex-col justify-center w-full h-full">
+          <li className="flex gap-5 items-center">
+            <CalendarIcon strokeWidth={3} className="w-6" />
+            {formatDate(event.details.date)}
+          </li>
+          <li className="flex gap-5 items-center">
+            <MapPinIcon strokeWidth={1.5} className="min-w-6 w-6" />
+            {event.details.location}
+          </li>
+        </ul>
+      </CardFooter>
+    </Card>
   );
 };
 

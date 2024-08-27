@@ -57,7 +57,7 @@ export default async function CurrentUserProfilePage() {
   // console.log("Upcoming Events:", pastEvents.body);
   return (
     <UserProfile
-      profile={profileData.body.userInfo}
+      profile={profileData.body}
       upcomingEvents={upcomingEvents.body.upcomingEvents || []}
       pastEvents={pastEvents.body.pastHostedEvents || []}
       hostingEvents={upcomingEvents.body.hostedByYouEvents || []}

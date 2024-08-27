@@ -15,6 +15,7 @@ export type User = {
   filteredUpcomingEventsAttened?: Event[];
   filteredPastEventsAttended?: Event[];
   pastEvents?: Event[];
+  totalEventAttended?: number;
 
   //Other users
   userInfo?: {
