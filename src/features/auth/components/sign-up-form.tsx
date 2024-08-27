@@ -60,8 +60,8 @@ const SignUpForm = ({
       if (!signUpRes.ok) {
         setIsFetching(false);
         const errorData = await signUpRes.json();
-        throw new Error(errorData.message);
         setError(errorData.message);
+        throw new Error(errorData.message);
       }
 
       // Automatically log in the user after sign-up
