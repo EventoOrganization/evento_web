@@ -6,21 +6,30 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useEventStore } from "@/store/useEventStore";
 import { useFieldArray, useFormContext } from "react-hook-form";
 
 const EventAdditionalFieldsInput = () => {
-  const { control } = useFormContext();
+  const { control, watch } = useFormContext();
   const { fields, append, remove } = useFieldArray({
     control,
     name: "additionalField",
   });
+  const setEventField = useEventStore((state) => state.setEventField);
+  const additionalField = watch("additionalField");
+
+  const updateStore = () => {
+    setEventField("additionalField", additionalField);
+  };
 
   const addField = () => {
     append({ label: "", value: "" });
+    updateStore();
   };
 
   const removeField = (index: number) => {
     remove(index);
+    updateStore();
   };
 
   return (
@@ -38,6 +47,10 @@ const EventAdditionalFieldsInput = () => {
                     {...field}
                     placeholder="Field label"
                     className="rounded-xl bg-muted sm:bg-background"
+                    onChange={(e) => {
+                      field.onChange(e);
+                      updateStore();
+                    }}
                   />
                 </FormControl>
               </FormItem>
@@ -53,6 +66,10 @@ const EventAdditionalFieldsInput = () => {
                     {...field}
                     placeholder="Field value"
                     className="rounded-xl bg-muted sm:bg-background"
+                    onChange={(e) => {
+                      field.onChange(e);
+                      updateStore();
+                    }}
                   />
                 </FormControl>
               </FormItem>
@@ -61,7 +78,10 @@ const EventAdditionalFieldsInput = () => {
           <Button
             type="button"
             className="bg-red-500 text-white rounded-full"
-            onClick={() => removeField(index)}
+            onClick={() => {
+              removeField(index);
+              updateStore();
+            }}
           >
             Remove Field
           </Button>
@@ -70,7 +90,10 @@ const EventAdditionalFieldsInput = () => {
       <Button
         type="button"
         className="bg-blue-500 text-white rounded-full"
-        onClick={addField}
+        onClick={() => {
+          addField();
+          updateStore();
+        }}
       >
         Add Field
       </Button>

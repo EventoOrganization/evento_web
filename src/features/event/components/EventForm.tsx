@@ -15,6 +15,8 @@ import { Option } from "@/types/EventType";
 import { User } from "@/types/UserType";
 import { useEffect, useState } from "react";
 import { FormProvider, useForm, useFormContext } from "react-hook-form";
+import EnableChatCheckbox from "./EnableChatCheckbox";
+import EventAdditionalFieldsInput from "./EventAdditionalFieldsInput";
 import EventCoHostsModal from "./EventCoHostsModal";
 import EventDateInput from "./EventDateInput";
 import EventDescriptionArea from "./EventDescriptionArea";
@@ -22,12 +24,11 @@ import EventGuestsModal from "./EventGuestsModal";
 import EventInterestSelect from "./EventInterestSelect";
 import EventModeSelect from "./EventModeSelect";
 import EventNameInput from "./EventNameInput";
+import QuestionInput from "./EventQuestionsInput";
 import EventTitleInput from "./EventTitleInput";
 import EventTypeSelect from "./EventTypeSelect";
 import GuestsAllowFriendCheckbox from "./GuestsAllowFriendCheckbox";
 import OpenStreetMapGeocoding from "./OpenStreetMapGeocoding";
-import EventAdditionalFieldsInput from "./EventAdditionalFieldsInput";
-import EventQuestionsInput from "./EventQuestionsInput";
 const useSyncFormWithStore = () => {
   const { reset, getValues } = useFormContext();
   const eventStore = useEventStore();
@@ -118,6 +119,9 @@ const EventForm = ({
       formData.append("guests", JSON.stringify(data.guests));
       formData.append("coHosts", JSON.stringify(data.coHosts));
       formData.append("guestsAllowFriend", data.guestsAllowFriend);
+      formData.append("questions", JSON.stringify(data.questions));
+      formData.append("additionalField", JSON.stringify(data.additionalField));
+      formData.append("includeChat", data.includeChat);
       const images = form.getValues("images");
       console.log("Images in form before submission:", images);
       if (data.images && data.images.length > 0) {
@@ -128,10 +132,7 @@ const EventForm = ({
       if (data.video) {
         formData.append("video", data.video[0]);
       }
-      // formData.append("questions", JSON.stringify(data.questions));
-      // formData.append("additionalField", JSON.stringify(data.additionalField));
       // formData.append("privateEventLink", data.privateEventLink);
-      // formData.append("includeChat", data.includeChat);
       console.log(
         "Form Data before submission:",
         Array.from(formData.entries()),
@@ -246,9 +247,11 @@ const EventForm = ({
           <EventGuestsModal allUsers={allUsers as User[]} />
           <EventCoHostsModal allUsers={allUsers as User[]} />
         </div>
-        <EventQuestionsInput />
+        {/* <EventQuestionsInput /> */}
+        <QuestionInput />
         <EventAdditionalFieldsInput />
         <GuestsAllowFriendCheckbox />
+        <EnableChatCheckbox />
         <Button
           type="submit"
           className="bg-evento-gradient-button rounded-full text-xs self-center px-8 mt-20 text-white"

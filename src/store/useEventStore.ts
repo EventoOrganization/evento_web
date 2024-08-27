@@ -1,3 +1,4 @@
+import { Question } from "@/types/EventType";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 export type TimeSlot = {
@@ -39,8 +40,13 @@ type EventFormState = {
     options?: string[];
   }[];
   guestsAllowFriend: boolean;
-  additionalField?: any;
+  additionalField?: [];
   setEventField: (key: string, value: any) => void;
+  updateQuestion: (index: number, value: Partial<Question>) => void;
+  addChoiceToQuestion: (index: number, choice: string) => void;
+  removeChoiceFromQuestion: (index: number, choiceIndex: number) => void;
+  addQuestion: () => void;
+  removeQuestion: (index: number) => void;
   clearEventForm: () => void;
 };
 
@@ -69,10 +75,59 @@ export const useEventStore = create<EventFormState>()(
       interestId: [],
       interests: [],
       questions: [],
-      additionalField: undefined,
       guestsAllowFriend: false,
+      additionalField: [],
+
       setEventField: (key, value) =>
         set((state) => ({ ...state, [key]: value })),
+
+      updateQuestion: (index, value) =>
+        set((state) => {
+          const updatedQuestions = [...(state.questions || [])];
+          updatedQuestions[index] = { ...updatedQuestions[index], ...value };
+          return { questions: updatedQuestions };
+        }),
+
+      addChoiceToQuestion: (index, choice) =>
+        set((state) => {
+          const updatedQuestions = [...(state.questions || [])];
+          const updatedChoices = [
+            ...(updatedQuestions[index].options || []),
+            choice,
+          ];
+          updatedQuestions[index].options = updatedChoices;
+          return { questions: updatedQuestions };
+        }),
+
+      removeChoiceFromQuestion: (index, choiceIndex) =>
+        set((state) => {
+          const updatedQuestions = [...(state.questions || [])];
+          const updatedChoices = updatedQuestions[index].options?.filter(
+            (_, i) => i !== choiceIndex,
+          );
+          updatedQuestions[index].options = updatedChoices;
+          return { questions: updatedQuestions };
+        }),
+
+      addQuestion: () =>
+        set((state) => ({
+          questions: [
+            ...(state.questions || []),
+            {
+              question: "",
+              answer: "",
+              required: false,
+              options: [],
+              type: "text",
+            },
+          ],
+        })),
+
+      removeQuestion: (index) =>
+        set((state) => ({
+          questions: state.questions?.filter((_, i) => i !== index),
+        })),
+
       clearEventForm: () =>
         set({
           title: "",
@@ -91,14 +146,14 @@ export const useEventStore = create<EventFormState>()(
           location: undefined,
           imagePreviews: [],
           videoPreview: undefined,
-          coHosts: [],
           timeSlots: [],
+          coHosts: [],
           guests: [],
           interestId: [],
           interests: [],
           questions: [],
           guestsAllowFriend: false,
-          additionalField: undefined,
+          additionalField: [],
         }),
     }),
     {

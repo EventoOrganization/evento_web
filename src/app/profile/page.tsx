@@ -5,10 +5,16 @@ import { cookies } from "next/headers";
 
 export default async function CurrentUserProfilePage() {
   const token = cookies().get("token");
+  console.log("token", token, token?.value);
   const authHeader = {
     Authorization: `Bearer ${token?.value}`,
   };
-
+  console.log("authHeader", authHeader);
+  console.log(
+    "calling to",
+    process.env.NEXT_PUBLIC_API_URL + "/users/getProfile with headers",
+    authHeader + "and token: " + token?.value,
+  );
   // Fetch the user's profile
   const profileResponse = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/users/getProfile`,
@@ -53,7 +59,7 @@ export default async function CurrentUserProfilePage() {
   }
 
   const pastEvents = await pastEventsResponse.json();
-
+  console.log("profileData", profileData.body);
   // console.log("Upcoming Events:", pastEvents.body);
   return (
     <UserProfile

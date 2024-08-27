@@ -7,6 +7,7 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useEventStore } from "@/store/useEventStore";
 import { useFieldArray, useFormContext } from "react-hook-form";
 
 interface Question {
@@ -25,6 +26,12 @@ const EventQuestionsInput = () => {
     control,
     name: "questions",
   });
+  const setEventField = useEventStore((state) => state.setEventField);
+  const questions = watch("questions");
+
+  const updateStore = () => {
+    setEventField("questions", questions);
+  };
 
   const addQuestion = () => {
     append({
@@ -34,15 +41,18 @@ const EventQuestionsInput = () => {
       choices: [""],
       required: false,
     });
+    updateStore();
   };
 
   const removeQuestion = (index: number) => {
     remove(index);
+    updateStore();
   };
 
   const addChoice = (index: number) => {
     const currentChoices = watch(`questions.${index}.choices`) || [];
     setValue(`questions.${index}.choices`, [...currentChoices, ""]);
+    updateStore();
   };
 
   const removeChoice = (questionIndex: number, choiceIndex: number) => {
@@ -51,6 +61,7 @@ const EventQuestionsInput = () => {
       (_: string, i: number) => i !== choiceIndex,
     );
     setValue(`questions.${questionIndex}.choices`, updatedChoices);
+    updateStore();
   };
 
   return (
@@ -68,6 +79,10 @@ const EventQuestionsInput = () => {
                     {...field}
                     placeholder="Enter your question"
                     className="rounded-xl bg-muted sm:bg-background"
+                    onChange={(e) => {
+                      field.onChange(e);
+                      updateStore();
+                    }}
                   />
                 </FormControl>
               </FormItem>
@@ -85,6 +100,7 @@ const EventQuestionsInput = () => {
                     onChange={(e) => {
                       field.onChange(e.target.value);
                       setValue(`questions.${index}.choices`, [""]);
+                      updateStore();
                     }}
                   >
                     <option value="text">Text</option>
@@ -113,11 +129,18 @@ const EventQuestionsInput = () => {
                                 {...field}
                                 placeholder={`Choice ${choiceIndex + 1}`}
                                 className="rounded-xl bg-muted sm:bg-background mr-2"
+                                onChange={(e) => {
+                                  field.onChange(e);
+                                  updateStore();
+                                }}
                               />
                               <Button
                                 type="button"
                                 className="bg-red-500 text-white rounded-full"
-                                onClick={() => removeChoice(index, choiceIndex)}
+                                onClick={() => {
+                                  removeChoice(index, choiceIndex);
+                                  updateStore();
+                                }}
                               >
                                 Remove
                               </Button>
@@ -131,7 +154,10 @@ const EventQuestionsInput = () => {
               <Button
                 type="button"
                 className="bg-green-500 text-white rounded-full mt-2"
-                onClick={() => addChoice(index)}
+                onClick={() => {
+                  addChoice(index);
+                  updateStore();
+                }}
               >
                 Add Choice
               </Button>
@@ -146,7 +172,10 @@ const EventQuestionsInput = () => {
                   <FormControl>
                     <Checkbox
                       checked={field.value}
-                      onCheckedChange={field.onChange}
+                      onCheckedChange={(checked) => {
+                        field.onChange(checked);
+                        updateStore();
+                      }}
                     />
                   </FormControl>
                 </FormItem>
@@ -155,7 +184,10 @@ const EventQuestionsInput = () => {
             <Button
               type="button"
               className="bg-red-500 text-white rounded-full"
-              onClick={() => removeQuestion(index)}
+              onClick={() => {
+                removeQuestion(index);
+                updateStore();
+              }}
             >
               Remove Question
             </Button>
@@ -165,7 +197,10 @@ const EventQuestionsInput = () => {
       <Button
         type="button"
         className="bg-blue-500 text-white rounded-full mt-2"
-        onClick={addQuestion}
+        onClick={() => {
+          addQuestion();
+          updateStore();
+        }}
       >
         Add Question
       </Button>
