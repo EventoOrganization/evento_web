@@ -19,14 +19,15 @@ const config = {
     },
     extend: {
       backgroundImage: {
-        "evento-gradient": "linear-gradient(160deg, #B127A6 0%, #5973D3 100%)",
+        "evento-gradient": "linear-gradient(160deg, #A62BA7 0%, #5973D3 100%)",
         "evento-gradient-button":
           "linear-gradient(160deg, #894dbc 20%, #5973D3 100%)",
       },
       colors: {
-        eventoPink: "#d5298e",
-        eventoBlue: "#5f6fed",
-        eventoPurple: "#7858C3",
+        eventoPink: "#A62BA7",
+        eventoBlue: "#568CE5",
+        eventoPurpleDark: "#6322A3",
+        eventoPurpleLight: "#7659BF",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

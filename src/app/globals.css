@@ -4,11 +4,12 @@
 
 @layer base {
   :root {
-    --evento-pink: #d5298e;
-    --evento-purple: #7858c3;
-    --evento-blue: #5f6fed;
+    --evento-pink: #a62ba7;
+    --evento-purple-light: #7659bf;
+    --evento-purple-dark: #6322a3;
+    --evento-blue: #568ce5;
     --evento-gradient-button: linear-gradient(180deg, #894dbc 0%, #5f6fed 100%);
-    --evento-gradient: linear-gradient(180deg, #d5298e 0%, #5f6fed 100%);
+    --evento-gradient: linear-gradient(180deg, #a62ba7 0%, #5f6fed 100%);
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;
