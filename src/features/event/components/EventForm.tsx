@@ -11,6 +11,8 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useEventStore } from "@/store/useEventStore";
+import { Option } from "@/types/EventType";
+import { User } from "@/types/UserType";
 import { useEffect, useState } from "react";
 import { FormProvider, useForm, useFormContext } from "react-hook-form";
 import EventCoHostsModal from "./EventCoHostsModal";
@@ -19,11 +21,11 @@ import EventDescriptionArea from "./EventDescriptionArea";
 import EventGuestsModal from "./EventGuestsModal";
 import EventInterestSelect from "./EventInterestSelect";
 import EventModeSelect from "./EventModeSelect";
+import GuestsAllowFriendCheckbox from "./GuestsAllowFriendCheckbox";
+import OpenStreetMapGeocoding from "./OpenStreetMapGeocoding";
 import EventNameInput from "./EventNameInput";
 import EventTitleInput from "./EventTitleInput";
 import EventTypeSelect from "./EventTypeSelect";
-import GuestsAllowFriendCheckbox from "./GuestsAllowFriendCheckbox";
-import OpenStreetMapGeocoding from "./OpenStreetMapGeocoding";
 const useSyncFormWithStore = () => {
   const { reset, getValues } = useFormContext();
   const eventStore = useEventStore();
@@ -54,7 +56,15 @@ const useSyncFormWithStore = () => {
   }, [eventStore, reset]);
 };
 
-const EventForm = ({ className }: { className?: string }) => {
+const EventForm = ({
+  className,
+  allUsers,
+  interests,
+}: {
+  className?: string;
+  allUsers?: User[];
+  interests?: Option[];
+}) => {
   // const [isFetching, setIsFetching] = useState(false);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const eventStore = useEventStore();
@@ -184,12 +194,9 @@ const EventForm = ({ className }: { className?: string }) => {
           <EventModeSelect />
         </div>
         <EventDateInput />
-        {/* <EventLocationInput /> */}
         <OpenStreetMapGeocoding />
         <EventDescriptionArea />
-        <EventInterestSelect />
-        {/* <EventImageUpload />
-        <EventVideoUpload /> */}
+        <EventInterestSelect interests={interests as Option[]} />
         <FormField
           name="images"
           control={form.control}
@@ -234,8 +241,8 @@ const EventForm = ({ className }: { className?: string }) => {
           )}
         />
         <div>
-          <EventGuestsModal />
-          <EventCoHostsModal />
+          <EventGuestsModal allUsers={allUsers as User[]} />
+          <EventCoHostsModal allUsers={allUsers as User[]} />
         </div>
         <GuestsAllowFriendCheckbox />
         <Button

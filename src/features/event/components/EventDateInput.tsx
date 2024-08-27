@@ -25,7 +25,7 @@ const EventDateInput = () => {
     setValue("timeSlots", timeSlots);
   }, [timeSlots, setValue]);
 
-  const generateDateRange = (start: string, end: string) => {
+  const generateDateRange = (start: string, end: string): string[] => {
     const dates = [];
     const currentDate = new Date(start);
     const lastDate = new Date(end);
@@ -50,17 +50,17 @@ const EventDateInput = () => {
       const dateRange = generateDateRange(eventStore.date, eventStore.endDate);
       const slots = dateRange.map((date) => ({
         date,
-        startTime: eventStore.startTime,
-        endTime: eventStore.endTime,
+        startTime: eventStore.startTime || "",
+        endTime: eventStore.endTime || "",
       }));
       setTimeSlots(slots);
       eventStore.setEventField("timeSlots", slots);
     } else {
       const slots = [
         {
-          date: eventStore.date,
-          startTime: eventStore.startTime,
-          endTime: eventStore.endTime,
+          date: eventStore.date || "",
+          startTime: eventStore.startTime || "",
+          endTime: eventStore.endTime || "",
         },
       ];
       setTimeSlots(slots);
@@ -80,7 +80,7 @@ const EventDateInput = () => {
                 <Input
                   type="date"
                   {...field}
-                  value={eventStore.date}
+                  value={eventStore.date || ""}
                   className="rounded-xl bg-muted sm:bg-background"
                   onChange={(e) => {
                     field.onChange(e);
@@ -113,7 +113,7 @@ const EventDateInput = () => {
                 <Input
                   type="date"
                   {...field}
-                  value={eventStore.endDate}
+                  value={eventStore.endDate || ""}
                   className="rounded-xl bg-muted sm:bg-background"
                   onChange={(e) => {
                     field.onChange(e);
@@ -186,7 +186,7 @@ const EventDateInput = () => {
             >
               <Input
                 type="date"
-                value={slot.date}
+                value={slot.date || ""}
                 {...register(`timeSlots.${index}.date`)}
                 className="input"
                 readOnly

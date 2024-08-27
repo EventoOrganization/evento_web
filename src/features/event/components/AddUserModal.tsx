@@ -7,10 +7,9 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useAuthStore } from "@/store/useAuthStore";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 interface User {
   _id: string;
@@ -23,6 +22,7 @@ interface User {
 
 interface AddUserModalProps {
   title: string;
+  allUsers: User[];
   selectedUsers: User[];
   onSave: (selectedUsers: string[]) => void;
   onAddUser: (user: User) => void;
@@ -30,59 +30,15 @@ interface AddUserModalProps {
 }
 
 const AddUserModal = ({
+  allUsers,
   title,
   selectedUsers,
   onSave,
   onAddUser,
   onRemoveUser,
 }: AddUserModalProps) => {
-  const [users, setUsers] = useState<User[]>([]);
+  const [users, setUsers] = useState<User[]>(allUsers);
   const [isOpen, setIsOpen] = useState(false);
-  const token = useAuthStore((state) => state.user?.token);
-
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/users/userListWithFollowingStatus`,
-          {
-            credentials: "include",
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          },
-        );
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const result = await response.json();
-        const sortedUsers = result.body.sort((a: any, b: any) => {
-          if (
-            a.status === "follow-each-other" &&
-            b.status !== "follow-each-other"
-          ) {
-            return -1;
-          }
-          if (
-            a.status !== "follow-each-other" &&
-            b.status === "follow-each-other"
-          ) {
-            return 1;
-          }
-          return 0;
-        });
-        const extractedUsers = sortedUsers.map((item: any) => item.user);
-        setUsers(extractedUsers);
-      } catch (error) {
-        console.error("Error fetching users:", error);
-      }
-    };
-
-    fetchUsers();
-  }, []);
 
   // Filter out selected users from the list of available users
   const availableUsers = users.filter(

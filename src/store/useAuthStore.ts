@@ -9,7 +9,6 @@ export type AuthState = {
 };
 
 const isServer = typeof window === "undefined";
-const isClient = typeof window !== "undefined";
 
 const zustandLocalStorage: PersistStorage<AuthState> = {
   getItem: (name) => {

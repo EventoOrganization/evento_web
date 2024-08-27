@@ -9,7 +9,7 @@ interface User {
   lastName?: string;
   firstName?: string;
 }
-const EventCoHostsModal = () => {
+const EventCoHostsModal = ({allUsers}: {allUsers: User[]}) => {
   const eventStore = useEventStore();
   const [coHosts, setCoHosts] = useState<User[]>([]);
 
@@ -29,6 +29,7 @@ const EventCoHostsModal = () => {
     <AddUserModal
       title="Add Co-Hosts"
       selectedUsers={coHosts}
+      allUsers={allUsers}
       onSave={handleSave}
       onAddUser={addCoHost}
       onRemoveUser={removeCoHost}

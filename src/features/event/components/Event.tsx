@@ -1,3 +1,4 @@
+"use client";
 import AvatarStack from "@/components/AvatarStack";
 import TruncatedText from "@/components/TruncatedText";
 import { Button } from "@/components/ui/button";
