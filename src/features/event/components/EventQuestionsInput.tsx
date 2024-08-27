@@ -18,7 +18,7 @@ interface Question {
 }
 
 const EventQuestionsInput = () => {
-  const { control, register, setValue, watch } = useFormContext<{
+  const { control, setValue, watch } = useFormContext<{
     questions: Question[];
   }>();
   const { fields, append, remove } = useFieldArray({

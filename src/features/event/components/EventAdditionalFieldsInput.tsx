@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { useFieldArray, useFormContext } from "react-hook-form";
 
 const EventAdditionalFieldsInput = () => {
-  const { control, register } = useFormContext();
+  const { control } = useFormContext();
   const { fields, append, remove } = useFieldArray({
     control,
     name: "additionalField",
