@@ -3,11 +3,14 @@ import { NextResponse, type NextRequest } from "next/server";
 export function middleware(req: NextRequest) {
   const pathname = req.nextUrl.pathname;
   console.log("Received request for:", pathname);
+  const cookies = req.cookies;
+  // console.log("Middleware Cookies detected:", cookies);
 
   const sessionCookie = req.cookies.get("connect.sid");
-  console.log(" Middleware Session Cookie detected:", sessionCookie);
+  // console.log(" Middleware Session Cookie detected:", sessionCookie);
+
   const token = req.cookies.get("token");
-  console.log("Middleware Token detected:", token);
+  console.log("Middleware Token detected:", token?.value);
   if (
     pathname.startsWith("/_next") ||
     pathname.startsWith("/api") ||
@@ -30,7 +33,5 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    // "/profile/:path*"
-  ],
+  matcher: ["/profile/:path*"],
 };
