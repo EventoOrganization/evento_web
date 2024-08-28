@@ -2,7 +2,7 @@
 
 import UserProfile from "@/features/profile/UserProfile";
 import { getSessionSSR } from "@/utils/authUtilsSSR";
-import { fetchDataFromApi } from "@/utils/fetchData";
+import { fetchData } from "@/utils/fetchData";
 import { Link } from "lucide-react";
 export default async function CurrentUserProfilePage() {
   const session = getSessionSSR();
@@ -17,22 +17,13 @@ export default async function CurrentUserProfilePage() {
   }
   try {
     // Fetch the user's profile
-    const profileData = await fetchDataFromApi(
-      `${process.env.NEXT_PUBLIC_API_URL}/users/getProfile`,
-      "GET",
-    );
+    const profileData = await fetchData(`/users/getProfile`, "GET");
 
     // Fetch upcoming events
-    const upcomingEvents = await fetchDataFromApi(
-      `${process.env.NEXT_PUBLIC_API_URL}/users/upcomingEvents`,
-      "GET",
-    );
+    const upcomingEvents = await fetchData(`/users/upcomingEvents`, "GET");
 
     // Fetch past events
-    const pastEvents = await fetchDataFromApi(
-      `${process.env.NEXT_PUBLIC_API_URL}/users/pastEvents`,
-      "GET",
-    );
+    const pastEvents = await fetchData(`/users/pastEvents`, "GET");
 
     return (
       <UserProfile

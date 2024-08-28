@@ -1,7 +1,7 @@
 import { getTokenCSR } from "./authUtilsCSR";
 import { getTokenSSR } from "./authUtilsSSR";
 
-export const fetchDataFromApi = async (
+export const fetchData = async (
   endpoint: string,
   method: "GET" | "POST" | "PUT" | "DELETE" = "GET",
   body?: any,
@@ -31,12 +31,19 @@ export const fetchDataFromApi = async (
     fetchOptions.body = JSON.stringify(body);
   }
 
-  const response = await fetch(endpoint, fetchOptions);
-
+  const response = await fetch(
+    process.env.NEXT_PUBLIC_API_URL + endpoint,
+    fetchOptions,
+  );
+  console.log(
+    `Request sent to ${process.env.NEXT_PUBLIC_API_URL}${endpoint}:`,
+    fetchOptions,
+  );
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);
   }
-
   const data = await response.json();
+  console.log(`Response from ${endpoint}:`, typeof data);
+
   return data;
 };

@@ -29,7 +29,7 @@ const Main: React.FC<MainProps> = async ({
         bgColor,
         padding,
         fullHeight ? "min-h-screen" : "",
-        "flex flex-col items-center justify-center flex-grow ",
+        "flex flex-col items-center justify-center flex-grow md:pt-28",
       )}
       style={style}
     >
