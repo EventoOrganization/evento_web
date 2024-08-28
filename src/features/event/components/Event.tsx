@@ -8,6 +8,7 @@ import { useEventStore } from "@/store/useEventStore";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { MapPin } from "lucide-react";
 import Image from "next/image";
+import EventActionIcons from "./EventActionIcons";
 const Event = ({ className, event }: { className?: string; event?: any }) => {
   const createEvent = useEventStore((state) => state);
   const user = useAuthStore((state) => state.user);
@@ -160,7 +161,7 @@ const Event = ({ className, event }: { className?: string; event?: any }) => {
         <div>
           <AvatarStack eventId={event?._id} />{" "}
         </div>
-        {/* <EventActionIcons event={event} /> */}
+        <EventActionIcons event={event} />
       </div>
     </div>
   );

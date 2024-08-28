@@ -14,6 +14,9 @@ dependencies:
   '@hookform/resolvers':
     specifier: ^3.9.0
     version: 3.9.0(react-hook-form@7.52.2)
+  '@netlify/plugin-nextjs':
+    specifier: ^5.7.0
+    version: 5.7.0
   '@nextui-org/card':
     specifier: ^2.0.33
     version: 2.0.33(@nextui-org/system@2.2.5)(@nextui-org/theme@2.2.9)(framer-motion@11.3.28)(react-dom@18.3.1)(react@18.3.1)
@@ -1334,6 +1337,11 @@ packages:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.0
+
+  /@netlify/plugin-nextjs@5.7.0:
+    resolution: {integrity: sha512-HFZBHz70oDmw/5tKXH3F6WX4X01/DgY9etjLXjfDSxYl+AiNKwL+1kePUMp73zMFN5M+TU/TsEaFr38wmE6EVQ==}
+    engines: {node: '>=18.0.0'}
+    dev: false
 
   /@next/env@14.2.5:
     resolution: {integrity: sha512-/zZGkrTOsraVfYjGP8uM0p6r0BDT6xWpkjdVbcz66PJVSpwXX3yNiRycxAuDfBKGWBrZBXRuK/YVlkNgxHGwmA==}

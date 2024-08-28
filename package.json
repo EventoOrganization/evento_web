@@ -17,6 +17,7 @@
     "@headlessui/react": "^2.1.2",
     "@heroicons/react": "^2.1.5",
     "@hookform/resolvers": "^3.9.0",
+    "@netlify/plugin-nextjs": "^5.7.0",
     "@nextui-org/card": "^2.0.33",
     "@nextui-org/image": "^2.0.31",
     "@nextui-org/spinner": "^2.0.33",
