@@ -19,6 +19,7 @@ export type Option = {
 };
 
 export type Event = {
+  _id: string;
   title: string;
   eventType: "public" | "private";
   name: string;
@@ -44,6 +45,7 @@ export type Event = {
   questions?: Question[];
   guestsAllowFriend: boolean;
   additionalField?: any;
+  details?: EventDetails;
 };
 export type EventDetails = {
   name?: string;

@@ -13,9 +13,9 @@ const isServer = typeof window === "undefined";
 const zustandLocalStorage: PersistStorage<AuthState> = {
   getItem: (name) => {
     if (isServer) {
-      console.log("getItem called on SSR");
+      // console.log("getItem called on SSR");
     } else {
-      console.log("getItem called on Client");
+      // console.log("getItem called on Client");
     }
 
     const storedValue = localStorage.getItem(name);
@@ -26,18 +26,18 @@ const zustandLocalStorage: PersistStorage<AuthState> = {
   },
   setItem: (name, value) => {
     if (isServer) {
-      console.log("setItem called on SSR");
+      // console.log("setItem called on SSR");
     } else {
-      console.log("setItem called on Client");
+      // console.log("setItem called on Client");
     }
 
     localStorage.setItem(name, JSON.stringify(value));
   },
   removeItem: (name) => {
     if (isServer) {
-      console.log("removeItem called on SSR");
+      // console.log("removeItem called on SSR");
     } else {
-      console.log("removeItem called on Client");
+      // console.log("removeItem called on Client");
     }
 
     localStorage.removeItem(name);

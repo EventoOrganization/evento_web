@@ -1,3 +1,4 @@
+"use client";
 import CalendarIcon from "@/components/icons/CalendarIcon";
 import MapPinIcon from "@/components/icons/MapPinIcon";
 import {
@@ -37,6 +38,9 @@ const EventPreview = ({
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
+  const isValidUrl = (url: string) => {
+    return url.startsWith("http://") || url.startsWith("https://");
+  };
   return (
     <>
       <Card
@@ -51,13 +55,15 @@ const EventPreview = ({
           <CardDescription></CardDescription>
         </CardHeader>
         <CardContent>
-          <Image
-            src={event.details.images[0]}
-            alt="Event Image"
-            width={245}
-            height={245}
-            className="w-full inset-0 h-full absolute object-cover"
-          />
+          {isValidUrl(event.details.images[0]) && (
+            <Image
+              src={event.details.images[0]}
+              alt="Event Image"
+              width={245}
+              height={245}
+              className="w-full inset-0 h-full absolute object-cover"
+            />
+          )}
         </CardContent>
         <CardFooter className="p-0 h-32  bg-black/60 font-bold text-white z-10">
           <ul className=" p-5 flex flex-col justify-center w-full h-full">

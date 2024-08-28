@@ -1,7 +1,11 @@
 import BookingIcon from "@/components/icons/BookingIcon";
 import GoingIcon from "@/components/icons/GoingIncon";
 import SendIcon from "@/components/icons/SendIcon";
-import React from "react";
+import AuthModal from "@/features/auth/components/AuthModal";
+import { useAuthStore } from "@/store/useAuthStore";
+import { Event } from "@/types/EventType";
+import React, { useEffect, useState } from "react";
+import { isUserLoggedInCSR } from "../eventActions";
 
 type EventActionIconsProps = {
   event: any;
@@ -12,22 +16,83 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
   event,
   className = "",
 }) => {
-  const handleGoing = (event: any) => {
-    alert("Going action for event:");
-    console.log(event);
+  console.log("event", event);
+  const [isGoing, setIsGoing] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
+  const token = isUserLoggedInCSR();
+  const user = useAuthStore((state) => state.user);
+  useEffect(() => {
+    const checkIfGoing = async () => {
+      console.log(event._id, token);
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/users/isAttending/${event._id}`,
+          {
+            credentials: "include",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        console.log("response", data.attending);
+        setIsGoing(data);
+      } catch (error) {
+        console.error("Error checking if user is going:", error);
+      }
+    };
 
-    // Add your logic here
+    checkIfGoing();
+  }, [event._id]);
+  const handleGoing = async (event: Event) => {
+    if (!token) {
+      setIsAuthModalOpen(true);
+      return;
+    }
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/users/attendEventByTickInFigma`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ eventId: event._id, userId: user?._id }),
+        },
+      );
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      setIsGoing(!isGoing);
+    } catch (error) {
+      console.error("Error marking event as going:", error);
+      alert("Failed to mark as going. Please try again.");
+    }
+  };
+  const handleBooking = (event: Event) => {
+    const startDate = event.details?.date
+      ? new Date(event.details.date).toISOString().replace(/-|:|\.\d+/g, "")
+      : "";
+
+    const endDate = event.details?.endDate
+      ? new Date(event.details.endDate).toISOString().replace(/-|:|\.\d+/g, "")
+      : "";
+    const title = encodeURIComponent(event.title);
+    const description = encodeURIComponent(event.details?.description || "");
+    const location = encodeURIComponent(event.details?.location || "");
+
+    const googleCalendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startDate}/${endDate}&details=${description}&location=${location}&sf=true&output=xml`;
+
+    window.open(googleCalendarUrl, "_blank");
   };
 
-  const handleBooking = (event: any) => {
-    alert("Booking action for event:");
-    console.log(event);
-    // Add your logic here
-  };
-
-  const handleSend = (event: any) => {
+  const handleSend = (event: Event) => {
     alert("Send action for event:");
-    console.log(event);
+    // console.log(event);
     // Add your logic here
   };
   return (
@@ -41,6 +106,9 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
       <button onClick={() => handleSend(event)}>
         <SendIcon />
       </button>
+      {isAuthModalOpen && (
+        <AuthModal onAuthSuccess={() => setIsAuthModalOpen(false)} />
+      )}
     </div>
   );
 };

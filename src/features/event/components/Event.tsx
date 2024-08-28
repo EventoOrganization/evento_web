@@ -40,6 +40,9 @@ const Event = ({ className, event }: { className?: string; event?: any }) => {
       return `du ${startDay} au ${endDay} ${monthYear}`; // e.g., "du 10 au 12 septembre 2024"
     }
   };
+  const isValidUrl = (url: string) => {
+    return url.startsWith("http://") || url.startsWith("https://");
+  };
   return (
     <div
       className={cn(
@@ -49,9 +52,9 @@ const Event = ({ className, event }: { className?: string; event?: any }) => {
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center">
-          {event?.user.profileImage ? (
+          {event?.user.profileImage && isValidUrl(event.user.profileImage) ? (
             <Image
-              src={event.user.profileImage}
+              src={event?.user.profileImage}
               alt="user image"
               width={500}
               height={500}
@@ -82,9 +85,11 @@ const Event = ({ className, event }: { className?: string; event?: any }) => {
         <div className="relative w-full pb-[56.25%]">
           <Image
             src={
-              event?.details?.images?.[0] ||
-              (createEvent?.imagePreviews && createEvent.imagePreviews[0]) ||
-              "https://evento-media-bucket.s3.ap-southeast-2.amazonaws.com/evento-bg.jpg"
+              event?.details?.images?.[0] && isValidUrl(event.details.images[0])
+                ? event.details.images[0]
+                : (createEvent?.imagePreviews &&
+                    createEvent.imagePreviews[0]) ||
+                  "https://evento-media-bucket.s3.ap-southeast-2.amazonaws.com/evento-bg.jpg"
             }
             alt="event image"
             fill

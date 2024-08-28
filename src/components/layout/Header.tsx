@@ -1,5 +1,6 @@
 "use client";
 
+import { isUserLoggedInCSR } from "@/features/event/eventActions";
 import useOnScroll from "@/hooks/useOnScroll";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/store/useAuthStore";
@@ -12,7 +13,7 @@ export const Header = () => {
   const pathname = usePathname();
   const scrollY = useOnScroll();
   const user = useAuthStore((state) => state.user);
-
+  const token = isUserLoggedInCSR();
   return (
     <header
       className={cn(
@@ -41,7 +42,7 @@ export const Header = () => {
           >
             <Link href="/create-event">Create Event</Link>
           </Button>
-          {user ? (
+          {token ? (
             <Button
               className={cn(
                 "bg-muted rounded-full text-xs self-center px-8 border-none  text-[#7858C3]",
