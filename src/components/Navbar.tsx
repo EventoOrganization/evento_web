@@ -11,8 +11,8 @@ import UserIcon from "./icons/UserIcon";
 export default function NavbarApp() {
   const pathname = usePathname();
   return (
-    <div className="w-full flex justify-center md:hidden z-20">
-      <nav className="fixed bottom-6 bg-background rounded-lg flex justify-evenly w-full shadow max-w-80 mx-auto h-12 items-center">
+    <div className="w-full flex justify-center md:hidden ">
+      <nav className="fixed bottom-6 bg-background z-20 rounded-lg flex justify-evenly w-full shadow max-w-80 mx-auto h-12 items-center">
         <Link href="/">
           <HomeIcon
             className={cn(

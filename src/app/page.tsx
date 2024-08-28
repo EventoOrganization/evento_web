@@ -8,7 +8,7 @@ import Link from "next/link";
 export default function Home() {
   return (
     <>
-      <div className=" bg-evento-gradient h-full w-screen inset-0 object-cover object-center  absolute opacity-90"></div>
+      <div className=" bg-evento-gradient h-full w-full inset-0 object-cover object-center  absolute opacity-90"></div>
       <Image
         src={
           "https://evento-media-bucket.s3.ap-southeast-2.amazonaws.com/evento-bg.jpg"
