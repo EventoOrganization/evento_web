@@ -4,7 +4,6 @@ import { cn } from "@nextui-org/theme";
 import EventPreview from "../event/components/EventPreview";
 
 const Showcase = ({ events }: { events: Event[] }) => {
-  console.log(events);
   return (
     <Section>
       <h2>All Events</h2>

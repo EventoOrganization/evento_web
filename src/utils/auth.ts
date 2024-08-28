@@ -1,16 +1,11 @@
-"use server";
+import jwt, { JwtPayload } from "jsonwebtoken";
 
-import { cookies } from "next/headers";
-
-// src/utils/authUtils.ts
-
-export const isUserLoggedInSSR = async () => {
-  const token = cookies().get("token");
-  console.log("token", token);
-  return !!token?.value;
-};
-
-export const getToken = async () => {
-  const token = cookies().get("token");
-  return token?.value;
+export const decodeToken = (token: string): JwtPayload | null => {
+  try {
+    const decoded = jwt.decode(token) as JwtPayload;
+    return decoded;
+  } catch (error) {
+    console.error("Failed to decode token:", error);
+    return null;
+  }
 };

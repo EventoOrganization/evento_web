@@ -1,67 +1,50 @@
 // src/app/profile/page.tsx
 
 import UserProfile from "@/features/profile/UserProfile";
-import { cookies } from "next/headers";
-
+import { getSessionSSR } from "@/utils/authUtilsSSR";
+import { fetchDataFromApi } from "@/utils/fetchData";
+import { Link } from "lucide-react";
 export default async function CurrentUserProfilePage() {
-  const token = cookies().get("token");
-  const authHeader = {
-    Authorization: `Bearer ${token?.value}`,
-  };
+  const session = getSessionSSR();
 
-  // Fetch the user's profile
-  const profileResponse = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/users/getProfile`,
-    {
-      method: "GET",
-      headers: authHeader,
-    },
-  );
-
-  if (!profileResponse.ok) {
-    return <div>Error fetching profile data</div>;
+  if (!session.isLoggedIn) {
+    return (
+      <div>
+        You need to log in to view this page.{" "}
+        <Link href="/signin">Sign in</Link>
+      </div>
+    );
   }
+  try {
+    // Fetch the user's profile
+    const profileData = await fetchDataFromApi(
+      `${process.env.NEXT_PUBLIC_API_URL}/users/getProfile`,
+      "GET",
+    );
 
-  const profileData = await profileResponse.json();
+    // Fetch upcoming events
+    const upcomingEvents = await fetchDataFromApi(
+      `${process.env.NEXT_PUBLIC_API_URL}/users/upcomingEvents`,
+      "GET",
+    );
 
-  // Fetch upcoming events
-  const upcomingEventsResponse = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/users/upcomingEvents`,
-    {
-      method: "GET",
-      headers: authHeader,
-    },
-  );
+    // Fetch past events
+    const pastEvents = await fetchDataFromApi(
+      `${process.env.NEXT_PUBLIC_API_URL}/users/pastEvents`,
+      "GET",
+    );
 
-  if (!upcomingEventsResponse.ok) {
-    return <div>Error fetching upcoming events</div>;
+    return (
+      <UserProfile
+        profile={profileData.body}
+        upcomingEvents={upcomingEvents.body.upcomingEvents || []}
+        pastEvents={pastEvents.body.pastHostedEvents || []}
+        hostingEvents={upcomingEvents.body.hostedByYouEvents || []}
+        pastHostedEvents={pastEvents.body.pastHostedEvents || []}
+      />
+    );
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    return <div>Error fetching profile or events data</div>;
   }
-
-  const upcomingEvents = await upcomingEventsResponse.json();
-
-  // Fetch past events
-  const pastEventsResponse = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/users/pastEvents`,
-    {
-      method: "GET",
-      headers: authHeader,
-    },
-  );
-
-  if (!pastEventsResponse.ok) {
-    return <div>Error fetching past events</div>;
-  }
-
-  const pastEvents = await pastEventsResponse.json();
-
-  // console.log("Upcoming Events:", pastEvents.body);
-  return (
-    <UserProfile
-      profile={profileData.body}
-      upcomingEvents={upcomingEvents.body.upcomingEvents || []}
-      pastEvents={pastEvents.body.pastHostedEvents || []}
-      hostingEvents={upcomingEvents.body.hostedByYouEvents || []}
-      pastHostedEvents={pastEvents.body.pastHostedEvents || []}
-    />
-  );
 }

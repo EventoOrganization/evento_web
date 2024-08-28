@@ -1,6 +1,7 @@
 // src/app/profile/page.tsx
 
 import UserProfile from "@/features/profile/UserProfile";
+import { getSessionSSR } from "@/utils/authUtilsSSR";
 import { cookies } from "next/headers";
 
 export default async function UserProfilePage({
@@ -8,6 +9,8 @@ export default async function UserProfilePage({
 }: {
   params: { id: string };
 }) {
+  const session = getSessionSSR();
+  const user = session.user;
   const id = params.id;
   const token = cookies().get("token");
   const authHeader = {
