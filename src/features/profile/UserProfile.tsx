@@ -46,7 +46,7 @@ const UserProfile = ({
   }
 
   return (
-    <Section className="gap-6 md:mt-20 px-20">
+    <Section className="gap-6 md:mt-20 md:px-20">
       <div className=" w-full lg:grid lg:grid-cols-3">
         <div className="col-span-2 self-start w-full max-w-lg">
           <div className="flex items-center w-full justify-between pt-10 pb-4 ">

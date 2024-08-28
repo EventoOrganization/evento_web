@@ -8,7 +8,6 @@ const TruncatedText = ({ text = "" }: { text: string }) => {
 
   useEffect(() => {
     if (textRef.current) {
-      // Compare the scrollHeight (actual height with overflow) with the clientHeight (visible height)
       setIsOverflowing(
         textRef.current.scrollHeight > textRef.current.clientHeight,
       );
