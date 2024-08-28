@@ -2,7 +2,7 @@ import Header from "@/components/layout/Header";
 import Main from "@/components/layout/Main";
 import NavbarApp from "@/components/Navbar";
 import { Toaster } from "@/components/ui/sonner";
-import { UserProvider } from "@/contexts/authContext";
+import { SessionProvider } from "@/contexts/SessionProvider";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
@@ -22,12 +22,12 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning={true}>
       <body className={inter.className}>
-        <UserProvider>
+        <SessionProvider>
           <Toaster position="top-center" />
           <Header />
           <Main className="">{children}</Main>
           <NavbarApp />
-        </UserProvider>
+        </SessionProvider>
       </body>
     </html>
   );
