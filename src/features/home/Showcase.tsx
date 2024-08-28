@@ -4,6 +4,7 @@ import { cn } from "@nextui-org/theme";
 import EventPreview from "../event/components/EventPreview";
 
 const Showcase = ({ events }: { events: Event[] }) => {
+  console.log(events);
   return (
     <Section>
       <h2>All Events</h2>
@@ -16,9 +17,8 @@ const Showcase = ({ events }: { events: Event[] }) => {
           },
         )}
       >
-        {events.map((event) => (
-          <EventPreview key={event._id} event={event} />
-        ))}
+        {events &&
+          events.map((event) => <EventPreview key={event._id} event={event} />)}
       </ul>
     </Section>
   );

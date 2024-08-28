@@ -1,6 +1,7 @@
 "use client";
 
 import { isUserLoggedInCSR } from "@/features/event/eventActions";
+import { useAuthStore } from "@/store/useAuthStore";
 import { Event } from "@/types/EventType";
 import { useEffect, useRef, useState } from "react";
 import io, { Socket } from "socket.io-client";
@@ -12,6 +13,8 @@ const ChatPage = () => {
   const [input, setInput] = useState("");
   const token = isUserLoggedInCSR();
   const socketRef = useRef<Socket | null>(null);
+  const user = useAuthStore((state) => state.user);
+  console.log(user);
   useEffect(() => {
     // Establish the socket connection once
     if (!socketRef.current) {
@@ -31,6 +34,7 @@ const ChatPage = () => {
       // Cleanup the socket connection on unmount
       if (socketRef.current) {
         socketRef.current.disconnect();
+        socketRef.current = null;
       }
     };
   }, []);
@@ -69,12 +73,38 @@ const ChatPage = () => {
     setMessages([]); // Clear messages when a new event is selected
   };
 
-  const sendMessage = () => {
+  const sendMessage = async () => {
     if (input.trim()) {
-      socketRef.current?.emit("sendMessage", {
-        eventId: selectedEvent?._id || null,
-        message: input,
-      });
+      console.log("Sending message:", user?.userInfo?._id);
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/users/saveMessage`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              eventId: selectedEvent?._id || null,
+              senderId: user?.userInfo?._id,
+              message: input,
+              message_type: 1,
+            }),
+          },
+        );
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log("Message saved:", data);
+          setMessages((prevMessages) => [...prevMessages, data.message]); // Ajouter le message localement
+        } else {
+          console.error("Failed to send message:", response.statusText);
+        }
+      } catch (error) {
+        console.error("Error sending message:", error);
+      }
+
       setInput(""); // Clear the input field after sending
     }
   };
@@ -104,11 +134,11 @@ const ChatPage = () => {
         </div>
       )}
       {selectedEvent && (
-        <div className="bg-gray-100 p-4 rounded-lg shadow-lg">
+        <div className="bg-evento-gradient p-4 rounded-lg shadow-lg">
           <h2 className="text-xl font-semibold mb-4">
             Chat Room: {selectedEvent.title}
           </h2>
-          <div className="mb-4 h-64 overflow-y-auto p-4 bg-red-500 text-black rounded-lg shadow-inner">
+          <div className="mb-4 h-64 overflow-y-auto p-4 bg-white text-black rounded-lg shadow-inner">
             {messages.map((msg, index) => (
               <div key={index} className="mb-2 p-2 bg-gray-200 rounded-lg">
                 {msg}

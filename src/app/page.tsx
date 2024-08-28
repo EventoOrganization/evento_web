@@ -29,7 +29,7 @@ export default async function Home() {
   return (
     <>
       <Hero />
-      <Showcase events={events.data} />
+      <Showcase events={events?.data} />
     </>
   );
 }
