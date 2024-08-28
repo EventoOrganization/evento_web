@@ -4,6 +4,7 @@ import SendIcon from "@/components/icons/SendIcon";
 import AuthModal from "@/features/auth/components/AuthModal";
 import { useAuthStore } from "@/store/useAuthStore";
 import { Event } from "@/types/EventType";
+import { CrossIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { isUserLoggedInCSR } from "../eventActions";
 
@@ -16,8 +17,7 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
   event,
   className = "",
 }) => {
-  console.log("event", event);
-  const [isGoing, setIsGoing] = useState(false);
+  const [goingStatus, setGoingStatus] = useState<Record<string, boolean>>({});
   const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
   const token = isUserLoggedInCSR();
   const user = useAuthStore((state) => state.user);
@@ -39,7 +39,10 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
         }
         const data = await response.json();
         console.log("response", data.attending);
-        setIsGoing(data);
+        setGoingStatus((prevStatus) => ({
+          ...prevStatus,
+          [event._id]: data.attending,
+        }));
       } catch (error) {
         console.error("Error checking if user is going:", error);
       }
@@ -54,7 +57,7 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
     }
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/users/attendEventByTickInFigma`,
+        `${process.env.NEXT_PUBLIC_API_URL}/users/attendEventConfm`,
         {
           method: "POST",
           headers: {
@@ -67,7 +70,10 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      setIsGoing(!isGoing);
+      setGoingStatus((prevStatus) => ({
+        ...prevStatus,
+        [event._id]: !goingStatus[event._id],
+      }));
     } catch (error) {
       console.error("Error marking event as going:", error);
       alert("Failed to mark as going. Please try again.");
@@ -92,13 +98,13 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
 
   const handleSend = (event: Event) => {
     alert("Send action for event:");
-    // console.log(event);
+    console.log(event);
     // Add your logic here
   };
   return (
     <div className={`flex gap-2 ${className}`}>
       <button onClick={() => handleGoing(event)}>
-        <GoingIcon />
+        {goingStatus[event._id] ? <CrossIcon /> : <GoingIcon />}
       </button>
       <button onClick={() => handleBooking(event)}>
         <BookingIcon />

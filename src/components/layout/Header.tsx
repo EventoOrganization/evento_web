@@ -1,19 +1,25 @@
 "use client";
-
 import { isUserLoggedInCSR } from "@/features/event/eventActions";
 import useOnScroll from "@/hooks/useOnScroll";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/store/useAuthStore";
-import { eventoBtn } from "@/styles/eventoBtn";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
+
 export const Header = () => {
   const pathname = usePathname();
   const scrollY = useOnScroll();
   const user = useAuthStore((state) => state.user);
-  const token = isUserLoggedInCSR();
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const token = isUserLoggedInCSR();
+    setIsAuthenticated(!!token);
+  }, []);
+
   return (
     <header
       className={cn(
@@ -33,19 +39,28 @@ export const Header = () => {
             </h2>
           </Link>
         </div>
-        <div className=" gap-4 font-semibold text-xs  flex">
+        <div className="gap-4 font-semibold text-xs flex">
           <Button
-            className={cn(eventoBtn, "", {
+            className={cn("text-black", {
               "bg-background text-[#7858C3]": scrollY > 0,
             })}
             variant={"outline"}
           >
             <Link href="/create-event">Create Event</Link>
           </Button>
-          {token ? (
+          {isAuthenticated === null ? (
             <Button
               className={cn(
-                "bg-muted rounded-full text-xs self-center px-8 border-none  text-[#7858C3]",
+                "bg-muted rounded-full text-xs self-center px-8 border-none text-[#7858C3]",
+              )}
+              variant={"outline"}
+            >
+              <span>Loading...</span>
+            </Button>
+          ) : isAuthenticated ? (
+            <Button
+              className={cn(
+                "bg-muted rounded-full text-xs self-center px-8 border-none text-[#7858C3]",
               )}
               variant={"outline"}
             >
@@ -54,7 +69,7 @@ export const Header = () => {
           ) : (
             <Button
               className={cn(
-                "bg-muted rounded-full text-xs self-center px-8 border-none  text-[#7858C3]",
+                "bg-muted rounded-full text-xs self-center px-8 border-none text-[#7858C3]",
               )}
               variant={"outline"}
             >

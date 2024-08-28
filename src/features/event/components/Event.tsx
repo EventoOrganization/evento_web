@@ -22,8 +22,8 @@ const Event = ({ className, event }: { className?: string; event?: any }) => {
     return date.toLocaleDateString("en-US", options);
   };
   const renderDate = () => {
-    const startDate = event ? event?.details.date : createEvent?.date;
-    const endDate = event ? event?.details.endDate : createEvent?.endDate;
+    const startDate = event ? event?.details?.date : createEvent?.date;
+    const endDate = event ? event?.details?.endDate : createEvent?.endDate;
 
     if (startDate === endDate || !endDate) {
       return `le ${formatDate(startDate)}`; // Single date
@@ -52,7 +52,7 @@ const Event = ({ className, event }: { className?: string; event?: any }) => {
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center">
-          {event?.user.profileImage && isValidUrl(event.user.profileImage) ? (
+          {event?.user?.profileImage && isValidUrl(event.user.profileImage) ? (
             <Image
               src={event?.user.profileImage}
               alt="user image"
@@ -106,7 +106,7 @@ const Event = ({ className, event }: { className?: string; event?: any }) => {
         <h3>{event ? event?.title : createEvent?.title}</h3>
         <ul className="flex gap-2 flex-wrap">
           {event
-            ? event?.interest.map((interest: any) => (
+            ? event?.interest?.map((interest: any) => (
                 <li
                   key={interest._id}
                   className="bg-eventoPurple/30 w-fit px-2 py-1 rounded-lg"
@@ -132,7 +132,7 @@ const Event = ({ className, event }: { className?: string; event?: any }) => {
             className="flex gap-2 pl-0 max-w-xs truncate"
             onClick={() => {
               const address = event
-                ? event?.details.location
+                ? event?.details?.location
                 : createEvent?.location;
               if (address) {
                 const encodedAddress = encodeURIComponent(address);
@@ -145,16 +145,16 @@ const Event = ({ className, event }: { className?: string; event?: any }) => {
           >
             <MapPin fill="#7858C3" className="text-muted" />
             <span className="truncate">
-              {event ? event?.details.location : createEvent?.location}
+              {event ? event?.details?.location : createEvent?.location}
             </span>
           </Button>
           <p className="whitespace-nowrap">
-            {event?.details.startTime || createEvent?.startTime} -{" "}
-            {event?.details.endTime || createEvent?.endTime}
+            {event?.details?.startTime || createEvent?.startTime} -{" "}
+            {event?.details?.endTime || createEvent?.endTime}
           </p>
         </div>
         <TruncatedText
-          text={event?.details.description || createEvent?.description}
+          text={event?.details?.description || createEvent?.description}
         />
       </div>
       <div className="flex justify-between items-center">

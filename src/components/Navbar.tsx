@@ -53,7 +53,7 @@ export default function NavbarApp() {
             )}
           />
         </Link>
-        <Link href="/messages">
+        <Link href="/tchat">
           <MessageIcon
             className={cn(
               pathname === "/message"
