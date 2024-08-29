@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { signInSchema } from "@/lib/zod";
 import { useAuthStore } from "@/store/useAuthStore";
+import { getSessionCSR } from "@/utils/authUtilsCSR";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -41,6 +42,7 @@ const SignInForm = ({
       rememberMe: false,
     },
   });
+
   const router = useRouter();
   const setUser = useAuthStore((state) => state.setUser);
   const formStyle =
@@ -52,6 +54,7 @@ const SignInForm = ({
     setIsFetching(true);
 
     try {
+      console.log("before sign in", getSessionCSR());
       const loginResponse = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/users/login`,
         {
@@ -59,7 +62,7 @@ const SignInForm = ({
           headers: {
             "Content-Type": "application/json",
           },
-          credentials: "include", // This ensures that cookies are sent/received
+          credentials: "include",
           body: JSON.stringify({
             email: data.email,
             password: data.password,
@@ -72,19 +75,21 @@ const SignInForm = ({
         throw new Error(loginResult.message || "Login failed");
       }
 
-      // Assuming the server sets the cookies properly, you don't need to manually check them
       const token = loginResult.body.token;
       const loginUserData = {
         _id: loginResult.body._id,
         name: loginResult.body.name,
         email: loginResult.body.email,
+        status: loginResult.body.status,
         token: token,
       };
 
       // Set user data in the store
       setUser(loginUserData);
+      console.log("after sign in", getSessionCSR());
+
       onAuthSuccess();
-      // Redirect to home or profile page after login
+
       if (shouldRedirect) {
         router.push("/");
       }

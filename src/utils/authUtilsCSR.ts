@@ -1,3 +1,4 @@
+import { useAuthStore } from "@/store/useAuthStore";
 import { decodeToken } from "./auth";
 
 export const getSessionCSR = () => {
@@ -16,5 +17,14 @@ export const getTokenCSR = () => {
     .split("; ")
     .find((row) => row.startsWith("token="))
     ?.split("=")[1];
+  console.log("token from cookie CSR");
+
   return token;
+};
+
+export const getTokenFromStore = () => {
+  const { user } = useAuthStore.getState();
+  console.log("Token from store:");
+
+  return user?.token;
 };

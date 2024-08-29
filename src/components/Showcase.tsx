@@ -10,10 +10,14 @@ const Showcase = ({
   events,
   users,
   preview = true,
+  className,
+  itemClassName,
 }: {
   events?: EventType[];
   users?: UserType[];
   preview?: boolean;
+  className?: string;
+  itemClassName?: string;
 }) => {
   return (
     <Section>
@@ -24,26 +28,27 @@ const Showcase = ({
             "md:grid md:grid-cols-2 lg:grid-cols-3":
               events && events.length > 0,
           },
+          className,
         )}
       >
         {events &&
           preview &&
           events.map((event) => (
-            <li key={event._id}>
+            <li key={event._id} className={itemClassName}>
               <EventPreview event={event} />
             </li>
           ))}
         {events &&
           !preview &&
           events.map((event) => (
-            <li key={event._id}>
+            <li key={event._id} className={itemClassName}>
               <Event event={event} />
             </li>
           ))}
         {users &&
           preview &&
           users.map((user) => (
-            <li key={user._id}>
+            <li key={user._id} className={itemClassName}>
               <UserPrevirew user={user} />
             </li>
           ))}

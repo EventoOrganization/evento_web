@@ -4,6 +4,7 @@ import { InterestType } from "./EventType";
 export type UserType = {
   _id: string;
   name: string;
+  status?: string;
   firstName?: string;
   lastName?: string;
   email: string;

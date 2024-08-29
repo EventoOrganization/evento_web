@@ -57,6 +57,7 @@ const CreateEventPage = async () => {
           firstName: item.firstName,
           lastName: item.lastName,
           email: item.email,
+          status: item.status,
           name: `${item.firstName} ${item.lastName}`,
           // Ajoutez d'autres propriétés selon votre type UserType
         }));

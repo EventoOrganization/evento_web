@@ -7,12 +7,12 @@ const HowItWorks = () => {
     },
     {
       title: "Join the Event",
-      icon: "/icons/join.svg",
+      // icon: "/icons/join.svg",
       description: "Attend and talk with others.",
     },
     {
       title: "Enjoy",
-      icon: "/icons/ticket.svg",
+      // icon: "/icons/ticket.svg",
       description: "Enjoy the event with others.",
     },
   ];

@@ -1,4 +1,5 @@
-import { getTokenCSR } from "./authUtilsCSR";
+"use server";
+import { getTokenCSR, getTokenFromStore } from "./authUtilsCSR";
 import { getTokenSSR } from "./authUtilsSSR";
 
 export const fetchData = async <T>(
@@ -13,7 +14,7 @@ export const fetchData = async <T>(
     token = getTokenSSR();
   } else {
     // We're in CSR
-    token = getTokenCSR();
+    token = getTokenCSR() || getTokenFromStore();
   }
 
   const headers = {
@@ -46,7 +47,7 @@ export const fetchData = async <T>(
 
     const data: { success: boolean; body?: T; data?: T; [key: string]: any } =
       await response.json();
-    // console.log(`Response from ${endpoint} is ${response.status}:`, data);
+    console.log(`Response from ${endpoint} is ${response.status}:`);
     // console.log(`Full response from ${endpoint}:`, data);
     if ("body" in data && data.body) {
       return data.body;

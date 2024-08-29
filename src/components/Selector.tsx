@@ -4,11 +4,15 @@ import { useState } from "react";
 import Select, { MultiValue, StylesConfig } from "react-select";
 import { Label } from "./ui/label";
 
-const Selector = ({ options }: { options?: { body: OptionType[] } }) => {
+const Selector = ({ options }: { options?: any[] }) => {
   const [selectedInterests, setSelectedInterests] = useState<
     MultiValue<OptionType>
   >([]);
-  // Custom styles for react-select
+
+  // Transformation des options
+  const transformedOptions = transformOptions(options || []);
+
+  // Styles personnalisés pour react-select
   const customStyles: StylesConfig<OptionType, true> = {
     control: (provided) => ({
       ...provided,
@@ -56,7 +60,7 @@ const Selector = ({ options }: { options?: { body: OptionType[] } }) => {
         isMulti
         instanceId={"interests"}
         value={selectedInterests}
-        options={options?.body}
+        options={transformedOptions} // Utilisation des options transformées
         onChange={handleChange}
         placeholder="Select Interests..."
         className="react-select-container"
@@ -74,3 +78,10 @@ const Selector = ({ options }: { options?: { body: OptionType[] } }) => {
 };
 
 export default Selector;
+
+const transformOptions = (interests: any[]): OptionType[] => {
+  return interests.map((interest) => ({
+    label: interest.name,
+    value: interest._id,
+  }));
+};
