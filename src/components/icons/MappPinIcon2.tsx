@@ -1,6 +1,6 @@
 const MapPinIcon2 = ({
   fill = "transparent",
-  strokeWidth = 2,
+  // strokeWidth = 2,
   className = "",
   ...props
 }) => {
