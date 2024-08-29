@@ -5,10 +5,10 @@ import { useDiscoverContext } from "@/contexts/DiscoverContext";
 
 const DiscoverPage = () => {
   const { interests, events, users } = useDiscoverContext();
+  console.log(interests);
 
   return (
     <>
-      {/* <Filters interests={interests} /> */}
       <Showcase events={events} />
       <Showcase users={users} />
     </>
