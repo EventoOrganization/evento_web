@@ -32,7 +32,7 @@ export const fetchData = async <T>(
   }
   console.log(
     `Request sent to ${process.env.NEXT_PUBLIC_API_URL}${endpoint}:`,
-    fetchOptions,
+    // fetchOptions,
   );
   try {
     const response = await fetch(
@@ -43,14 +43,18 @@ export const fetchData = async <T>(
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
+
     const data: { success: boolean; body?: T; data?: T; [key: string]: any } =
       await response.json();
-    console.log(
-      `Response from ${endpoint}:`,
-      Array.isArray(data) ? "array" : typeof data,
-    );
+    // console.log(`Response from ${endpoint} is ${response.status}:`, data);
     // console.log(`Full response from ${endpoint}:`, data);
-    return data.body || data.data || null;
+    if ("body" in data && data.body) {
+      return data.body;
+    } else if ("data" in data && data.data) {
+      return data.data;
+    } else {
+      throw new Error(`Unexpected response structure`);
+    }
   } catch (error) {
     console.error(`Failed to fetch data from ${endpoint}:`, error);
     return null;

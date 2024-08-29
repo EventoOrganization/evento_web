@@ -29,6 +29,11 @@ const UserProfile = ({
 }) => {
   const user = useAuthStore((state) => state.user);
   // console.log("profile", profile);
+  console.log("upcomingEvents", upcomingEvents);
+  console.log("pastEvents", pastEvents);
+  console.log("hostingEvents", hostingEvents);
+  console.log("pastHostedEvents", pastHostedEvents);
+  console.log(profile);
 
   useEffect(() => {
     if (!user && !id) {

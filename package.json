@@ -35,7 +35,6 @@
     "@react-google-maps/api": "^2.19.3",
     "@types/react-select": "^5.0.1",
     "@types/react-swipeable-views": "^0.13.5",
-    "axios": "^1.7.3",
     "class-variance-authority": "^0.7.0",
     "classnames": "^2.5.1",
     "clsx": "^2.1.1",

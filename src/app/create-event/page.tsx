@@ -3,28 +3,18 @@ import Event from "@/features/event/components/Event";
 import EventForm from "@/features/event/components/EventForm";
 import { InterestType, OptionType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
-import { getSessionSSR } from "@/utils/authUtilsSSR"; // Importez vos utilitaires
+import { getSessionSSR } from "@/utils/authUtilsSSR";
 import { fetchData } from "@/utils/fetchData";
-
-// Définissez le type attendu pour la réponse de `/users/allUserListing`
-type AllUsersResponse = {
-  body: {
-    allUserListing: UserType[];
-  };
-};
 
 // Définissez le type attendu pour la réponse de `/users/userListWithFollowingStatus`
 type UsersWithStatusResponse = {
-  body: {
-    user: UserType;
-    status: string;
-  }[];
-};
-
-// Définissez le type attendu pour la réponse de `/users/getInterestsListing`
-type InterestsResponse = {
-  body: InterestType[];
-};
+  _id: string;
+  firstName: string;
+  lastName: string;
+  status: string;
+  name: string;
+  email: string;
+}[];
 
 const CreateEventPage = async () => {
   let mappedOptions: OptionType[] = [];
@@ -36,40 +26,51 @@ const CreateEventPage = async () => {
   try {
     if (!session.token) {
       // Fetching users for visitor
-      console.log("REQUESTING ALL USERS");
-      const allUsersResult = await fetchData<AllUsersResponse>(
+      const allUsersResult = await fetchData<UserType[]>(
         `/users/allUserListing`,
       );
-      users = allUsersResult?.body.allUserListing || [];
+      users = allUsersResult || [];
     } else {
       // Fetching users for authenticated user
       const allUsersAndStatusResult = await fetchData<UsersWithStatusResponse>(
         `/users/userListWithFollowingStatus`,
       );
-      const sortedUsers = allUsersAndStatusResult?.body.sort((a, b) => {
-        if (
-          a.status === "follow-each-other" &&
-          b.status !== "follow-each-other"
-        ) {
-          return -1;
-        }
-        if (
-          a.status !== "follow-each-other" &&
-          b.status === "follow-each-other"
-        ) {
-          return 1;
-        }
-        return 0;
-      });
-      users = sortedUsers?.map((item) => item.user) || [];
+
+      if (Array.isArray(allUsersAndStatusResult)) {
+        const sortedUsers = allUsersAndStatusResult.sort((a, b) => {
+          if (
+            a.status === "follow-each-other" &&
+            b.status !== "follow-each-other"
+          ) {
+            return -1;
+          }
+          if (
+            a.status !== "follow-each-other" &&
+            b.status === "follow-each-other"
+          ) {
+            return 1;
+          }
+          return 0;
+        });
+        users = sortedUsers.map((item) => ({
+          _id: item._id,
+          firstName: item.firstName,
+          lastName: item.lastName,
+          email: item.email,
+          name: `${item.firstName} ${item.lastName}`,
+          // Ajoutez d'autres propriétés selon votre type UserType
+        }));
+      } else {
+        console.error("Unexpected data format:", allUsersAndStatusResult);
+      }
     }
 
     // Fetching interests with SSR
-    const result = await fetchData<InterestsResponse>(
+    const result = await fetchData<InterestType[]>(
       `/users/getInterestsListing`,
     );
 
-    const data: InterestType[] = result?.body || [];
+    const data: InterestType[] = result || [];
 
     if (Array.isArray(data)) {
       mappedOptions = data.map((interest) => ({

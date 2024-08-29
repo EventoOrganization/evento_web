@@ -1,9 +1,11 @@
 // src/app/profile/page.tsx
-
 import UserProfile from "@/features/profile/UserProfile";
+import { UserType } from "@/types/UserType";
 import { getSessionSSR } from "@/utils/authUtilsSSR";
 import { fetchData } from "@/utils/fetchData";
 import Link from "next/link";
+import { EventType } from "react-hook-form";
+
 export default async function CurrentUserProfilePage() {
   const session = getSessionSSR();
 
@@ -17,21 +19,24 @@ export default async function CurrentUserProfilePage() {
   }
   try {
     // Fetch the user's profile
-    const profileData: any = await fetchData(`/users/getProfile`, "GET");
-
+    const profileData = (await fetchData(`/users/getProfile`)) as UserType;
     // Fetch upcoming events
-    const upcomingEvents: any = await fetchData(`/users/upcomingEvents`, "GET");
-
+    const upcomingEvents = (await fetchData(`/users/upcomingEvents`)) as {
+      upcomingEvents: EventType[];
+      hostedByYouEvents: EventType[];
+    };
     // Fetch past events
-    const pastEvents: any = await fetchData(`/users/pastEvents`, "GET");
+    const pastEvents = (await fetchData(`/users/pastEvents`)) as {
+      pastHostedEvents: EventType[];
+    };
 
     return (
       <UserProfile
-        profile={profileData.body}
-        upcomingEvents={upcomingEvents.body.upcomingEvents || []}
-        pastEvents={pastEvents.body.pastHostedEvents || []}
-        hostingEvents={upcomingEvents.body.hostedByYouEvents || []}
-        pastHostedEvents={pastEvents.body.pastHostedEvents || []}
+        profile={profileData}
+        upcomingEvents={upcomingEvents?.upcomingEvents || []}
+        pastEvents={pastEvents?.pastHostedEvents || []}
+        hostingEvents={upcomingEvents?.hostedByYouEvents || []}
+        pastHostedEvents={pastEvents?.pastHostedEvents || []}
       />
     );
   } catch (error) {
