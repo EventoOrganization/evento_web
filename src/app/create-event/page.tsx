@@ -1,14 +1,34 @@
 import Section from "@/components/layout/Section";
 import Event from "@/features/event/components/Event";
 import EventForm from "@/features/event/components/EventForm";
-import { Interest, Option } from "@/types/EventType";
-import { User } from "@/types/UserType";
+import { InterestType, OptionType } from "@/types/EventType";
+import { UserType } from "@/types/UserType";
 import { getSessionSSR } from "@/utils/authUtilsSSR"; // Importez vos utilitaires
 import { fetchData } from "@/utils/fetchData";
 
+// Définissez le type attendu pour la réponse de `/users/allUserListing`
+type AllUsersResponse = {
+  body: {
+    allUserListing: UserType[];
+  };
+};
+
+// Définissez le type attendu pour la réponse de `/users/userListWithFollowingStatus`
+type UsersWithStatusResponse = {
+  body: {
+    user: UserType;
+    status: string;
+  }[];
+};
+
+// Définissez le type attendu pour la réponse de `/users/getInterestsListing`
+type InterestsResponse = {
+  body: InterestType[];
+};
+
 const CreateEventPage = async () => {
-  let mappedOptions: Option[] = [];
-  let users: User[] = [];
+  let mappedOptions: OptionType[] = [];
+  let users: UserType[] = [];
 
   // Récupération de la session
   const session = getSessionSSR();
@@ -17,37 +37,39 @@ const CreateEventPage = async () => {
     if (!session.token) {
       // Fetching users for visitor
       console.log("REQUESTING ALL USERS");
-      const allUsersResult = await fetchData(`/users/allUserListing`);
-      users = allUsersResult.body.allUserListing || [];
+      const allUsersResult = await fetchData<AllUsersResponse>(
+        `/users/allUserListing`,
+      );
+      users = allUsersResult?.body.allUserListing || [];
     } else {
       // Fetching users for authenticated user
-      const allUsersAndStatusResult = await fetchData(
+      const allUsersAndStatusResult = await fetchData<UsersWithStatusResponse>(
         `/users/userListWithFollowingStatus`,
       );
-      const sortedUsers = allUsersAndStatusResult.body.sort(
-        (a: any, b: any) => {
-          if (
-            a.status === "follow-each-other" &&
-            b.status !== "follow-each-other"
-          ) {
-            return -1;
-          }
-          if (
-            a.status !== "follow-each-other" &&
-            b.status === "follow-each-other"
-          ) {
-            return 1;
-          }
-          return 0;
-        },
-      );
-      users = sortedUsers.map((item: any) => item.user);
+      const sortedUsers = allUsersAndStatusResult?.body.sort((a, b) => {
+        if (
+          a.status === "follow-each-other" &&
+          b.status !== "follow-each-other"
+        ) {
+          return -1;
+        }
+        if (
+          a.status !== "follow-each-other" &&
+          b.status === "follow-each-other"
+        ) {
+          return 1;
+        }
+        return 0;
+      });
+      users = sortedUsers?.map((item) => item.user) || [];
     }
 
     // Fetching interests with SSR
-    const result = await fetchData(`/users/getInterestsListing`);
+    const result = await fetchData<InterestsResponse>(
+      `/users/getInterestsListing`,
+    );
 
-    const data: Interest[] = result.body;
+    const data: InterestType[] = result?.body || [];
 
     if (Array.isArray(data)) {
       mappedOptions = data.map((interest) => ({

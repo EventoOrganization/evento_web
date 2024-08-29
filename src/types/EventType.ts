@@ -1,24 +1,24 @@
 import { Question } from "@/store/useEventStore";
 
 // src/types/EventType.ts
-export type TimeSlot = {
+export type TimeSlotType = {
   date: string;
   startTime: string;
   endTime: string;
 };
 
-export type Interest = {
+export type InterestType = {
   _id: string;
   name: string;
   value: string;
   label: string;
 };
-export type Option = {
+export type OptionType = {
   value: string;
   label: string;
 };
 
-export type Event = {
+export type EventType = {
   _id: string;
   title: string;
   eventType: "public" | "private";
@@ -37,17 +37,23 @@ export type Event = {
   coHosts?: string[];
   guests?: string[];
   interestId?: string[];
-  interests?: Interest[];
-  timeSlots: TimeSlot[];
+  interests?: InterestType[];
+  timeSlots: TimeSlotType[];
   privateEventLink?: string;
   imagePreviews?: string[];
   videoPreview?: string;
   questions?: Question[];
   guestsAllowFriend: boolean;
   additionalField?: any;
-  details?: EventDetails;
+  details?: EventDetailsType;
 };
-export type EventDetails = {
+export type FileType = {
+  name: string;
+  size: number;
+  type: string;
+  lastModified: number;
+};
+export type EventDetailsType = {
   name?: string;
   video?: string;
   thumbnailVideo?: string;

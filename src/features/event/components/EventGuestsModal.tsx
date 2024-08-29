@@ -1,17 +1,17 @@
 import { useEventStore } from "@/store/useEventStore";
-import { User } from "@/types/UserType";
+import { UserType } from "@/types/UserType";
 import { useState } from "react";
 import AddUserModal from "./AddUserModal";
 
-const EventGuestsModal = ({ allUsers }: { allUsers: User[] }) => {
+const EventGuestsModal = ({ allUsers }: { allUsers: UserType[] }) => {
   const eventStore = useEventStore();
-  const [guests, setGuests] = useState<User[]>([]);
+  const [guests, setGuests] = useState<UserType[]>([]);
 
-  const addGuest = (user: User) => {
+  const addGuest = (user: UserType) => {
     setGuests([...guests, user]);
   };
 
-  const removeGuest = (user: User) => {
+  const removeGuest = (user: UserType) => {
     setGuests(guests.filter((guest) => guest._id !== user._id));
   };
 

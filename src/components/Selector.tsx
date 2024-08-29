@@ -1,20 +1,10 @@
 "use client";
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-} from "@/components/ui/form";
-import { useEventStore } from "@/store/useEventStore";
 import { OptionType } from "@/types/EventType";
 import { useState } from "react";
 import Select, { MultiValue, StylesConfig } from "react-select";
+import { Label } from "./ui/label";
 
-const EventInterestSelect = ({ interests }: { interests: OptionType[] }) => {
-  const eventStore = useEventStore();
-  const options = interests;
-  console.log("Options:", options);
-
+const Selector = ({ options }: { options?: { body: OptionType[] } }) => {
   const [selectedInterests, setSelectedInterests] = useState<
     MultiValue<OptionType>
   >([]);
@@ -57,37 +47,30 @@ const EventInterestSelect = ({ interests }: { interests: OptionType[] }) => {
 
   const handleChange = (selectedOptions: MultiValue<OptionType>) => {
     setSelectedInterests(selectedOptions);
-    const interestIds = selectedOptions.map(
-      (option: OptionType) => option.value,
-    );
-    eventStore.setEventField("interestId", interestIds);
-    eventStore.setEventField("interests", selectedOptions);
   };
 
   return (
-    <FormField
-      name="interests"
-      render={({}) => (
-        <FormItem>
-          <FormLabel className="sr-only">Event Type</FormLabel>
-          <FormControl>
-            <Select
-              isMulti
-              instanceId={"interests"}
-              value={selectedInterests}
-              options={options}
-              onChange={handleChange}
-              placeholder="Select Interests..."
-              className="react-select-container"
-              classNamePrefix="react-select"
-              styles={customStyles}
-              menuPlacement="top" // Open dropdown upwards
-            />
-          </FormControl>
-        </FormItem>
+    <>
+      <Label htmlFor="interests">Interests</Label>
+      <Select
+        isMulti
+        instanceId={"interests"}
+        value={selectedInterests}
+        options={options?.body}
+        onChange={handleChange}
+        placeholder="Select Interests..."
+        className="react-select-container"
+        classNamePrefix="react-select"
+        styles={customStyles}
+        menuPlacement="top"
+      />
+      {selectedInterests.length > 0 && (
+        <p className="text-xs text-gray-500">
+          {selectedInterests.length} selected
+        </p>
       )}
-    />
+    </>
   );
 };
 
-export default EventInterestSelect;
+export default Selector;

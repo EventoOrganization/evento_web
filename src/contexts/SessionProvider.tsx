@@ -1,12 +1,12 @@
 // src/contexts/AuthContext.tsx
 "use client";
-import { User } from "@/types/UserType";
+import { UserType } from "@/types/UserType";
 import React, { createContext, useContext, useState } from "react";
 
 interface SessionContextProps {
-  user: User | null;
+  user: UserType | null;
   token: string | null;
-  startSession: (user: User, token: string) => void;
+  startSession: (user: UserType, token: string) => void;
   endSession: () => void;
   isAuthenticated: boolean;
 }
@@ -18,10 +18,10 @@ const SessionContext = createContext<SessionContextProps | undefined>(
 export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<UserType | null>(null);
   const [token, setToken] = useState<string | null>(null);
 
-  const startSession = (user: User, token: string) => {
+  const startSession = (user: UserType, token: string) => {
     setUser(user);
     setToken(token);
     document.cookie = `token=${token}; path=/;`;

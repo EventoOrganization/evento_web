@@ -1,12 +1,12 @@
 import { getTokenCSR } from "./authUtilsCSR";
 import { getTokenSSR } from "./authUtilsSSR";
 
-export const fetchData = async (
+export const fetchData = async <T>(
   endpoint: string,
   method: "GET" | "POST" | "PUT" | "DELETE" = "GET",
   body?: any,
   options: RequestInit = {},
-) => {
+): Promise<T | null> => {
   let token;
   if (typeof window === "undefined") {
     // We're in SSR
@@ -30,20 +30,29 @@ export const fetchData = async (
   if (body) {
     fetchOptions.body = JSON.stringify(body);
   }
-
-  const response = await fetch(
-    process.env.NEXT_PUBLIC_API_URL + endpoint,
-    fetchOptions,
-  );
   console.log(
     `Request sent to ${process.env.NEXT_PUBLIC_API_URL}${endpoint}:`,
     fetchOptions,
   );
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
-  }
-  const data = await response.json();
-  console.log(`Response from ${endpoint}:`, typeof data);
+  try {
+    const response = await fetch(
+      process.env.NEXT_PUBLIC_API_URL + endpoint,
+      fetchOptions,
+    );
 
-  return data;
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data: { success: boolean; body?: T; data?: T; [key: string]: any } =
+      await response.json();
+    console.log(
+      `Response from ${endpoint}:`,
+      Array.isArray(data) ? "array" : typeof data,
+    );
+    // console.log(`Full response from ${endpoint}:`, data);
+    return data.body || data.data || null;
+  } catch (error) {
+    console.error(`Failed to fetch data from ${endpoint}:`, error);
+    return null;
+  }
 };

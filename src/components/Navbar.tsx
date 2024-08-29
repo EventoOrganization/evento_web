@@ -23,11 +23,11 @@ export default function NavbarApp() {
             )}
           />
         </Link>
-        <Link href="/explore">
+        <Link href="/discover">
           <CompassIcon
             className={cn(
               "hover:text-eventoBlue hover:opacity-80",
-              pathname === "/explore"
+              pathname === "/discover"
                 ? "text-eventoBlue"
                 : "text-muted-foreground opacity-40",
             )}

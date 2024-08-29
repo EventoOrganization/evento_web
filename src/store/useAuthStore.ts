@@ -1,10 +1,10 @@
-import { User } from "@/types/UserType";
+import { UserType } from "@/types/UserType";
 import { create } from "zustand";
 import { persist, PersistStorage } from "zustand/middleware";
 
 export type AuthState = {
-  user: User | null;
-  setUser: (user: User) => void;
+  user: UserType | null;
+  setUser: (user: UserType) => void;
   clearUser: () => void;
 };
 
@@ -48,7 +48,7 @@ export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
       user: null,
-      setUser: (user: User) => {
+      setUser: (user: UserType) => {
         // console.log("setUser called");
         set({ user });
       },

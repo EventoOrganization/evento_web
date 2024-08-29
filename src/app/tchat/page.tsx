@@ -2,19 +2,20 @@
 
 import { isUserLoggedInCSR } from "@/features/event/eventActions";
 import { useAuthStore } from "@/store/useAuthStore";
-import { Event } from "@/types/EventType";
+import { EventType } from "@/types/EventType";
 import { useEffect, useRef, useState } from "react";
 import io, { Socket } from "socket.io-client";
 
 const ChatPage = () => {
-  const [events, setEvents] = useState<Event[]>([]);
+  const [events, setEvents] = useState<EventType[]>([]);
   const [messages, setMessages] = useState<string[]>([]);
-  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+  const [selectedEvent, setSelectedEvent] = useState<EventType | null>(null);
   const [input, setInput] = useState("");
   const token = isUserLoggedInCSR();
   const socketRef = useRef<Socket | null>(null);
   const user = useAuthStore((state) => state.user);
   console.log(user);
+
   useEffect(() => {
     // Establish the socket connection once
     if (!socketRef.current) {
@@ -55,7 +56,7 @@ const ChatPage = () => {
         const data = await response.json();
         // Filter events that have active chat
         const eventsWithChat = data.events.filter(
-          (event: Event) => event?.details?.includeChat,
+          (event: EventType) => event?.details?.includeChat,
         );
         setEvents(eventsWithChat);
       } catch (error) {
@@ -67,7 +68,7 @@ const ChatPage = () => {
   }, []);
 
   // Function to handle selecting an event to chat
-  const handleSelectEvent = (event: Event) => {
+  const handleSelectEvent = (event: EventType) => {
     setSelectedEvent(event);
     socketRef.current?.emit("joinRoom", event._id);
     setMessages([]); // Clear messages when a new event is selected

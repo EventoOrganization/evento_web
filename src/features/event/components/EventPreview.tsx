@@ -10,7 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { Event } from "@/types/EventType";
+import { EventType } from "@/types/EventType";
 import Image from "next/image";
 import { useState } from "react";
 import EventModal from "./EventModal";
@@ -19,7 +19,7 @@ const EventPreview = ({
   event,
 }: {
   className?: string;
-  event?: Event;
+  event?: EventType;
 }) => {
   // console.log("Events:", event);
   const [isModalOpen, setIsModalOpen] = useState(false);

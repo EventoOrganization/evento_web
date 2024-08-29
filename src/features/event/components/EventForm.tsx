@@ -10,8 +10,8 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useEventStore } from "@/store/useEventStore";
-import { Option } from "@/types/EventType";
-import { User } from "@/types/UserType";
+import { OptionType } from "@/types/EventType";
+import { UserType } from "@/types/UserType";
 import { useEffect, useState } from "react";
 import { FormProvider, useForm, useFormContext } from "react-hook-form";
 import EnableChatCheckbox from "./EnableChatCheckbox";
@@ -67,8 +67,8 @@ const EventForm = ({
   interests,
 }: {
   className?: string;
-  allUsers?: User[];
-  interests?: Option[];
+  allUsers?: UserType[];
+  interests?: OptionType[];
 }) => {
   // const [isFetching, setIsFetching] = useState(false);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
@@ -169,7 +169,6 @@ const EventForm = ({
     const files = Array.from(e.target.files || []);
     console.log("Selected Images:", files);
     // Set images in form state
-    form.setValue("images", files);
 
     // Immediately log to ensure images are set
     console.log("Images after setValue:", form.getValues("images"));
@@ -209,7 +208,7 @@ const EventForm = ({
         <EventDateInput />
         <OpenStreetMapGeocoding />
         <EventDescriptionArea />
-        <EventInterestSelect interests={interests as Option[]} />
+        <EventInterestSelect interests={interests as OptionType[]} />
         <FormField
           name="images"
           control={form.control}
@@ -254,8 +253,8 @@ const EventForm = ({
           )}
         />
         <div>
-          <EventGuestsModal allUsers={allUsers as User[]} />
-          <EventCoHostsModal allUsers={allUsers as User[]} />
+          <EventGuestsModal allUsers={allUsers as UserType[]} />
+          <EventCoHostsModal allUsers={allUsers as UserType[]} />
         </div>
         {/* <EventQuestionsInput /> */}
         <QuestionInput />

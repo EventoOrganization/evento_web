@@ -6,12 +6,12 @@ import { Button } from "@/components/ui/button";
 import EventSection from "@/features/event/components/EventSection";
 import { useAuthStore } from "@/store/useAuthStore";
 import { eventoBtn } from "@/styles/eventoBtn";
-import { Event } from "@/types/EventType";
-import { User } from "@/types/UserType";
+import { UserType } from "@/types/UserType";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { EventType } from "react-hook-form";
 const UserProfile = ({
   id,
   profile,
@@ -21,11 +21,11 @@ const UserProfile = ({
   pastHostedEvents,
 }: {
   id?: string;
-  profile: User;
-  upcomingEvents?: Event[];
-  pastEvents?: Event[];
-  hostingEvents?: Event[];
-  pastHostedEvents?: Event[];
+  profile: UserType;
+  upcomingEvents?: EventType[];
+  pastEvents?: EventType[];
+  hostingEvents?: EventType[];
+  pastHostedEvents?: EventType[];
 }) => {
   const user = useAuthStore((state) => state.user);
   // console.log("profile", profile);

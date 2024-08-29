@@ -3,12 +3,12 @@ import GoingIcon from "@/components/icons/GoingIncon";
 import SendIcon from "@/components/icons/SendIcon";
 import AuthModal from "@/features/auth/components/AuthModal";
 import { useAuthStore } from "@/store/useAuthStore";
-import { Event } from "@/types/EventType";
+import { EventType } from "@/types/EventType";
 import React, { useEffect, useState } from "react";
 import { isUserLoggedInCSR } from "../eventActions";
 
 type EventActionIconsProps = {
-  event?: any;
+  event?: EventType;
   className?: string;
 };
 
@@ -16,15 +16,14 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
   event,
   className = "",
 }) => {
-  // console.log("event", event);
   const [goingStatus, setGoingStatus] = useState<Record<string, boolean>>({});
   const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
   const token = isUserLoggedInCSR();
   const user = useAuthStore((state) => state.user);
+
   useEffect(() => {
     if (!event) return;
     const checkIfGoing = async () => {
-      // console.log(event._id, token);
       try {
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/users/isAttending/${event._id}`,
@@ -39,7 +38,6 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
-        console.log("response", data.attending);
         setGoingStatus((prevStatus) => ({
           ...prevStatus,
           [event._id]: data.attending,
@@ -50,13 +48,13 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
     };
 
     checkIfGoing();
-  }, []);
-  const handleGoing = async (event: Event) => {
-    if (!token) {
+  }, [event, token]);
+
+  const handleGoing = async () => {
+    if (!event || !token) {
       setIsAuthModalOpen(true);
       return;
     }
-    if (!event) return;
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/users/attendEventConfm`,
@@ -81,7 +79,10 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
       alert("Failed to mark as going. Please try again.");
     }
   };
-  const handleBooking = (event: Event) => {
+
+  const handleBooking = () => {
+    if (!event) return;
+
     const startDate = event.details?.date
       ? new Date(event.details.date).toISOString().replace(/-|:|\.\d+/g, "")
       : "";
@@ -98,21 +99,22 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
     window.open(googleCalendarUrl, "_blank");
   };
 
-  const handleSend = (event: Event) => {
+  const handleSend = () => {
+    if (!event) return;
     alert("Send action for event:");
     console.log(event);
     // Add your logic here
   };
+
   return (
     <div className={`flex gap-2 ${className}`}>
-      <button onClick={() => handleGoing(event)}>
-        {/* {goingStatus[event._id] ? <CrossIcon /> : <GoingIcon />} */}
+      <button onClick={handleGoing}>
         <GoingIcon />
       </button>
-      <button onClick={() => handleBooking(event)}>
+      <button onClick={handleBooking}>
         <BookingIcon />
       </button>
-      <button onClick={() => handleSend(event)}>
+      <button onClick={handleSend}>
         <SendIcon />
       </button>
       {isAuthModalOpen && (

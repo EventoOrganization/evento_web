@@ -1,4 +1,7 @@
-export type User = {
+import { EventType } from "react-hook-form";
+import { InterestType } from "./EventType";
+
+export type UserType = {
   _id: string;
   name: string;
   firstName?: string;
@@ -11,12 +14,12 @@ export type User = {
   profileImage?: string;
   eventsAttended?: number;
   following?: number;
-  upcomingEvents?: Event[];
-  filteredUpcomingEventsAttened?: Event[];
-  filteredPastEventsAttended?: Event[];
-  pastEvents?: Event[];
+  upcomingEvents?: EventType[];
+  filteredUpcomingEventsAttened?: EventType[];
+  filteredPastEventsAttended?: EventType[];
+  pastEvents?: EventType[];
   totalEventAttended?: number;
-
+  interests?: InterestType[];
   //Other users
   userInfo?: {
     _id: string;

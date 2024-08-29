@@ -6,7 +6,7 @@ import Link from "next/link";
 const Hero = () => {
   return (
     <>
-      <div className=" bg-evento-gradient h-full w-full inset-0 object-cover object-center  absolute opacity-90"></div>
+      <div className="bg-evento-gradient h-screen w-full inset-0 object-cover object-center  absolute opacity-90"></div>
       <Image
         src={
           "https://evento-media-bucket.s3.ap-southeast-2.amazonaws.com/evento-bg.jpg"
@@ -15,7 +15,7 @@ const Hero = () => {
         width={250}
         height={50}
         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-        className="h-full w-screen inset-0 object-cover object-center  absolute opacity-20"
+        className="h-screen w-screen inset-0 object-cover object-center  absolute opacity-20"
       />
       <Section className="h-screen gap-10 text-white">
         <div className="z-10 flex flex-col justify-center items-center mb-10">
@@ -31,18 +31,10 @@ const Hero = () => {
           <Button
             variant="outline"
             className={cn(
-              "bg-white rounded-full text-xs self-center px-8 border-none  text-[#7858C3]",
+              "bg-white  text-xs self-center px-8 border-none  text-[#7858C3]",
             )}
           >
-            <Link href="/create-event">Create Event</Link>
-          </Button>
-          <Button
-            variant="outline"
-            className={cn(
-              "bg-muted rounded-full text-xs self-center px-8 border-none  text-[#7858C3]",
-            )}
-          >
-            <Link href="#event">Discover events</Link>
+            <Link href="/create-event">Create your Event!</Link>
           </Button>
         </div>
       </Section>
