@@ -40,10 +40,6 @@ const LocationSelector = ({
     handleClose();
   };
 
-  const handleOpen = () => {
-    setIsOpen(true);
-  };
-
   const handleClose = () => {
     setIsOpen(false);
   };

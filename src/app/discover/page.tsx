@@ -10,6 +10,7 @@ import Event from "@/features/event/components/Event";
 import { cn } from "@/lib/utils";
 import { EventType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
+import { Label } from "@radix-ui/react-label";
 import { Search } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -113,8 +114,8 @@ const DiscoverPage = () => {
               setSelectedDate={setSelectedDate}
             />
           </div>
-          {/* {selectedTab === "Near me" && (
-            <div>
+          {selectedTab === "Near me" && (
+            <div className="hidden">
               <Label>Distance (km):</Label>
               <Input
                 type="number"
@@ -124,7 +125,7 @@ const DiscoverPage = () => {
                 max="100"
               />
             </div>
-          )} */}
+          )}
           <div className="p-4">
             <h4 className="text-purple-600 font-bold">Select Interests</h4>
             <ul className="flex flex-wrap gap-4 mt-4">
