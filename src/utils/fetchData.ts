@@ -19,7 +19,7 @@ export const fetchData = async <T>(
 
   const headers = {
     ...options.headers,
-    Authorization: `Bearer ${token}`,
+    ...(token && { Authorization: `Bearer ${token}` }),
     "Content-Type": "application/json",
   };
   const fetchOptions: RequestInit = {

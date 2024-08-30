@@ -41,29 +41,21 @@ const DiscoverPage = () => {
   };
 
   useEffect(() => {
-    console.log("selectedInterests", selectedInterests);
-    console.log("filteredUsers", filteredUsers);
-    console.log("searchText", searchText);
-    console.log("selectedDate", selectedDate);
-    console.log("events", events);
-    // console.log("selectedTab", selectedTab);
-    // console.log("location", location);
-    // console.log("distanceFilter", distanceFilter);
-    if (users && users.length > 0) {
-      setFilteredEvents(
-        filterEvents(
-          events,
-          selectedInterests,
-          searchText,
-          selectedDate,
-          selectedTab,
-          location,
-          distanceFilter,
-        ),
+    if (users && users.length > 0 && events && events.length > 0) {
+      const filteredEvents = filterEvents(
+        events,
+        selectedInterests,
+        searchText,
+        selectedDate,
+        selectedTab,
+        location,
+        distanceFilter,
       );
 
-      const filtered = filterUsers(users, selectedInterests, searchText);
-      setFilteredUsers(filtered);
+      const filteredUsers = filterUsers(users, selectedInterests, searchText);
+
+      setFilteredEvents(filteredEvents);
+      setFilteredUsers(filteredUsers);
     }
   }, [
     selectedInterests,
