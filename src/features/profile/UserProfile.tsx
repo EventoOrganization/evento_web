@@ -28,12 +28,12 @@ const UserProfile = ({
   pastHostedEvents?: EventType[];
 }) => {
   const user = useAuthStore((state) => state.user);
+  console.log("profile", profile);
+  // console.log("upcomingEvents", upcomingEvents);
+  // console.log("pastEvents", pastEvents);
+  // console.log("hostingEvents", hostingEvents);
+  // console.log("pastHostedEvents", pastHostedEvents);
   // console.log("profile", profile);
-  console.log("upcomingEvents", upcomingEvents);
-  console.log("pastEvents", pastEvents);
-  console.log("hostingEvents", hostingEvents);
-  console.log("pastHostedEvents", pastHostedEvents);
-  console.log(profile);
 
   useEffect(() => {
     if (!user && !id) {
@@ -44,7 +44,8 @@ const UserProfile = ({
   if (!user) {
     return (
       <>
-        <p>No user is logged in.</p>
+        <p>No user is logged in. Please log in. </p>
+        <Link href="/signin">Login here</Link>
         <ComingSoon message="This page profile is under construction. Please check back later!" />
       </>
     );
@@ -73,14 +74,15 @@ const UserProfile = ({
             )}
             <div className="flex flex-col items-center">
               <span className="font-bold text-xl">
-                {profile.totalEventAttended} {profile.countTotalEventIAttended}
+                {profile && profile.totalEventAttended}{" "}
+                {profile && profile.countTotalEventIAttended}
               </span>
               <p>Event Attended</p>
             </div>
             <div className="flex flex-col items-center">
               <span className="font-bold text-xl">
-                {profile.following}
-                {profile.countFollowing}
+                {profile && profile.following}
+                {profile && profile.countFollowing}
               </span>
               <p>Following</p>
             </div>
@@ -88,7 +90,8 @@ const UserProfile = ({
           <div className="flex flex-col items-start gap-4">
             <ul className=" pt-4 text-start">
               <li className="font-semibold md:text-xl">
-                {user.name || profile.userInfo?.name}
+                {user.name ||
+                  (profile && profile.userInfo?.name && profile.userInfo?.name)}
               </li>
               <li>
                 Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nulla,

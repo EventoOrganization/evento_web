@@ -17,7 +17,7 @@ export const getTokenCSR = () => {
     .split("; ")
     .find((row) => row.startsWith("token="))
     ?.split("=")[1];
-  console.log("token from cookie CSR");
+  console.log("token from cookie CSR", !!token);
 
   return token;
 };

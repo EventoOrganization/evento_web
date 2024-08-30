@@ -28,7 +28,9 @@ export default function RootLayout({
           <Toaster position="top-center" />
           <BackButton />
           <Header />
-          <Main className="pb-28 md:pt-28">{children}</Main>
+          <Main className="pb-28 md:pt-32 pt-10 px-0 lg:px-10 max-w-7xl mx-auto">
+            {children}
+          </Main>
           <NavbarApp />
         </SessionProvider>
       </body>

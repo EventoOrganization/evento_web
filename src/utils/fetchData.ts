@@ -25,6 +25,7 @@ export const fetchData = async <T>(
   const fetchOptions: RequestInit = {
     ...options,
     method,
+    credentials: "include",
     headers,
   };
 

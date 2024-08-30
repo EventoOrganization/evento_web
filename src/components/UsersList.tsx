@@ -4,7 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import Image from "next/image";
 import { Button } from "./ui/button";
 const UserPrevirew = ({ user }: { user?: UserType }) => {
-  console.log(user);
+  // console.log(user);
 
   return (
     <>

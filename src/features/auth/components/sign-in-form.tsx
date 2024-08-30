@@ -71,6 +71,8 @@ const SignInForm = ({
       );
 
       const loginResult = await loginResponse.json();
+      console.log("loginResult", loginResult);
+
       if (!loginResponse.ok) {
         throw new Error(loginResult.message || "Login failed");
       }
@@ -86,7 +88,7 @@ const SignInForm = ({
 
       // Set user data in the store
       setUser(loginUserData);
-      console.log("after sign in", getSessionCSR());
+      console.log("after sign in", loginUserData);
 
       onAuthSuccess();
 

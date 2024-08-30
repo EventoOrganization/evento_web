@@ -1,5 +1,4 @@
 "use client";
-import AvatarStack from "@/components/AvatarStack";
 import TruncatedText from "@/components/TruncatedText";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -8,7 +7,6 @@ import { useEventStore } from "@/store/useEventStore";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { MapPin } from "lucide-react";
 import Image from "next/image";
-import EventActionIcons from "./EventActionIcons";
 const Event = ({ className, event }: { className?: string; event?: any }) => {
   const createEvent = useEventStore((state) => state);
   const user = useAuthStore((state) => state.user);
@@ -157,12 +155,12 @@ const Event = ({ className, event }: { className?: string; event?: any }) => {
           text={event?.details?.description || createEvent?.description}
         />
       </div>
-      <div className="flex justify-between items-center">
+      {/* <div className="flex justify-between items-center">
         <div>
           <AvatarStack eventId={event?._id} />{" "}
         </div>
         <EventActionIcons event={event} />
-      </div>
+      </div> */}
     </div>
   );
 };

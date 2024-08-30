@@ -14,7 +14,11 @@ export const getSessionSSR = () => {
 
 export const getTokenSSR = () => {
   const token = cookies().get("token");
-  console.log("token from cookie SSR");
-
-  return token?.value;
+  if (!token?.value) {
+    console.log("no token from cookie SSR");
+    return null;
+  } else {
+    console.log("token from cookie SSR", token?.value);
+    return token?.value;
+  }
 };
