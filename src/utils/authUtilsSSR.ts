@@ -18,7 +18,7 @@ export const getTokenSSR = () => {
     console.log("no token from cookie SSR");
     return null;
   } else {
-    console.log("token from cookie SSR", token?.value);
+    // console.log("token from cookie SSR", token?.value);
     return token?.value;
   }
 };

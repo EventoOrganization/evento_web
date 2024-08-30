@@ -229,7 +229,6 @@ const filterUsers = (
       selectedInterests.some((interestId) =>
         user.interests?.some((userInterest) => userInterest._id === interestId),
       );
-
     const userName =
       user.firstName && user.lastName
         ? `${user.firstName} ${user.lastName}`
