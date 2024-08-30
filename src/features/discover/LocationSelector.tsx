@@ -1,8 +1,5 @@
 "use client";
-import { LatLngTuple, LeafletMouseEvent } from "leaflet";
-import "leaflet/dist/leaflet.css";
-import { useEffect, useState } from "react";
-import { useMapEvents } from "react-leaflet";
+import { useEffect, useRef, useState } from "react";
 
 interface Location {
   lat: number;
@@ -18,110 +15,77 @@ interface LocationSelectorProps {
 }
 
 const LocationSelector = ({ onLocationChange }: LocationSelectorProps) => {
+  const mapRef = useRef<HTMLDivElement | null>(null);
   const [location, setLocation] = useState<Location | null>(null);
   const [address, setAddress] = useState<Address | null>(null);
-  const [isOpen, setIsOpen] = useState(false);
-
-  const fetchAddress = async (lat: number, lng: number) => {
-    try {
-      const response = await fetch(
-        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`,
-      );
-      const data = await response.json();
-      setAddress({ formatted_address: data.display_name });
-    } catch (error) {
-      console.error("Failed to fetch address:", error);
-    }
-  };
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        const { latitude, longitude } = position.coords;
-        const newLocation = { lat: latitude, lng: longitude };
-        setLocation(newLocation);
-        fetchAddress(latitude, longitude);
-        onLocationChange(newLocation);
-      });
+    if (window.google) {
+      initMap();
+    } else {
+      loadGoogleMapsScript(initMap);
     }
   }, []);
 
-  const handleMapClick = (lat: number, lng: number) => {
-    const newLocation = { lat, lng };
-    setLocation(newLocation);
-    fetchAddress(lat, lng);
-    onLocationChange(newLocation);
-    setIsOpen(false);
+  const loadGoogleMapsScript = (callback: () => void) => {
+    const script = document.createElement("script");
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`;
+    script.async = true;
+    script.defer = true;
+    script.onload = callback;
+    document.head.appendChild(script);
   };
 
-  const MapClickHandler = () => {
-    useMapEvents({
-      click(e: LeafletMouseEvent) {
-        handleMapClick(e.latlng.lat, e.latlng.lng);
-      },
+  const initMap = () => {
+    if (!mapRef.current) return;
+
+    const map = new google.maps.Map(mapRef.current, {
+      center: { lat: 51.505, lng: -0.09 }, // Coordonnées par défaut
+      zoom: 13,
     });
-    return null;
-  };
 
-  const mapCenter: LatLngTuple = location
-    ? ([location.lat, location.lng] as LatLngTuple)
-    : ([51.505, -0.09] as LatLngTuple);
+    map.addListener("click", (event: google.maps.MapMouseEvent) => {
+      const latLng = event.latLng;
+      if (!latLng) return;
+
+      const newLocation = {
+        lat: latLng.lat(),
+        lng: latLng.lng(),
+      };
+      setLocation(newLocation);
+      onLocationChange(newLocation);
+
+      const geocoder = new google.maps.Geocoder();
+      geocoder.geocode({ location: newLocation }, (results, status) => {
+        if (status === google.maps.GeocoderStatus.OK && results && results[0]) {
+          setAddress({ formatted_address: results[0].formatted_address });
+        } else {
+          console.error("Geocoder failed due to: " + status);
+        }
+      });
+    });
+
+    setIsLoading(false);
+  };
 
   return (
     <div>
       <div className="font-bold text-slate-400">Current Location</div>
       {address ? (
         <div className="flex items-center">
-          <button
-            onClick={() => setIsOpen(!isOpen)}
-            className="flex items-center"
-          >
-            <svg
-              className="h-6 w-6 text-fuchsia-500"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-              <circle cx="12" cy="10" r="3" />
-            </svg>
-          </button>
           <span className="font-bold ml-2 truncate">
             {address.formatted_address}
           </span>
-          <svg
-            className="ml-2 h-5 w-5"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-            onClick={() => setIsOpen(!isOpen)}
-          >
-            <path
-              fillRule="evenodd"
-              d="M5.293 9.293a1 1 0 011.414 0L10 12.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-              clipRule="evenodd"
-            />
-          </svg>
         </div>
       ) : (
         <p>Loading...</p>
       )}
 
-      {isOpen && (
-        <div>
-          {/* <MapContainer
-            center={mapCenter as LatLngTuple}
-            zoom={13}
-            style={{ height: "400px", width: "100%", marginTop: "10px" }}
-          >
-            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-            {location && <Marker position={location} />}
-            <MapClickHandler />
-          </MapContainer> */}
-        </div>
-      )}
+      <div
+        ref={mapRef}
+        style={{ height: "400px", width: "100%", marginTop: "10px" }}
+      />
     </div>
   );
 };
