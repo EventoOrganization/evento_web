@@ -1,6 +1,7 @@
 "use client";
 import useOnScroll from "@/hooks/useOnScroll";
 import { cn } from "@/lib/utils";
+import { useAuthStore } from "@/store/useAuthStore";
 import { getSessionCSR } from "@/utils/authUtilsCSR";
 import Image from "next/image";
 import Link from "next/link";
@@ -11,13 +12,16 @@ import { Button } from "../ui/button";
 export const Header = () => {
   const pathname = usePathname();
   const scrollY = useOnScroll();
+  const user = useAuthStore((state) => state.user);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
-  const [user, setUser] = useState<any | null>(null);
+  // const [user, setUser] = useState<any | null>(null);
 
   useEffect(() => {
     const session = getSessionCSR();
     setIsAuthenticated(session.isLoggedIn);
-    setUser(session.user);
+    // setUser(session.user);
+    console.log(user);
+    console.log("HEADER Session:", session);
   }, []);
 
   return (

@@ -8,7 +8,7 @@ import DateSelector from "@/features/discover/DateSelector";
 import TabSelector from "@/features/discover/TabSelector";
 import Event from "@/features/event/components/Event";
 import { cn } from "@/lib/utils";
-import { EventType } from "@/types/EventType";
+import { EventType, InterestType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
 import { Label } from "@radix-ui/react-label";
 import { Search } from "lucide-react";
@@ -18,12 +18,15 @@ interface Location {
   lat: number;
   lng: number;
 }
+
 const DiscoverPage = () => {
   //Filters
   const { interests, events, users } = useDiscoverContext();
-  const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
+  const [selectedInterests, setSelectedInterests] = useState<InterestType[]>(
+    [],
+  );
   const [searchText, setSearchText] = useState("");
-  const [selectedDate, setSelectedDate] = useState("");
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTab, setSelectedTab] = useState("All");
   const [location, setLocation] = useState<Location | null>(null);
   const [distanceFilter, setDistanceFilter] = useState(10);
@@ -31,22 +34,22 @@ const DiscoverPage = () => {
   const [filteredEvents, setFilteredEvents] = useState(events);
   const [filteredUsers, setFilteredUsers] = useState(users);
 
-  const handleInterestToggle = (interestId: string) => {
-    console.log("interestId", interestId);
+  const handleInterestToggle = (interest: InterestType) => {
     setSelectedInterests((prev) =>
-      prev.includes(interestId)
-        ? prev.filter((i) => i !== interestId)
-        : [...prev, interestId],
+      prev.some((i) => i._id === interest._id)
+        ? prev.filter((i) => i._id !== interest._id)
+        : [...prev, interest],
     );
   };
 
   useEffect(() => {
+    const formattedDate = selectedDate ? selectedDate.toISOString() : "";
     if (users && users.length > 0 && events && events.length > 0) {
       const filteredEvents = filterEvents(
         events,
         selectedInterests,
         searchText,
-        selectedDate,
+        formattedDate,
         selectedTab,
         location,
         distanceFilter,
@@ -124,13 +127,12 @@ const DiscoverPage = () => {
               {interests.map((interest) => (
                 <li
                   key={interest._id}
-                  onClick={() => handleInterestToggle(interest._id)}
+                  onClick={() => handleInterestToggle(interest)}
                   className={cn(
                     "cursor-pointer bg-gray-200 rounded px-2 py-1 w-fit hover:bg-eventoPurpleLight/50 focus:border-eventoBlue",
                     {
-                      "bg-eventoPurpleLight/20": selectedInterests.includes(
-                        interest._id,
-                      ),
+                      "bg-eventoPurpleLight/20":
+                        selectedInterests.includes(interest),
                     },
                   )}
                 >
@@ -175,27 +177,48 @@ const getDistanceFromLatLonInKm = (
 // Fonction de filtrage des événements
 const filterEvents = (
   events: EventType[],
-  selectedInterests: string[],
+  selectedInterests: InterestType[],
   searchText: string,
   selectedDate: string,
   selectedTab: string,
   location: Location | null,
   distanceFilter: number,
 ) => {
+  console.log("events", events);
   const searchLower = searchText.toLowerCase();
   return events.filter((event) => {
     const matchesInterest =
       selectedInterests.length === 0 ||
-      selectedInterests.some((interestId) => {
-        const result = event.interest?.includes(interestId);
-        return result;
+      selectedInterests.some((selectedInterest) => {
+        return (
+          event.interest?.some((interest) => {
+            return interest._id === selectedInterest._id;
+          }) ?? false
+        );
       });
 
     const matchesSearchText =
       event.title?.toLowerCase().includes(searchLower) ||
       event.details?.description?.toLowerCase().includes(searchLower);
 
-    const matchesDate = !selectedDate || event.details?.date === selectedDate;
+    const eventDate = event.details?.date ? new Date(event.details.date) : null;
+    const eventEndDate = event.details?.endDate
+      ? new Date(event.details.endDate)
+      : null;
+    const selectedDateObj = selectedDate ? new Date(selectedDate) : null;
+
+    const matchesDate =
+      !selectedDateObj ||
+      (eventDate &&
+        eventEndDate &&
+        selectedDateObj >=
+          new Date(
+            eventDate.getTime() + eventDate.getTimezoneOffset() * 60000,
+          ) &&
+        selectedDateObj <=
+          new Date(
+            eventEndDate.getTime() + eventEndDate.getTimezoneOffset() * 60000,
+          ));
 
     const isNearMe =
       selectedTab === "Near me" &&
@@ -218,16 +241,19 @@ const filterEvents = (
 // Fonction de filtrage des utilisateurs
 const filterUsers = (
   users: UserType[],
-  selectedInterests: string[],
+  selectedInterests: InterestType[],
   searchText: string,
 ) => {
+  console.log("users", users);
   const searchLower = searchText.toLowerCase();
 
   return users.filter((user) => {
     const matchesInterest =
       selectedInterests.length === 0 ||
-      selectedInterests.some((interestId) =>
-        user.interests?.some((userInterest) => userInterest._id === interestId),
+      selectedInterests.some((interest) =>
+        user.interests?.some(
+          (userInterest) => userInterest._id === interest._id,
+        ),
       );
     const userName =
       user.firstName && user.lastName

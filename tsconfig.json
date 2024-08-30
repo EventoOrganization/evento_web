@@ -4,6 +4,7 @@
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
+    "typeRoots": ["./node_modules/@types", "./types"],
     "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",
@@ -12,11 +13,6 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]

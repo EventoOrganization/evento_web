@@ -52,7 +52,7 @@ const LocationSelector = ({
         setLocation(parsedLocation);
         setMapCenter(parsedLocation);
         onLocationChange(parsedLocation);
-        console.log("Location loaded from localStorage:", parsedLocation);
+        // console.log("Location loaded from localStorage:", parsedLocation);
       } else if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition((position) => {
           const newLocation = {
@@ -62,11 +62,11 @@ const LocationSelector = ({
           setLocation(newLocation);
           setMapCenter(newLocation);
           localStorage.setItem("location", JSON.stringify(newLocation));
-          console.log("Location retrieved from geolocation:", newLocation);
+          // console.log("Location retrieved from geolocation:", newLocation);
         });
       } else {
         setError("Geolocation is not supported by this browser");
-        console.error("Geolocation not supported or failed");
+        // console.error("Geolocation not supported or failed");
       }
     };
 
@@ -108,7 +108,7 @@ const LocationSelector = ({
           onClick={() => setIsOpen(!isOpen)}
           className="flex justify-between items-center rounded-lg "
         >
-          <MapPinIcon2 />
+          <MapPinIcon2 className="w-5 h-5" />
           <span className=" break-words line-clamp-1 font-bold whitespace-normal text-ellipsis overflow-hidden max-w-1/2 truncate">
             {address.formatted_address}
           </span>

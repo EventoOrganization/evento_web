@@ -38,10 +38,10 @@ export type EventType = {
   coHosts?: UserType[];
   guests?: UserType[];
   guestsCohostAdd?: UserType[];
-  interest?: string[];
   interests: InterestType[];
   timeSlots: TimeSlotType[];
   privateEventLink?: string;
+  interest?: InterestType[];
   imagePreviews?: string[];
   videoPreview?: string;
   questions?: Question[];

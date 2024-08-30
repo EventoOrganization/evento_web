@@ -46,16 +46,16 @@ export const fetchData = async <T>(
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    const data: { success: boolean; body?: T; data?: T; [key: string]: any } =
+    const data: { success: boolean; body?: T; data?: T } =
       await response.json();
     console.log(`Response from ${endpoint} is ${response.status}:`);
     // console.log(`Full response from ${endpoint}:`, data);
-    if ("body" in data && data.body) {
-      return data.body;
-    } else if ("data" in data && data.data) {
-      return data.data;
+    if (data?.body) {
+      return data.body as T;
+    } else if (data?.data) {
+      return data.data as T;
     } else {
-      throw new Error(`Unexpected response structure`);
+      return data as T;
     }
   } catch (error) {
     console.error(`Failed to fetch data from ${endpoint}:`, error);

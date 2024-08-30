@@ -17,7 +17,7 @@ const EventModal = ({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-[90vw]  md:max-w-screen-md lg:max-w-screen-lg max-h-[calc(100vh-64px)] p-0 w-full h-full">
         <ScrollArea className="rounded h-full">
-          <Event event={event} className="max-w-[90vw] " />
+          <Event event={event} className="max-w-[90vw]" isModal={true} />
         </ScrollArea>
       </DialogContent>
     </Dialog>
