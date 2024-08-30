@@ -1,10 +1,10 @@
 "use client";
 import Section from "@/components/layout/Section";
+import LocationSelector from "@/components/map/LocationSelector";
 import Showcase from "@/components/Showcase";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useDiscoverContext } from "@/contexts/DiscoverContext";
-import LocationSelector from "@/features/discover/LocationSelector";
 import TabSelector from "@/features/discover/TabSelector";
 import Event from "@/features/event/components/Event";
 import { cn } from "@/lib/utils";
@@ -22,9 +22,9 @@ const getDistanceFromLatLonInKm = (
   lat2: number,
   lon2: number,
 ): number => {
-  const R = 6371; // Radius of the earth in km
+  const R = 6371; // Rayon de la terre en km
   const dLat = (lat2 - lat1) * (Math.PI / 180);
-  const dLon = (lon1 - lon2) * (Math.PI / 180); // Attention, inversion des ordres
+  const dLon = (lon1 - lon2) * (Math.PI / 180);
   const a =
     Math.sin(dLat / 2) * Math.sin(dLat / 2) +
     Math.cos(lat1 * (Math.PI / 180)) *
@@ -32,14 +32,14 @@ const getDistanceFromLatLonInKm = (
       Math.sin(dLon / 2) *
       Math.sin(dLon / 2);
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  const distance = R * c; // Distance in km
+  const distance = R * c; // Distance en km
   return distance;
 };
 
 const DiscoverPage = () => {
   const { interests, events, users } = useDiscoverContext();
 
-  // State for filters
+  // State pour les filtres
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
   const [searchText, setSearchText] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
@@ -47,13 +47,13 @@ const DiscoverPage = () => {
   const [filteredUsers, setFilteredUsers] = useState(users);
   const [selectedTab, setSelectedTab] = useState("All");
   const [location, setLocation] = useState<Location | null>(null);
-  const [distanceFilter, setDistanceFilter] = useState(10); // Default distance in km
+  const [distanceFilter, setDistanceFilter] = useState(10); // Distance par défaut en km
 
-  // Log initial states
+  // Log des états initiaux
   console.log("Initial events:", events);
   console.log("Selected location:", location);
 
-  // Filter events based on date, selected tab, and location
+  // Filtrer les événements en fonction de la date, l'onglet sélectionné et la localisation
   useEffect(() => {
     console.log("Filtering events...");
     const filtered = events.filter((event) => {
@@ -89,7 +89,7 @@ const DiscoverPage = () => {
     setFilteredEvents(filtered);
   }, [selectedDate, selectedTab, events, location, distanceFilter]);
 
-  // Filter users based on interests and search text
+  // Filtrer les utilisateurs en fonction des intérêts et du texte de recherche
   useEffect(() => {
     console.log("Filtering users...");
     const filtered = users.filter((user) => {

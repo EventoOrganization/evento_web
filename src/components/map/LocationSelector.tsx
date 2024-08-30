@@ -11,7 +11,11 @@ interface Address {
   formatted_address: string;
 }
 
-const LocationSelector = () => {
+const LocationSelector = ({
+  onLocationChange,
+}: {
+  onLocationChange: (location: Location) => void;
+}) => {
   const [location, setLocation] = useState<Location | null>(null);
   const [mapCenter, setMapCenter] = useState<Location>({
     lat: 37.7749,
@@ -30,6 +34,7 @@ const LocationSelector = () => {
     const lng = event.latLng.lng();
     const newLocation = { lat, lng };
     setLocation(newLocation);
+    onLocationChange(newLocation);
     if (typeof window !== "undefined") {
       localStorage.setItem("location", JSON.stringify(newLocation));
     }
