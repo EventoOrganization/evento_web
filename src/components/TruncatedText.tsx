@@ -1,7 +1,14 @@
 "use client";
+import { cn } from "@/lib/utils";
 import { useEffect, useRef, useState } from "react";
 
-const TruncatedText = ({ text = "" }: { text: string }) => {
+const TruncatedText = ({
+  text = "",
+  className,
+}: {
+  text: string;
+  className?: string;
+}) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isOverflowing, setIsOverflowing] = useState(false);
   const textRef = useRef<HTMLParagraphElement | null>(null);
@@ -16,10 +23,13 @@ const TruncatedText = ({ text = "" }: { text: string }) => {
   const toggleText = () => setIsExpanded(!isExpanded);
 
   return (
-    <div className=" p-4 text-sm w-full">
+    <div className=" p-4 text-sm w-full ">
       <p
         ref={textRef}
-        className={`${isExpanded ? "" : "line-clamp-2"} break-words w-full whitespace-normal`}
+        className={cn(
+          `${isExpanded ? "" : "line-clamp-2"} break-words w-full  whitespace-normal`,
+          className,
+        )}
         style={{ display: "-webkit-box", WebkitBoxOrient: "vertical" }}
       >
         {text}

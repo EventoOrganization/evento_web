@@ -3,11 +3,14 @@ import Section from "@/components/layout/Section";
 import LocationSelector from "@/components/map/LocationSelector";
 import Showcase from "@/components/Showcase";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { useDiscoverContext } from "@/contexts/DiscoverContext";
+import DateSelector from "@/features/discover/DateSelector";
 import TabSelector from "@/features/discover/TabSelector";
 import Event from "@/features/event/components/Event";
 import { cn } from "@/lib/utils";
+import { UserType } from "@/types/UserType";
+import { Label } from "@radix-ui/react-label";
+import { Search } from "lucide-react";
 import { useEffect, useState } from "react";
 
 interface Location {
@@ -50,8 +53,9 @@ const DiscoverPage = () => {
   const [distanceFilter, setDistanceFilter] = useState(10); // Distance par défaut en km
 
   // Log des états initiaux
-  console.log("Initial events:", events);
-  console.log("Selected location:", location);
+  // console.log("Initial events:", events);
+  console.log("initial location:", location);
+  // console.log("Users:", users[0]);
 
   // Filtrer les événements en fonction de la date, l'onglet sélectionné et la localisation
   useEffect(() => {
@@ -122,11 +126,55 @@ const DiscoverPage = () => {
         : [...prev, interest],
     );
   };
+  useEffect(() => {
+    console.log("Filtering users and events...");
+
+    const searchLower = searchText.toLowerCase();
+
+    // Filtrer les événements en fonction de plusieurs critères
+    const filteredEvents = events.filter((event) => {
+      const inTitle = event.title?.toLowerCase().includes(searchLower);
+
+      const inCoHosts = event.coHosts?.some((coHost: UserType) => {
+        return (
+          coHost.firstName?.toLowerCase().includes(searchLower) ||
+          coHost.lastName?.toLowerCase().includes(searchLower)
+        );
+      });
+
+      const inGuests = event.guests?.some((guest: UserType) => {
+        return (
+          guest.firstName?.toLowerCase().includes(searchLower) ||
+          guest.lastName?.toLowerCase().includes(searchLower)
+        );
+      });
+
+      const inDetailsName = event.details?.name
+        ?.toLowerCase()
+        .includes(searchLower);
+      const inDescription = event.details?.description
+        ?.toLowerCase()
+        .includes(searchLower);
+
+      return inTitle || inCoHosts || inGuests || inDetailsName || inDescription;
+    });
+
+    // Filtrer les utilisateurs en fonction du prénom et du nom de famille
+    const filteredUsers = users.filter((user) => {
+      const inFirstName = user.firstName?.toLowerCase().includes(searchLower);
+      const inLastName = user.lastName?.toLowerCase().includes(searchLower);
+
+      return inFirstName || inLastName;
+    });
+
+    setFilteredEvents(filteredEvents);
+    setFilteredUsers(filteredUsers);
+  }, [searchText, events, users]);
 
   return (
     <>
-      <Section className="grid grid-cols-2 gap-4 items-start">
-        <ul>
+      <Section className="flex flex-col-reverse md:grid md:grid-cols-2  gap-20  items-start">
+        <ul className="w-full space-y-6">
           {/* Utiliser le TabSelector pour sélectionner le filtre */}
           <TabSelector onChange={setSelectedTab} />
           {filteredEvents &&
@@ -136,21 +184,25 @@ const DiscoverPage = () => {
               </li>
             ))}
         </ul>
-        <div>
+        <div className="flex flex-col gap-2">
           <LocationSelector onLocationChange={setLocation} />
-          <Input
-            type="text"
-            placeholder="Search users"
-            value={searchText}
-            onChange={(e) => setSearchText(e.target.value)}
-          />
-          <Label className="bg-red-500">
-            <Input
-              type="date"
-              value={selectedDate}
-              onChange={(e) => setSelectedDate(e.target.value)}
+          <div className="relative flex items-center">
+            <Search
+              className="w-6 h-6 absolute left-3 text-eventoPurpleDark"
+              strokeWidth={2.5}
             />
-          </Label>
+            <Input
+              type="text"
+              placeholder="Search for events or organisers ..."
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+              className="pl-12 border-none bg-white py-2 rounded-lg w-full"
+            />
+          </div>
+          <DateSelector
+            selectedDate={selectedDate}
+            setSelectedDate={setSelectedDate}
+          />
           {selectedTab === "Near me" && (
             <div>
               <Label>Distance (km):</Label>
@@ -163,29 +215,32 @@ const DiscoverPage = () => {
               />
             </div>
           )}
-          <ul className="flex flex-wrap gap-4 mt-4">
-            {interests &&
-              interests.map((interest) => (
-                <li
-                  key={interest._id}
-                  onClick={() => handleInterestToggle(interest.name)}
-                  className={cn(
-                    "cursor-pointer bg-gray-200 rounded px-2 py-1 w-fit hover:bg-eventoPurpleLight/50 focus:border-eventoBlue",
-                    {
-                      "bg-eventoPurpleLight/40": selectedInterests.includes(
-                        interest.name,
-                      ),
-                    },
-                  )}
-                >
-                  {interest.name}
-                </li>
-              ))}
-          </ul>
+          <div>
+            <h3>Select Interests</h3>
+            <ul className="flex flex-wrap gap-4 mt-4">
+              {interests &&
+                interests.map((interest) => (
+                  <li
+                    key={interest._id}
+                    onClick={() => handleInterestToggle(interest.name)}
+                    className={cn(
+                      "cursor-pointer bg-gray-200 rounded px-2 py-1 w-fit hover:bg-eventoPurpleLight/50 focus:border-eventoBlue",
+                      {
+                        "bg-eventoPurpleLight/20": selectedInterests.includes(
+                          interest.name,
+                        ),
+                      },
+                    )}
+                  >
+                    {interest.name}
+                  </li>
+                ))}
+            </ul>
+          </div>
           <Showcase
             users={filteredUsers.length > 0 ? filteredUsers : users}
             className="flex-row flex-wrap"
-            itemClassName="flex w-full justify-between"
+            itemClassName="w-full justify-between "
           />
         </div>
       </Section>

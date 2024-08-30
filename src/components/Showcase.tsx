@@ -20,7 +20,7 @@ const Showcase = ({
   itemClassName?: string;
 }) => {
   return (
-    <Section>
+    <Section className="hidden  md:flex">
       <ul
         className={cn(
           "flex flex-col gap-4  md:overflow-x-auto w-full overflow-y-auto",

@@ -21,6 +21,7 @@ export type UserType = {
   pastEvents?: EventType[];
   totalEventAttended?: number;
   interests?: InterestType[];
+
   //Other users
   userInfo?: {
     _id: string;

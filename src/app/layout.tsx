@@ -23,12 +23,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning={true}>
-      <body className={cn(inter.className, "relative")}>
+      <body className={cn(inter.className, "relative bg-muted")}>
         <SessionProvider>
           <Toaster position="top-center" />
           <BackButton />
           <Header />
-          <Main className="pb-28 md:pt-32 pt-10 px-0 lg:px-10 max-w-7xl mx-auto">
+          <Main className="pb-28 md:pt-32 pt-10 px-0 lg:px-10 max-w-7xl mx-auto ">
             {children}
           </Main>
           <NavbarApp />

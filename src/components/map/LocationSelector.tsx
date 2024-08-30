@@ -1,7 +1,8 @@
-// components/LocationSelector.tsx
-"use client";
+import { cn } from "@/lib/utils";
 import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
+import { ChevronDown } from "lucide-react";
 import { useEffect, useState } from "react";
+import MapPinIcon2 from "../icons/MappPinIcon2";
 
 interface Location {
   lat: number;
@@ -35,9 +36,7 @@ const LocationSelector = ({
     const newLocation = { lat, lng };
     setLocation(newLocation);
     onLocationChange(newLocation);
-    if (typeof window !== "undefined") {
-      localStorage.setItem("location", JSON.stringify(newLocation));
-    }
+    localStorage.setItem("location", JSON.stringify(newLocation));
     handleClose();
   };
 
@@ -50,63 +49,91 @@ const LocationSelector = ({
   };
 
   useEffect(() => {
-    if (!location && typeof window !== "undefined") {
+    const getStoredLocation = () => {
       const storedLocation = localStorage.getItem("location");
       if (storedLocation) {
-        setLocation(JSON.parse(storedLocation));
-        setMapCenter(JSON.parse(storedLocation));
+        const parsedLocation = JSON.parse(storedLocation);
+        setLocation(parsedLocation);
+        setMapCenter(parsedLocation);
+        onLocationChange(parsedLocation);
+        console.log("Location loaded from localStorage:", parsedLocation);
+      } else if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((position) => {
+          const newLocation = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          };
+          setLocation(newLocation);
+          setMapCenter(newLocation);
+          localStorage.setItem("location", JSON.stringify(newLocation));
+          console.log("Location retrieved from geolocation:", newLocation);
+        });
       } else {
-        const getLocation = async () => {
-          if (navigator.geolocation) {
-            try {
-              navigator.geolocation.getCurrentPosition((position) => {
-                const newLocation = {
-                  lat: position.coords.latitude,
-                  lng: position.coords.longitude,
-                };
-                setLocation(newLocation);
-                setMapCenter(newLocation);
-                localStorage.setItem("location", JSON.stringify(newLocation));
-              });
-            } catch (error: any) {
-              setError(error.message);
-            }
-          } else {
-            setError("Geolocation is not supported by this browser");
-          }
-        };
-        getLocation();
+        setError("Geolocation is not supported by this browser");
+        console.error("Geolocation not supported or failed");
       }
-    }
-  }, [location]);
+    };
+
+    getStoredLocation();
+  }, []);
 
   useEffect(() => {
-    async function getAddress(location: Location | null) {
-      if (location && !address && typeof window !== "undefined") {
+    const getAddress = async (location: Location | null) => {
+      if (location) {
+        setAddress(null); // Reset address before fetching new one
         const geocodingApiUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${location.lat},${location.lng}&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`;
 
-        const res = await fetch(geocodingApiUrl);
-        const data = await res.json();
-        if (data.results && data.results.length > 0) {
-          const addressData = data.results[0];
-          const newAddress = {
-            formatted_address: addressData.formatted_address,
-          };
-          setAddress(newAddress);
-          localStorage.setItem("address", JSON.stringify(newAddress));
-        } else {
-          setError("Unable to fetch address");
+        try {
+          const res = await fetch(geocodingApiUrl);
+          const data = await res.json();
+          if (data.results && data.results.length > 0) {
+            const addressData = data.results[0];
+            const newAddress = {
+              formatted_address: addressData.formatted_address,
+            };
+            setAddress(newAddress);
+            localStorage.setItem("address", JSON.stringify(newAddress));
+          } else {
+            setError("Unable to fetch address");
+          }
+        } catch (error) {
+          setError("Failed to fetch address");
         }
       }
-    }
+    };
+
     getAddress(location);
-  }, [location, address]);
+  }, [location]); // Trigger this effect whenever the location changes
 
   return (
-    <div>
-      <div className="font-bold text-slate-400">Current Location</div>
+    <div className="flex flex-col gap-2 ">
+      <div className=" text-muted-foreground">Current Location</div>
+      {address ? (
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className="flex justify-between items-center rounded-lg "
+        >
+          <MapPinIcon2 />
+          <span className=" break-words line-clamp-1 font-bold whitespace-normal text-ellipsis overflow-hidden max-w-1/2 truncate">
+            {address.formatted_address}
+          </span>
+          <ChevronDown
+            strokeWidth={3}
+            className={cn("transition-transform duration-200", {
+              "rotate-180": isOpen,
+            })}
+          />
+        </button>
+      ) : (
+        <p>Loading...</p>
+      )}
       {isOpen && (
-        <div>
+        <div
+          className={cn(
+            "transition-all duration-500 ease-in-out  overflow-hidden",
+            { "max-h-0": !isOpen, "max-h-screen mt-4": isOpen },
+          )}
+        >
           {isLoaded && (
             <GoogleMap
               mapContainerStyle={{ height: "500px", width: "100%" }}
@@ -119,30 +146,6 @@ const LocationSelector = ({
           )}
           {error && <p style={{ color: "red" }}>Error: {error}</p>}
         </div>
-      )}
-      {address ? (
-        <div className="flex">
-          <button onClick={handleOpen}>
-            <span>
-              <svg
-                className="h-6 w-6 text-fuchsia-500"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                {" "}
-                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />{" "}
-                <circle cx="12" cy="10" r="3" />
-              </svg>
-            </span>
-          </button>
-          <span className="font-bold ml-2">{address.formatted_address}</span>
-        </div>
-      ) : (
-        <p>Loading...</p>
       )}
     </div>
   );

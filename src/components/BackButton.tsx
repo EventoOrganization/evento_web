@@ -12,7 +12,7 @@ const BackButton = () => {
 
   return (
     <Button
-      className="z-50 fixed top-4 left-4 rounded-full p-0 aspect-square bg-evento-gradient-button shadow"
+      className="md:hidden z-50 fixed top-4 left-4 rounded-full p-0 aspect-square bg-evento-gradient-button shadow"
       onClick={handleBack}
     >
       <ArrowBigLeft />

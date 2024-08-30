@@ -1,4 +1,5 @@
 import { Question } from "@/store/useEventStore";
+import { UserType } from "./UserType";
 
 // src/types/EventType.ts
 export type TimeSlotType = {
@@ -34,8 +35,9 @@ export type EventType = {
   latitude?: string;
   longitude?: string;
   location?: string;
-  coHosts?: string[];
-  guests?: string[];
+  coHosts?: UserType[];
+  guests?: UserType[];
+  guestsCohostAdd?: UserType[];
   interestId?: string[];
   interests?: InterestType[];
   timeSlots: TimeSlotType[];
