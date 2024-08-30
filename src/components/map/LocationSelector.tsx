@@ -107,7 +107,6 @@ const LocationSelector = ({
 
   return (
     <div className="flex flex-col gap-2 ">
-      <div className=" text-muted-foreground">Current Location</div>
       {address ? (
         <button
           onClick={() => setIsOpen(!isOpen)}

@@ -14,12 +14,6 @@ const DateSelector = ({ selectedDate, setSelectedDate }: any) => {
 
   return (
     <div className="flex items-center gap-2 ">
-      <span
-        className="cursor-pointer text-purple-600 font-bold"
-        onClick={handleLabelClick}
-      >
-        Date
-      </span>
       {!isDateInputVisible ? (
         <span className="cursor-pointer" onClick={handleLabelClick}>
           {selectedDate ? selectedDate : "All"}

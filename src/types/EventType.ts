@@ -38,8 +38,8 @@ export type EventType = {
   coHosts?: UserType[];
   guests?: UserType[];
   guestsCohostAdd?: UserType[];
-  interestId?: string[];
-  interests?: InterestType[];
+  interest?: string[];
+  interests: InterestType[];
   timeSlots: TimeSlotType[];
   privateEventLink?: string;
   imagePreviews?: string[];
@@ -62,7 +62,7 @@ export type EventDetailsType = {
   images?: string[];
   loc?: {
     type: "Point";
-    coordinates: [number, number]; // [longitude, latitude]
+    coordinates: [number, number];
   };
   mode?: "virtual" | "in-person";
   location?: string;
