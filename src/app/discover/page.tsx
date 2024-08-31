@@ -184,7 +184,7 @@ const filterEvents = (
   location: Location | null,
   distanceFilter: number,
 ) => {
-  console.log("events", events);
+  // console.log("events", events);
   const searchLower = searchText.toLowerCase();
   return events.filter((event) => {
     const matchesInterest =
@@ -244,7 +244,7 @@ const filterUsers = (
   selectedInterests: InterestType[],
   searchText: string,
 ) => {
-  console.log("users", users);
+  // console.log("users", users);
   const searchLower = searchText.toLowerCase();
 
   return users.filter((user) => {

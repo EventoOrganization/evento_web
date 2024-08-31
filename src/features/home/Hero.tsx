@@ -19,7 +19,14 @@ const Hero = () => {
       />
       <Section className="h-screen gap-10 text-white">
         <div className="z-10 flex flex-col justify-center items-center mb-10">
-          <Image src={"/logo.png"} alt="logo" width={138} height={45} />
+          <Image
+            src={"/logo.png"}
+            alt="logo"
+            width={138}
+            height={45}
+            style={{ maxWidth: "100%", height: "auto" }}
+            priority
+          />
           <h1 className=" text-4xl font-bold z-10">EVENTO</h1>
           <h2 className="">Find events for you</h2>
           <p className="text-justify mt-10">

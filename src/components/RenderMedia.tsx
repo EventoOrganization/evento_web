@@ -84,10 +84,13 @@ const RenderMedia = ({ event }: { event: EventType }) => {
                 src={item}
                 alt={`Event media ${index + 1}`}
                 fill
-                objectFit="cover"
+                sizes="(max-width: 768px) 100vw,
+                (max-width: 1200px) 50vw,
+                33vw"
                 className={cn({
                   "opacity-20": !event,
                 })}
+                priority
               />
             </div>
           ),
