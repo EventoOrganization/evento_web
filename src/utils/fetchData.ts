@@ -1,5 +1,4 @@
 "use server";
-import { getTokenCSR, getTokenFromStore } from "./authUtilsCSR";
 import { getTokenSSR } from "./authUtilsSSR";
 
 export const fetchData = async <T>(
@@ -12,9 +11,6 @@ export const fetchData = async <T>(
   if (typeof window === "undefined") {
     // We're in SSR
     token = getTokenSSR();
-  } else {
-    // We're in CSR
-    token = getTokenCSR() || getTokenFromStore();
   }
 
   const headers = {

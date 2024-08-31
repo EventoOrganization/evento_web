@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { getSessionSSR } from "@/utils/authUtilsSSR";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,10 +22,14 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = getSessionSSR();
   return (
     <html lang="en" suppressHydrationWarning={true}>
       <body className={cn(inter.className, "relative bg-muted")}>
-        <SessionProvider>
+        <SessionProvider
+          initialUser={session.user}
+          initialToken={session.token}
+        >
           <Toaster position="top-center" />
           <BackButton />
           <Header />

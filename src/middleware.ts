@@ -1,3 +1,4 @@
+// middleware.ts
 import { NextResponse, type NextRequest } from "next/server";
 import { getSessionSSR } from "./utils/authUtilsSSR";
 
@@ -21,6 +22,7 @@ export function middleware(req: NextRequest) {
   }
   if (session && session.token) {
     console.log(`Session active for request ${pathname}.`);
+    console.log(session);
   } else {
     console.log(`No session found for request ${pathname}.`);
   }

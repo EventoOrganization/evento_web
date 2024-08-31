@@ -1,7 +1,7 @@
-// src/contexts/AuthContext.tsx
+// src/contexts/SessionProvider.tsx
 "use client";
 import { UserType } from "@/types/UserType";
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 
 interface SessionContextProps {
   user: UserType | null;
@@ -15,11 +15,29 @@ const SessionContext = createContext<SessionContextProps | undefined>(
   undefined,
 );
 
-export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
-  const [user, setUser] = useState<UserType | null>(null);
-  const [token, setToken] = useState<string | null>(null);
+export const SessionProvider: React.FC<{
+  children: React.ReactNode;
+  initialUser?: UserType | null;
+  initialToken?: string | null;
+}> = ({ children, initialUser = null, initialToken = null }) => {
+  const [user, setUser] = useState<UserType | null>(initialUser);
+  const [token, setToken] = useState<string | null>(initialToken);
+
+  useEffect(() => {
+    if (!initialUser && !initialToken) {
+      // If no initial data is passed, try to get the session data from cookies
+      const sessionData = document.cookie
+        .split("; ")
+        .find((row) => row.startsWith("sessionData="))
+        ?.split("=")[1];
+
+      if (sessionData) {
+        const session = JSON.parse(decodeURIComponent(sessionData));
+        setUser(session.user);
+        setToken(session.token);
+      }
+    }
+  }, [initialUser, initialToken]);
 
   const startSession = (user: UserType, token: string) => {
     setUser(user);

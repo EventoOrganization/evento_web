@@ -12,7 +12,6 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { signInSchema } from "@/lib/zod";
 import { useAuthStore } from "@/store/useAuthStore";
-import { getSessionCSR } from "@/utils/authUtilsCSR";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -54,7 +53,6 @@ const SignInForm = ({
     setIsFetching(true);
 
     try {
-      console.log("before sign in", getSessionCSR());
       const loginResponse = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/users/login`,
         {

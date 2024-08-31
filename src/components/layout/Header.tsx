@@ -1,29 +1,15 @@
 "use client";
+import { useSession } from "@/contexts/SessionProvider";
 import useOnScroll from "@/hooks/useOnScroll";
 import { cn } from "@/lib/utils";
-import { useAuthStore } from "@/store/useAuthStore";
-import { getSessionCSR } from "@/utils/authUtilsCSR";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
-
-export const Header = () => {
-  const pathname = usePathname();
+const Header = () => {
+  const { user } = useSession();
   const scrollY = useOnScroll();
-  const user = useAuthStore((state) => state.user);
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
-  // const [user, setUser] = useState<any | null>(null);
-
-  useEffect(() => {
-    const session = getSessionCSR();
-    setIsAuthenticated(session.isLoggedIn);
-    // setUser(session.user);
-    console.log(user);
-    console.log("HEADER Session:", session);
-  }, []);
-
+  const pathname = usePathname();
   return (
     <header
       className={cn(
@@ -52,23 +38,14 @@ export const Header = () => {
           >
             <Link href="/create-event">Create Event</Link>
           </Button>
-          {isAuthenticated === null ? (
+          {user ? (
             <Button
               className={cn(
                 "bg-muted rounded-full text-xs self-center px-8 border-none text-[#7858C3]",
               )}
               variant={"outline"}
             >
-              <span>Loading...</span>
-            </Button>
-          ) : isAuthenticated ? (
-            <Button
-              className={cn(
-                "bg-muted rounded-full text-xs self-center px-8 border-none text-[#7858C3]",
-              )}
-              variant={"outline"}
-            >
-              <Link href="/profile">{user?.name ? user.name : "Profile"}</Link>
+              <Link href="/profile">{user?.name || "Profile"}</Link>
             </Button>
           ) : (
             <Button

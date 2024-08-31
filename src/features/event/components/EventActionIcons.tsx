@@ -1,11 +1,10 @@
 import BookingIcon from "@/components/icons/BookingIcon";
 import GoingIcon from "@/components/icons/GoingIncon";
 import SendIcon from "@/components/icons/SendIcon";
+import { useSession } from "@/contexts/SessionProvider";
 import AuthModal from "@/features/auth/components/AuthModal";
-import { useAuthStore } from "@/store/useAuthStore";
 import { EventType } from "@/types/EventType";
 import React, { useEffect, useState } from "react";
-import { isUserLoggedInCSR } from "../eventActions";
 
 type EventActionIconsProps = {
   event?: EventType;
@@ -16,11 +15,9 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
   event,
   className = "",
 }) => {
+  const { token, user } = useSession();
   const [goingStatus, setGoingStatus] = useState<Record<string, boolean>>({});
   const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
-  const token = isUserLoggedInCSR();
-  const user = useAuthStore((state) => state.user);
-
   useEffect(() => {
     if (!event) return;
     const checkIfGoing = async () => {
@@ -52,31 +49,34 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
 
   const handleGoing = async () => {
     if (!event || !token) {
+      console.log("Not logged in");
       setIsAuthModalOpen(true);
       return;
-    }
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/users/attendEventConfm`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+    } else {
+      try {
+        console.log("Going", goingStatus);
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/users/attendEventConfm`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ eventId: event._id, userId: user?._id }),
           },
-          body: JSON.stringify({ eventId: event._id, userId: user?._id }),
-        },
-      );
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        );
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        setGoingStatus((prevStatus) => ({
+          ...prevStatus,
+          [event._id]: !goingStatus[event._id],
+        }));
+      } catch (error) {
+        console.error("Error marking event as going:", error);
+        alert("Failed to mark as going. Please try again.");
       }
-      setGoingStatus((prevStatus) => ({
-        ...prevStatus,
-        [event._id]: !goingStatus[event._id],
-      }));
-    } catch (error) {
-      console.error("Error marking event as going:", error);
-      alert("Failed to mark as going. Please try again.");
     }
   };
 
