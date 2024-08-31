@@ -3,6 +3,7 @@ import GoingIcon from "@/components/icons/GoingIncon";
 import SendIcon from "@/components/icons/SendIcon";
 import { useSession } from "@/contexts/SessionProvider";
 import AuthModal from "@/features/auth/components/AuthModal";
+import { cn } from "@/lib/utils";
 import { EventType } from "@/types/EventType";
 import React, { useEffect, useState } from "react";
 
@@ -20,6 +21,7 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
   const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
   useEffect(() => {
     if (!event) return;
+    console.log(event);
     const checkIfGoing = async () => {
       try {
         const response = await fetch(
@@ -109,7 +111,9 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
   return (
     <div className={`flex gap-2 ${className}`}>
       <button onClick={handleGoing}>
-        <GoingIcon />
+        <GoingIcon
+          className={cn("bg-red-500", goingStatus ? "text-green-500" : "")}
+        />
       </button>
       <button onClick={handleBooking}>
         <BookingIcon />

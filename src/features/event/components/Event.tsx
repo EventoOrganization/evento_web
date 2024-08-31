@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import Image from "next/image";
-import { useState } from "react";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import EventActionIcons from "./EventActionIcons";
 
@@ -20,10 +19,10 @@ const Event = ({
   event?: any;
   isModal?: boolean;
 }) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-  };
+  // const [isModalOpen, setIsModalOpen] = useState(false);
+  // const handleCloseModal = () => {
+  //   setIsModalOpen(false);
+  // };
 
   const renderDate = () => {
     const startDate = event?.details?.date;
@@ -77,9 +76,9 @@ const Event = ({
           "bg-white border shadow rounded p-4 w-full flex flex-col h-fit gap-4",
           className,
         )}
-        onClick={() => {
-          if (!isModal) setIsModalOpen(true);
-        }}
+        // onClick={() => {
+        //   if (!isModal) setIsModalOpen(true);
+        // }}
       >
         <div className="flex items-center justify-between">
           <div className="flex items-center">
