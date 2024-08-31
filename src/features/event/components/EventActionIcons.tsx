@@ -1,10 +1,15 @@
-import BookingIcon from "@/components/icons/BookingIcon";
-import GoingIcon from "@/components/icons/GoingIncon";
-import SendIcon from "@/components/icons/SendIcon";
 import { useSession } from "@/contexts/SessionProvider";
 import AuthModal from "@/features/auth/components/AuthModal";
 import { cn } from "@/lib/utils";
 import { EventType } from "@/types/EventType";
+import {
+  Bookmark,
+  BookmarkCheck,
+  Circle,
+  CircleCheck,
+  CircleCheckBig,
+  Send,
+} from "lucide-react";
 import React, { useEffect, useState } from "react";
 
 type EventActionIconsProps = {
@@ -18,13 +23,16 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
 }) => {
   const { token, user } = useSession();
   const [goingStatus, setGoingStatus] = useState<Record<string, boolean>>({});
+  const [favouriteStatus, setFavouriteStatus] = useState<
+    Record<string, boolean>
+  >({});
   const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
-  useEffect(() => {
-    if (!event) return;
-    console.log(event);
-    const checkIfGoing = async () => {
-      try {
-        const response = await fetch(
+  // check initial status
+  const refreshStatus = async () => {
+    if (!event || !token) return;
+    try {
+      const [attendingResponse, favouriteResponse] = await Promise.all([
+        fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/users/isAttending/${event._id}`,
           {
             credentials: "include",
@@ -32,31 +40,54 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
               Authorization: `Bearer ${token}`,
             },
           },
-        );
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-        setGoingStatus((prevStatus) => ({
-          ...prevStatus,
-          [event._id]: data.attending,
-        }));
-      } catch (error) {
-        console.error("Error checking if user is going:", error);
+        ),
+        fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/users/isFavourite/${event._id}`,
+          {
+            credentials: "include",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        ),
+      ]);
+
+      if (!attendingResponse.ok || !favouriteResponse.ok) {
+        throw new Error("Error fetching event status");
       }
-    };
 
-    checkIfGoing();
+      const attendingData = await attendingResponse.json();
+      const favouriteData = await favouriteResponse.json();
+
+      setGoingStatus((prevStatus) => ({
+        ...prevStatus,
+        [event._id]: attendingData.attending,
+      }));
+
+      setFavouriteStatus((prevStatus) => ({
+        ...prevStatus,
+        [event._id]: favouriteData.favourite,
+      }));
+    } catch (error) {
+      console.error("Error checking event status:", error);
+    }
+  };
+
+  useEffect(() => {
+    refreshStatus();
   }, [event, token]);
-
+  // handle going status
   const handleGoing = async () => {
-    if (!event || !token) {
+    if (!token) {
       console.log("Not logged in");
       setIsAuthModalOpen(true);
       return;
+    } else if (!event) {
+      console.log("No event");
+      return;
     } else {
       try {
-        console.log("Going", goingStatus);
+        console.log("Before toggle goingStatus:", goingStatus[event._id]);
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/users/attendEventConfm`,
           {
@@ -71,58 +102,144 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
+        // Directly update the event.isGoing here
         setGoingStatus((prevStatus) => ({
           ...prevStatus,
-          [event._id]: !goingStatus[event._id],
+          [event._id]: !prevStatus[event._id],
         }));
+        console.log("After toggle goingStatus:", !goingStatus[event._id]);
       } catch (error) {
         console.error("Error marking event as going:", error);
         alert("Failed to mark as going. Please try again.");
       }
     }
   };
-
-  const handleBooking = () => {
-    if (!event) return;
-
-    const startDate = event.details?.date
-      ? new Date(event.details.date).toISOString().replace(/-|:|\.\d+/g, "")
-      : "";
-
-    const endDate = event.details?.endDate
-      ? new Date(event.details.endDate).toISOString().replace(/-|:|\.\d+/g, "")
-      : "";
-    const title = encodeURIComponent(event.title);
-    const description = encodeURIComponent(event.details?.description || "");
-    const location = encodeURIComponent(event.details?.location || "");
-
-    const googleCalendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startDate}/${endDate}&details=${description}&location=${location}&sf=true&output=xml`;
-
-    window.open(googleCalendarUrl, "_blank");
+  // handle favourite status
+  const handleFavourite = async () => {
+    if (!token) {
+      console.log("Not logged in");
+      setIsAuthModalOpen(true);
+      return;
+    } else if (!event) {
+      console.log("No event");
+      return;
+    } else {
+      try {
+        console.log(
+          "Before toggle favouriteStatus:",
+          favouriteStatus[event._id],
+        );
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/users/eventFavourite`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ eventId: event._id }),
+          },
+        );
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        // event.isFavourite = !event.isFavourite;
+        setFavouriteStatus((prevStatus) => ({
+          ...prevStatus,
+          [event._id]: !prevStatus[event._id],
+        }));
+        console.log(
+          "After toggle favouriteStatus:",
+          !favouriteStatus[event._id],
+        );
+      } catch (error) {
+        console.error("Error marking event as favourite:", error);
+        alert("Failed to mark as favourite. Please try again.");
+      }
+    }
   };
 
   const handleSend = () => {
-    if (!event) return;
-    alert("Send action for event:");
-    console.log(event);
-    // Add your logic here
+    handleNativeShare();
+  };
+
+  const handleNativeShare = () => {
+    if (navigator.share) {
+      navigator
+        .share({
+          title: "Check out this event",
+          text: "Check out this event I found!",
+          url: "https://localhost:3000/event/" + event?._id,
+        })
+        .then(() => console.log("Successful share"))
+        .catch((error) => console.log("Error sharing", error));
+    } else {
+      console.log("Web Share API is not supported in this browser.");
+    }
   };
 
   return (
     <div className={`flex gap-2 ${className}`}>
-      <button onClick={handleGoing}>
-        <GoingIcon
-          className={cn("bg-red-500", goingStatus ? "text-green-500" : "")}
+      <button
+        onClick={handleGoing}
+        className="relative flex items-center justify-center w-10 h-10"
+      >
+        {event && !goingStatus[event?._id] ? (
+          <CircleCheck
+            strokeWidth={1.5}
+            className={cn("text-eventoPurpleLight w-full h-full")}
+          />
+        ) : (
+          <CircleCheckBig
+            strokeWidth={1.5}
+            className={cn(
+              "text-white bg-eventoPurpleLight rounded-full w-full h-full",
+            )}
+          />
+        )}
+      </button>
+      <button
+        onClick={handleFavourite}
+        className="relative flex items-center justify-center w-10 h-10"
+      >
+        {event && favouriteStatus[event?._id] ? (
+          <BookmarkCheck className="z-10 text-white" />
+        ) : (
+          <Bookmark className="text-eventoPurpleLight" />
+        )}
+        <Circle
+          strokeWidth={1.5}
+          className={cn(
+            "absolute inset-0 text-eventoPurpleLight rounded-full w-full h-full",
+            {
+              "bg-eventoPurpleLight text-white":
+                event && favouriteStatus[event?._id],
+            },
+          )}
         />
       </button>
-      <button onClick={handleBooking}>
-        <BookingIcon />
-      </button>
-      <button onClick={handleSend}>
-        <SendIcon />
+      <button
+        onClick={handleSend}
+        className="relative flex items-center justify-center w-10 h-10"
+      >
+        <Send
+          strokeWidth={2}
+          strokeLinejoin="round"
+          className="translate-y-[1px] -translate-x-[1px] text-eventoPurpleLight"
+        />
+        <Circle
+          strokeWidth={1.5}
+          className="absolute inset-0 text-eventoPurpleLight w-full h-full"
+        />
       </button>
       {isAuthModalOpen && (
-        <AuthModal onAuthSuccess={() => setIsAuthModalOpen(false)} />
+        <AuthModal
+          onClose={() => setIsAuthModalOpen(false)}
+          onAuthSuccess={() => {
+            setIsAuthModalOpen(false);
+            refreshStatus();
+          }}
+        />
       )}
     </div>
   );

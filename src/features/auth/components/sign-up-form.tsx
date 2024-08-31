@@ -8,7 +8,6 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/utils";
 import { signUpSchema } from "@/lib/zod";
 import { useAuthStore } from "@/store/useAuthStore";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -21,9 +20,11 @@ import { z } from "zod";
 const SignUpForm = ({
   onAuthSuccess = () => {},
   shouldRedirect = true,
+  onSignInClick,
 }: {
   onAuthSuccess?: () => void;
   shouldRedirect?: boolean;
+  onSignInClick?: () => void;
 }) => {
   const [isFetching, setIsFetching] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -118,13 +119,13 @@ const SignUpForm = ({
     <FormProvider {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="sm:bg-accent sm:border sm:shadow justify-between flex flex-col rounded-md p-4 h-full sm:h-auto  max-w-[400px] w-full mx-auto"
+        className=" justify-between flex flex-col rounded-md p-4 h-full sm:h-auto  max-w-[400px] w-full mx-auto"
       >
         <div className="justify-center flex flex-col gap-4">
           <div>
-            <h2 className={cn("sm:text-center text-xl font-semibold")}>
+            {/* <h2 className={cn("sm:text-center text-xl font-semibold")}>
               Sign Up
-            </h2>
+            </h2> */}
           </div>
           <FormField
             control={form.control}
@@ -204,14 +205,21 @@ const SignUpForm = ({
           </Button>
         </div>
         <div className="mt-4 text-center w-full text-xs">
-          {shouldRedirect && (
-            <p className="text-sm sm:text-muted-foreground w-full flex justify-center sm:justify-between gap-2">
-              Already have an account?
+          <p className="text-sm sm:text-muted-foreground w-full flex justify-center sm:justify-between gap-2">
+            Already have an account?
+            {shouldRedirect ? (
               <Link href={`/signin`} className="underline text-eventoPurple">
                 Sign In
               </Link>
-            </p>
-          )}
+            ) : (
+              <span
+                className="underline text-eventoPurple"
+                onClick={onSignInClick}
+              >
+                Sign In
+              </span>
+            )}
+          </p>
         </div>
       </form>
     </FormProvider>

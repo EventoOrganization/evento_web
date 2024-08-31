@@ -6,24 +6,27 @@ import TruncatedText from "@/components/TruncatedText";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
+import { SquareArrowOutUpRightIcon } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
+import { useState } from "react";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import EventActionIcons from "./EventActionIcons";
 
 const Event = ({
   className,
   event,
-  isModal,
+  // isModal,
 }: {
   className?: string;
   event?: any;
-  isModal?: boolean;
+  // isModal?: boolean;
 }) => {
   // const [isModalOpen, setIsModalOpen] = useState(false);
   // const handleCloseModal = () => {
   //   setIsModalOpen(false);
   // };
-
+  const [isHovered, setIsHovered] = useState(false);
   const renderDate = () => {
     const startDate = event?.details?.date;
     const endDate = event?.details?.endDate;
@@ -73,12 +76,14 @@ const Event = ({
     <>
       <div
         className={cn(
-          "bg-white border shadow rounded p-4 w-full flex flex-col h-fit gap-4",
+          "bg-white border shadow rounded p-4 w-full flex flex-col h-fit gap-4 hover:shadow-xl hover:bg-slate-50 cursor-pointer relative",
           className,
         )}
         // onClick={() => {
         //   if (!isModal) setIsModalOpen(true);
         // }}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
       >
         <div className="flex items-center justify-between">
           <div className="flex items-center">
@@ -178,6 +183,14 @@ const Event = ({
           </div>
           <EventActionIcons event={event} />
         </div>
+        {isHovered && (
+          <Link
+            href={`/event/${event?._id}`}
+            className="absolute top-0 right-0 bg-evento-gradient text-white border shadow-lg rounded p-2  z-10"
+          >
+            <SquareArrowOutUpRightIcon />
+          </Link>
+        )}
       </div>
       {/* <EventModal
         event={event}

@@ -1,5 +1,5 @@
 "use client";
-import { useAuthStore } from "@/store/useAuthStore";
+import { useSession } from "@/contexts/SessionProvider";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -11,8 +11,8 @@ interface Friend {
   status: string;
 }
 const AvatarStack = ({ eventId }: { eventId: string }) => {
-  const token = useAuthStore((state) => state.user?.token);
   const [friends, setFriends] = useState<Friend[]>([]);
+  const { token } = useSession();
   const pathname = usePathname();
   useEffect(() => {
     if (pathname === "/create-event") return;

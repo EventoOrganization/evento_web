@@ -8,9 +8,12 @@ import VerifyCodeForm from "@/features/auth/components/verify-code-form";
 
 import Link from "next/link";
 import { useParams } from "next/navigation";
+
 const FormPage = () => {
   const { auth: form } = useParams();
   let FormComponent;
+  let formProps = {};
+
   switch (form) {
     case "forgot-password":
       FormComponent = ForgotForm;
@@ -20,9 +23,21 @@ const FormPage = () => {
       break;
     case "signin":
       FormComponent = SignInForm;
+      formProps = {
+        onSignUpClick: () => {},
+        shouldRedirect: true,
+        onAuthSuccess: () => {},
+        className: "",
+      };
       break;
     case "signup":
       FormComponent = SignUpForm;
+      formProps = {
+        onSignInClick: () => {},
+        shouldRedirect: true,
+        onAuthSuccess: () => {},
+        className: "",
+      };
       break;
     case "verify-reset-code":
       FormComponent = VerifyCodeForm;
@@ -40,7 +55,7 @@ const FormPage = () => {
 
   return (
     <>
-      <FormComponent />
+      <FormComponent {...formProps} />
     </>
   );
 };

@@ -27,9 +27,13 @@ const extendedSignInSchema = signInSchema.extend({
 const SignInForm = ({
   onAuthSuccess = () => {},
   shouldRedirect = true,
+  className,
+  onSignUpClick,
 }: {
   onAuthSuccess?: () => void;
   shouldRedirect?: boolean;
+  className?: string;
+  onSignUpClick?: () => void;
 }) => {
   const [error, setError] = useState<string | null>(null);
   const [isFetching, setIsFetching] = useState(false);
@@ -45,7 +49,7 @@ const SignInForm = ({
   const router = useRouter();
   const setUser = useAuthStore((state) => state.setUser);
   const formStyle =
-    "sm:bg-accent sm:border sm:shadow justify-between flex flex-col rounded-md p-4 h-full sm:h-auto max-w-[400px] w-full mx-auto";
+    "justify-between flex flex-col rounded-md p-4 h-full sm:h-auto max-w-[400px] w-full mx-auto";
 
   const onSubmit: SubmitHandler<z.infer<typeof extendedSignInSchema>> = async (
     data,
@@ -106,12 +110,15 @@ const SignInForm = ({
 
   return (
     <FormProvider {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className={formStyle}>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className={cn(formStyle, className)}
+      >
         <div className="justify-center flex flex-col gap-4">
           <div>
-            <h2 className={cn("sm:text-center text-xl font-semibold")}>
+            {/* <h2 className={cn("sm:text-center text-xl font-semibold")}>
               Sign In
-            </h2>
+            </h2> */}
           </div>
           <FormField
             control={form.control}
@@ -198,14 +205,21 @@ const SignInForm = ({
           </div>
         </div>
         <div className="mt-4 text-justify text-xs w-full ">
-          {shouldRedirect && (
-            <p className="text-sm sm:text-muted-foreground w-full flex justify-center sm:justify-between gap-2">
-              Don&apos;t have an account?
+          <p className="text-sm sm:text-muted-foreground w-full flex justify-center sm:justify-between gap-2">
+            Don&apos;t have an account?
+            {shouldRedirect ? (
               <Link href={`/signup`} className="underline text-eventoPurple">
                 Sign Up
               </Link>
-            </p>
-          )}
+            ) : (
+              <span
+                className="underline text-eventoPurple"
+                onClick={onSignUpClick}
+              >
+                Sign Up
+              </span>
+            )}
+          </p>
         </div>
       </form>
     </FormProvider>

@@ -81,7 +81,9 @@ const EventModalValidation = ({ onSubmit }: { onSubmit: () => void }) => {
         </DialogContent>
       </Dialog>
 
-      {showAuthModal && <AuthModal onAuthSuccess={handleAuthSuccess} />}
+      {showAuthModal && (
+        <AuthModal onAuthSuccess={handleAuthSuccess} onClose={closeModal} />
+      )}
     </>
   );
 };

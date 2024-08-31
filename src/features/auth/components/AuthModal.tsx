@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -9,7 +8,13 @@ import { useState } from "react";
 import SignInForm from "./sign-in-form";
 import SignUpForm from "./sign-up-form";
 
-const AuthModal = ({ onAuthSuccess }: { onAuthSuccess: () => void }) => {
+const AuthModal = ({
+  onAuthSuccess,
+  onClose,
+}: {
+  onAuthSuccess: () => void;
+  onClose: () => void;
+}) => {
   const [isModalOpen, setIsModalOpen] = useState(true);
   const [isSignUp, setIsSignUp] = useState(false);
 
@@ -30,31 +35,29 @@ const AuthModal = ({ onAuthSuccess }: { onAuthSuccess: () => void }) => {
       onOpenChange={(open) => {
         console.log("Auth modal open state changed:", open);
         setIsModalOpen(open);
+        if (!open) onClose();
       }}
     >
-      <DialogContent>
+      <DialogContent className=" rounded-xl">
         <DialogHeader>
           <DialogTitle>
             {isSignUp ? "Sign Up" : "Sign In"} to Continue
           </DialogTitle>
         </DialogHeader>
         {isSignUp ? (
-          <SignUpForm onAuthSuccess={handleAuthSuccess} />
+          <SignUpForm
+            onAuthSuccess={handleAuthSuccess}
+            onSignInClick={toggleSignUp}
+            shouldRedirect={false}
+          />
         ) : (
           <SignInForm
             onAuthSuccess={handleAuthSuccess}
             shouldRedirect={false}
+            className=""
+            onSignUpClick={toggleSignUp}
           />
         )}
-        <div className="mt-4 flex justify-end">
-          <Button
-            type="button"
-            className="bg-blue-500 text-white rounded-full"
-            onClick={toggleSignUp}
-          >
-            {isSignUp ? "Switch to Sign In" : "Switch to Sign Up"}
-          </Button>
-        </div>
       </DialogContent>
     </Dialog>
   );
