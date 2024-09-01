@@ -2,14 +2,14 @@ import Section from "@/components/layout/Section";
 import CreateEventPreview from "@/features/event/components/CreateEventPreview";
 
 // Définissez le type attendu pour la réponse de `/users/userListWithFollowingStatus`
-type UsersWithStatusResponse = {
-  _id: string;
-  firstName: string;
-  lastName: string;
-  status: string;
-  name: string;
-  email: string;
-}[];
+// type UsersWithStatusResponse = {
+//   _id: string;
+//   firstName: string;
+//   lastName: string;
+//   status: string;
+//   name: string;
+//   email: string;
+// }[];
 
 const CreateEventPage = async () => {
   // let mappedOptions: OptionType[] = [];
