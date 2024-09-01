@@ -170,21 +170,21 @@ const UserProfile = ({
         sectionStyle="flex flex-col items-start gap-4 p-0 lg: max-w-7xl"
         noEventsMessage="There are no events at the moment. Explore Evento and create or host an event easily."
       />
-      {!id && (
+      <EventSection
+        title="Events Hosting"
+        events={hostingEvents}
+        sectionStyle="flex flex-col items-start gap-4 p-0 lg: max-w-7xl"
+        noEventsMessage="There are no events at the moment. Explore Evento and create or host an event easily."
+      />
+      {pastEvents && pastEvents?.length > 0 && (
         <EventSection
-          title="Events Hosting"
-          events={hostingEvents}
-          sectionStyle="flex flex-col items-start gap-4 p-0 lg: max-w-7xl"
+          title="Past Events Attended"
+          events={pastEvents}
+          sectionStyle="flex flex-col items-start gap-4 p-0  lg: max-w-7xl"
           noEventsMessage="There are no events at the moment. Explore Evento and create or host an event easily."
         />
       )}
-      <EventSection
-        title="Past Events Attended"
-        events={pastEvents}
-        sectionStyle="flex flex-col items-start gap-4 p-0  lg: max-w-7xl"
-        noEventsMessage="There are no events at the moment. Explore Evento and create or host an event easily."
-      />
-      {!id && (
+      {pastHostedEvents && pastHostedEvents?.length > 0 && (
         <EventSection
           title="Past Events Hosted"
           events={pastHostedEvents}
