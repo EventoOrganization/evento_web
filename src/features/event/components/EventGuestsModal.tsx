@@ -2,6 +2,7 @@ import { useEventStore } from "@/store/useEventStore";
 import { UserType } from "@/types/UserType";
 import { useState } from "react";
 import AddUserModal from "./AddUserModal";
+import GuestsAllowFriendCheckbox from "./GuestsAllowFriendCheckbox";
 
 const EventGuestsModal = ({ allUsers }: { allUsers: UserType[] }) => {
   const eventStore = useEventStore();
@@ -20,14 +21,16 @@ const EventGuestsModal = ({ allUsers }: { allUsers: UserType[] }) => {
   };
 
   return (
-    <AddUserModal
-      title="Add Guests"
-      selectedUsers={guests}
-      allUsers={allUsers}
-      onSave={handleSave}
-      onAddUser={addGuest}
-      onRemoveUser={removeGuest}
-    />
+    <>
+      <AddUserModal
+        title="Add Guests"
+        selectedUsers={guests}
+        allUsers={allUsers}
+        onSave={handleSave}
+        onAddUser={addGuest}
+        onRemoveUser={removeGuest}
+      />
+    </>
   );
 };
 

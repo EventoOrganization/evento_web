@@ -16,7 +16,7 @@ const EventDateInput = () => {
   const [timeSlots, setTimeSlots] = useState(
     eventStore.timeSlots.length > 0
       ? eventStore.timeSlots
-      : [{ date: "", startTime: "", endTime: "" }],
+      : [{ date: "", startTime: "08:00", endTime: "18:00" }],
   );
   const [useMultipleTimes, setUseMultipleTimes] = useState(false);
 
@@ -50,8 +50,8 @@ const EventDateInput = () => {
       const dateRange = generateDateRange(eventStore.date, eventStore.endDate);
       const slots = dateRange.map((date) => ({
         date,
-        startTime: eventStore.startTime || "",
-        endTime: eventStore.endTime || "",
+        startTime: "08:00", // Default start time
+        endTime: "18:00", // Default end time
       }));
       setTimeSlots(slots);
       eventStore.setEventField("timeSlots", slots);
@@ -59,8 +59,8 @@ const EventDateInput = () => {
       const slots = [
         {
           date: eventStore.date || "",
-          startTime: eventStore.startTime || "",
-          endTime: eventStore.endTime || "",
+          startTime: eventStore.startTime || "08:00", // Default start time
+          endTime: eventStore.endTime || "18:00", // Default end time
         },
       ];
       setTimeSlots(slots);
@@ -89,6 +89,8 @@ const EventDateInput = () => {
                       "timeSlots",
                       {
                         date: e.target.value,
+                        startTime: "08:00", // Default start time
+                        endTime: "18:00", // Default end time
                       },
                       0,
                     );
@@ -146,7 +148,7 @@ const EventDateInput = () => {
             <Input
               type="time"
               {...register("startTime")}
-              value={eventStore.startTime || ""}
+              value={eventStore.startTime || "08:00"} // Default start time
               placeholder="Start Time"
               className="input"
               onChange={(e) => {
@@ -163,7 +165,7 @@ const EventDateInput = () => {
             <Input
               type="time"
               {...register("endTime")}
-              value={eventStore.endTime || ""}
+              value={eventStore.endTime || "18:00"} // Default end time
               placeholder="End Time"
               className="input"
               onChange={(e) => {
@@ -194,7 +196,7 @@ const EventDateInput = () => {
               <Input
                 type="time"
                 {...register(`timeSlots.${index}.startTime`)}
-                value={slot.startTime || ""}
+                value={slot.startTime || "08:00"} // Default start time
                 placeholder="Start Time"
                 className="input"
                 onChange={(e) => {
@@ -212,7 +214,7 @@ const EventDateInput = () => {
               <Input
                 type="time"
                 {...register(`timeSlots.${index}.endTime`)}
-                value={slot.endTime || ""}
+                value={slot.endTime || "18:00"} // Default end time
                 placeholder="End Time"
                 className="input"
                 onChange={(e) => {

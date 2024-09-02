@@ -10,6 +10,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import Image from "next/image";
 import { useState } from "react";
+import GuestsAllowFriendCheckbox from "./GuestsAllowFriendCheckbox";
 
 interface User {
   _id: string;
@@ -150,9 +151,10 @@ const AddUserModal = ({
             </ScrollArea>
           </div>
         </div>
-        <div className="mt-4 flex justify-end">
+        <div className="mt-4 flex items-center justify-between">
+          <GuestsAllowFriendCheckbox />
           <Button
-            className="bg-evento-gradient-button border shadow"
+            className="bg-evento-gradient-button border shadow mt-2"
             onClick={() => onSave(selectedUsers.map((user) => user._id))}
           >
             Save

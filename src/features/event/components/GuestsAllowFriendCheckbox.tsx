@@ -1,17 +1,19 @@
-import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from "@/components/ui/button"; // Import the Button component
 import {
   FormControl,
   FormField,
   FormItem,
   FormLabel,
 } from "@/components/ui/form";
+import { cn } from "@/lib/utils";
 import { useEventStore } from "@/store/useEventStore";
 
-const GuestsAllowFriendCheckbox = () => {
+const GuestsAllowFriendButton = () => {
   const eventStore = useEventStore();
 
-  const handleCheckboxChange = (checked: boolean) => {
-    eventStore.setEventField("guestsAllowFriend", checked);
+  const handleButtonClick = () => {
+    const newValue = !eventStore.guestsAllowFriend;
+    eventStore.setEventField("guestsAllowFriend", newValue);
   };
 
   return (
@@ -19,13 +21,21 @@ const GuestsAllowFriendCheckbox = () => {
       name="guestsAllowFriend"
       render={({ field }) => (
         <FormItem>
-          <FormLabel>Allow Guests to Invite Friends</FormLabel>
+          <FormLabel className="mr-2">Allow Guests to Invite Friends</FormLabel>
           <FormControl>
-            <Checkbox
+            <Button
               {...field}
-              checked={eventStore.guestsAllowFriend || false}
-              onCheckedChange={handleCheckboxChange}
-            />
+              variant={"outline"}
+              onClick={handleButtonClick}
+              className={cn(
+                "m-0",
+                eventStore.guestsAllowFriend
+                  ? "bg-evento-gradient-button text-white hover:text-white"
+                  : "bg-gray-200 text-black",
+              )}
+            >
+              {eventStore.guestsAllowFriend ? "Enabled" : "Disabled"}
+            </Button>
           </FormControl>
         </FormItem>
       )}
@@ -33,4 +43,4 @@ const GuestsAllowFriendCheckbox = () => {
   );
 };
 
-export default GuestsAllowFriendCheckbox;
+export default GuestsAllowFriendButton;

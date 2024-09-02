@@ -1,12 +1,5 @@
 "use client";
 
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { useSession } from "@/contexts/SessionProvider";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/store/useAuthStore";
@@ -28,7 +21,6 @@ import EventNameInput from "./EventNameInput";
 import QuestionInput from "./EventQuestionsInput";
 import EventTitleInput from "./EventTitleInput";
 import EventTypeSelect from "./EventTypeSelect";
-import GuestsAllowFriendCheckbox from "./GuestsAllowFriendCheckbox";
 const useSyncFormWithStore = () => {
   const { reset, getValues } = useFormContext();
   const eventStore = useEventStore();
@@ -211,7 +203,7 @@ const EventForm = ({
         {/* <OpenStreetMapGeocoding /> */}
         <EventDescriptionArea />
         <EventInterestSelect interests={interests as OptionType[]} />
-        <FormField
+        {/* <FormField
           name="images"
           control={form.control}
           render={({ field }) => (
@@ -253,7 +245,8 @@ const EventForm = ({
               </FormControl>
             </FormItem>
           )}
-        />
+        /> */}
+        <h4 className="text-eventoPurpleLight">More Options</h4>
         <div>
           <EventGuestsModal allUsers={allUsers as UserType[]} />
           <EventCoHostsModal allUsers={allUsers as UserType[]} />
@@ -261,7 +254,7 @@ const EventForm = ({
         {/* <EventQuestionsInput /> */}
         <QuestionInput />
         {/* <EventAdditionalFieldsInput /> */}
-        <GuestsAllowFriendCheckbox />
+
         <EnableChatCheckbox />
         <EventModalValidation onSubmit={form.handleSubmit(onSubmit)} />
       </form>

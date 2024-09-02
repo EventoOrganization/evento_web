@@ -1,5 +1,6 @@
 "use client";
 
+import MapPinIcon2 from "@/components/icons/MappPinIcon2";
 import { Button } from "@/components/ui/button";
 import { useSession } from "@/contexts/SessionProvider";
 import { cn } from "@/lib/utils";
@@ -92,32 +93,38 @@ const CreateEventPreview = ({ className }: { className?: string }) => {
           <CreateEventCarousel />
         </div>
         <div className="flex flex-col gap-2">
-          <h3>{eventStore.title}</h3>
+          <h3>{eventStore.title ? eventStore.title : "Event Title"}</h3>
           <ul className="flex gap-2 flex-wrap">
-            {/* {eventStore.interestId.map((interest: any, index: number) => (
-              <li
-                key={index}
-                className="bg-eventoPurpleLight/30 w-fit px-2 py-1 rounded-lg text-sm"
-              >
-                {interest.name}
-              </li>
-            ))} */}
+            {eventStore.interests &&
+              eventStore.interests.map((interest: any, index: number) => (
+                <li
+                  key={index}
+                  className="bg-eventoPurpleLight/30 w-fit px-2 py-1 rounded-lg text-sm"
+                >
+                  {interest.label}
+                </li>
+              ))}
           </ul>
           <div className="flex justify-between items-center">
             <Button
               variant={"ghost"}
               className="flex gap-2 pl-0 max-w-xs truncate"
+              onClick={() =>
+                alert(
+                  "In real event it will open google map with this location",
+                )
+              }
             >
+              <MapPinIcon2 className="w-5 h-5" />
               <span className="truncate">{eventStore.location}</span>
             </Button>
             <p className="whitespace-nowrap">
-              {eventStore.startTime} - {eventStore.endTime}
+              {eventStore.startTime ? eventStore.startTime : "08:00"} -{" "}
+              {eventStore.endTime ? eventStore.endTime : "18:00"}
             </p>
           </div>
           {/* Placeholder for TruncatedText */}
-          <div className="bg-gray-200 w-full h-32 p-4 rounded">
-            {eventStore.description}
-          </div>
+          <div className="w-fullp-4 rounded">{eventStore.description}</div>
         </div>
         <div className="flex justify-between items-center">
           {/* Placeholder for AvatarStack */}
