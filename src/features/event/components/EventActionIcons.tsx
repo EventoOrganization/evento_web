@@ -29,6 +29,7 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
   const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
   // check initial status
   const refreshStatus = async () => {
+    // console.log("refreshing status", token);
     if (!event || !token) return;
     try {
       const [attendingResponse, favouriteResponse] = await Promise.all([

@@ -1,13 +1,12 @@
 // src/contexts/DiscoverContext.tsx
 "use client";
 import { EventType, InterestType } from "@/types/EventType";
-import { UserType } from "@/types/UserType";
 import { createContext, useContext } from "react";
 
 type DiscoverContextType = {
   interests: InterestType[];
   events: EventType[];
-  users: UserType[];
+  // users: UserType[];
 };
 
 const DiscoverContext = createContext<DiscoverContextType | undefined>(

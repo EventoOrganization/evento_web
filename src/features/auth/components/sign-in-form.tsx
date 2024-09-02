@@ -9,6 +9,7 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useSession } from "@/contexts/SessionProvider";
 import { cn } from "@/lib/utils";
 import { signInSchema } from "@/lib/zod";
 import { useAuthStore } from "@/store/useAuthStore";
@@ -48,6 +49,7 @@ const SignInForm = ({
 
   const router = useRouter();
   const setUser = useAuthStore((state) => state.setUser);
+  const { startSession } = useSession();
   const formStyle =
     "justify-between flex flex-col rounded-md p-4 h-full sm:h-auto max-w-[400px] w-full mx-auto";
 
@@ -90,6 +92,7 @@ const SignInForm = ({
 
       // Set user data in the store
       setUser(loginUserData);
+      startSession(loginUserData, token);
       console.log("after sign in", loginUserData);
 
       onAuthSuccess();

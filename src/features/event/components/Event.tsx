@@ -6,7 +6,7 @@ import TruncatedText from "@/components/TruncatedText";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
-import { SquareArrowOutUpRightIcon } from "lucide-react";
+import { Loader, SquareArrowOutUpRightIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
@@ -28,6 +28,7 @@ const Event = ({
   // };
   const [isHovered, setIsHovered] = useState(false);
   const renderDate = () => {
+    if (!event || !event.details) return <Loader />;
     const startDate = event?.details?.date;
     const endDate = event?.details?.endDate;
     const formatDate = (dateString: string) => {
@@ -43,28 +44,15 @@ const Event = ({
       !endDate ||
       new Date(endDate).getTime() === new Date(startDate).getTime()
     ) {
-      return `le ${formatDate(startDate)}`; // Single date
+      return `le ${formatDate(startDate)}`;
     } else {
       const startDay = new Date(startDate).getDate();
       const endDay = new Date(endDate).getDate();
-      const startDateObj = new Date(startDate);
-      const endDateObj = new Date(endDate);
-
-      const monthYear = startDateObj.toLocaleDateString("fr-FR", {
+      const monthYear = new Date(startDate).toLocaleDateString("fr-FR", {
         month: "long",
         year: "numeric",
       });
-
-      // If the event ends at exactly midnight, don't include the end date
-      if (
-        endDateObj.getHours() === 0 &&
-        endDateObj.getMinutes() === 0 &&
-        endDateObj.getSeconds() === 0
-      ) {
-        return `du ${startDay} au ${endDay - 1} ${monthYear}`;
-      } else {
-        return `du ${startDay} au ${endDay} ${monthYear}`;
-      }
+      return `From ${startDay} to ${endDay} ${monthYear}`;
     }
   };
 

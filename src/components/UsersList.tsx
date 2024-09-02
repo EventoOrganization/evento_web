@@ -8,12 +8,19 @@ import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import Image from "next/image";
 import { useState } from "react";
 import { Button } from "./ui/button";
-const UserPrevirew = ({ user }: { user?: UserType }) => {
-  const { token } = useSession();
+const UserPrevirew = ({
+  user,
+  fetchUsers,
+}: {
+  user?: UserType;
+  fetchUsers?: () => void;
+}) => {
+  const { token, isAuthenticated } = useSession();
   const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
-  const [isFollowing, setIsFollowing] = useState<boolean>(
-    user?.status === "follow-each-other" || user?.status === "following",
+  const [isFollowing, setIsFollowing] = useState<boolean | null>(
+    user?.status === "following" ? true : false,
   );
+
   const handleFollow = async () => {
     if (!token) {
       setIsAuthModalOpen(true);
@@ -33,9 +40,12 @@ const UserPrevirew = ({ user }: { user?: UserType }) => {
       );
 
       if (response.ok) {
+        setIsFollowing((prevIsFollowing) => !prevIsFollowing);
         const data = await response.json();
         setIsFollowing(!isFollowing);
-        console.log(data.message);
+        console.log(data.message, data);
+        // Refresh the user list after following/unfollowing
+        if (fetchUsers) fetchUsers();
       } else {
         const errorData = await response.json();
         console.error("Error:", errorData.message);
@@ -44,10 +54,13 @@ const UserPrevirew = ({ user }: { user?: UserType }) => {
       console.error("An error occurred:", error);
     }
   };
+
   return (
     <>
       <span className="flex items-center gap-4">
-        {user?.profileImage ? (
+        {user?.profileImage &&
+        user?.profileImage.startsWith("http") &&
+        user?.profileImage ? (
           <Image
             src={user.profileImage}
             alt="user image"
@@ -70,16 +83,20 @@ const UserPrevirew = ({ user }: { user?: UserType }) => {
       </span>
       <Button
         variant={"outline"}
-        className={cn("bg-gray-200 text-black rounded-full px-5", {
+        className={cn("bg-gray-200 text-black rounded-lg px-5", {
           "bg-evento-gradient-button text-white": !isFollowing,
         })}
         onClick={handleFollow}
       >
         {isFollowing ? "Unfollow" : "Follow"}
       </Button>
+
       {isAuthModalOpen && (
         <AuthModal
-          onAuthSuccess={() => setIsAuthModalOpen(false)}
+          onAuthSuccess={() => {
+            setIsAuthModalOpen(false);
+            fetchUsers?.(); // Fetch the users again on successful authentication
+          }}
           onClose={() => setIsAuthModalOpen(false)}
         />
       )}

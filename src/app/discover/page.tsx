@@ -1,15 +1,17 @@
 "use client";
 import Section from "@/components/layout/Section";
 import LocationSelector from "@/components/map/LocationSelector";
-import Showcase from "@/components/Showcase";
 import { Input } from "@/components/ui/input";
+import UserPrevirew from "@/components/UsersList";
 import { useDiscoverContext } from "@/contexts/DiscoverContext";
+import { useSession } from "@/contexts/SessionProvider";
 import DateSelector from "@/features/discover/DateSelector";
 import TabSelector from "@/features/discover/TabSelector";
 import Event from "@/features/event/components/Event";
 import { cn } from "@/lib/utils";
 import { EventType, InterestType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
+import { fetchData } from "@/utils/fetchData";
 import { Label } from "@radix-ui/react-label";
 import { Search } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -21,7 +23,7 @@ interface Location {
 
 const DiscoverPage = () => {
   //Filters
-  const { interests, events, users } = useDiscoverContext();
+  const { interests, events } = useDiscoverContext();
   const [selectedInterests, setSelectedInterests] = useState<InterestType[]>(
     [],
   );
@@ -30,10 +32,11 @@ const DiscoverPage = () => {
   const [selectedTab, setSelectedTab] = useState("All");
   const [location, setLocation] = useState<Location | null>(null);
   const [distanceFilter, setDistanceFilter] = useState(10);
+  const [users, setUsers] = useState<UserType[]>([]);
   // displayedDatas
   const [filteredEvents, setFilteredEvents] = useState(events);
-  const [filteredUsers, setFilteredUsers] = useState(users);
-
+  const [filteredUsers, setFilteredUsers] = useState([] as UserType[]);
+  const { user: loggedUser } = useSession();
   const handleInterestToggle = (interest: InterestType) => {
     setSelectedInterests((prev) =>
       prev.some((i) => i._id === interest._id)
@@ -41,6 +44,35 @@ const DiscoverPage = () => {
         : [...prev, interest],
     );
   };
+  const fetchUsers = async () => {
+    const endPoint = loggedUser
+      ? `/users/followStatusForUsersYouFollow/${loggedUser?._id}`
+      : "/users/allUserListing";
+
+    try {
+      const response = await fetchData(endPoint);
+      if (loggedUser) {
+        const usersWithStatus = (
+          response as { user: UserType; status: string }[]
+        ).map((item) => ({
+          ...item.user,
+          status: item.status,
+        }));
+        setUsers(usersWithStatus);
+        console.log(usersWithStatus);
+      } else {
+        const result = response as { allUserListing: UserType[] };
+        setUsers(result.allUserListing);
+        console.log(result.allUserListing);
+      }
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchUsers();
+  }, [loggedUser]); // Re-fetch users when loggedUser changes
 
   useEffect(() => {
     const formattedDate = selectedDate ? selectedDate.toISOString() : "";
@@ -141,11 +173,16 @@ const DiscoverPage = () => {
               ))}
             </ul>
           </div>
-          <Showcase
-            users={filteredUsers}
-            className="flex-row flex-wrap"
-            itemClassName="w-full justify-between flex"
-          />
+          <div className="p-4">
+            <h4 className="text-purple-600 font-bold">Follow Suggestions</h4>
+            <ul className="space-y-4 py-4">
+              {filteredUsers.map((user) => (
+                <li key={user._id} className="flex justify-between">
+                  <UserPrevirew user={user} fetchUsers={fetchUsers} />
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </Section>
     </>
