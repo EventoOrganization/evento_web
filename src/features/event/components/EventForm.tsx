@@ -7,6 +7,7 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useSession } from "@/contexts/SessionProvider";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useEventStore } from "@/store/useEventStore";
@@ -73,8 +74,8 @@ const EventForm = ({
   // const [isFetching, setIsFetching] = useState(false);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const eventStore = useEventStore();
-  const user = useAuthStore((state) => state.user);
-
+  // const user = useAuthStore((state) => state.user);
+  const { user } = useSession();
   const form = useForm({
     defaultValues: {
       title: eventStore.title || "",
@@ -200,7 +201,7 @@ const EventForm = ({
         }}
       >
         <EventTitleInput />
-        <EventNameInput />
+        {!user?.name && <EventNameInput />}
         <div className="grid grid-cols-2 gap-4">
           <EventTypeSelect />
           <EventModeSelect />

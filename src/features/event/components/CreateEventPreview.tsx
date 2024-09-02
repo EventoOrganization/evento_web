@@ -1,11 +1,16 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { useSession } from "@/contexts/SessionProvider";
 import { cn } from "@/lib/utils";
 import { useEventStore } from "@/store/useEventStore";
-
+import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
+import Image from "next/image";
+import CreateEventCarousel from "./CreateEventCarousel";
 const CreateEventPreview = ({ className }: { className?: string }) => {
   const eventStore = useEventStore();
+  const { user } = useSession();
+  // console.log(user);
 
   const renderDate = () => {
     const startDate = eventStore.date;
@@ -46,7 +51,7 @@ const CreateEventPreview = ({ className }: { className?: string }) => {
       }
     }
   };
-  console.log(eventStore);
+  // console.log(eventStore);
 
   return (
     <>
@@ -58,9 +63,9 @@ const CreateEventPreview = ({ className }: { className?: string }) => {
       >
         <div className="flex items-center justify-between">
           <div className="flex items-center">
-            {/* {eventStore.user?.profileImage ? (
+            {user?.profileImage ? (
               <Image
-                src={eventStore.user.profileImage}
+                src={user.profileImage}
                 alt="user image"
                 width={500}
                 height={500}
@@ -74,20 +79,17 @@ const CreateEventPreview = ({ className }: { className?: string }) => {
                 />
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>
-            )} */}
-            <h4 className="ml-2">{eventStore.name || ""}</h4>
+            )}
+            <h4 className="ml-2">
+              {user && user.name ? user.name : eventStore.name || "Username"}
+            </h4>
           </div>
-          <span className="ml-4">{renderDate()}</span>
+          <span className="ml-4">
+            {eventStore.date ? renderDate() : "Date"}
+          </span>
         </div>
-        <div
-        // className={cn("", { "bg-evento-gradient": eventStore.images?.[0] })}
-        >
-          <div>
-            {/* Placeholder for RenderMedia */}
-            <div className="bg-gray-200 w-full h-64 flex items-center justify-center">
-              Media Placeholder
-            </div>
-          </div>
+        <div>
+          <CreateEventCarousel />
         </div>
         <div className="flex flex-col gap-2">
           <h3>{eventStore.title}</h3>

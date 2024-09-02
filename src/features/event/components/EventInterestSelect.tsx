@@ -13,7 +13,7 @@ import Select, { MultiValue, StylesConfig } from "react-select";
 const EventInterestSelect = ({ interests }: { interests: OptionType[] }) => {
   const eventStore = useEventStore();
   const options = interests;
-  console.log("Options:", options);
+  // console.log("Options:", options);
 
   const [selectedInterests, setSelectedInterests] = useState<
     MultiValue<OptionType>
