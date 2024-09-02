@@ -7,9 +7,10 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import GuestsAllowFriendCheckbox from "./GuestsAllowFriendCheckbox";
 
 interface User {
@@ -24,10 +25,9 @@ interface User {
 interface AddUserModalProps {
   title: string;
   allUsers: User[];
-  selectedUsers: User[];
+  selectedUsers: string[]; // Array of user IDs
   onSave: (selectedUsers: string[]) => void;
-  onAddUser: (user: User) => void;
-  onRemoveUser: (user: User) => void;
+  storeField: "guests" | "coHosts"; // Specify which field to update in the store
 }
 
 const AddUserModal = ({
@@ -35,22 +35,62 @@ const AddUserModal = ({
   title,
   selectedUsers,
   onSave,
-  onAddUser,
-  onRemoveUser,
+  storeField,
 }: AddUserModalProps) => {
-  const users = allUsers;
   const [isOpen, setIsOpen] = useState(false);
-  // console.log(allUsers, selectedUsers);
-  // Filter out selected users from the list of available users
-  const availableUsers = users.filter(
+  const [currentSelectedUsers, setCurrentSelectedUsers] = useState<User[]>([]);
+
+  useEffect(() => {
+    console.log("Selected Users:", selectedUsers);
+    console.log("All Users:", allUsers);
+
+    const initialSelectedUsers = allUsers.filter((user) =>
+      selectedUsers.includes(user._id),
+    );
+
+    console.log("Initial Selected Users:", initialSelectedUsers);
+
+    setCurrentSelectedUsers(initialSelectedUsers);
+  }, [selectedUsers, allUsers]);
+
+  const availableUsers = allUsers.filter(
     (user) =>
-      !selectedUsers.some((selectedUser) => selectedUser._id === user._id),
+      !currentSelectedUsers.some(
+        (selectedUser) => selectedUser._id === user._id,
+      ),
   );
+
+  const addUser = (user: User) => {
+    setCurrentSelectedUsers([...currentSelectedUsers, user]);
+  };
+
+  const removeUser = (user: User) => {
+    setCurrentSelectedUsers(
+      currentSelectedUsers.filter(
+        (selectedUser) => selectedUser._id !== user._id,
+      ),
+    );
+  };
+
+  const handleSave = () => {
+    onSave(currentSelectedUsers.map((user) => user._id));
+    setIsOpen(false);
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline">{title}</Button>
+        <Button
+          variant="outline"
+          className={cn({
+            "bg-evento-gradient text-white": currentSelectedUsers.length > 0,
+          })}
+        >
+          {title}
+          {currentSelectedUsers.length > 0
+            ? ` (${currentSelectedUsers.length})`
+            : ""}
+        </Button>
       </DialogTrigger>
       <DialogContent className=" bg-evento-gradient text-white w-[95%] rounded-lg border-none">
         <DialogHeader>
@@ -63,17 +103,14 @@ const AddUserModal = ({
               {" )"}
             </h3>
             <ScrollArea className="h-48 border rounded">
-              {Array.isArray(availableUsers) && availableUsers.length > 0 ? (
+              {availableUsers.length > 0 ? (
                 availableUsers.map((user) => (
                   <div
                     key={user._id}
                     className="p-2 flex items-center cursor-pointer hover:bg-muted/20 space-x-4"
-                    onClick={() => onAddUser(user)}
+                    onClick={() => addUser(user)}
                   >
-                    {user.profileImage &&
-                    user.profileImage.startsWith(
-                      "https://evento-media-bucket.s3.ap-southeast-2.amazonaws.com",
-                    ) ? (
+                    {user.profileImage ? (
                       <Image
                         src={user.profileImage}
                         alt="user image"
@@ -108,20 +145,17 @@ const AddUserModal = ({
           <div className="">
             <h3 className="mb-2">
               Selected {"( "}
-              {selectedUsers.length}
+              {currentSelectedUsers.length}
               {" )"}
             </h3>
             <ScrollArea className="h-48 border rounded">
-              {selectedUsers.map((user) => (
+              {currentSelectedUsers.map((user) => (
                 <div
                   key={user._id}
                   className="p-2 flex items-center cursor-pointer hover:bg-muted/20 space-x-4"
-                  onClick={() => onRemoveUser(user)}
+                  onClick={() => removeUser(user)}
                 >
-                  {user.profileImage &&
-                  user.profileImage.startsWith(
-                    "https://evento-media-bucket.s3.ap-southeast-2.amazonaws.com",
-                  ) ? (
+                  {user.profileImage ? (
                     <Image
                       src={user.profileImage}
                       alt="user image"
@@ -152,10 +186,10 @@ const AddUserModal = ({
           </div>
         </div>
         <div className="mt-4 flex items-center justify-between">
-          <GuestsAllowFriendCheckbox />
+          {storeField === "guests" && <GuestsAllowFriendCheckbox />}
           <Button
             className="bg-evento-gradient-button border shadow mt-2"
-            onClick={() => onSave(selectedUsers.map((user) => user._id))}
+            onClick={handleSave}
           >
             Save
           </Button>

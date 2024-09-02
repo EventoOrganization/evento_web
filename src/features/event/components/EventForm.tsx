@@ -8,14 +8,13 @@ import { OptionType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
 import { useEffect, useState } from "react";
 import { FormProvider, useForm, useFormContext } from "react-hook-form";
-import EnableChatCheckbox from "./EnableChatCheckbox";
+import EnableChatButton from "./EnableChatButton";
 import EventCoHostsModal from "./EventCoHostsModal";
 import EventDateInput from "./EventDateInput";
 import EventDescriptionArea from "./EventDescriptionArea";
 import EventGuestsModal from "./EventGuestsModal";
 import EventInterestSelect from "./EventInterestSelect";
 import EventLocationInput from "./EventLocationInput";
-import EventModalValidation from "./EventModalValidation";
 import EventModeSelect from "./EventModeSelect";
 import EventNameInput from "./EventNameInput";
 import QuestionInput from "./EventQuestionsInput";
@@ -137,7 +136,7 @@ const EventForm = ({
       );
 
       const result = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/users/createEventAndRSVPform`,
+        `${process.env.NEXT_PUBLIC_API_URL}/users/createEventAndRSVPfor`,
         {
           method: "POST",
           credentials: "include",
@@ -200,63 +199,16 @@ const EventForm = ({
           <EventModeSelect />
         </div>
         <EventLocationInput />
-        {/* <OpenStreetMapGeocoding /> */}
         <EventDescriptionArea />
         <EventInterestSelect interests={interests as OptionType[]} />
-        {/* <FormField
-          name="images"
-          control={form.control}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Images</FormLabel>
-              <FormControl>
-                <Input
-                  type="file"
-                  accept="image/*"
-                  multiple
-                  onChange={(e) => {
-                    const files = Array.from(e.target.files || []);
-                    field.onChange(files);
-                    handleImageChange(e);
-                  }}
-                />
-              </FormControl>
-            </FormItem>
-          )}
-        />
 
-        <FormField
-          name="video"
-          control={form.control}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Video</FormLabel>
-              <FormControl>
-                <Input
-                  type="file"
-                  accept="video/*"
-                  multiple
-                  onChange={(e) => {
-                    const files = Array.from(e.target.files || []);
-                    field.onChange(files);
-                    console.log("Selected Files:", files);
-                  }}
-                />
-              </FormControl>
-            </FormItem>
-          )}
-        /> */}
         <h4 className="text-eventoPurpleLight">More Options</h4>
-        <div>
+        <div className=" flex flex-wrap gap-2">
           <EventGuestsModal allUsers={allUsers as UserType[]} />
           <EventCoHostsModal allUsers={allUsers as UserType[]} />
+          <EnableChatButton />
         </div>
-        {/* <EventQuestionsInput /> */}
         <QuestionInput />
-        {/* <EventAdditionalFieldsInput /> */}
-
-        <EnableChatCheckbox />
-        <EventModalValidation onSubmit={form.handleSubmit(onSubmit)} />
       </form>
     </FormProvider>
   );

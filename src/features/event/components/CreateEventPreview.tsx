@@ -126,16 +126,6 @@ const CreateEventPreview = ({ className }: { className?: string }) => {
           {/* Placeholder for TruncatedText */}
           <div className="w-fullp-4 rounded">{eventStore.description}</div>
         </div>
-        <div className="flex justify-between items-center">
-          {/* Placeholder for AvatarStack */}
-          <div className="bg-gray-200 w-20 h-20 rounded-full flex items-center justify-center">
-            AvatarStack Placeholder
-          </div>
-          {/* Placeholder for EventActionIcons */}
-          <div className="bg-gray-200 w-10 h-10 rounded-full flex items-center justify-center">
-            ActionIcons Placeholder
-          </div>
-        </div>
       </div>
     </>
   );

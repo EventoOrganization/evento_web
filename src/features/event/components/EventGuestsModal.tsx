@@ -1,12 +1,19 @@
 import { useEventStore } from "@/store/useEventStore";
 import { UserType } from "@/types/UserType";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AddUserModal from "./AddUserModal";
-import GuestsAllowFriendCheckbox from "./GuestsAllowFriendCheckbox";
 
 const EventGuestsModal = ({ allUsers }: { allUsers: UserType[] }) => {
   const eventStore = useEventStore();
   const [guests, setGuests] = useState<UserType[]>([]);
+
+  useEffect(() => {
+    // Initialize guests from the store
+    const initialGuests = allUsers.filter((user) =>
+      eventStore.guests?.includes(user._id),
+    );
+    setGuests(initialGuests);
+  }, [allUsers, eventStore.guests]);
 
   const addGuest = (user: UserType) => {
     setGuests([...guests, user]);
@@ -21,16 +28,13 @@ const EventGuestsModal = ({ allUsers }: { allUsers: UserType[] }) => {
   };
 
   return (
-    <>
-      <AddUserModal
-        title="Add Guests"
-        selectedUsers={guests}
-        allUsers={allUsers}
-        onSave={handleSave}
-        onAddUser={addGuest}
-        onRemoveUser={removeGuest}
-      />
-    </>
+    <AddUserModal
+      title="Add Guests"
+      selectedUsers={guests.map((user) => user._id)} // Pass only IDs
+      allUsers={allUsers}
+      onSave={handleSave}
+      storeField="guests"
+    />
   );
 };
 
