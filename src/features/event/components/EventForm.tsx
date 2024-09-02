@@ -21,6 +21,7 @@ import EventDateInput from "./EventDateInput";
 import EventDescriptionArea from "./EventDescriptionArea";
 import EventGuestsModal from "./EventGuestsModal";
 import EventInterestSelect from "./EventInterestSelect";
+import EventLocationInput from "./EventLocationInput";
 import EventModalValidation from "./EventModalValidation";
 import EventModeSelect from "./EventModeSelect";
 import EventNameInput from "./EventNameInput";
@@ -28,7 +29,6 @@ import QuestionInput from "./EventQuestionsInput";
 import EventTitleInput from "./EventTitleInput";
 import EventTypeSelect from "./EventTypeSelect";
 import GuestsAllowFriendCheckbox from "./GuestsAllowFriendCheckbox";
-import OpenStreetMapGeocoding from "./OpenStreetMapGeocoding";
 const useSyncFormWithStore = () => {
   const { reset, getValues } = useFormContext();
   const eventStore = useEventStore();
@@ -202,12 +202,13 @@ const EventForm = ({
       >
         <EventTitleInput />
         {!user?.name && <EventNameInput />}
+        <EventDateInput />
         <div className="grid grid-cols-2 gap-4">
           <EventTypeSelect />
           <EventModeSelect />
         </div>
-        <EventDateInput />
-        <OpenStreetMapGeocoding />
+        <EventLocationInput />
+        {/* <OpenStreetMapGeocoding /> */}
         <EventDescriptionArea />
         <EventInterestSelect interests={interests as OptionType[]} />
         <FormField

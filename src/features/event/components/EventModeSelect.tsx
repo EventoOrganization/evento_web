@@ -33,11 +33,12 @@ const EventModeSelect = () => {
               {...register("eventType")}
             >
               <SelectTrigger className="">
-                <SelectValue placeholder={eventStore.mode || "Select mode"} />
+                <SelectValue placeholder={"Select Mode"} />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="virtual">Virtual</SelectItem>
                 <SelectItem value="in-person">In-Person</SelectItem>
+                <SelectItem value="both">Both</SelectItem>
               </SelectContent>
             </Select>
           </FormControl>

@@ -25,7 +25,7 @@ const EventTypeSelect = () => {
           {...register("eventType")}
         >
           <SelectTrigger className="">
-            <SelectValue placeholder={eventStore.eventType || "Event Type"} />
+            <SelectValue className="" placeholder={"Select Type"} />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="public">Public</SelectItem>

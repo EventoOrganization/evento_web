@@ -24,7 +24,7 @@ type EventFormState = {
   title: string;
   eventType: "public" | "private";
   name: string;
-  mode: "virtual" | "in-person";
+  mode: "virtual" | "in-person" | "both";
   date: string;
   endDate?: string;
   startTime: string;

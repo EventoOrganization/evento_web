@@ -7,12 +7,11 @@ import {
 import { useEventStore } from "@/store/useEventStore";
 import { useState } from "react";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
-// import { useFormContext } from "react-hook-form";
 
 const EventLocationInput = () => {
   const eventStore = useEventStore();
-  // const { register } = useFormContext();
   const [location, setLocation] = useState<any>("");
+
   const handlePlaceSelected = (value: any) => {
     if (value) {
       const address = value.label;
@@ -43,21 +42,18 @@ const EventLocationInput = () => {
         <FormItem>
           <FormLabel className="sr-only">Event Location</FormLabel>
           <FormControl>
-            <>
-              <GooglePlacesAutocomplete
-                apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ""}
-                selectProps={{
-                  value: location,
-                  onChange: (value) => {
-                    setLocation(value);
-                    console.log(value);
-                    field.onChange(value);
-                  },
-                  placeholder: "Enter event location...",
-                  onSelect: handlePlaceSelected,
-                }}
-              />
-            </>
+            <GooglePlacesAutocomplete
+              apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ""}
+              selectProps={{
+                value: location,
+                onChange: (value) => {
+                  handlePlaceSelected(value);
+                  field.onChange(value.label); // Update the form field value
+                },
+                placeholder: "Enter event location...",
+                onSelect: handlePlaceSelected, // Add this line
+              }}
+            />
           </FormControl>
         </FormItem>
       )}
