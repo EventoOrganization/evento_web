@@ -41,14 +41,14 @@ const AddUserModal = ({
   const [currentSelectedUsers, setCurrentSelectedUsers] = useState<User[]>([]);
 
   useEffect(() => {
-    console.log("Selected Users:", selectedUsers);
-    console.log("All Users:", allUsers);
+    // console.log("Selected Users:", selectedUsers);
+    // console.log("All Users:", allUsers);
 
     const initialSelectedUsers = allUsers.filter((user) =>
       selectedUsers.includes(user._id),
     );
 
-    console.log("Initial Selected Users:", initialSelectedUsers);
+    // console.log("Initial Selected Users:", initialSelectedUsers);
 
     setCurrentSelectedUsers(initialSelectedUsers);
   }, [selectedUsers, allUsers]);

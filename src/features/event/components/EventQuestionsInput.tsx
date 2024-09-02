@@ -1,11 +1,18 @@
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { cn } from "@/lib/utils";
 import { Question, useEventStore } from "@/store/useEventStore";
-import { useState } from "react";
+import { useEffect } from "react";
 import { handleFieldChange } from "../eventActions";
-import Switch from "@/components/ui/Switch";
-
 const Form = () => {
   const {
     questions,
@@ -15,57 +22,70 @@ const Form = () => {
     addOption,
     updateOption,
     removeOption,
+    createRSVP,
   } = useEventStore();
 
-  const [createRSVP, setCreateRSVP] = useState(false); // State to manage RSVP checkbox
+  // Log every render
+  useEffect(() => {
+    console.log("Component Rendered");
+  });
+
+  // Log the value of createRSVP whenever it changes
+  useEffect(() => {
+    console.log("createRSVP:", createRSVP);
+  }, [createRSVP]);
 
   const handleRSVPChange = () => {
-    setCreateRSVP((prevState) => {
-      const newState = !prevState;
-      handleFieldChange("createRSVP", newState);
-      return newState;
-    });
+    const newState = !createRSVP;
+    handleFieldChange("createRSVP", newState);
   };
 
   return (
     <div className="space-y-4">
-      <h2 className="text-xl font-bold">Create Your Event</h2>
-
+      <h4 className="text-eventoPurpleLight font-bold"></h4>
       <div className="flex items-center">
-        <Switch checked={createRSVP} onCheckedChange={handleRSVPChange} />
-        <span>Create RSVP Form</span>
+        <Button
+          variant={"outline"}
+          className={cn("", { "bg-evento-gradient text-white": createRSVP })}
+          onClick={handleRSVPChange}
+        >
+          Add an RSVP
+        </Button>
       </div>
 
       {createRSVP && (
         <>
-          <h3 className="text-lg font-bold">Create Your RSVP Form</h3>
+          <h4 className="text-eventoPurpleLight font-bold">Create Your RSVP</h4>
           {Array.isArray(questions) &&
             questions.map((question, index) => (
-              <div
-                key={question.id}
-                className="space-y-2 p-4 border rounded-lg"
-              >
+              <div key={question.id} className="space-y-2">
                 <Input
                   value={question.question}
                   onChange={(e) =>
                     updateQuestion(index, { question: e.target.value })
                   }
                   placeholder="Enter your question"
-                  className="rounded-xl bg-muted sm:bg-background"
+                  className=""
                 />
-                <select
+                <Select
                   value={question.type}
-                  onChange={(e) =>
+                  onValueChange={(value) =>
                     updateQuestion(index, {
-                      type: e.target.value as Question["type"],
+                      type: value as Question["type"],
                     })
                   }
-                  className="rounded-xl bg-muted sm:bg-background"
                 >
-                  <option value="text">Text</option>
-                  <option value="multiple-choice">Multiple Choice</option>
-                  <option value="checkbox">Checkbox</option>
-                </select>
+                  <SelectTrigger className="">
+                    <SelectValue placeholder="Select type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="text">Text</SelectItem>
+                    <SelectItem value="multiple-choice">
+                      Multiple Choice
+                    </SelectItem>
+                    <SelectItem value="checkbox">Checkbox</SelectItem>
+                  </SelectContent>
+                </Select>
                 {(question.type === "multiple-choice" ||
                   question.type === "checkbox") && (
                   <>
@@ -77,36 +97,38 @@ const Form = () => {
                             updateOption(index, optionIndex, e.target.value)
                           }
                           placeholder={`Choice ${optionIndex + 1}`}
-                          className="rounded-xl bg-muted sm:bg-background mr-2"
+                          className="mr-2"
                         />
                         <Button
                           type="button"
-                          className="bg-red-500 text-white rounded-full"
+                          variant="destructive"
                           onClick={() => removeOption(index, optionIndex)}
                         >
-                          Remove
+                          Remove Choice
                         </Button>
                       </div>
                     ))}
-                    <Button
-                      type="button"
-                      className="bg-green-500 text-white rounded-full mt-2"
-                      onClick={() => addOption(index)}
-                    >
+                    <Button type="button" onClick={() => addOption(index)}>
                       Add Choice
                     </Button>
                   </>
                 )}
                 <div className="flex items-center justify-between mt-2">
-                  <Checkbox
-                    checked={question.required}
-                    onCheckedChange={(checked) =>
-                      updateQuestion(index, { required: checked === true })
-                    }
-                  />
+                  <div className="flex items-center justify-center gap-2">
+                    <Label htmlFor="required">Answer Required</Label>
+                    <Checkbox
+                      id="required"
+                      checked={question.required}
+                      onCheckedChange={(checked) =>
+                        updateQuestion(index, { required: checked === true })
+                      }
+                      className="checked:bg-red-500"
+                    />
+                  </div>
                   <Button
                     type="button"
-                    className="bg-red-500 text-white rounded-full"
+                    variant="destructive"
+                    className=""
                     onClick={() => removeQuestion(index)}
                   >
                     Remove Question
@@ -114,11 +136,7 @@ const Form = () => {
                 </div>
               </div>
             ))}
-          <Button
-            type="button"
-            className="bg-blue-500 text-white rounded-full mt-2"
-            onClick={addQuestion}
-          >
+          <Button type="button" className="mt-2" onClick={addQuestion}>
             Add Question
           </Button>
         </>
