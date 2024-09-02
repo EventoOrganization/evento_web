@@ -16,7 +16,13 @@ const EventDateInput = () => {
   const [timeSlots, setTimeSlots] = useState(
     eventStore.timeSlots.length > 0
       ? eventStore.timeSlots
-      : [{ date: "", startTime: "08:00", endTime: "18:00" }],
+      : [
+          {
+            date: "",
+            startTime: eventStore.startTime || "08:00",
+            endTime: eventStore.endTime || "18:00",
+          },
+        ],
   );
   const [useMultipleTimes, setUseMultipleTimes] = useState(false);
 
@@ -50,8 +56,8 @@ const EventDateInput = () => {
       const dateRange = generateDateRange(eventStore.date, eventStore.endDate);
       const slots = dateRange.map((date) => ({
         date,
-        startTime: "08:00", // Default start time
-        endTime: "18:00", // Default end time
+        startTime: eventStore.startTime || "08:00",
+        endTime: eventStore.endTime || "18:00",
       }));
       setTimeSlots(slots);
       eventStore.setEventField("timeSlots", slots);
