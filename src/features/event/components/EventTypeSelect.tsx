@@ -14,6 +14,11 @@ const EventTypeSelect = () => {
   const eventStore = useEventStore();
   const { register } = useFormContext();
 
+  const capitalizeFirstLetter = (value: string) => {
+    if (!value) return "";
+    return value.charAt(0).toUpperCase() + value.slice(1);
+  };
+
   return (
     <FormItem>
       <FormLabel className="sr-only">Event Type</FormLabel>
@@ -25,7 +30,12 @@ const EventTypeSelect = () => {
           {...register("eventType")}
         >
           <SelectTrigger className="">
-            <SelectValue className="" placeholder={"Select Type"} />
+            <SelectValue
+              className=""
+              placeholder={
+                capitalizeFirstLetter(eventStore.eventType) || "Select Type"
+              }
+            />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="public">Public</SelectItem>

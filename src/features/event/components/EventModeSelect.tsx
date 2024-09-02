@@ -18,6 +18,12 @@ import { handleFieldChange } from "../eventActions";
 const EventModeSelect = () => {
   const eventStore = useEventStore();
   const { register } = useFormContext();
+
+  const capitalizeFirstLetter = (value: string) => {
+    if (!value) return "";
+    return value.charAt(0).toUpperCase() + value.slice(1);
+  };
+
   return (
     <FormField
       name="mode"
@@ -30,10 +36,14 @@ const EventModeSelect = () => {
                 field.onChange(value);
                 handleFieldChange("mode", value);
               }}
-              {...register("eventType")}
+              {...register("mode")}
             >
               <SelectTrigger className="">
-                <SelectValue placeholder={"Select Mode"} />
+                <SelectValue
+                  placeholder={
+                    capitalizeFirstLetter(eventStore.mode) || "Select Mode"
+                  }
+                />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="virtual">Virtual</SelectItem>

@@ -7,17 +7,25 @@ import {
 } from "@/components/ui/form";
 import { useEventStore } from "@/store/useEventStore";
 import { OptionType } from "@/types/EventType";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Select, { MultiValue, StylesConfig } from "react-select";
 
 const EventInterestSelect = ({ interests }: { interests: OptionType[] }) => {
   const eventStore = useEventStore();
   const options = interests;
-  // console.log("Options:", options);
 
+  // Initialize selectedInterests from the store
   const [selectedInterests, setSelectedInterests] = useState<
     MultiValue<OptionType>
-  >([]);
+  >(eventStore.interests || []);
+
+  // Synchronize the selectedInterests with the store when the component mounts
+  useEffect(() => {
+    if (eventStore.interests) {
+      setSelectedInterests(eventStore.interests);
+    }
+  }, [eventStore.interests]);
+
   // Custom styles for react-select
   const customStyles: StylesConfig<OptionType, true> = {
     control: (provided) => ({
@@ -69,7 +77,7 @@ const EventInterestSelect = ({ interests }: { interests: OptionType[] }) => {
       name="interests"
       render={({}) => (
         <FormItem>
-          <FormLabel className="sr-only">Event Type</FormLabel>
+          <FormLabel className="sr-only">Event Interests</FormLabel>
           <FormControl>
             <Select
               isMulti
