@@ -6,12 +6,12 @@ import { Button } from "@/components/ui/button";
 import EventSection from "@/features/event/components/EventSection";
 import { useAuthStore } from "@/store/useAuthStore";
 import { eventoBtn } from "@/styles/eventoBtn";
+import { EventType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { EventType } from "react-hook-form";
 const UserProfile = ({
   id,
   profile,

@@ -5,28 +5,20 @@ import RenderMedia from "@/components/RenderMedia";
 import TruncatedText from "@/components/TruncatedText";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { useSession } from "@/contexts/SessionProvider";
 import { cn } from "@/lib/utils";
 import { Loader, SquareArrowOutUpRightIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
+import DeleteEventButton from "./DeleteEventButton";
 import EventActionIcons from "./EventActionIcons";
 
-const Event = ({
-  className,
-  event,
-  // isModal,
-}: {
-  className?: string;
-  event?: any;
-  // isModal?: boolean;
-}) => {
-  // const [isModalOpen, setIsModalOpen] = useState(false);
-  // const handleCloseModal = () => {
-  //   setIsModalOpen(false);
-  // };
+const Event = ({ className, event }: { className?: string; event?: any }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const { user } = useSession();
+  const isHost = event?.user?._id === user?._id;
   const renderDate = () => {
     if (!event || !event.details) return <Loader />;
     const startDate = event?.details?.date;
@@ -67,9 +59,6 @@ const Event = ({
           "bg-white border shadow rounded p-4 w-full flex flex-col h-fit gap-4 hover:shadow-xl hover:bg-slate-50 cursor-pointer relative",
           className,
         )}
-        // onClick={() => {
-        //   if (!isModal) setIsModalOpen(true);
-        // }}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
@@ -105,25 +94,6 @@ const Event = ({
           <div>
             <RenderMedia event={event} />
           </div>
-          {/* <div className="relative w-full pb-[56.25%]">
-          <Image
-          src={
-            event?.details?.images?.[0] && isValidUrl(event.details.images[0])
-                ? event.details.images[0]
-                : (createEvent?.imagePreviews &&
-                createEvent.imagePreviews[0]) ||
-                "https://evento-media-bucket.s3.ap-southeast-2.amazonaws.com/evento-bg.jpg"
-                }
-                alt="event image"
-                fill
-                objectFit="cover"
-                className={cn({
-                  "opacity-20":
-                  !event &&
-                  !(createEvent?.imagePreviews && createEvent.imagePreviews[0]),
-                  })}
-                  />
-                  </div> */}
         </div>
         <div className="flex flex-col gap-2">
           <h3>{event && event?.title}</h3>
@@ -131,7 +101,7 @@ const Event = ({
             {event &&
               event?.interest?.map((interest: any) => (
                 <li
-                  key={interest._id}
+                  key={interest._id || interest.name}
                   className="bg-eventoPurpleLight/30 w-fit px-2 py-1 rounded-lg text-sm"
                 >
                   {interest.name}
@@ -171,6 +141,11 @@ const Event = ({
           </div>
           <EventActionIcons event={event} />
         </div>
+        {isHost && (
+          <div className="flex justify-end mt-4">
+            <DeleteEventButton eventId={event._id} isHost={isHost} />
+          </div>
+        )}
         {isHovered && (
           <Link
             href={`/event/${event?._id}`}
@@ -180,11 +155,6 @@ const Event = ({
           </Link>
         )}
       </div>
-      {/* <EventModal
-        event={event}
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
-      /> */}
     </>
   );
 };

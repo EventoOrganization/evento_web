@@ -2,17 +2,20 @@
 // src/app/profile/page.tsx
 import UserProfile from "@/features/profile/UserProfile";
 import { useAuthStore } from "@/store/useAuthStore";
-import { UserType } from "@/types/UserType";
+import { useProfileStore } from "@/store/useProfileStore";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { EventType } from "react-hook-form";
 
 export default function CurrentUserProfilePage() {
   const user = useAuthStore((state) => state.user);
-  const [profileData, setProfileData] = useState<UserType | null>(null);
-  const [upcomingEvents, setUpcomingEvents] = useState<EventType[]>([]);
-  const [pastEvents, setPastEvents] = useState<EventType[]>([]);
-  const [hostedByYouEvents, setHostedByYouEvents] = useState<EventType[]>([]);
+  const {
+    userInfo,
+    upcomingEvents,
+    pastEvents,
+    filteredUpcomingEventsAttended: hostingEvents,
+    setProfileData,
+  } = useProfileStore();
+
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -23,7 +26,6 @@ export default function CurrentUserProfilePage() {
     }
     const fetchProfile = async () => {
       try {
-        // console.log(user.token);
         // Fetch the user's profile
         const profileDataResponse = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/users/getProfile`,
@@ -42,7 +44,8 @@ export default function CurrentUserProfilePage() {
         }
 
         const profileDataJson = await profileDataResponse.json();
-        setProfileData(profileDataJson.body);
+        console.log("profile fetch data", profileDataJson.body);
+
         // Fetch upcoming events
         const upcomingEventsResponse = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/users/upcomingEvents`,
@@ -55,15 +58,13 @@ export default function CurrentUserProfilePage() {
             },
           },
         );
-        // console.log(upcomingEventsResponse);
+
         if (!upcomingEventsResponse.ok) {
           throw new Error("Failed to fetch upcoming events.");
         }
 
         const upcomingEventsJson = await upcomingEventsResponse.json();
 
-        setUpcomingEvents(upcomingEventsJson.body.upcomingEvents || []);
-        setHostedByYouEvents(upcomingEventsJson.body.hostedByYouEvents || []);
         // Fetch past events
         const pastEventsResponse = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/users/pastEvents`,
@@ -82,7 +83,15 @@ export default function CurrentUserProfilePage() {
         }
 
         const pastEventsJson = await pastEventsResponse.json();
-        setPastEvents(pastEventsJson.body.pastHostedEvents || []);
+
+        // Set the profile data and events in the store
+        setProfileData({
+          userInfo: profileDataJson.body,
+          upcomingEvents: upcomingEventsJson.body.upcomingEvents || [],
+          pastEvents: pastEventsJson.body.pastHostedEvents || [],
+          filteredUpcomingEventsAttended:
+            upcomingEventsJson.body.hostedByYouEvents || [],
+        });
       } catch (error) {
         setError(
           error instanceof Error
@@ -95,7 +104,7 @@ export default function CurrentUserProfilePage() {
     };
 
     fetchProfile();
-  }, [user]);
+  }, [user, setProfileData]);
 
   if (!user) {
     return (
@@ -114,16 +123,16 @@ export default function CurrentUserProfilePage() {
     return <div>Error: {error}</div>;
   }
 
-  if (!profileData) {
+  if (!userInfo) {
     return <div>Profile data is loading...</div>;
   }
 
   return (
     <UserProfile
-      profile={profileData}
+      profile={userInfo}
       upcomingEvents={upcomingEvents}
       pastEvents={pastEvents}
-      hostingEvents={hostedByYouEvents}
+      hostingEvents={hostingEvents}
     />
   );
 }

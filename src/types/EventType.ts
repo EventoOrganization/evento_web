@@ -11,8 +11,9 @@ export type TimeSlotType = {
 export type InterestType = {
   _id: string;
   name: string;
-  value: string;
-  label: string;
+  value?: string;
+  label?: string;
+  image?: string;
 };
 export type OptionType = {
   value: string;

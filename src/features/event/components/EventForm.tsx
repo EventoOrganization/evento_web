@@ -14,6 +14,7 @@ import { cn } from "@/lib/utils";
 import { useEventStore } from "@/store/useEventStore";
 import { OptionType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { FormProvider, useForm, useFormContext } from "react-hook-form";
 import EnableChatButton from "./EnableChatButton";
@@ -74,10 +75,11 @@ const EventForm = ({
   allUsers?: UserType[];
   interests?: OptionType[];
 }) => {
+  const router = useRouter();
   const eventStore = useEventStore();
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [pendingData, setPendingData] = useState(null); // Store pending form data
-  const { user } = useSession();
+  const { user, token } = useSession();
   const form = useForm();
 
   const onSubmit = async (data: any) => {
@@ -101,8 +103,6 @@ const EventForm = ({
   };
 
   const handleFormSubmit = async (data: any) => {
-    console.log("File Data:", data.file);
-    console.log("session", user?.token);
     try {
       const formData = new FormData();
       Object.entries(data).forEach(([key, value]) => {
@@ -129,7 +129,7 @@ const EventForm = ({
           method: "POST",
           credentials: "include",
           headers: {
-            Authorization: `Bearer ${user?.token}`,
+            Authorization: `Bearer ${token}`,
           },
           body: formData,
         },
@@ -137,10 +137,10 @@ const EventForm = ({
 
       const resultData = await result.json();
       console.log("resultData", resultData);
+      eventStore.clearEventForm();
+      router.push(`/events/${resultData.body._id}`);
     } catch (error) {
       console.error("Error creating event:", error);
-    } finally {
-      // Cleanup logic, if necessary
     }
   };
 
