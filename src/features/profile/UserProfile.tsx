@@ -28,7 +28,7 @@ const UserProfile = ({
   pastHostedEvents?: EventType[];
 }) => {
   const user = useAuthStore((state) => state.user);
-  console.log("profile", profile);
+  // console.log("profile", profile);
   // console.log("upcomingEvents", upcomingEvents);
   // console.log("pastEvents", pastEvents);
   // console.log("hostingEvents", hostingEvents);

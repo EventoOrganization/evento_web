@@ -21,11 +21,9 @@ export default function CurrentUserProfilePage() {
       setIsLoading(false);
       return;
     }
-
     const fetchProfile = async () => {
       try {
-        console.log(user.token);
-
+        // console.log(user.token);
         // Fetch the user's profile
         const profileDataResponse = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/users/getProfile`,
@@ -57,7 +55,7 @@ export default function CurrentUserProfilePage() {
             },
           },
         );
-        console.log(upcomingEventsResponse);
+        // console.log(upcomingEventsResponse);
         if (!upcomingEventsResponse.ok) {
           throw new Error("Failed to fetch upcoming events.");
         }
