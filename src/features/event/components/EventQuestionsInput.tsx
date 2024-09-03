@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { Question, useEventStore } from "@/store/useEventStore";
-import { useEffect } from "react";
 import { handleFieldChange } from "../eventActions";
 const Form = () => {
   const {
@@ -24,16 +23,6 @@ const Form = () => {
     removeOption,
     createRSVP,
   } = useEventStore();
-
-  // Log every render
-  useEffect(() => {
-    console.log("Component Rendered");
-  });
-
-  // Log the value of createRSVP whenever it changes
-  useEffect(() => {
-    console.log("createRSVP:", createRSVP);
-  }, [createRSVP]);
 
   const handleRSVPChange = () => {
     const newState = !createRSVP;

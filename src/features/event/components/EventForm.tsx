@@ -1,8 +1,16 @@
+// src\features\event\components\EventForm.tsx
 "use client";
-
+import { Button } from "@/components/ui/button";
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import { useSession } from "@/contexts/SessionProvider";
+import AuthModal from "@/features/auth/components/AuthModal";
 import { cn } from "@/lib/utils";
-import { useAuthStore } from "@/store/useAuthStore";
 import { useEventStore } from "@/store/useEventStore";
 import { OptionType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
@@ -16,22 +24,24 @@ import EventGuestsModal from "./EventGuestsModal";
 import EventInterestSelect from "./EventInterestSelect";
 import EventLocationInput from "./EventLocationInput";
 import EventModeSelect from "./EventModeSelect";
-import EventNameInput from "./EventNameInput";
 import QuestionInput from "./EventQuestionsInput";
 import EventTitleInput from "./EventTitleInput";
 import EventTypeSelect from "./EventTypeSelect";
+
 const useSyncFormWithStore = () => {
   const { reset, getValues } = useFormContext();
   const eventStore = useEventStore();
-  const user = useAuthStore((state) => state.user);
+  const { user } = useSession();
 
   useEffect(() => {
+    const currentValues = getValues();
+    console.log("currentValues before reset", currentValues);
     reset({
       title: eventStore.title || "",
       eventType: eventStore.eventType || "public",
-      name: eventStore.name || user?.name,
+      name: eventStore.name || user?.name || "",
       date: eventStore.date || "",
-      endDate: eventStore.endDate ? eventStore.endDate : eventStore.date || "",
+      endDate: eventStore.endDate || eventStore.date || "",
       startTime: eventStore.startTime || "",
       endTime: eventStore.endTime || "",
       description: eventStore.description || "",
@@ -47,10 +57,12 @@ const useSyncFormWithStore = () => {
       questions: eventStore.questions || [],
       additionalField: eventStore.additionalField || [],
       includeChat: eventStore.includeChat || false,
-      images: getValues("images") || [], // Preserve current images
-      video: getValues("video") || "", // Preserve current video
+      images: currentValues.images,
+      video: currentValues.video,
+      media: currentValues.media,
     });
-  }, [eventStore, reset]);
+    console.log("currentValues after reset", getValues());
+  }, [eventStore, reset, user]);
 };
 
 const EventForm = ({
@@ -62,81 +74,58 @@ const EventForm = ({
   allUsers?: UserType[];
   interests?: OptionType[];
 }) => {
-  // const [isFetching, setIsFetching] = useState(false);
-  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const eventStore = useEventStore();
-  // const user = useAuthStore((state) => state.user);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [pendingData, setPendingData] = useState(null); // Store pending form data
   const { user } = useSession();
-  const form = useForm({
-    defaultValues: {
-      title: eventStore.title || "",
-      eventType: eventStore.eventType || "public",
-      name: eventStore.name || user?.name,
-      date: eventStore.date || "",
-      endDate: eventStore.endDate ? eventStore.endDate : eventStore.date || "",
-      startTime: eventStore.startTime || "",
-      endTime: eventStore.endTime || "",
-      description: eventStore.description || "",
-      mode: eventStore.mode || "virtual",
-      interestId: eventStore.interestId || [],
-      location: eventStore.location || "",
-      latitude: eventStore.latitude || "",
-      longitude: eventStore.longitude || "",
-      timeSlots: eventStore.timeSlots || [],
-      guests: eventStore.guests || [],
-      coHosts: eventStore.coHosts || [],
-      guestsAllowFriend: eventStore.guestsAllowFriend || false,
-      questions: eventStore.questions || [],
-      additionalField: eventStore.additionalField || [],
-      includeChat: eventStore.includeChat || false,
-      images: [] as File[],
-      video: "",
-    },
-  });
+  const form = useForm();
 
   const onSubmit = async (data: any) => {
-    // setIsFetching(true);
+    if (!user) {
+      setPendingData(data); // Store form data temporarily
+      setIsAuthModalOpen(true); // Open authentication modal
+    } else {
+      await handleFormSubmit(data); // Proceed with form submission
+    }
+  };
+  const handleMediaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    const mediaUrls = files.map((file) => ({
+      url: URL.createObjectURL(file),
+      type: file.type.startsWith("image/") ? "image" : "video",
+    }));
 
+    console.log("Selected Media:", mediaUrls);
+
+    eventStore.setEventField("mediaPreviews", mediaUrls);
+  };
+
+  const handleFormSubmit = async (data: any) => {
+    console.log("eventStore", eventStore);
+    console.log("Form Data:", data);
+    console.log("File Data:", data.file);
     try {
-      console.log("Form Data:", form.getValues("images"));
       const formData = new FormData();
-      formData.append("title", data.title);
-      formData.append("name", data.name);
-      formData.append("date", data.date);
-      formData.append("endDate", data.endDate);
-      formData.append("startTime", data.startTime);
-      formData.append("endTime", data.endTime);
-      formData.append("description", data.description);
-      formData.append("mode", data.mode);
-      formData.append("interestId", JSON.stringify(data.interestId));
-      formData.append("location", data.location);
-      formData.append("latitude", data.latitude);
-      formData.append("longitude", data.longitude);
-      formData.append("timeSlots", JSON.stringify(data.timeSlots));
-      formData.append("guests", JSON.stringify(data.guests));
-      formData.append("coHosts", JSON.stringify(data.coHosts));
-      formData.append("guestsAllowFriend", data.guestsAllowFriend);
-      formData.append("questions", JSON.stringify(data.questions));
-      formData.append("additionalField", JSON.stringify(data.additionalField));
-      formData.append("includeChat", data.includeChat);
-      const images = form.getValues("images");
-      console.log("Images in form before submission:", images);
-      if (data.images && data.images.length > 0) {
-        data.images.forEach((image: File, index: number) => {
-          formData.append(`images[${index}]`, image);
-        });
-      }
-      if (data.video) {
-        formData.append("video", data.video[0]);
-      }
-      // formData.append("privateEventLink", data.privateEventLink);
+      Object.entries(data).forEach(([key, value]) => {
+        if (Array.isArray(value) || typeof value === "object") {
+          formData.append(key, JSON.stringify(value));
+        } else {
+          formData.append(key, value as string); // Type assertion
+        }
+      });
+
+      const media = data.media || [];
+      media.forEach((file: File, index: number) => {
+        formData.append(`media[${index}]`, file);
+      });
+
       console.log(
         "Form Data before submission:",
         Array.from(formData.entries()),
       );
 
       const result = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/users/createEventAndRSVPfor`,
+        `${process.env.NEXT_PUBLIC_API_URL}/users/createEventAndRSVPform`,
         {
           method: "POST",
           credentials: "include",
@@ -152,69 +141,95 @@ const EventForm = ({
     } catch (error) {
       console.error("Error creating event:", error);
     } finally {
-      // setIsFetching(false);
-      // eventStore.clearEventForm();
+      // Cleanup logic, if necessary
     }
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || []);
-    console.log("Selected Images:", files);
-    // Set images in form state
-
-    // Immediately log to ensure images are set
-    console.log("Images after setValue:", form.getValues("images"));
-    const imageUrls = files.map((file) => URL.createObjectURL(file));
-    setImagePreviews(imageUrls);
-    eventStore.setEventField("imagePreviews", imageUrls);
+  const handleAuthSuccess = () => {
+    if (pendingData) {
+      handleFormSubmit(pendingData); // Submit form data after successful authentication
+      setPendingData(null); // Clear pending data
+    }
   };
 
-  useEffect(() => {
-    return () => {
-      imagePreviews.forEach((url) => URL.revokeObjectURL(url));
-    };
-  }, [imagePreviews]);
-
   return (
-    <FormProvider {...form}>
-      {" "}
-      <SyncFormWithStore />
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className={cn(
-          "space-y-4 max-w-xl mx-auto bg-muted shadow border p-4 rounded-lg mb-20",
-          className,
-        )}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            e.preventDefault();
-          }
-        }}
-      >
-        <EventTitleInput />
-        {!user?.name && <EventNameInput />}
-        <EventDateInput />
-        <div className="grid grid-cols-2 gap-4">
-          <EventTypeSelect />
-          <EventModeSelect />
-        </div>
-        <EventLocationInput />
-        <EventDescriptionArea />
-        <EventInterestSelect interests={interests as OptionType[]} />
-
-        <h4 className="text-eventoPurpleLight">More Options</h4>
-        <div className=" flex flex-wrap gap-2">
-          <EventGuestsModal allUsers={allUsers as UserType[]} />
-          <EventCoHostsModal allUsers={allUsers as UserType[]} />
-          <EnableChatButton />
-        </div>
-        <QuestionInput />
-      </form>
-    </FormProvider>
+    <>
+      <div>
+        <FormProvider {...form}>
+          <SyncFormWithStore />
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className={cn(
+              "space-y-4 max-w-xl mx-auto bg-muted shadow border p-4 rounded-lg mb-20",
+              className,
+            )}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+              }
+            }}
+          >
+            <EventTitleInput />
+            <EventDateInput />
+            <div className="grid grid-cols-2 gap-4">
+              <EventTypeSelect />
+              <EventModeSelect />
+            </div>
+            <FormField
+              name="media"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Media (Images or Videos)</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="file"
+                      accept="image/*,video/*"
+                      multiple
+                      onChange={(e) => {
+                        const files = Array.from(e.target.files || []);
+                        field.onChange(files);
+                        handleMediaChange(e);
+                      }}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <EventLocationInput />
+            <EventDescriptionArea />
+            <EventInterestSelect interests={interests as OptionType[]} />
+            <h4 className="text-eventoPurpleLight">More Options</h4>
+            <div className="flex flex-wrap gap-2">
+              <EventGuestsModal allUsers={allUsers as UserType[]} />
+              <EventCoHostsModal allUsers={allUsers as UserType[]} />
+              <EnableChatButton />
+            </div>
+            <QuestionInput />
+          </form>
+        </FormProvider>
+        <Button
+          variant={"ghost"}
+          type={"button"}
+          className="bg-evento-gradient-button text-white"
+          onClick={form.handleSubmit(onSubmit)}
+        >
+          Create Event!
+        </Button>
+      </div>
+      {isAuthModalOpen && (
+        <AuthModal
+          onClose={() => setIsAuthModalOpen(false)}
+          onAuthSuccess={handleAuthSuccess}
+        />
+      )}
+    </>
   );
 };
-const SyncFormWithStore = () => {
-  useSyncFormWithStore(); // Custom hook call inside a component that will be called after FormProvider is ready
-  return null; // This component does not render anything
-};
+
 export default EventForm;
+
+const SyncFormWithStore = () => {
+  useSyncFormWithStore();
+  return null;
+};

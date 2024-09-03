@@ -5,6 +5,7 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useSession } from "@/contexts/SessionProvider";
 import { cn } from "@/lib/utils";
 import { useEventStore } from "@/store/useEventStore";
 import { useFormContext } from "react-hook-form";
@@ -12,6 +13,12 @@ import { handleFieldChange } from "../eventActions";
 
 const EventNameInput = ({ className }: { className?: string }) => {
   const eventStore = useEventStore();
+  const { user } = useSession();
+  // useEffect(() => {
+  //   if (user) {
+  //     handleFieldChange("name", user.name);
+  //   }
+  // });
   const { register } = useFormContext();
 
   return (

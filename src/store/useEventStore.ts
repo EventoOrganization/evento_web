@@ -41,9 +41,10 @@ type EventFormState = {
   interests?: Interest[];
   timeSlots: TimeSlot[];
   privateEventLink?: string;
-  imagePreviews?: string[];
-  videoPreview?: string;
+  mediaPreviews?: string[];
   questions: Question[];
+  images: File[];
+  video: File[];
   guestsAllowFriend: boolean;
   additionalField?: any[];
   setEventField: (key: string, value: any) => void;
@@ -77,13 +78,14 @@ export const useEventStore = create<EventFormState>()(
       latitude: undefined,
       longitude: undefined,
       location: undefined,
-      imagePreviews: [],
-      videoPreview: undefined,
+      mediaPreviews: [],
       timeSlots: [],
       coHosts: [],
       guests: [],
       interestId: [],
       interests: [],
+      images: [],
+      video: [],
       guestsAllowFriend: false,
       additionalField: [],
 
@@ -158,13 +160,14 @@ export const useEventStore = create<EventFormState>()(
           latitude: undefined,
           longitude: undefined,
           location: undefined,
-          imagePreviews: [],
-          videoPreview: undefined,
+          mediaPreviews: [],
           timeSlots: [],
           coHosts: [],
           guests: [],
           interestId: [],
           interests: [],
+          images: [],
+          video: [],
           questions: [],
           guestsAllowFriend: false,
           additionalField: [],

@@ -63,7 +63,9 @@ const AddUserModal = ({
   const addUser = (user: User) => {
     setCurrentSelectedUsers([...currentSelectedUsers, user]);
   };
-
+  const isValidUrl = (url: string) => {
+    return url.startsWith("http://") || url.startsWith("https://");
+  };
   const removeUser = (user: User) => {
     setCurrentSelectedUsers(
       currentSelectedUsers.filter(
@@ -110,7 +112,7 @@ const AddUserModal = ({
                     className="p-2 flex items-center cursor-pointer hover:bg-muted/20 space-x-4"
                     onClick={() => addUser(user)}
                   >
-                    {user.profileImage ? (
+                    {user.profileImage && isValidUrl(user?.profileImage) ? (
                       <Image
                         src={user.profileImage}
                         alt="user image"
@@ -155,7 +157,7 @@ const AddUserModal = ({
                   className="p-2 flex items-center cursor-pointer hover:bg-muted/20 space-x-4"
                   onClick={() => removeUser(user)}
                 >
-                  {user.profileImage ? (
+                  {user.profileImage && isValidUrl(user?.profileImage) ? (
                     <Image
                       src={user.profileImage}
                       alt="user image"

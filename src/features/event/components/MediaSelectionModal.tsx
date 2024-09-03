@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import { useEventStore } from "@/store/useEventStore";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { handleFieldChange } from "../eventActions";
 
 const MediaSelectionModal = ({
   isOpen,
@@ -51,17 +52,54 @@ const MediaSelectionModal = ({
     );
   };
 
-  const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const fileInput = e.target as HTMLInputElement;
 
     if (fileInput.files && fileInput.files.length > 0) {
       const files = Array.from(fileInput.files);
-      const urls = files.map((file) => URL.createObjectURL(file));
 
-      // Reset the file input to ensure the same file can be selected again
-      fileInput.value = "";
+      for (const file of files) {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
 
-      setEventField("imagePreviews", urls);
+        reader.onloadend = async () => {
+          const base64data = reader.result as string;
+
+          try {
+            const response = await fetch("/api/uploadTempFile", {
+              method: "POST",
+              body: JSON.stringify({
+                base64data,
+                fileName: file.name,
+              }),
+              headers: {
+                "Content-Type": "application/json",
+              },
+            });
+
+            if (response.ok) {
+              const result = await response.json();
+              const fileUrl = result.filePath; // '/uploads/file.ext'
+
+              if (file.type.startsWith("video/")) {
+                handleFieldChange("videoPreview", fileUrl);
+              } else if (file.type.startsWith("image/")) {
+                handleFieldChange("imagePreviews", (prev: string[]) => [
+                  ...prev,
+                  fileUrl,
+                ]);
+              }
+            } else {
+              const result = await response.json();
+              console.error("Failed to upload file:", result.message);
+            }
+          } catch (error) {
+            console.error("Error uploading file:", error);
+          }
+        };
+      }
+
+      fileInput.value = ""; // Réinitialisez l'input pour permettre la sélection du même fichier
     }
   };
 

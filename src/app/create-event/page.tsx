@@ -26,10 +26,11 @@ const CreateEventPage = async () => {
   try {
     if (!session.token) {
       // Fetching users for visitor
-      const allUsersResult = await fetchData<UserType[]>(
-        `/users/allUserListing`,
-      );
-      users = allUsersResult || [];
+      const allUsersResult = await fetchData<{
+        count: number;
+        allUserListing: UserType[];
+      }>(`/users/allUserListing`);
+      users = allUsersResult?.allUserListing || [];
     } else {
       // Fetching users for authenticated user
       const allUsersAndStatusResult = await fetchData<UsersWithStatusResponse>(
