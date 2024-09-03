@@ -101,9 +101,8 @@ const EventForm = ({
   };
 
   const handleFormSubmit = async (data: any) => {
-    console.log("eventStore", eventStore);
-    console.log("Form Data:", data);
     console.log("File Data:", data.file);
+    console.log("session", user?.token);
     try {
       const formData = new FormData();
       Object.entries(data).forEach(([key, value]) => {

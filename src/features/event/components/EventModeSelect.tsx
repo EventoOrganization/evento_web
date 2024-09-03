@@ -4,24 +4,21 @@ import {
   FormItem,
   FormLabel,
 } from "@/components/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { useEventStore } from "@/store/useEventStore";
 import { useFormContext } from "react-hook-form";
-import { handleFieldChange } from "../eventActions";
 
 const EventModeSelect = () => {
   const eventStore = useEventStore();
-  const { register } = useFormContext();
+  const { register, setValue } = useFormContext();
 
   const capitalizeFirstLetter = (value: string) => {
     if (!value) return "";
     return value.charAt(0).toUpperCase() + value.slice(1);
+  };
+
+  const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = event.target.value;
+    setValue("mode", value);
   };
 
   return (
@@ -31,26 +28,19 @@ const EventModeSelect = () => {
         <FormItem>
           <FormLabel className="sr-only">Mode</FormLabel>
           <FormControl>
-            <Select
-              onValueChange={(value) => {
-                field.onChange(value);
-                handleFieldChange("mode", value);
-              }}
+            <select
+              className="form-select rounded px-3 py-2 w-full"
               {...register("mode")}
+              value={eventStore.mode}
+              onChange={(e) => {
+                field.onChange(e);
+                handleChange(e);
+              }}
             >
-              <SelectTrigger className="">
-                <SelectValue
-                  placeholder={
-                    capitalizeFirstLetter(eventStore.mode) || "Select Mode"
-                  }
-                />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="virtual">Virtual</SelectItem>
-                <SelectItem value="in-person">In-Person</SelectItem>
-                <SelectItem value="both">Both</SelectItem>
-              </SelectContent>
-            </Select>
+              <option value="virtual">Virtual</option>
+              <option value="in-person">In-Person</option>
+              <option value="both">Both</option>
+            </select>
           </FormControl>
         </FormItem>
       )}

@@ -1,3 +1,4 @@
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -8,7 +9,6 @@ import {
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
-import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import GuestsAllowFriendCheckbox from "./GuestsAllowFriendCheckbox";
@@ -84,6 +84,7 @@ const AddUserModal = ({
       <DialogTrigger asChild>
         <Button
           variant="outline"
+          type="button"
           className={cn({
             "bg-evento-gradient text-white": currentSelectedUsers.length > 0,
           })}
@@ -190,6 +191,7 @@ const AddUserModal = ({
         <div className="mt-4 flex items-center justify-between">
           {storeField === "guests" && <GuestsAllowFriendCheckbox />}
           <Button
+            type="button"
             className="bg-evento-gradient-button border shadow mt-2"
             onClick={handleSave}
           >

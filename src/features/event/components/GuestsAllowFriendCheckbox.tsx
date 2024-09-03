@@ -25,6 +25,7 @@ const GuestsAllowFriendButton = () => {
           <FormControl>
             <Button
               {...field}
+              type="button"
               variant={"outline"}
               onClick={handleButtonClick}
               className={cn(

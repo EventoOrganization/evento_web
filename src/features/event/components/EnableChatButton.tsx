@@ -36,6 +36,7 @@ const EnableChatButton = () => {
           <FormLabel className="sr-only">Enable Chat</FormLabel>
           <FormControl>
             <Button
+              type="button"
               variant="outline"
               onClick={handleButtonClick}
               className={cn(

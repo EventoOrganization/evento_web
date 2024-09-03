@@ -34,6 +34,7 @@ const Form = () => {
       <h4 className="text-eventoPurpleLight font-bold"></h4>
       <div className="flex items-center">
         <Button
+          type="button"
           variant={"outline"}
           className={cn("", { "bg-evento-gradient text-white": createRSVP })}
           onClick={handleRSVPChange}

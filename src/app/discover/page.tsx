@@ -2,6 +2,7 @@
 import Section from "@/components/layout/Section";
 import LocationSelector from "@/components/map/LocationSelector";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import UserPrevirew from "@/components/UsersList";
 import { useDiscoverContext } from "@/contexts/DiscoverContext";
 import { useSession } from "@/contexts/SessionProvider";
@@ -12,7 +13,6 @@ import { cn } from "@/lib/utils";
 import { EventType, InterestType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
 import { fetchData } from "@/utils/fetchData";
-import { Label } from "@radix-ui/react-label";
 import { Search } from "lucide-react";
 import { useEffect, useState } from "react";
 
