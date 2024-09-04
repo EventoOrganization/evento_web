@@ -9,19 +9,19 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { Button } from "./ui/button";
-const UserPrevirew = ({
+const AttendeesList = ({
   user,
   fetchUsers,
 }: {
   user?: UserType;
   fetchUsers?: () => void;
 }) => {
-  const { token } = useSession();
+  const { token, user: loggedUser } = useSession();
   const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
   const [isFollowing, setIsFollowing] = useState<boolean | null>(
     user?.status === "following" ? true : false,
   );
-
+  console.log("User:", user);
   const handleFollow = async () => {
     if (!token) {
       setIsAuthModalOpen(true);
@@ -80,17 +80,20 @@ const UserPrevirew = ({
             </Avatar>
           </div>
         )}
+        {user?.name}
         {user?.firstName} {user?.lastName}
       </Link>
-      <Button
-        variant={"outline"}
-        className={cn("bg-gray-200 text-black rounded-lg px-5", {
-          "bg-evento-gradient-button text-white": !isFollowing,
-        })}
-        onClick={handleFollow}
-      >
-        {isFollowing ? "Unfollow" : "Follow"}
-      </Button>
+      {user?.name !== loggedUser?.name && (
+        <Button
+          variant={"outline"}
+          className={cn("bg-gray-200 text-black rounded-lg px-5", {
+            "bg-evento-gradient-button text-white": !isFollowing,
+          })}
+          onClick={handleFollow}
+        >
+          {isFollowing ? "Unfollow" : "Follow"}
+        </Button>
+      )}
 
       {isAuthModalOpen && (
         <AuthModal
@@ -105,4 +108,4 @@ const UserPrevirew = ({
   );
 };
 
-export default UserPrevirew;
+export default AttendeesList;

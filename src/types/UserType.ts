@@ -22,7 +22,21 @@ export type UserType = {
   totalEventAttended?: number;
   interests?: InterestType[];
   interest?: string[];
-
+  aboutMe?: string;
+  bio?: string;
+  DOB?: string;
+  phoneNumber?: string;
+  socialId?: string;
+  socialType?: number;
+  password?: string;
+  address?: string;
+  role?: "admin" | "user";
+  deviceToken?: string;
+  deviceType?: string;
+  otp?: number;
+  phone_verified?: string;
+  is_block?: number;
+  is_otp_verify?: number;
   //Other users
   userInfo?: {
     _id: string;

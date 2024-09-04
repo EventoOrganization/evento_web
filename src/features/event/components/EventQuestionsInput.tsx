@@ -92,13 +92,18 @@ const Form = () => {
                         <Button
                           type="button"
                           variant="destructive"
+                          className="bg-muted text-black border shadow"
                           onClick={() => removeOption(index, optionIndex)}
                         >
                           Remove Choice
                         </Button>
                       </div>
                     ))}
-                    <Button type="button" onClick={() => addOption(index)}>
+                    <Button
+                      type="button"
+                      className="bg-blue-400"
+                      onClick={() => addOption(index)}
+                    >
                       Add Choice
                     </Button>
                   </>

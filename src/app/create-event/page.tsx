@@ -88,7 +88,7 @@ const CreateEventPage = async () => {
 
   return (
     <Section className="md:mt-24 py-4 max-w-5xl w-full">
-      <div className="flex flex-col md:flex-row gap-4 w-full">
+      <div className="flex flex-col md:flex-row-reverse gap-4 w-full">
         <CreateEventPreview />
         <EventForm
           className="w-full min-w-96"
