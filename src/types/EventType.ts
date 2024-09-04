@@ -49,6 +49,9 @@ export type EventType = {
   guestsAllowFriend: boolean;
   additionalField?: any;
   details?: EventDetailsType;
+  isGoing?: boolean;
+  isHosted?: boolean;
+  isFavourite?: boolean;
 };
 export type FileType = {
   name: string;

@@ -11,7 +11,7 @@ interface ProfileStoreState {
   following: number;
   totalEventAttended: number;
   filteredPastEventsAttended: EventType[];
-  filteredUpcomingEventsAttended: EventType[];
+  filteredUpcomingEventsAttened: EventType[];
   setProfileData: (data: Partial<ProfileStoreState>) => void;
 }
 
@@ -24,7 +24,7 @@ export const useProfileStore = create(
       following: 0,
       totalEventAttended: 0,
       filteredPastEventsAttended: [],
-      filteredUpcomingEventsAttended: [],
+      filteredUpcomingEventsAttened: [],
       setProfileData: (data) => set(data),
     }),
     {

@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { EventType } from "@/types/EventType";
+import { BookmarkCheck, Circle, CircleCheckBig } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 import EventModal from "./EventModal";
@@ -42,6 +43,7 @@ const EventPreview = ({
   const isValidUrl = (url: string) => {
     return url.startsWith("http://") || url.startsWith("https://");
   };
+
   return (
     <>
       <Card
@@ -52,7 +54,27 @@ const EventPreview = ({
         onClick={handleCardClick}
       >
         <CardHeader>
-          <CardTitle></CardTitle>
+          <CardTitle className="z-10 w-10 h-10 self-end space-y-2">
+            {event?.isGoing && (
+              <CircleCheckBig
+                strokeWidth={1.5}
+                className={cn(
+                  "text-white bg-eventoPurpleLight rounded-full w-full h-full",
+                )}
+              />
+            )}{" "}
+            {event?.isFavourite && (
+              <div className=" w-10 h-10 relative">
+                <Circle
+                  strokeWidth={1.5}
+                  className={cn(
+                    "absolute inset-0  text-white bg-eventoPurpleLight rounded-full w-full h-full",
+                  )}
+                />
+                <BookmarkCheck className="absolute inset-0 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white" />
+              </div>
+            )}
+          </CardTitle>
           <CardDescription></CardDescription>
         </CardHeader>
         <CardContent>

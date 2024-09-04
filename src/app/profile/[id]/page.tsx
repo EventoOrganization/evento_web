@@ -31,7 +31,7 @@ export default async function UserProfilePage({
   return (
     <UserProfile
       id={id}
-      profile={profileData.body}
+      idProfile={profileData.body}
       upcomingEvents={profileData.body.upcomingEvents || []}
       pastEvents={profileData.body.pastEvents || []}
       // hostingEvents={upcomingEvents.body.hostedByYouEvents || []}

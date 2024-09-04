@@ -5,43 +5,33 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import EventSection from "@/features/event/components/EventSection";
 import { useAuthStore } from "@/store/useAuthStore";
+import { useProfileStore } from "@/store/useProfileStore";
 import { eventoBtn } from "@/styles/eventoBtn";
 import { EventType } from "@/types/EventType";
-import { UserType } from "@/types/UserType";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 const UserProfile = ({
   id,
-  profile,
+  idProfile,
   upcomingEvents,
   pastEvents,
   hostingEvents,
   pastHostedEvents,
 }: {
   id?: string;
-  profile: UserType;
+  idProfile?: any;
   upcomingEvents?: EventType[];
   pastEvents?: EventType[];
   hostingEvents?: EventType[];
   pastHostedEvents?: EventType[];
 }) => {
   const user = useAuthStore((state) => state.user);
-  // console.log("profile", profile);
-  // console.log("upcomingEvents", upcomingEvents);
-  // console.log("pastEvents", pastEvents);
-  // console.log("hostingEvents", hostingEvents);
-  // console.log("pastHostedEvents", pastHostedEvents);
-  // console.log("profile", profile);
+  const profile = id ? idProfile : useProfileStore((state) => state);
+  console.log("User profile:", profile);
 
-  useEffect(() => {
-    if (!user && !id) {
-      useAuthStore.getState().setUser(profile);
-    }
-  }, []);
   const router = useRouter();
-  if (!user) {
+  if (!user || !profile) {
     return (
       <>
         <p>No user is logged in. Please log in. </p>
@@ -56,9 +46,9 @@ const UserProfile = ({
       <div className=" w-full lg:grid lg:grid-cols-3">
         <div className="col-span-2 self-start w-full max-w-lg">
           <div className="flex items-center w-full justify-between pt-10 pb-4 ">
-            {user.profileImage ? (
+            {profile?.userInfo?.profileImage ? (
               <Image
-                src={user.profileImage}
+                src={profile?.userInfo?.profileImage}
                 alt="user image"
                 width={500}
                 height={500}

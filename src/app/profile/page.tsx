@@ -12,7 +12,7 @@ export default function CurrentUserProfilePage() {
     userInfo,
     upcomingEvents,
     pastEvents,
-    filteredUpcomingEventsAttended: hostingEvents,
+    filteredUpcomingEventsAttened,
     setProfileData,
   } = useProfileStore();
 
@@ -28,7 +28,7 @@ export default function CurrentUserProfilePage() {
       try {
         // Fetch the user's profile
         const profileDataResponse = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/users/getProfile`,
+          `${process.env.NEXT_PUBLIC_API_URL}/users/getProfileByUserId`,
           {
             method: "GET",
             credentials: "include",
@@ -46,52 +46,8 @@ export default function CurrentUserProfilePage() {
         const profileDataJson = await profileDataResponse.json();
         console.log("profile fetch data", profileDataJson.body);
 
-        // Fetch upcoming events
-        const upcomingEventsResponse = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/users/upcomingEvents`,
-          {
-            method: "GET",
-            credentials: "include",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${user?.token}`,
-            },
-          },
-        );
-
-        if (!upcomingEventsResponse.ok) {
-          throw new Error("Failed to fetch upcoming events.");
-        }
-
-        const upcomingEventsJson = await upcomingEventsResponse.json();
-
-        // Fetch past events
-        const pastEventsResponse = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/users/pastEvents`,
-          {
-            method: "GET",
-            credentials: "include",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${user?.token}`,
-            },
-          },
-        );
-
-        if (!pastEventsResponse.ok) {
-          throw new Error("Failed to fetch past events.");
-        }
-
-        const pastEventsJson = await pastEventsResponse.json();
-
         // Set the profile data and events in the store
-        setProfileData({
-          userInfo: profileDataJson.body,
-          upcomingEvents: upcomingEventsJson.body.upcomingEvents || [],
-          pastEvents: pastEventsJson.body.pastHostedEvents || [],
-          filteredUpcomingEventsAttended:
-            upcomingEventsJson.body.hostedByYouEvents || [],
-        });
+        setProfileData(profileDataJson.body);
       } catch (error) {
         setError(
           error instanceof Error
@@ -129,10 +85,9 @@ export default function CurrentUserProfilePage() {
 
   return (
     <UserProfile
-      profile={userInfo}
-      upcomingEvents={upcomingEvents}
+      upcomingEvents={filteredUpcomingEventsAttened}
       pastEvents={pastEvents}
-      hostingEvents={hostingEvents}
+      hostingEvents={upcomingEvents}
     />
   );
 }
