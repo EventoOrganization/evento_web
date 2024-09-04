@@ -1,7 +1,6 @@
-// src/app/profile/page.tsx
+// src/app/profile/[id]/page.tsx
 
 import UserProfile from "@/features/profile/UserProfile";
-import { cookies } from "next/headers";
 
 export default async function UserProfilePage({
   params,
@@ -9,33 +8,24 @@ export default async function UserProfilePage({
   params: { id: string };
 }) {
   const id = params.id;
-  const token = cookies().get("token");
-  const authHeader = {
-    Authorization: `Bearer ${token?.value}`,
-  };
-
-  // Fetch the user's profile
+  // Fetch the user's profile without needing the auth check
   const profileResponse = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/users/getProfileUser/${id}`,
     {
       method: "GET",
-      headers: authHeader,
     },
   );
+
   if (!profileResponse.ok) {
     return <div>Error fetching user profile data</div>;
   }
 
   const profileData = await profileResponse.json();
-  console.log("profileData", profileData.body);
   return (
     <UserProfile
-      id={id}
-      idProfile={profileData.body}
+      profile={profileData.body}
       upcomingEvents={profileData.body.upcomingEvents || []}
       pastEvents={profileData.body.pastEvents || []}
-      // hostingEvents={upcomingEvents.body.hostedByYouEvents || []}
-      // pastHostedEvents={pastEvents.body.pastHostedEvents || []}
     />
   );
 }

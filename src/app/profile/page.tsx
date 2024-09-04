@@ -18,7 +18,7 @@ export default function CurrentUserProfilePage() {
 
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
+  const profile = useProfileStore((state) => state);
   useEffect(() => {
     if (!user) {
       setIsLoading(false);
@@ -82,9 +82,17 @@ export default function CurrentUserProfilePage() {
   if (!userInfo) {
     return <div>Profile data is loading...</div>;
   }
-
+  if (!user) {
+    return (
+      <>
+        <p>No user is logged in. Please log in. </p>
+        <Link href="/signin">Login here</Link>
+      </>
+    );
+  }
   return (
     <UserProfile
+      profile={profile}
       upcomingEvents={filteredUpcomingEventsAttened}
       pastEvents={pastEvents}
       hostingEvents={upcomingEvents}

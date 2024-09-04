@@ -6,6 +6,7 @@ import AuthModal from "@/features/auth/components/AuthModal";
 import { cn } from "@/lib/utils";
 import { UserType } from "@/types/UserType";
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 import { Button } from "./ui/button";
 const UserPrevirew = ({
@@ -57,7 +58,7 @@ const UserPrevirew = ({
 
   return (
     <>
-      <span className="flex items-center gap-4">
+      <Link href={`/profile/${user?._id}`} className="flex items-center gap-4">
         {user?.profileImage &&
         user?.profileImage.startsWith("http") &&
         user?.profileImage ? (
@@ -80,7 +81,7 @@ const UserPrevirew = ({
           </div>
         )}
         {user?.firstName} {user?.lastName}
-      </span>
+      </Link>
       <Button
         variant={"outline"}
         className={cn("bg-gray-200 text-black rounded-lg px-5", {

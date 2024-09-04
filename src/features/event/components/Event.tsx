@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 import { Loader, SquareArrowOutUpRightIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import DeleteEventButton from "./DeleteEventButton";
@@ -19,6 +20,7 @@ const Event = ({ className, event }: { className?: string; event?: any }) => {
   const [isHovered, setIsHovered] = useState(false);
   const { user } = useSession();
   const isHost = event?.user?._id === user?._id;
+  const pathname = usePathname();
   const renderDate = () => {
     if (!event || !event.details) return <Loader />;
     const startDate = event?.details?.date;
@@ -88,7 +90,7 @@ const Event = ({ className, event }: { className?: string; event?: any }) => {
         </div>
         <div
           className={cn("", {
-            "bg-evento-gradient": event && event?.details?.images?.[0],
+            // "bg-evento-gradient": event && event?.details?.images?.[0],
           })}
         >
           <div>
@@ -141,7 +143,7 @@ const Event = ({ className, event }: { className?: string; event?: any }) => {
           </div>
           <EventActionIcons event={event} />
         </div>
-        {isHost && (
+        {isHost && pathname !== "/discover" && (
           <div className="flex justify-end mt-4">
             <DeleteEventButton eventId={event._id} isHost={isHost} />
           </div>

@@ -87,7 +87,12 @@ const DiscoverPage = () => {
         distanceFilter,
       );
 
-      const filteredUsers = filterUsers(users, selectedInterests, searchText);
+      const filteredUsers = filterUsers(
+        users,
+        selectedInterests,
+        searchText,
+        interests,
+      );
 
       setFilteredEvents(filteredEvents);
       setFilteredUsers(filteredUsers);
@@ -173,7 +178,7 @@ const DiscoverPage = () => {
               ))}
             </ul>
           </div>
-          <div className="p-4">
+          <div className="p-4 hidden md:block">
             <h4 className="text-purple-600 font-bold">Follow Suggestions</h4>
             <ul className="space-y-4 py-4">
               {filteredUsers.map((user) => (
@@ -280,23 +285,32 @@ const filterUsers = (
   users: UserType[],
   selectedInterests: InterestType[],
   searchText: string,
+  allInterests: InterestType[], // Liste des intérêts disponibles
 ) => {
-  // console.log("users", users);
   const searchLower = searchText.toLowerCase();
 
   return users.filter((user) => {
+    // Mapping des IDs d'intérêts de l'utilisateur aux objets complets
+    const userInterests = user.interest
+      ?.map(
+        (interestId) =>
+          allInterests.find((interest) => interest._id === interestId) || null,
+      )
+      .filter(Boolean) as InterestType[];
+
+    // Vérifie les intérêts sélectionnés
     const matchesInterest =
       selectedInterests.length === 0 ||
       selectedInterests.some((interest) =>
-        user.interests?.some(
-          (userInterest) => userInterest._id === interest._id,
-        ),
+        userInterests.some((userInterest) => userInterest._id === interest._id),
       );
+
     const userName =
       user.firstName && user.lastName
         ? `${user.firstName} ${user.lastName}`
         : user.firstName || user.lastName || "";
 
+    // Vérifie le texte de recherche
     const matchesSearchText = userName.toLowerCase().includes(searchLower);
 
     return matchesInterest && matchesSearchText;

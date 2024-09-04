@@ -1,52 +1,37 @@
 "use client";
-import ComingSoon from "@/components/ComingSoon";
 import Section from "@/components/layout/Section";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import EventSection from "@/features/event/components/EventSection";
-import { useAuthStore } from "@/store/useAuthStore";
-import { useProfileStore } from "@/store/useProfileStore";
 import { eventoBtn } from "@/styles/eventoBtn";
 import { EventType } from "@/types/EventType";
-import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 const UserProfile = ({
   id,
-  idProfile,
+  profile,
   upcomingEvents,
   pastEvents,
   hostingEvents,
   pastHostedEvents,
 }: {
   id?: string;
-  idProfile?: any;
+  profile?: any;
   upcomingEvents?: EventType[];
   pastEvents?: EventType[];
   hostingEvents?: EventType[];
   pastHostedEvents?: EventType[];
 }) => {
-  const user = useAuthStore((state) => state.user);
-  const profile = id ? idProfile : useProfileStore((state) => state);
   console.log("User profile:", profile);
-
+  console.log("id", id);
   const router = useRouter();
-  if (!user || !profile) {
-    return (
-      <>
-        <p>No user is logged in. Please log in. </p>
-        <Link href="/signin">Login here</Link>
-        <ComingSoon message="This page profile is under construction. Please check back later!" />
-      </>
-    );
-  }
-
+  const pathname = usePathname();
   return (
     <Section className="gap-6 md:mt-20 md:px-20">
       <div className=" w-full lg:grid lg:grid-cols-3">
         <div className="col-span-2 self-start w-full max-w-lg">
           <div className="flex items-center w-full justify-between pt-10 pb-4 ">
-            {profile?.userInfo?.profileImage ? (
+            {/* {profile?.userInfo?.profileImage ? (
               <Image
                 src={profile?.userInfo?.profileImage}
                 alt="user image"
@@ -61,7 +46,11 @@ const UserProfile = ({
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
               </div>
-            )}
+            )}{" "} */}
+            <Avatar className="w-20 h-20 md:w-36 md:h-36">
+              <AvatarImage src="https://github.com/shadcn.png" />
+              <AvatarFallback>CN</AvatarFallback>
+            </Avatar>
             <div className="flex flex-col items-center">
               <span className="font-bold text-xl">
                 {profile && profile.totalEventAttended}{" "}
@@ -80,8 +69,7 @@ const UserProfile = ({
           <div className="flex flex-col items-start gap-4">
             <ul className=" pt-4 text-start">
               <li className="font-semibold md:text-xl">
-                {user.name ||
-                  (profile && profile.userInfo?.name && profile.userInfo?.name)}
+                {profile && profile.userInfo?.name && profile.userInfo?.name}
               </li>
               <li>
                 Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nulla,
@@ -96,24 +84,26 @@ const UserProfile = ({
                 </Link>
               </li>
             </ul>
-            <ul className="flex justify-evenly gap-4">
-              <li>
-                <Button
-                  className={"bg-gray-200 text-black rounded-full px-8"}
-                  onClick={() => router.push("/profile/edit")}
-                >
-                  Edit Profile
-                </Button>
-              </li>
-              <li>
-                <Button
-                  className={"bg-gray-200 text-black rounded-full px-8"}
-                  onClick={() => alert("Share?? que fait l'actuel?")}
-                >
-                  Settings
-                </Button>
-              </li>
-            </ul>
+            {pathname == "/profile" && (
+              <ul className="flex justify-evenly gap-4">
+                <li>
+                  <Button
+                    className={"bg-gray-200 text-black rounded-full px-8"}
+                    onClick={() => router.push("/profile/edit")}
+                  >
+                    Edit Profile
+                  </Button>
+                </li>
+                <li>
+                  <Button
+                    className={"bg-gray-200 text-black rounded-full px-8"}
+                    onClick={() => alert("Share?? que fait l'actuel?")}
+                  >
+                    Settings
+                  </Button>
+                </li>
+              </ul>
+            )}
           </div>
         </div>
         <div className="hidden lg:flex flex-col">
