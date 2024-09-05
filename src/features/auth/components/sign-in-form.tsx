@@ -75,6 +75,7 @@ const SignInForm = ({
         toast({
           description: error,
           variant: "destructive",
+          duration: 3000,
         });
         throw new Error(error);
       }
@@ -100,6 +101,7 @@ const SignInForm = ({
       toast({
         description: "Sign in successful!",
         className: "bg-evento-gradient-button text-white",
+        duration: 3000,
       });
 
       onAuthSuccess();
