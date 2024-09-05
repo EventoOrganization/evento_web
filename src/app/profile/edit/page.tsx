@@ -1,6 +1,7 @@
 import ProfileForm from "@/features/profile/ProfileForm";
+import { UserType } from "@/types/UserType";
 
-const EditProfilePage = ({ user }: { user: any }) => {
+const EditProfilePage = ({ user }: { user: UserType }) => {
   console.log("user", user);
   return (
     <div className="container mx-auto p-4">
