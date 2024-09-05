@@ -3,9 +3,13 @@
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { toast } from "@/hooks/use-toast";
+import { useAuthStore } from "@/store/useAuthStore";
+import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { useState } from "react";
 import ForgotForm from "./forgot-form";
 import LoginForm from "./LoginForm";
@@ -17,20 +21,39 @@ const AuthModal = ({
   onAuthSuccess,
   onClose,
 }: {
-  onAuthSuccess: () => void;
+  onAuthSuccess: (token: string) => void;
   onClose: () => void;
 }) => {
+  const { setUser } = useAuthStore();
   const [isModalOpen, setIsModalOpen] = useState(true);
   const [currentForm, setCurrentForm] = useState<
     "login" | "signup" | "forgot-password" | "reset-password" | "verify"
   >("login");
-
-  const handleAuthSuccess = () => {
-    console.log("Auth success in AuthModal, closing modal");
+  const handleVerifySuccess = () => {
     setIsModalOpen(false);
-    onAuthSuccess();
   };
-
+  const handleLoginSuccess = () => {
+    setIsModalOpen(false);
+    // onAuthSuccess();
+  };
+  const handleOnSignUpSuccess = async (email: string, password: string) => {
+    console.log("handleOnSignUpSuccess", email, password);
+    const loginRes = await fetchData<any>("/auth/login", HttpMethod.POST, {
+      email: email,
+      password: password,
+    });
+    console.log("loginRes", loginRes);
+    if (loginRes.error) {
+      toast({
+        description: "Auto login failed",
+        variant: "destructive",
+        duration: 3000,
+      });
+      return;
+    }
+    setUser(loginRes.data);
+    onAuthSuccess(loginRes.data.token);
+  };
   const switchForm = (
     form: "login" | "signup" | "forgot-password" | "reset-password" | "verify",
   ) => {
@@ -43,14 +66,17 @@ const AuthModal = ({
       case "signup":
         return (
           <SignUpForm
-            onAuthSuccess={() => switchForm("verify")}
+            onAuthSuccess={(email, password) => {
+              switchForm("verify");
+              handleOnSignUpSuccess(email, password);
+            }}
             onSignInClick={() => switchForm("login")}
           />
         );
       case "login":
         return (
           <LoginForm
-            onAuthSuccess={handleAuthSuccess}
+            onAuthSuccess={handleLoginSuccess}
             shouldRedirect={false}
             onSignUpClick={() => switchForm("signup")}
             onForgotPasswordClick={() => switchForm("forgot-password")}
@@ -66,7 +92,7 @@ const AuthModal = ({
       case "reset-password":
         return <ResetPasswordForm onBackToSignIn={() => switchForm("login")} />;
       case "verify":
-        return <OTPVerifyForm onBackToSignIn={() => switchForm("login")} />;
+        return <OTPVerifyForm onAuthSuccess={handleVerifySuccess} />;
       default:
         return null;
     }
@@ -95,6 +121,16 @@ const AuthModal = ({
                     : "Sign In"}{" "}
             to Continue
           </DialogTitle>
+          <DialogDescription>
+            {currentForm === "signup"
+              ? "Sign Up"
+              : currentForm === "forgot-password"
+                ? "Forgot Password"
+                : currentForm === "reset-password"
+                  ? "Reset Password"
+                  : currentForm === "verify" &&
+                    "Enter the code that was sent to your email."}
+          </DialogDescription>
         </DialogHeader>
         {renderForm()}
       </DialogContent>

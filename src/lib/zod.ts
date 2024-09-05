@@ -1,13 +1,10 @@
 // src\lib\zod.ts
 import { z } from "zod";
 
-// SignIn schema for validating email and password fields during sign-in
 export const signInSchema = z.object({
   email: z.string().email("Invalid email address."),
   password: z.string().min(6, "Password must be at least 6 characters."),
 });
-
-// SignUp schema for validating email, password, and confirm password fields during sign-up
 
 export const signUpSchema = z
   .object({
@@ -22,6 +19,12 @@ export const signUpSchema = z
     message: "Passwords don't match",
   });
 
+export const otpVerificationSchema = z.object({
+  otpCode: z
+    .string()
+    .length(6, "OTP should be exactly 6 digits.")
+    .regex(/^\d+$/, "OTP should only contain numbers."),
+});
 // Schema for validating the name field
 export const nameSchema = z.object({
   name: z

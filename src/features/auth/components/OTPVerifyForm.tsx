@@ -6,81 +6,112 @@ import {
   FormItem,
   FormLabel,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSeparator,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
+import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
-import { resetCodeSchema } from "@/lib/zod";
+import { otpVerificationSchema } from "@/lib/zod";
+import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { zodResolver } from "@hookform/resolvers/zod";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
-const OTPVerifyForm = ({
-  onBackToSignIn, // Call this when the user wants to switch back to sign-in
-}: {
-  onBackToSignIn?: () => void;
-}) => {
+
+const OTPVerifyForm = ({ onAuthSuccess }: { onAuthSuccess: () => void }) => {
   const [error, setError] = useState<string | null>(null);
   const [isFetching, setIsFetching] = useState(false);
-  const router = useRouter();
+  const { toast } = useToast();
 
-  const codeForm = useForm<z.infer<typeof resetCodeSchema>>({
-    resolver: zodResolver(resetCodeSchema),
+  const form = useForm<z.infer<typeof otpVerificationSchema>>({
+    resolver: zodResolver(otpVerificationSchema),
     defaultValues: {
-      resetCode: "",
+      otpCode: "",
     },
   });
 
-  const handleCodeSubmit: SubmitHandler<
-    z.infer<typeof resetCodeSchema>
-  > = async (data) => {
+  const onSubmit: SubmitHandler<z.infer<typeof otpVerificationSchema>> = async (
+    data,
+  ) => {
     setIsFetching(true);
-    console.log(isFetching);
-    const result = await fetch("/api/auth/verify-reset-code", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-    const resultData = await result.json();
-    if (!result?.ok) {
-      setError(resultData.message);
+    try {
+      const verifyRes = await fetchData("/auth/verify-otp", HttpMethod.POST, {
+        otpCode: data.otpCode,
+      });
+      if (verifyRes.error) {
+        setError(verifyRes.error);
+        toast({
+          description: error,
+          variant: "destructive",
+          duration: 3000,
+        });
+      } else {
+        toast({
+          description: "OTP verified successfully",
+          className: "bg-evento-gradient-button text-white",
+          duration: 3000,
+        });
+        onAuthSuccess();
+      }
+    } catch (err) {
+      toast({
+        description: "Failed to verify OTP",
+        variant: "destructive",
+        duration: 3000,
+      });
+      if (err instanceof Error) {
+        form.setError("otpCode", { message: err.message });
+      } else {
+        form.setError("otpCode", { message: "An unknown error occurred" });
+      }
+    } finally {
       setIsFetching(false);
-    } else {
-      setIsFetching(false);
-      router.push(`/reset-password?code=${data.resetCode}`); // Redirect to reset password page with the code
     }
   };
 
   return (
-    <div className="bg-accent border shadow rounded-md p-4 flex flex-col gap-4 max-w-[400px] w-full mx-auto">
-      <FormProvider {...codeForm}>
-        <form onSubmit={codeForm.handleSubmit(handleCodeSubmit)}>
-          <div>
-            <h2 className="text-center text-lg font-semibold ">Verify Code</h2>
-            <p className="text-muted-foreground text-xs text-center">
-              Enter the code that was sent to your email.
-            </p>
-          </div>
+    <div className="rounded-md p-4 flex flex-col gap-4 max-w-[400px] w-full mx-auto">
+      <FormProvider {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="flex flex-col gap-4 items-center"
+        >
           <FormField
-            control={codeForm.control}
-            name="resetCode"
+            control={form.control}
+            name="otpCode" // Changed from resetCode to otpCode
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="flex flex-col items-center justify-center w-full">
                 <FormLabel className="sr-only">Code</FormLabel>
                 <FormControl>
-                  <Input placeholder="Enter your code" {...field} />
+                  <InputOTP maxLength={6} {...field}>
+                    <InputOTPGroup>
+                      <InputOTPSlot index={0} />
+                      <InputOTPSlot index={1} />
+                      <InputOTPSlot index={2} />
+                    </InputOTPGroup>
+                    <InputOTPSeparator />
+                    <InputOTPGroup>
+                      <InputOTPSlot index={3} />
+                      <InputOTPSlot index={4} />
+                      <InputOTPSlot index={5} />
+                    </InputOTPGroup>
+                  </InputOTP>
                 </FormControl>
-                {codeForm.formState.errors.resetCode?.message && (
+                {form.formState.errors.otpCode?.message && (
                   <p className="text-sm font-medium text-destructive">
-                    {codeForm.formState.errors.resetCode.message}
+                    {form.formState.errors.otpCode.message}
                   </p>
                 )}
               </FormItem>
             )}
           />
-          <Button type="submit" className={cn("w-full mt-2 text-sm h-fit p-1")}>
+          <Button
+            type="submit"
+            className={cn("bg-evento-gradient-button rounded-full w-fit px-6")}
+          >
             Verify
           </Button>
         </form>
@@ -95,25 +126,6 @@ const OTPVerifyForm = ({
           </p>
         </div>
       )}
-      <div className="mt-4 text-justify text-xs w-full">
-        <p className="text-sm text-muted-foreground w-full flex justify-between gap-2 mt-2">
-          {onBackToSignIn ? (
-            <span
-              className="text-muted-foreground text-xs hover:underline w-full text-end cursor-pointer"
-              onClick={onBackToSignIn} // Use onBackToSignIn to switch back to sign-in form
-            >
-              Back to Sign In
-            </span>
-          ) : (
-            <Link
-              href="/auth/sign-in"
-              className="text-muted-foreground text-xs hover:underline w-full text-end"
-            >
-              Back to Sign In
-            </Link>
-          )}
-        </p>
-      </div>
     </div>
   );
 };

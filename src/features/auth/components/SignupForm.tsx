@@ -1,4 +1,3 @@
-"use client";
 import PasswordInput from "@/components/PasswordInput";
 import { Button } from "@/components/ui/button";
 import {
@@ -21,9 +20,10 @@ const SignUpForm = ({
   onAuthSuccess,
 }: {
   onSignInClick?: () => void;
-  onAuthSuccess: () => void;
+  onAuthSuccess: (email: string, password: string) => void;
 }) => {
   const { toast } = useToast();
+
   const [isFetching, setIsFetching] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const form = useForm<z.infer<typeof signUpSchema>>({
@@ -39,9 +39,7 @@ const SignUpForm = ({
     data,
   ) => {
     setIsFetching(true);
-    console.log(data);
     try {
-      // Sign-up request
       const signUpRes = await fetchData<any>("/auth/signup", HttpMethod.POST, {
         email: data.email,
         password: data.password,
@@ -54,17 +52,19 @@ const SignUpForm = ({
           variant: "destructive",
           duration: 3000,
         });
-      } else {
-        toast({
-          description: "Account created successfully",
-          className: "bg-evento-gradient-button text-white",
-          duration: 3000,
-        });
-        onAuthSuccess();
+        return;
       }
+
+      toast({
+        description: "Account created successfully",
+        className: "bg-evento-gradient-button text-white",
+        duration: 3000,
+      });
+
+      onAuthSuccess(data.email, data.password);
     } catch (error: unknown) {
       toast({
-        description: "Signup failed",
+        description: "Signup or login failed",
         variant: "destructive",
         duration: 3000,
       });

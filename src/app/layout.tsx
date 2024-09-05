@@ -22,6 +22,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const session = getSessionSSR();
+  console.log("Session", session);
   return (
     <html lang="en" suppressHydrationWarning={true}>
       <body className={cn(inter.className, "relative bg-muted")}>

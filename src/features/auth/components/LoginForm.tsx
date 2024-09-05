@@ -80,16 +80,16 @@ const LoginForm = ({
         throw new Error(error);
       }
 
-      if (!loginResult?.user?.token) {
+      if (!loginResult?.token) {
         throw new Error("Login failed: No token returned.");
       }
 
-      const token = loginResult.user.token;
+      const token = loginResult.token;
       const loginUserData = {
-        _id: loginResult.user._id,
-        name: loginResult.user.name,
-        email: loginResult.user.email,
-        profileImage: loginResult.user.profileImage,
+        _id: loginResult._id,
+        name: loginResult.name,
+        email: loginResult.email,
+        profileImage: loginResult.profileImage,
         token: token,
       };
 

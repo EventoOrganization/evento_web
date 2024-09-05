@@ -1,4 +1,3 @@
-// Enum to define allowed HTTP methods
 export enum HttpMethod {
   GET = "GET",
   POST = "POST",
@@ -13,14 +12,12 @@ export type FetchDataResult<T> = {
 
 export const fetchData = async <T, B = any>(
   endpoint: string,
-  method: HttpMethod = HttpMethod.GET,
-  body?: Partial<B>,
-  options: RequestInit = {},
-  token?: string | null,
+  method: HttpMethod = HttpMethod.GET, // Par défaut, méthode GET
+  body?: Partial<B> | null, // Si aucune donnée de body, alors null
+  token?: string | null, // Si pas de token, alors null
 ): Promise<FetchDataResult<T>> => {
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
-    ...(options.headers as Record<string, string>),
   };
 
   if (token) {
@@ -28,17 +25,17 @@ export const fetchData = async <T, B = any>(
   }
 
   const fetchOptions: RequestInit = {
-    ...options,
     method,
-    credentials: "include",
     headers,
+    credentials: "include",
   };
 
-  if (body) {
+  if (body && method !== HttpMethod.GET) {
     fetchOptions.body = JSON.stringify(body);
   }
 
   try {
+    console.log("fetching", process.env.NEXT_PUBLIC_API_URL + endpoint, token);
     const response = await fetch(
       process.env.NEXT_PUBLIC_API_URL + endpoint,
       fetchOptions,
