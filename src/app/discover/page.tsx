@@ -1,19 +1,9 @@
 "use client";
-import Section from "@/components/layout/Section";
-import LocationSelector from "@/components/map/LocationSelector";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import UserPrevirew from "@/components/UsersList";
 import { useDiscoverContext } from "@/contexts/DiscoverContext";
 import { useSession } from "@/contexts/SessionProvider";
-import DateSelector from "@/features/discover/DateSelector";
-import TabSelector from "@/features/discover/TabSelector";
-import Event from "@/features/event/components/Event";
-import { cn } from "@/lib/utils";
 import { EventType, InterestType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
 import { fetchData } from "@/utils/fetchData";
-import { Search } from "lucide-react";
 import { useEffect, useState } from "react";
 
 interface Location {
@@ -27,15 +17,15 @@ const DiscoverPage = () => {
   const [selectedInterests, setSelectedInterests] = useState<InterestType[]>(
     [],
   );
-  const [searchText, setSearchText] = useState("");
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [selectedTab, setSelectedTab] = useState("All");
-  const [location, setLocation] = useState<Location | null>(null);
-  const [distanceFilter, setDistanceFilter] = useState(10);
+  // const [searchText, setSearchText] = useState("");
+  // const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  // const [selectedTab, setSelectedTab] = useState("All");
+  // const [location, setLocation] = useState<Location | null>(null);
+  // const [distanceFilter, setDistanceFilter] = useState(10);
   const [users, setUsers] = useState<UserType[]>([]);
   // displayedDatas
-  const [filteredEvents, setFilteredEvents] = useState(events);
-  const [filteredUsers, setFilteredUsers] = useState([] as UserType[]);
+  // const [filteredEvents, setFilteredEvents] = useState(events);
+  // const [filteredUsers, setFilteredUsers] = useState([] as UserType[]);
   const { user: loggedUser } = useSession();
   const handleInterestToggle = (interest: InterestType) => {
     setSelectedInterests((prev) =>
@@ -74,43 +64,43 @@ const DiscoverPage = () => {
     fetchUsers();
   }, [loggedUser]); // Re-fetch users when loggedUser changes
 
-  useEffect(() => {
-    const formattedDate = selectedDate ? selectedDate.toISOString() : "";
-    if (users && users.length > 0 && events && events.length > 0) {
-      const filteredEvents = filterEvents(
-        events,
-        selectedInterests,
-        searchText,
-        formattedDate,
-        selectedTab,
-        location,
-        distanceFilter,
-      );
+  // useEffect(() => {
+  //   const formattedDate = selectedDate ? selectedDate.toISOString() : "";
+  //   if (users && users.length > 0 && events && events.length > 0) {
+  //     const filteredEvents = filterEvents(
+  //       events,
+  //       selectedInterests,
+  //       searchText,
+  //       formattedDate,
+  //       selectedTab,
+  //       location,
+  //       distanceFilter,
+  //     );
 
-      const filteredUsers = filterUsers(
-        users,
-        selectedInterests,
-        searchText,
-        interests,
-      );
+  //     const filteredUsers = filterUsers(
+  //       users,
+  //       selectedInterests,
+  //       searchText,
+  //       interests,
+  //     );
 
-      setFilteredEvents(filteredEvents);
-      setFilteredUsers(filteredUsers);
-    }
-  }, [
-    selectedInterests,
-    searchText,
-    selectedDate,
-    selectedTab,
-    events,
-    users,
-    location,
-    distanceFilter,
-  ]);
+  //     setFilteredEvents(filteredEvents);
+  //     setFilteredUsers(filteredUsers);
+  //   }
+  // }, [
+  //   selectedInterests,
+  //   searchText,
+  //   selectedDate,
+  //   selectedTab,
+  //   events,
+  //   users,
+  //   location,
+  //   distanceFilter,
+  // ]);
 
   return (
     <>
-      <Section className="flex flex-col-reverse md:grid md:grid-cols-2 gap-20 items-start">
+      {/* <Section className="flex flex-col-reverse md:grid md:grid-cols-2 gap-20 items-start">
         <ul className="w-full space-y-6">
           <TabSelector onChange={setSelectedTab} />
           {filteredEvents.map((event) => (
@@ -189,7 +179,7 @@ const DiscoverPage = () => {
             </ul>
           </div>
         </div>
-      </Section>
+      </Section> */}
     </>
   );
 };

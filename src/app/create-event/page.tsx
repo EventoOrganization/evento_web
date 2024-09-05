@@ -1,7 +1,7 @@
 import Section from "@/components/layout/Section";
 import CreateEventPreview from "@/features/event/components/CreateEventPreview";
-import EventForm from "@/features/event/components/EventForm";
-import { InterestType, OptionType } from "@/types/EventType";
+// import EventForm from "@/features/event/components/EventForm";
+import { InterestType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
 import { getSessionSSR } from "@/utils/authUtilsSSR";
 import { fetchData } from "@/utils/fetchData";
@@ -17,7 +17,7 @@ type UsersWithStatusResponse = {
 }[];
 
 const CreateEventPage = async () => {
-  let mappedOptions: OptionType[] = [];
+  // let mappedOptions: OptionType[] = [];
   let users: UserType[] = [];
 
   // Récupération de la session
@@ -74,14 +74,14 @@ const CreateEventPage = async () => {
 
     const data: InterestType[] = result || [];
 
-    if (Array.isArray(data)) {
-      mappedOptions = data.map((interest) => ({
-        value: interest._id,
-        label: interest.name,
-      }));
-    } else {
-      console.error("Unexpected data format:", result);
-    }
+    // if (Array.isArray(data)) {
+    //   mappedOptions = data.map((interest) => ({
+    //     value: interest._id,
+    //     label: interest.name,
+    //   }));
+    // } else {
+    //   console.error("Unexpected data format:", result);
+    // }
   } catch (error) {
     console.error("Error fetching data:", error);
   }
@@ -90,11 +90,11 @@ const CreateEventPage = async () => {
     <Section className="md:mt-24 py-4 max-w-5xl w-full">
       <div className="flex flex-col md:flex-row-reverse gap-4 w-full">
         <CreateEventPreview />
-        <EventForm
+        {/* <EventForm
           className="w-full min-w-96"
           allUsers={users}
           interests={mappedOptions}
-        />
+        /> */}
       </div>
     </Section>
   );
