@@ -11,10 +11,10 @@ const EventModeSelect = () => {
   const eventStore = useEventStore();
   const { register, setValue } = useFormContext();
 
-  const capitalizeFirstLetter = (value: string) => {
-    if (!value) return "";
-    return value.charAt(0).toUpperCase() + value.slice(1);
-  };
+  // const capitalizeFirstLetter = (value: string) => {
+  //   if (!value) return "";
+  //   return value.charAt(0).toUpperCase() + value.slice(1);
+  // };
 
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const value = event.target.value;
