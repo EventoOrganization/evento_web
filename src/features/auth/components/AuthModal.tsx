@@ -9,9 +9,9 @@ import {
 import { useState } from "react";
 import ForgotForm from "./forgot-form";
 import LoginForm from "./LoginForm";
+import OTPVerifyForm from "./OTPVerifyForm";
 import ResetPasswordForm from "./resest-password-form";
 import SignUpForm from "./SignupForm";
-import VerifyCodeForm from "./verify-code-form";
 
 const AuthModal = ({
   onAuthSuccess,
@@ -22,12 +22,8 @@ const AuthModal = ({
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(true);
   const [currentForm, setCurrentForm] = useState<
-    | "signin"
-    | "signup"
-    | "forgot-password"
-    | "reset-password"
-    | "verify-reset-code"
-  >("signin");
+    "login" | "signup" | "forgot-password" | "reset-password" | "verify"
+  >("login");
 
   const handleAuthSuccess = () => {
     console.log("Auth success in AuthModal, closing modal");
@@ -36,12 +32,7 @@ const AuthModal = ({
   };
 
   const switchForm = (
-    form:
-      | "signin"
-      | "signup"
-      | "forgot-password"
-      | "reset-password"
-      | "verify-reset-code",
+    form: "login" | "signup" | "forgot-password" | "reset-password" | "verify",
   ) => {
     console.log("Switching to", form);
     setCurrentForm(form);
@@ -52,17 +43,15 @@ const AuthModal = ({
       case "signup":
         return (
           <SignUpForm
-            onAuthSuccess={handleAuthSuccess}
-            onSignInClick={() => switchForm("signin")}
-            shouldRedirect={false}
+            onAuthSuccess={() => switchForm("verify")}
+            onSignInClick={() => switchForm("login")}
           />
         );
-      case "signin":
+      case "login":
         return (
           <LoginForm
             onAuthSuccess={handleAuthSuccess}
             shouldRedirect={false}
-            className=""
             onSignUpClick={() => switchForm("signup")}
             onForgotPasswordClick={() => switchForm("forgot-password")}
           />
@@ -71,15 +60,13 @@ const AuthModal = ({
         return (
           <ForgotForm
             onResetPasswordClick={() => switchForm("reset-password")}
-            onBackToSignIn={() => switchForm("signin")}
+            onBackToSignIn={() => switchForm("login")}
           />
         );
       case "reset-password":
-        return (
-          <ResetPasswordForm onBackToSignIn={() => switchForm("signin")} />
-        );
-      case "verify-reset-code":
-        return <VerifyCodeForm onBackToSignIn={() => switchForm("signin")} />;
+        return <ResetPasswordForm onBackToSignIn={() => switchForm("login")} />;
+      case "verify":
+        return <OTPVerifyForm onBackToSignIn={() => switchForm("login")} />;
       default:
         return null;
     }
@@ -103,7 +90,7 @@ const AuthModal = ({
                 ? "Forgot Password"
                 : currentForm === "reset-password"
                   ? "Reset Password"
-                  : currentForm === "verify-reset-code"
+                  : currentForm === "verify"
                     ? "Verify Code"
                     : "Sign In"}{" "}
             to Continue

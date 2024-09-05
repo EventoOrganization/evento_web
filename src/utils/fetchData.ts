@@ -6,76 +6,88 @@ export enum HttpMethod {
   DELETE = "DELETE",
 }
 
-// Define the structure of the returned object
 export type FetchDataResult<T> = {
-  data: T | null; // Contains the data if the request is successful
-  error: string | null; // Contains the error message if the request fails
+  data: T | null;
+  error: string | null;
 };
 
-// Generic fetchData function that works in both SSR and CSR
 export const fetchData = async <T, B = any>(
-  endpoint: string, // API endpoint
-  method: HttpMethod = HttpMethod.GET, // HTTP method, default to GET
-  body?: Partial<B>, // Generic request body type
-  options: RequestInit = {}, // Additional fetch options
-  token?: string | null, // CSR token, passed from the client side
+  endpoint: string,
+  method: HttpMethod = HttpMethod.GET,
+  body?: Partial<B>,
+  options: RequestInit = {},
+  token?: string | null,
 ): Promise<FetchDataResult<T>> => {
-  // Setting headers for the request
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
-    ...(options.headers as Record<string, string>), // Merge with any custom headers
+    ...(options.headers as Record<string, string>),
   };
 
   if (token) {
-    headers["Authorization"] = `Bearer ${token}`; // Include token in headers if available
+    headers["Authorization"] = `Bearer ${token}`;
   }
 
-  // Prepare fetch options
   const fetchOptions: RequestInit = {
     ...options,
     method,
-    credentials: "include", // Include credentials if necessary
+    credentials: "include",
     headers,
   };
 
   if (body) {
-    fetchOptions.body = JSON.stringify(body); // Stringify body if provided
+    fetchOptions.body = JSON.stringify(body);
   }
 
   try {
-    // Perform the API request
     const response = await fetch(
       process.env.NEXT_PUBLIC_API_URL + endpoint,
       fetchOptions,
     );
 
-    // Handle non-OK responses
+    const contentType = response.headers.get("content-type");
+
     if (!response.ok) {
-      const errorMessage = await response.text();
+      let errorMessage = `HTTP error! status: ${response.status}`;
+
+      if (contentType && contentType.includes("application/json")) {
+        const errorData = await response.json();
+
+        if (errorData.message) {
+          errorMessage = errorData.message;
+        }
+      } else {
+        const errorText = await response.text();
+        errorMessage = `HTTP error! status: ${response.status}, message: ${errorText}`;
+      }
+
       return {
         data: null,
-        error: `HTTP error! status: ${response.status}, message: ${errorMessage}`,
+        error: errorMessage,
       };
     }
 
-    // Parse the JSON response
-    const data: { success: boolean; body?: T; data?: T } =
-      await response.json();
+    if (contentType && contentType.includes("application/json")) {
+      const data: { success: boolean; body?: T; data?: T; message?: string } =
+        await response.json();
 
-    console.log(data);
-    // Return the parsed data
-    if (data?.body) {
-      return { data: data.body as T, error: null };
-    } else if (data?.data) {
-      return { data: data.data as T, error: null };
+      if (data?.body) {
+        return { data: data.body as T, error: null };
+      } else if (data?.data) {
+        return { data: data.data as T, error: null };
+      } else if (data?.message) {
+        return { data: null, error: data.message };
+      } else {
+        return { data: data as T, error: null };
+      }
     } else {
-      return { data: data as T, error: null };
+      throw new Error("La réponse n'est pas au format JSON.");
     }
   } catch (error) {
-    // Catch any network or unexpected errors
     return {
       data: null,
-      error: `Failed to fetch data from ${endpoint}: ${error instanceof Error ? error.message : "Unknown error"}`,
+      error: `Failed to fetch data from ${endpoint}: ${
+        error instanceof Error ? error.message : "Unknown error"
+      }`,
     };
   }
 };

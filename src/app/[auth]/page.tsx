@@ -2,9 +2,9 @@
 import Section from "@/components/layout/Section";
 import ForgotForm from "@/features/auth/components/forgot-form";
 import SignInForm from "@/features/auth/components/LoginForm";
+import VerifyCodeForm from "@/features/auth/components/OTPVerifyForm";
 import ResetPasswordForm from "@/features/auth/components/resest-password-form";
 import SignUpForm from "@/features/auth/components/SignupForm";
-import VerifyCodeForm from "@/features/auth/components/verify-code-form";
 
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -55,7 +55,7 @@ const FormPage = () => {
 
   return (
     <>
-      <FormComponent {...formProps} />
+      <p></p>
     </>
   );
 };

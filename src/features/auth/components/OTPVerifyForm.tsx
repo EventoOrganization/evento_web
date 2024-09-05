@@ -15,7 +15,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
-const VerifyCodeForm = ({
+const OTPVerifyForm = ({
   onBackToSignIn, // Call this when the user wants to switch back to sign-in
 }: {
   onBackToSignIn?: () => void;
@@ -118,4 +118,4 @@ const VerifyCodeForm = ({
   );
 };
 
-export default VerifyCodeForm;
+export default OTPVerifyForm;

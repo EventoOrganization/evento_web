@@ -8,24 +8,18 @@ export const signInSchema = z.object({
 });
 
 // SignUp schema for validating email, password, and confirm password fields during sign-up
+
 export const signUpSchema = z
   .object({
-    email: z
-      .string()
-      .min(1, { message: "emailRequired" })
-      .email({ message: "invalidEmail" }),
-    password: z
-      .string()
-      .min(8, { message: "passwordMin" })
-      .max(32, { message: "passwordMax" }),
+    email: z.string().email("Invalid email address"),
+    password: z.string().min(8, "Password must be at least 8 characters long"),
     confirmPassword: z
       .string()
-      .min(8, { message: "passwordMin" })
-      .max(32, { message: "passwordMax" }),
+      .min(8, "Confirm Password must be at least 8 characters long"),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: "passwordsdonotmatch",
-    path: ["confirmPassword"],
+    path: ["confirmPassword"], // Where to place the error
+    message: "Passwords don't match",
   });
 
 // Schema for validating the name field
