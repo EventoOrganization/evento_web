@@ -22,8 +22,8 @@ const UserProfile = ({
   hostingEvents?: EventType[];
   pastHostedEvents?: EventType[];
 }) => {
-  // console.log("User profile:", profile);
-  // console.log("id", id);
+  console.log("User profile:", profile);
+  console.log("id", id);
   const router = useRouter();
   const pathname = usePathname();
   return (

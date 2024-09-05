@@ -25,7 +25,7 @@ const OTPVerifyForm = ({ onAuthSuccess }: { onAuthSuccess: () => void }) => {
   const [error, setError] = useState<string | null>(null);
   const [isFetching, setIsFetching] = useState(false);
   const { toast } = useToast();
-
+  console.log(isFetching);
   const form = useForm<z.infer<typeof otpVerificationSchema>>({
     resolver: zodResolver(otpVerificationSchema),
     defaultValues: {
