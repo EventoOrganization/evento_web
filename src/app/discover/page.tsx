@@ -1,8 +1,5 @@
 "use client";
-import { useSession } from "@/contexts/SessionProvider";
-import { UserType } from "@/types/UserType";
-import { fetchData } from "@/utils/fetchData";
-import { useEffect } from "react";
+// import { useSession } from "@/contexts/SessionProvider";
 
 // interface Location {
 //   lat: number;
@@ -24,7 +21,7 @@ const DiscoverPage = () => {
   // displayedDatas
   // const [filteredEvents, setFilteredEvents] = useState(events);
   // const [filteredUsers, setFilteredUsers] = useState([] as UserType[]);
-  const { user: loggedUser } = useSession();
+  // const { user: loggedUser } = useSession();
   // const handleInterestToggle = (interest: InterestType) => {
   //   setSelectedInterests((prev) =>
   //     prev.some((i) => i._id === interest._id)
@@ -32,35 +29,35 @@ const DiscoverPage = () => {
   //       : [...prev, interest],
   //   );
   // };
-  const fetchUsers = async () => {
-    const endPoint = loggedUser
-      ? `/users/followStatusForUsersYouFollow/${loggedUser?._id}`
-      : "/users/allUserListing";
+  // const fetchUsers = async () => {
+  //   const endPoint = loggedUser
+  //     ? `/users/followStatusForUsersYouFollow/${loggedUser?._id}`
+  //     : "/users/allUserListing";
 
-    try {
-      const response = await fetchData(endPoint);
-      if (loggedUser) {
-        const usersWithStatus = (
-          response as { user: UserType; status: string }[]
-        ).map((item) => ({
-          ...item.user,
-          status: item.status,
-        }));
-        // setUsers(usersWithStatus);
-        console.log(usersWithStatus);
-      } else {
-        const result = response as { allUserListing: UserType[] };
-        // setUsers(result.allUserListing);
-        console.log(result.allUserListing);
-      }
-    } catch (error) {
-      console.error("Error fetching users:", error);
-    }
-  };
+  //   try {
+  //     const response = await fetchData(endPoint);
+  //     if (loggedUser) {
+  //       const usersWithStatus = (
+  //         response as { user: UserType; status: string }[]
+  //       ).map((item) => ({
+  //         ...item.user,
+  //         status: item.status,
+  //       }));
+  //       // setUsers(usersWithStatus);
+  //       console.log(usersWithStatus);
+  //     } else {
+  //       const result = response as { allUserListing: UserType[] };
+  //       // setUsers(result.allUserListing);
+  //       console.log(result.allUserListing);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching users:", error);
+  //   }
+  // };
 
-  useEffect(() => {
-    fetchUsers();
-  }, [loggedUser]); // Re-fetch users when loggedUser changes
+  // useEffect(() => {
+  //   fetchUsers();
+  // }, [loggedUser]); // Re-fetch users when loggedUser changes
 
   // useEffect(() => {
   //   const formattedDate = selectedDate ? selectedDate.toISOString() : "";
@@ -98,6 +95,7 @@ const DiscoverPage = () => {
 
   return (
     <>
+      <span>page discover</span>
       {/* <Section className="flex flex-col-reverse md:grid md:grid-cols-2 gap-20 items-start">
         <ul className="w-full space-y-6">
           <TabSelector onChange={setSelectedTab} />
