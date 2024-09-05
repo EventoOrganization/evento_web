@@ -1,9 +1,9 @@
 "use client";
 import Section from "@/components/layout/Section";
 import ForgotForm from "@/features/auth/components/forgot-form";
+import SignInForm from "@/features/auth/components/LoginForm";
 import ResetPasswordForm from "@/features/auth/components/resest-password-form";
-import SignInForm from "@/features/auth/components/sign-in-form";
-import SignUpForm from "@/features/auth/components/sign-up-form";
+import SignUpForm from "@/features/auth/components/SignupForm";
 import VerifyCodeForm from "@/features/auth/components/verify-code-form";
 
 import Link from "next/link";

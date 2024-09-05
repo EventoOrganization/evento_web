@@ -11,6 +11,7 @@ module.exports = {
   plugins: ["@typescript-eslint", "jest", "react-hooks", "prettier"],
   rules: {
     "prettier/prettier": ["error", { endOfLine: "auto" }],
-    "@typescript-eslint/no-explicit-any": ["off"],
+    "@typescript-eslint/no-explicit-any": ["off"], // Disable the 'any' type warning
+    "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_" }], // Enable no-unused-vars for TypeScript
   },
 };

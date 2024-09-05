@@ -15,9 +15,8 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
-
 const VerifyCodeForm = ({
-  onBackToSignIn,
+  onBackToSignIn, // Call this when the user wants to switch back to sign-in
 }: {
   onBackToSignIn?: () => void;
 }) => {
@@ -50,7 +49,7 @@ const VerifyCodeForm = ({
       setIsFetching(false);
     } else {
       setIsFetching(false);
-      router.push(`/reset-password?code=${data.resetCode}`);
+      router.push(`/reset-password?code=${data.resetCode}`); // Redirect to reset password page with the code
     }
   };
 
@@ -98,12 +97,21 @@ const VerifyCodeForm = ({
       )}
       <div className="mt-4 text-justify text-xs w-full">
         <p className="text-sm text-muted-foreground w-full flex justify-between gap-2 mt-2">
-          <Link
-            href="/auth/sign-in"
-            className="text-muted-foreground text-xs hover:underline w-full text-end"
-          >
-            Back to Sign In
-          </Link>
+          {onBackToSignIn ? (
+            <span
+              className="text-muted-foreground text-xs hover:underline w-full text-end cursor-pointer"
+              onClick={onBackToSignIn} // Use onBackToSignIn to switch back to sign-in form
+            >
+              Back to Sign In
+            </span>
+          ) : (
+            <Link
+              href="/auth/sign-in"
+              className="text-muted-foreground text-xs hover:underline w-full text-end"
+            >
+              Back to Sign In
+            </Link>
+          )}
         </p>
       </div>
     </div>

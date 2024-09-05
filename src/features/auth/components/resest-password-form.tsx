@@ -23,8 +23,8 @@ import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 
 const ResetPasswordModal = ({
-  onBackToSignIn,
-  onClose,
+  onBackToSignIn, // Call this after the reset process
+  onClose, // Call this to close the modal
 }: {
   onBackToSignIn?: () => void;
   onClose?: () => void;
@@ -74,7 +74,13 @@ const ResetPasswordModal = ({
       setIsFetching(false);
     } else {
       setIsFetching(false);
-      router.push(`/sign-in`);
+
+      // Call onBackToSignIn if provided
+      if (onBackToSignIn) {
+        onBackToSignIn(); // Switch to Sign In form if passed
+      } else {
+        router.push(`/sign-in`); // Fallback: Push to sign-in route if no prop is passed
+      }
     }
   };
 
@@ -83,7 +89,7 @@ const ResetPasswordModal = ({
       open={isModalOpen}
       onOpenChange={(open) => {
         setIsModalOpen(open);
-        if (!open && onClose) onClose();
+        if (!open && onClose) onClose(); // Call onClose if provided when modal is closed
       }}
     >
       <DialogContent className="max-w-[400px] w-full mx-auto rounded-xl">

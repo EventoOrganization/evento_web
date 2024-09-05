@@ -5,13 +5,12 @@ import { useSession } from "@/contexts/SessionProvider";
 import { useToast } from "@/hooks/use-toast";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { useRouter } from "next/navigation";
-import { useState } from "react"; // New imports
 
 const Page = () => {
   const { user, endSession } = useSession();
   const { toast } = useToast();
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
+  // const [isLoading, setIsLoading] = useState(false);
   console.log("user in settings", user);
   const handleLogout = async () => {
     console.log("Logging out...");
@@ -22,6 +21,7 @@ const Page = () => {
         toast({
           description: error,
           variant: "destructive",
+          duration: 3000,
         });
         return;
       }

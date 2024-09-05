@@ -26,7 +26,7 @@ const extendedSignInSchema = signInSchema.extend({
   rememberMe: z.boolean().optional(),
 });
 
-const SignInForm = ({
+const LoginForm = ({
   onAuthSuccess = () => {},
   shouldRedirect = true,
   className,
@@ -246,4 +246,4 @@ const SignInForm = ({
   );
 };
 
-export default SignInForm;
+export default LoginForm;

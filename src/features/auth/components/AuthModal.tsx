@@ -8,9 +8,9 @@ import {
 } from "@/components/ui/dialog";
 import { useState } from "react";
 import ForgotForm from "./forgot-form";
+import LoginForm from "./LoginForm";
 import ResetPasswordForm from "./resest-password-form";
-import SignInForm from "./sign-in-form";
-import SignUpForm from "./sign-up-form";
+import SignUpForm from "./SignupForm";
 import VerifyCodeForm from "./verify-code-form";
 
 const AuthModal = ({
@@ -59,7 +59,7 @@ const AuthModal = ({
         );
       case "signin":
         return (
-          <SignInForm
+          <LoginForm
             onAuthSuccess={handleAuthSuccess}
             shouldRedirect={false}
             className=""

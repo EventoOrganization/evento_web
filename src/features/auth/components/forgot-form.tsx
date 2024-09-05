@@ -12,7 +12,6 @@ import { emailSchema } from "@/lib/zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { cn } from "@nextui-org/theme";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import { useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
@@ -21,8 +20,8 @@ const ForgotForm = ({
   onResetPasswordClick,
   onBackToSignIn,
 }: {
-  onResetPasswordClick?: () => void;
-  onBackToSignIn?: () => void;
+  onResetPasswordClick?: () => void; // You passed this in AuthModal
+  onBackToSignIn?: () => void; // You passed this in AuthModal
 }) => {
   const [error, setError] = useState<string | null>(null);
   const [isFetching, setIsFetching] = useState(false);
@@ -32,7 +31,7 @@ const ForgotForm = ({
       email: "",
     },
   });
-  const router = useRouter();
+
   const formStyle =
     "bg-accent border shadow rounded-md p-4 flex flex-col gap-4 max-w-[400px] mx-auto";
 
@@ -51,14 +50,14 @@ const ForgotForm = ({
       const resultData = await result.json();
 
       if (!result.ok) {
-        // Accéder à la propriété 'error' dans le corps de la réponse JSON
         setError(resultData.error || "An unknown error occurred");
       } else {
         setIsFetching(false);
-        router.push(`/verify-reset-code`);
+        if (onResetPasswordClick) {
+          onResetPasswordClick(); // Call this when the reset password process is successful
+        }
       }
     } catch (err) {
-      // Gestion d'erreur générique
       setError("An error occurred. Please try again.");
     } finally {
       setIsFetching(false);
@@ -110,12 +109,21 @@ const ForgotForm = ({
               </div>
             )}
             <p className="text-sm text-muted-foreground w-full flex justify-between gap-2 items-center">
-              <Link
-                href={`/sign-in`}
-                className="text-muted-foreground text-xs hover:underline w-full text-end"
-              >
-                Back to Sign In
-              </Link>
+              {onBackToSignIn ? (
+                <span
+                  className="text-muted-foreground text-xs hover:underline w-full text-end cursor-pointer"
+                  onClick={onBackToSignIn} // Use onBackToSignIn when clicked
+                >
+                  Back to Sign In
+                </span>
+              ) : (
+                <Link
+                  href={`/sign-in`}
+                  className="text-muted-foreground text-xs hover:underline w-full text-end"
+                >
+                  Back to Sign In
+                </Link>
+              )}
             </p>
           </div>
         </div>
