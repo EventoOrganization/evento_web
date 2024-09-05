@@ -15,13 +15,13 @@ const EventGuestsModal = ({ allUsers }: { allUsers: UserType[] }) => {
     setGuests(initialGuests);
   }, [allUsers, eventStore.guests]);
 
-  const addGuest = (user: UserType) => {
-    setGuests([...guests, user]);
-  };
+  // const addGuest = (user: UserType) => {
+  //   setGuests([...guests, user]);
+  // };
 
-  const removeGuest = (user: UserType) => {
-    setGuests(guests.filter((guest) => guest._id !== user._id));
-  };
+  // const removeGuest = (user: UserType) => {
+  //   setGuests(guests.filter((guest) => guest._id !== user._id));
+  // };
 
   const handleSave = (selectedGuests: string[]) => {
     eventStore.setEventField("guests", selectedGuests);

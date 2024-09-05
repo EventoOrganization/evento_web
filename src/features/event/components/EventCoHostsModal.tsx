@@ -23,13 +23,13 @@ const EventCoHostsModal = ({ allUsers }: { allUsers: User[] }) => {
     setCoHosts(initialCoHosts);
   }, [allUsers, eventStore.coHosts]);
 
-  const addCoHost = (user: User) => {
-    setCoHosts([...coHosts, user]);
-  };
+  // const addCoHost = (user: User) => {
+  //   setCoHosts([...coHosts, user]);
+  // };
 
-  const removeCoHost = (user: User) => {
-    setCoHosts(coHosts.filter((ch) => ch._id !== user._id));
-  };
+  // const removeCoHost = (user: User) => {
+  //   setCoHosts(coHosts.filter((ch) => ch._id !== user._id));
+  // };
 
   const handleSave = (selectedCoHosts: string[]) => {
     eventStore.setEventField("coHosts", selectedCoHosts);

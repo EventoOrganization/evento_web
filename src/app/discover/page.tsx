@@ -1,10 +1,8 @@
 "use client";
-import { useDiscoverContext } from "@/contexts/DiscoverContext";
 import { useSession } from "@/contexts/SessionProvider";
-import { EventType, InterestType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
 import { fetchData } from "@/utils/fetchData";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 interface Location {
   lat: number;
@@ -13,27 +11,27 @@ interface Location {
 
 const DiscoverPage = () => {
   //Filters
-  const { interests, events } = useDiscoverContext();
-  const [selectedInterests, setSelectedInterests] = useState<InterestType[]>(
-    [],
-  );
+  // const { interests, events } = useDiscoverContext();
+  // const [selectedInterests, setSelectedInterests] = useState<InterestType[]>(
+  //   [],
+  // );
   // const [searchText, setSearchText] = useState("");
   // const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   // const [selectedTab, setSelectedTab] = useState("All");
   // const [location, setLocation] = useState<Location | null>(null);
   // const [distanceFilter, setDistanceFilter] = useState(10);
-  const [users, setUsers] = useState<UserType[]>([]);
+  // const [users, setUsers] = useState<UserType[]>([]);
   // displayedDatas
   // const [filteredEvents, setFilteredEvents] = useState(events);
   // const [filteredUsers, setFilteredUsers] = useState([] as UserType[]);
   const { user: loggedUser } = useSession();
-  const handleInterestToggle = (interest: InterestType) => {
-    setSelectedInterests((prev) =>
-      prev.some((i) => i._id === interest._id)
-        ? prev.filter((i) => i._id !== interest._id)
-        : [...prev, interest],
-    );
-  };
+  // const handleInterestToggle = (interest: InterestType) => {
+  //   setSelectedInterests((prev) =>
+  //     prev.some((i) => i._id === interest._id)
+  //       ? prev.filter((i) => i._id !== interest._id)
+  //       : [...prev, interest],
+  //   );
+  // };
   const fetchUsers = async () => {
     const endPoint = loggedUser
       ? `/users/followStatusForUsersYouFollow/${loggedUser?._id}`
@@ -48,11 +46,11 @@ const DiscoverPage = () => {
           ...item.user,
           status: item.status,
         }));
-        setUsers(usersWithStatus);
+        // setUsers(usersWithStatus);
         console.log(usersWithStatus);
       } else {
         const result = response as { allUserListing: UserType[] };
-        setUsers(result.allUserListing);
+        // setUsers(result.allUserListing);
         console.log(result.allUserListing);
       }
     } catch (error) {
@@ -207,102 +205,102 @@ const getDistanceFromLatLonInKm = (
   return distance;
 };
 // Fonction de filtrage des événements
-const filterEvents = (
-  events: EventType[],
-  selectedInterests: InterestType[],
-  searchText: string,
-  selectedDate: string,
-  selectedTab: string,
-  location: Location | null,
-  distanceFilter: number,
-) => {
-  // console.log("events", events);
-  const searchLower = searchText.toLowerCase();
-  return events.filter((event) => {
-    const matchesInterest =
-      selectedInterests.length === 0 ||
-      selectedInterests.some((selectedInterest) => {
-        return (
-          event.interest?.some((interest) => {
-            return interest._id === selectedInterest._id;
-          }) ?? false
-        );
-      });
+// const filterEvents = (
+//   events: EventType[],
+//   selectedInterests: InterestType[],
+//   searchText: string,
+//   selectedDate: string,
+//   selectedTab: string,
+//   location: Location | null,
+//   distanceFilter: number,
+// ) => {
+//   // console.log("events", events);
+//   const searchLower = searchText.toLowerCase();
+//   return events.filter((event) => {
+//     const matchesInterest =
+//       selectedInterests.length === 0 ||
+//       selectedInterests.some((selectedInterest) => {
+//         return (
+//           event.interest?.some((interest) => {
+//             return interest._id === selectedInterest._id;
+//           }) ?? false
+//         );
+//       });
 
-    const matchesSearchText =
-      event.title?.toLowerCase().includes(searchLower) ||
-      event.details?.description?.toLowerCase().includes(searchLower);
+//     const matchesSearchText =
+//       event.title?.toLowerCase().includes(searchLower) ||
+//       event.details?.description?.toLowerCase().includes(searchLower);
 
-    const eventDate = event.details?.date ? new Date(event.details.date) : null;
-    const eventEndDate = event.details?.endDate
-      ? new Date(event.details.endDate)
-      : null;
-    const selectedDateObj = selectedDate ? new Date(selectedDate) : null;
+//     const eventDate = event.details?.date ? new Date(event.details.date) : null;
+//     const eventEndDate = event.details?.endDate
+//       ? new Date(event.details.endDate)
+//       : null;
+//     const selectedDateObj = selectedDate ? new Date(selectedDate) : null;
 
-    const matchesDate =
-      !selectedDateObj ||
-      (eventDate &&
-        eventEndDate &&
-        selectedDateObj >=
-          new Date(
-            eventDate.getTime() + eventDate.getTimezoneOffset() * 60000,
-          ) &&
-        selectedDateObj <=
-          new Date(
-            eventEndDate.getTime() + eventEndDate.getTimezoneOffset() * 60000,
-          ));
+//     const matchesDate =
+//       !selectedDateObj ||
+//       (eventDate &&
+//         eventEndDate &&
+//         selectedDateObj >=
+//           new Date(
+//             eventDate.getTime() + eventDate.getTimezoneOffset() * 60000,
+//           ) &&
+//         selectedDateObj <=
+//           new Date(
+//             eventEndDate.getTime() + eventEndDate.getTimezoneOffset() * 60000,
+//           ));
 
-    const isNearMe =
-      selectedTab === "Near me" &&
-      location &&
-      getDistanceFromLatLonInKm(
-        location.lat,
-        location.lng,
-        event.details?.loc?.coordinates[1] || 0,
-        event.details?.loc?.coordinates[0] || 0,
-      ) <= distanceFilter;
+//     const isNearMe =
+//       selectedTab === "Near me" &&
+//       location &&
+//       getDistanceFromLatLonInKm(
+//         location.lat,
+//         location.lng,
+//         event.details?.loc?.coordinates[1] || 0,
+//         event.details?.loc?.coordinates[0] || 0,
+//       ) <= distanceFilter;
 
-    const isVirtual =
-      selectedTab === "Virtual" && event.details?.mode === "virtual";
+//     const isVirtual =
+//       selectedTab === "Virtual" && event.details?.mode === "virtual";
 
-    const matchesTab = selectedTab === "All" || isNearMe || isVirtual;
+//     const matchesTab = selectedTab === "All" || isNearMe || isVirtual;
 
-    return matchesInterest && matchesSearchText && matchesDate && matchesTab;
-  });
-};
-// Fonction de filtrage des utilisateurs
-const filterUsers = (
-  users: UserType[],
-  selectedInterests: InterestType[],
-  searchText: string,
-  allInterests: InterestType[], // Liste des intérêts disponibles
-) => {
-  const searchLower = searchText.toLowerCase();
+//     return matchesInterest && matchesSearchText && matchesDate && matchesTab;
+//   });
+// };
+// // Fonction de filtrage des utilisateurs
+// const filterUsers = (
+//   users: UserType[],
+//   selectedInterests: InterestType[],
+//   searchText: string,
+//   allInterests: InterestType[], // Liste des intérêts disponibles
+// ) => {
+//   const searchLower = searchText.toLowerCase();
 
-  return users.filter((user) => {
-    // Mapping des IDs d'intérêts de l'utilisateur aux objets complets
-    const userInterests = user.interest
-      ?.map(
-        (interestId) =>
-          allInterests.find((interest) => interest._id === interestId) || null,
-      )
-      .filter(Boolean) as InterestType[];
+//   return users.filter((user) => {
+//     // Mapping des IDs d'intérêts de l'utilisateur aux objets complets
+//     const userInterests = user.interest
+//       ?.map(
+//         (interestId) =>
+//           allInterests.find((interest) => interest._id === interestId) || null,
+//       )
+//       .filter(Boolean) as InterestType[];
 
-    // Vérifie les intérêts sélectionnés
-    const matchesInterest =
-      selectedInterests.length === 0 ||
-      selectedInterests.some((interest) =>
-        userInterests.some((userInterest) => userInterest._id === interest._id),
-      );
+//     // Vérifie les intérêts sélectionnés
+//     const matchesInterest =
+//       selectedInterests.length === 0 ||
+//       selectedInterests.some((interest) =>
+//         userInterests.some((userInterest) => userInterest._id === interest._id),
+//       );
 
-    const userName =
-      user.firstName && user.lastName
-        ? `${user.firstName} ${user.lastName}`
-        : user.firstName || user.lastName || "";
+//     const userName =
+//       user.firstName && user.lastName
+//         ? `${user.firstName} ${user.lastName}`
+//         : user.firstName || user.lastName || "";
 
-    // Vérifie le texte de recherche
-    const matchesSearchText = userName.toLowerCase().includes(searchLower);
+//     // Vérifie le texte de recherche
+//     const matchesSearchText = userName.toLowerCase().includes(searchLower);
 
-    return matchesInterest && matchesSearchText;
-  });
-};
+//     return matchesInterest && matchesSearchText;
+//   });
+// };

@@ -7,8 +7,9 @@ import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 
 const RenderMedia = ({ event }: { event: EventType }) => {
-  const mediaItems = [];
+  const mediaItems: string[] = [];
   const [isSwiping, setIsSwiping] = useState(false);
+  const [portraitStates, setPortraitStates] = useState<boolean[]>([]); // State to store portrait flags
   const touchStartX = useRef(0);
 
   if (event?.details?.images) {
@@ -18,20 +19,6 @@ const RenderMedia = ({ event }: { event: EventType }) => {
   if (event?.details?.video) {
     mediaItems.push(event.details.video);
   }
-
-  const isPortrait = (mediaUrl: string) => {
-    const [isPortrait, setIsPortrait] = useState(false);
-
-    useEffect(() => {
-      const img = new window.Image();
-      img.src = mediaUrl;
-      img.onload = () => {
-        setIsPortrait(img.naturalHeight > img.naturalWidth);
-      };
-    }, [mediaUrl]);
-
-    return isPortrait;
-  };
 
   const isValidUrl = (url: string) => {
     return url.startsWith("http://") || url.startsWith("https://");
@@ -51,6 +38,28 @@ const RenderMedia = ({ event }: { event: EventType }) => {
   const handleTouchEnd = () => {
     setIsSwiping(false);
   };
+
+  // useEffect to check if the media items are portrait or landscape
+  useEffect(() => {
+    const checkPortraitStates = async () => {
+      const portraitFlags = await Promise.all(
+        mediaItems.map((mediaUrl) => {
+          return new Promise<boolean>((resolve) => {
+            const img = new window.Image();
+            img.src = mediaUrl;
+            img.onload = () => {
+              resolve(img.naturalHeight > img.naturalWidth);
+            };
+          });
+        }),
+      );
+      setPortraitStates(portraitFlags); // Store portrait flags in state
+    };
+
+    if (mediaItems.length > 0) {
+      checkPortraitStates();
+    }
+  }, [mediaItems]);
 
   return (
     <div
@@ -80,7 +89,7 @@ const RenderMedia = ({ event }: { event: EventType }) => {
                 controls
                 className={cn(
                   "absolute top-0 left-1/2 -translate-x-1/2 h-full",
-                  isPortrait(item) ? "object-contain" : "object-cover",
+                  portraitStates[index] ? "object-contain" : "object-cover",
                 )}
               >
                 <source src={item} type="video/mp4" />
@@ -106,7 +115,7 @@ const RenderMedia = ({ event }: { event: EventType }) => {
                 33vw"
                 className={cn(
                   " h-full",
-                  isPortrait(item) ? "object-contain" : "object-cover ",
+                  portraitStates[index] ? "object-contain" : "object-cover ",
                   {
                     "opacity-20": !event,
                   },
