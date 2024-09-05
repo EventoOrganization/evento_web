@@ -2,24 +2,24 @@ import Section from "@/components/layout/Section";
 import CreateEventPreview from "@/features/event/components/CreateEventPreview";
 // import EventForm from "@/features/event/components/EventForm";
 // import { InterestType } from "@/types/EventType";
-import { getSessionSSR } from "@/utils/authUtilsSSR";
+// import { getSessionSSR } from "@/utils/authUtilsSSR";
 
 // Définissez le type attendu pour la réponse de `/users/userListWithFollowingStatus`
-type UsersWithStatusResponse = {
-  _id: string;
-  firstName: string;
-  lastName: string;
-  status: string;
-  name: string;
-  email: string;
-}[];
+// type UsersWithStatusResponse = {
+//   _id: string;
+//   firstName: string;
+//   lastName: string;
+//   status: string;
+//   name: string;
+//   email: string;
+// }[];
 
 const CreateEventPage = async () => {
   // let mappedOptions: OptionType[] = [];
   // let users: UserType[] = [];
 
   // Récupération de la session
-  const session = getSessionSSR();
+  // const session = getSessionSSR();
 
   // try {
   //   if (!session.token) {
