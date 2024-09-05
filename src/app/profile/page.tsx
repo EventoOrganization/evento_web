@@ -5,10 +5,10 @@ import AuthModal from "@/features/auth/components/AuthModal";
 import UserProfile from "@/features/profile/UserProfile";
 
 export default function CurrentUserProfilePage() {
+  const { user } = useSession();
   const onAuthSuccess = () => {};
   const onClose = () => {};
   try {
-    const { user } = useSession();
     if (!user) {
       return <AuthModal onAuthSuccess={onAuthSuccess} onClose={onClose} />;
     } else {
