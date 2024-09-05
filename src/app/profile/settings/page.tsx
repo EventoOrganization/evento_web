@@ -1,27 +1,58 @@
+"use client";
 import ComingSoon from "@/components/ComingSoon";
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { useSession } from "@/contexts/SessionProvider";
+import { useToast } from "@/hooks/use-toast";
+import { fetchData, HttpMethod } from "@/utils/fetchData";
+import { useRouter } from "next/navigation";
+import { useState } from "react"; // New imports
 
-const page = async () => {
-  const token = cookies().get("token");
-  const authHeader = {
-    Authorization: `Bearer ${token?.value}`,
+const Page = () => {
+  const { user, endSession } = useSession();
+  const { toast } = useToast();
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  console.log("user in settings", user);
+  const handleLogout = async () => {
+    console.log("Logging out...");
+    try {
+      const { error } = await fetchData("/auth/logout", HttpMethod.POST);
+
+      if (error) {
+        toast({
+          description: error,
+          variant: "destructive",
+        });
+        return;
+      }
+
+      endSession();
+      toast({
+        description: "You have been logged out.",
+        variant: "default",
+      });
+
+      router.push("/");
+    } catch (err) {
+      toast({
+        description: "An error occurred during logout.",
+        variant: "destructive",
+      });
+    }
   };
-  const logout = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/users/logout`,
-    {
-      method: "POST",
-      headers: authHeader,
-    },
-  );
 
-  if (logout.ok) {
-    redirect("/signin");
+  if (!user) {
+    return (
+      <ComingSoon message="This page is under construction. Please check back later!" />
+    );
   }
 
   return (
-    <ComingSoon message="This page is under construction. Please check back later!" />
+    <div>
+      <h2>Settings</h2>
+      <Button onClick={handleLogout}>Logout</Button>
+    </div>
   );
 };
 
-export default page;
+export default Page;

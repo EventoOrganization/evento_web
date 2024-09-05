@@ -16,7 +16,11 @@ import { useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 
-const VerifyCodeForm = () => {
+const VerifyCodeForm = ({
+  onBackToSignIn,
+}: {
+  onBackToSignIn?: () => void;
+}) => {
   const [error, setError] = useState<string | null>(null);
   const [isFetching, setIsFetching] = useState(false);
   const router = useRouter();

@@ -17,7 +17,13 @@ import { useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 
-const ForgotForm = () => {
+const ForgotForm = ({
+  onResetPasswordClick,
+  onBackToSignIn,
+}: {
+  onResetPasswordClick?: () => void;
+  onBackToSignIn?: () => void;
+}) => {
   const [error, setError] = useState<string | null>(null);
   const [isFetching, setIsFetching] = useState(false);
   const form = useForm<z.infer<typeof emailSchema>>({

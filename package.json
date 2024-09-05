@@ -32,6 +32,7 @@
     "@radix-ui/react-scroll-area": "^1.1.0",
     "@radix-ui/react-select": "^2.1.1",
     "@radix-ui/react-slot": "^1.1.0",
+    "@radix-ui/react-toast": "^1.2.1",
     "@react-google-maps/api": "^2.19.3",
     "@types/react-select": "^5.0.1",
     "@types/react-swipeable-views": "^0.13.5",

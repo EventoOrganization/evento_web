@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { fetchData } from "@/utils/fetchData";
+import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -20,7 +20,7 @@ const DeleteEventButton = ({
     if (!isHost) return;
     setLoading(true);
     try {
-      await fetchData(`/users/deleteEvent/${eventId}`, "DELETE");
+      await fetchData(`/users/deleteEvent/${eventId}`, HttpMethod.DELETE);
       setLoading(false);
       router.refresh();
     } catch (error) {

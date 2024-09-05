@@ -95,12 +95,12 @@ const UserProfile = ({
                   </Button>
                 </li>
                 <li>
-                  <Button
+                  <Link
+                    href={"/profile/settings"}
                     className={"bg-gray-200 text-black rounded-full px-8"}
-                    onClick={() => alert("Share?? que fait l'actuel?")}
                   >
                     Settings
-                  </Button>
+                  </Link>
                 </li>
               </ul>
             )}

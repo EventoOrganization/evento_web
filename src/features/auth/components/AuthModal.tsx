@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Dialog,
   DialogContent,
@@ -5,8 +7,11 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useState } from "react";
+import ForgotForm from "./forgot-form";
+import ResetPasswordForm from "./resest-password-form";
 import SignInForm from "./sign-in-form";
 import SignUpForm from "./sign-up-form";
+import VerifyCodeForm from "./verify-code-form";
 
 const AuthModal = ({
   onAuthSuccess,
@@ -16,7 +21,13 @@ const AuthModal = ({
   onClose: () => void;
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(true);
-  const [isSignUp, setIsSignUp] = useState(false);
+  const [currentForm, setCurrentForm] = useState<
+    | "signin"
+    | "signup"
+    | "forgot-password"
+    | "reset-password"
+    | "verify-reset-code"
+  >("signin");
 
   const handleAuthSuccess = () => {
     console.log("Auth success in AuthModal, closing modal");
@@ -24,9 +35,54 @@ const AuthModal = ({
     onAuthSuccess();
   };
 
-  const toggleSignUp = () => {
-    console.log(isSignUp ? "Switching to Sign In" : "Switching to Sign Up");
-    setIsSignUp(!isSignUp);
+  const switchForm = (
+    form:
+      | "signin"
+      | "signup"
+      | "forgot-password"
+      | "reset-password"
+      | "verify-reset-code",
+  ) => {
+    console.log("Switching to", form);
+    setCurrentForm(form);
+  };
+
+  const renderForm = () => {
+    switch (currentForm) {
+      case "signup":
+        return (
+          <SignUpForm
+            onAuthSuccess={handleAuthSuccess}
+            onSignInClick={() => switchForm("signin")}
+            shouldRedirect={false}
+          />
+        );
+      case "signin":
+        return (
+          <SignInForm
+            onAuthSuccess={handleAuthSuccess}
+            shouldRedirect={false}
+            className=""
+            onSignUpClick={() => switchForm("signup")}
+            onForgotPasswordClick={() => switchForm("forgot-password")}
+          />
+        );
+      case "forgot-password":
+        return (
+          <ForgotForm
+            onResetPasswordClick={() => switchForm("reset-password")}
+            onBackToSignIn={() => switchForm("signin")}
+          />
+        );
+      case "reset-password":
+        return (
+          <ResetPasswordForm onBackToSignIn={() => switchForm("signin")} />
+        );
+      case "verify-reset-code":
+        return <VerifyCodeForm onBackToSignIn={() => switchForm("signin")} />;
+      default:
+        return null;
+    }
   };
 
   return (
@@ -38,26 +94,22 @@ const AuthModal = ({
         if (!open) onClose();
       }}
     >
-      <DialogContent className=" rounded-xl">
+      <DialogContent className="rounded-xl">
         <DialogHeader>
           <DialogTitle>
-            {isSignUp ? "Sign Up" : "Sign In"} to Continue
+            {currentForm === "signup"
+              ? "Sign Up"
+              : currentForm === "forgot-password"
+                ? "Forgot Password"
+                : currentForm === "reset-password"
+                  ? "Reset Password"
+                  : currentForm === "verify-reset-code"
+                    ? "Verify Code"
+                    : "Sign In"}{" "}
+            to Continue
           </DialogTitle>
         </DialogHeader>
-        {isSignUp ? (
-          <SignUpForm
-            onAuthSuccess={handleAuthSuccess}
-            onSignInClick={toggleSignUp}
-            shouldRedirect={false}
-          />
-        ) : (
-          <SignInForm
-            onAuthSuccess={handleAuthSuccess}
-            shouldRedirect={false}
-            className=""
-            onSignUpClick={toggleSignUp}
-          />
-        )}
+        {renderForm()}
       </DialogContent>
     </Dialog>
   );

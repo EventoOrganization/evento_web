@@ -1,60 +1,81 @@
-"use server";
-import { getTokenSSR } from "./authUtilsSSR";
+// Enum to define allowed HTTP methods
+export enum HttpMethod {
+  GET = "GET",
+  POST = "POST",
+  PUT = "PUT",
+  DELETE = "DELETE",
+}
 
-export const fetchData = async <T>(
-  endpoint: string,
-  method: "GET" | "POST" | "PUT" | "DELETE" = "GET",
-  body?: any,
-  options: RequestInit = {},
-): Promise<T | null> => {
-  let token;
-  if (typeof window === "undefined") {
-    // We're in SSR
-    token = getTokenSSR();
+// Define the structure of the returned object
+export type FetchDataResult<T> = {
+  data: T | null; // Contains the data if the request is successful
+  error: string | null; // Contains the error message if the request fails
+};
+
+// Generic fetchData function that works in both SSR and CSR
+export const fetchData = async <T, B = any>(
+  endpoint: string, // API endpoint
+  method: HttpMethod = HttpMethod.GET, // HTTP method, default to GET
+  body?: Partial<B>, // Generic request body type
+  options: RequestInit = {}, // Additional fetch options
+  token?: string | null, // CSR token, passed from the client side
+): Promise<FetchDataResult<T>> => {
+  // Setting headers for the request
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+    ...(options.headers as Record<string, string>), // Merge with any custom headers
+  };
+
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`; // Include token in headers if available
   }
 
-  const headers = {
-    ...options.headers,
-    ...(token && { Authorization: `Bearer ${token}` }),
-    "Content-Type": "application/json",
-  };
+  // Prepare fetch options
   const fetchOptions: RequestInit = {
     ...options,
     method,
-    credentials: "include",
+    credentials: "include", // Include credentials if necessary
     headers,
   };
 
   if (body) {
-    fetchOptions.body = JSON.stringify(body);
+    fetchOptions.body = JSON.stringify(body); // Stringify body if provided
   }
-  console.log(
-    `Request sent to ${process.env.NEXT_PUBLIC_API_URL}${endpoint}:`,
-    // fetchOptions,
-  );
+
   try {
+    // Perform the API request
     const response = await fetch(
       process.env.NEXT_PUBLIC_API_URL + endpoint,
       fetchOptions,
     );
 
+    // Handle non-OK responses
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      const errorMessage = await response.text();
+      return {
+        data: null,
+        error: `HTTP error! status: ${response.status}, message: ${errorMessage}`,
+      };
     }
 
+    // Parse the JSON response
     const data: { success: boolean; body?: T; data?: T } =
       await response.json();
-    console.log(`Response from ${endpoint} is ${response.status}:`);
-    // console.log(`Full response from ${endpoint}:`, data);
+
+    console.log(data);
+    // Return the parsed data
     if (data?.body) {
-      return data.body as T;
+      return { data: data.body as T, error: null };
     } else if (data?.data) {
-      return data.data as T;
+      return { data: data.data as T, error: null };
     } else {
-      return data as T;
+      return { data: data as T, error: null };
     }
   } catch (error) {
-    console.error(`Failed to fetch data from ${endpoint}:`, error);
-    return null;
+    // Catch any network or unexpected errors
+    return {
+      data: null,
+      error: `Failed to fetch data from ${endpoint}: ${error instanceof Error ? error.message : "Unknown error"}`,
+    };
   }
 };

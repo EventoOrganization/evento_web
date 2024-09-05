@@ -10,16 +10,17 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useSession } from "@/contexts/SessionProvider";
+import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { signInSchema } from "@/lib/zod";
 import { useAuthStore } from "@/store/useAuthStore";
+import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
-
 // Extend signInSchema to include rememberMe
 const extendedSignInSchema = signInSchema.extend({
   rememberMe: z.boolean().optional(),
@@ -30,11 +31,13 @@ const SignInForm = ({
   shouldRedirect = true,
   className,
   onSignUpClick,
+  onForgotPasswordClick,
 }: {
   onAuthSuccess?: () => void;
   shouldRedirect?: boolean;
   className?: string;
   onSignUpClick?: () => void;
+  onForgotPasswordClick?: () => void;
 }) => {
   const [error, setError] = useState<string | null>(null);
   const [isFetching, setIsFetching] = useState(false);
@@ -46,47 +49,46 @@ const SignInForm = ({
       rememberMe: false,
     },
   });
-
   const router = useRouter();
   const setUser = useAuthStore((state) => state.setUser);
   const { startSession } = useSession();
+  const { toast } = useToast();
   const formStyle =
     "justify-between flex flex-col rounded-md p-4 h-full sm:h-auto max-w-[400px] w-full mx-auto";
-
   const onSubmit: SubmitHandler<z.infer<typeof extendedSignInSchema>> = async (
     data,
   ) => {
     setIsFetching(true);
 
     try {
-      const loginResponse = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/users/login`,
+      // Call fetchData and handle the result
+      const { data: loginResult, error } = await fetchData<any>(
+        "/auth/login",
+        HttpMethod.POST,
         {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-          body: JSON.stringify({
-            email: data.email,
-            password: data.password,
-          }),
+          email: data.email,
+          password: data.password,
         },
       );
-
-      const loginResult = await loginResponse.json();
       console.log("loginResult", loginResult);
-
-      if (!loginResponse.ok) {
-        throw new Error(loginResult.message || "Login failed");
+      if (error) {
+        toast({
+          description: error,
+          variant: "destructive",
+        });
+        throw new Error(error);
       }
 
-      const token = loginResult.body.token;
+      if (!loginResult?.user?.token) {
+        throw new Error("Login failed: No token returned.");
+      }
+
+      const token = loginResult.user.token;
       const loginUserData = {
-        _id: loginResult.body._id,
-        name: loginResult.body.name,
-        email: loginResult.body.email,
-        status: loginResult.body.status,
+        _id: loginResult.user._id,
+        name: loginResult.user.name,
+        email: loginResult.user.email,
+        profileImage: loginResult.user.profileImage,
         token: token,
       };
 
@@ -94,6 +96,11 @@ const SignInForm = ({
       setUser(loginUserData);
       startSession(loginUserData, token);
       console.log("after sign in", loginUserData);
+
+      toast({
+        description: "Sign in successful!",
+        className: "bg-evento-gradient-button text-white",
+      });
 
       onAuthSuccess();
 
@@ -177,14 +184,22 @@ const SignInForm = ({
                   </FormItem>
                 )}
               />
-
               <p className="text-sm text-muted-foreground flex justify-between gap-2 items-center mt-1 ">
-                <Link
-                  href={`/forgot-password`}
-                  className="text-muted-foreground text-xs hover:underline w-full text-end"
-                >
-                  Forgot Password?
-                </Link>
+                {onForgotPasswordClick ? (
+                  <span
+                    className="text-muted-foreground text-xs hover:underline w-full text-end cursor-pointer"
+                    onClick={onForgotPasswordClick}
+                  >
+                    Forgot Password?
+                  </span>
+                ) : (
+                  <Link
+                    href={`/forgot-password`}
+                    className="text-muted-foreground text-xs hover:underline w-full text-end"
+                  >
+                    Forgot Password?
+                  </Link>
+                )}
               </p>
             </div>
             {error && (

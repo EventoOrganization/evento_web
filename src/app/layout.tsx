@@ -1,7 +1,7 @@
 import BackButton from "@/components/BackButton";
 import Main from "@/components/layout/Main";
 import NavbarApp from "@/components/Navbar";
-import { Toaster } from "@/components/ui/sonner";
+import { Toaster } from "@/components/ui/toaster";
 import { SessionProvider } from "@/contexts/SessionProvider";
 import { cn } from "@/lib/utils";
 import { getSessionSSR } from "@/utils/authUtilsSSR";
@@ -29,7 +29,7 @@ export default function RootLayout({
           initialUser={session.user}
           initialToken={session.token}
         >
-          <Toaster position="top-center" />
+          <Toaster />
           <BackButton />
           {/* <Header /> */}
           <Main className="pb-28  px-0 lg:px-10 max-w-7xl mx-auto ">
