@@ -16,7 +16,6 @@ import { signInSchema } from "@/lib/zod";
 import { useAuthStore } from "@/store/useAuthStore";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { zodResolver } from "@hookform/resolvers/zod";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
@@ -33,7 +32,7 @@ const LoginForm = ({
   onSignUpClick,
   onForgotPasswordClick,
 }: {
-  onAuthSuccess?: () => void;
+  onAuthSuccess?: (token: string) => void;
   shouldRedirect?: boolean;
   className?: string;
   onSignUpClick?: () => void;
@@ -96,7 +95,6 @@ const LoginForm = ({
       // Set user data in the store
       setUser(loginUserData);
       startSession(loginUserData, token);
-      console.log("after sign in", loginUserData);
 
       toast({
         description: "Sign in successful!",
@@ -104,7 +102,7 @@ const LoginForm = ({
         duration: 3000,
       });
 
-      onAuthSuccess();
+      onAuthSuccess(token);
 
       if (shouldRedirect) {
         router.push("/");
@@ -187,21 +185,12 @@ const LoginForm = ({
                 )}
               />
               <p className="text-sm text-muted-foreground flex justify-between gap-2 items-center mt-1 ">
-                {onForgotPasswordClick ? (
-                  <span
-                    className="text-muted-foreground text-xs hover:underline w-full text-end cursor-pointer"
-                    onClick={onForgotPasswordClick}
-                  >
-                    Forgot Password?
-                  </span>
-                ) : (
-                  <Link
-                    href={`/forgot-password`}
-                    className="text-muted-foreground text-xs hover:underline w-full text-end"
-                  >
-                    Forgot Password?
-                  </Link>
-                )}
+                <button
+                  className="text-muted-foreground text-xs hover:underline w-full text-end cursor-pointer"
+                  onClick={onForgotPasswordClick}
+                >
+                  Forgot Password?
+                </button>
               </p>
             </div>
             {error && (
@@ -226,18 +215,12 @@ const LoginForm = ({
         <div className="mt-4 text-justify text-xs w-full ">
           <p className="text-sm sm:text-muted-foreground w-full flex justify-center sm:justify-between gap-2">
             Don&apos;t have an account?
-            {shouldRedirect ? (
-              <Link href={`/signup`} className="underline text-eventoPurple">
-                Sign Up
-              </Link>
-            ) : (
-              <span
-                className="underline text-eventoPurple"
-                onClick={onSignUpClick}
-              >
-                Sign Up
-              </span>
-            )}
+            <button
+              className="underline text-eventoPurple"
+              onClick={onSignUpClick}
+            >
+              Sign Up
+            </button>
           </p>
         </div>
       </form>

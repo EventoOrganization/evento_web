@@ -7,42 +7,45 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { useSession } from "@/contexts/SessionProvider";
 import { toast } from "@/hooks/use-toast";
 import { useAuthStore } from "@/store/useAuthStore";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { useState } from "react";
-import ForgotForm from "./forgot-form";
+import ForgotForm from "./ForgotForm";
 import LoginForm from "./LoginForm";
 import OTPVerifyForm from "./OTPVerifyForm";
 import ResetPasswordForm from "./resest-password-form";
 import SignUpForm from "./SignupForm";
+import UserInfoForm from "./UserInfoForm";
 
 const AuthModal = ({
   onAuthSuccess,
   onClose,
 }: {
-  onAuthSuccess: (token: string) => void;
+  onAuthSuccess: () => void;
   onClose: () => void;
 }) => {
+  const { startSession } = useSession();
   const { setUser } = useAuthStore();
   const [isModalOpen, setIsModalOpen] = useState(true);
   const [currentForm, setCurrentForm] = useState<
-    "login" | "signup" | "forgot-password" | "reset-password" | "verify"
+    | "login"
+    | "signup"
+    | "forgot-password"
+    | "reset-password"
+    | "verify"
+    | "user-info"
   >("login");
-  const handleVerifySuccess = () => {
-    setIsModalOpen(false);
-  };
   const handleLoginSuccess = () => {
+    onAuthSuccess();
     setIsModalOpen(false);
-    // onAuthSuccess();
   };
   const handleOnSignUpSuccess = async (email: string, password: string) => {
-    console.log("handleOnSignUpSuccess", email, password);
     const loginRes = await fetchData<any>("/auth/login", HttpMethod.POST, {
       email: email,
       password: password,
     });
-    console.log("loginRes", loginRes);
     if (loginRes.error) {
       toast({
         description: "Auto login failed",
@@ -52,10 +55,17 @@ const AuthModal = ({
       return;
     }
     setUser(loginRes.data);
-    onAuthSuccess(loginRes.data.token);
+    startSession(loginRes.data, loginRes.data.token);
+    onAuthSuccess();
   };
   const switchForm = (
-    form: "login" | "signup" | "forgot-password" | "reset-password" | "verify",
+    form:
+      | "login"
+      | "signup"
+      | "forgot-password"
+      | "reset-password"
+      | "verify"
+      | "user-info",
   ) => {
     console.log("Switching to", form);
     setCurrentForm(form);
@@ -76,7 +86,7 @@ const AuthModal = ({
       case "login":
         return (
           <LoginForm
-            onAuthSuccess={handleLoginSuccess}
+            onAuthSuccess={() => handleLoginSuccess()}
             shouldRedirect={false}
             onSignUpClick={() => switchForm("signup")}
             onForgotPasswordClick={() => switchForm("forgot-password")}
@@ -92,7 +102,9 @@ const AuthModal = ({
       case "reset-password":
         return <ResetPasswordForm onBackToSignIn={() => switchForm("login")} />;
       case "verify":
-        return <OTPVerifyForm onAuthSuccess={handleVerifySuccess} />;
+        return <OTPVerifyForm onAuthSuccess={() => switchForm("user-info")} />;
+      case "user-info":
+        return <UserInfoForm onAuthSuccess={() => setIsModalOpen(false)} />;
       default:
         return null;
     }
@@ -118,18 +130,23 @@ const AuthModal = ({
                   ? "Reset Password"
                   : currentForm === "verify"
                     ? "Verify Code"
-                    : "Sign In"}{" "}
+                    : currentForm === "user-info"
+                      ? "User Info"
+                      : "Sign In"}{" "}
             to Continue
           </DialogTitle>
           <DialogDescription>
             {currentForm === "signup"
               ? "Sign Up"
               : currentForm === "forgot-password"
-                ? "Forgot Password"
+                ? "Enter your email address and we will send you a code to reset your password."
                 : currentForm === "reset-password"
                   ? "Reset Password"
-                  : currentForm === "verify" &&
-                    "Enter the code that was sent to your email."}
+                  : currentForm === "verify"
+                    ? "Enter the code that was sent to your email."
+                    : currentForm === "user-info"
+                      ? "Enter your username and profile image."
+                      : "Enter your email and password."}
           </DialogDescription>
         </DialogHeader>
         {renderForm()}

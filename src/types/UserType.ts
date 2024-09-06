@@ -1,5 +1,4 @@
-import { EventType } from "react-hook-form";
-import { InterestType } from "./EventType";
+import { EventType, InterestType } from "./EventType";
 
 export type UserType = {
   _id: string;
@@ -37,17 +36,6 @@ export type UserType = {
   phone_verified?: string;
   is_block?: number;
   is_otp_verify?: number;
-  //Other users
-  userInfo?: {
-    _id: string;
-    name?: string;
-    email: string;
-    countryCode?: string;
-    createdAt?: string;
-    updatedAt?: string;
-    token?: string;
-    profileImage?: string;
-  };
   countTotalEventIAttended?: number;
   countFollowing?: number;
 };

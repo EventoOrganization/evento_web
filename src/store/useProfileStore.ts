@@ -8,8 +8,6 @@ interface ProfileStoreState {
   userInfo: UserType | null;
   upcomingEvents: EventType[];
   pastEvents: EventType[];
-  following: number;
-  totalEventAttended: number;
   filteredPastEventsAttended: EventType[];
   filteredUpcomingEventsAttened: EventType[];
   setProfileData: (data: Partial<ProfileStoreState>) => void;
@@ -21,8 +19,6 @@ export const useProfileStore = create(
       userInfo: null,
       upcomingEvents: [],
       pastEvents: [],
-      following: 0,
-      totalEventAttended: 0,
       filteredPastEventsAttended: [],
       filteredUpcomingEventsAttened: [],
       setProfileData: (data) => set(data),

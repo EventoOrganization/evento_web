@@ -9,6 +9,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { signUpSchema } from "@/lib/zod";
+import { useAuthStore } from "@/store/useAuthStore";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
@@ -23,7 +24,7 @@ const SignUpForm = ({
   onAuthSuccess: (email: string, password: string) => void;
 }) => {
   const { toast } = useToast();
-
+  const { setUser } = useAuthStore();
   const [isFetching, setIsFetching] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const form = useForm<z.infer<typeof signUpSchema>>({

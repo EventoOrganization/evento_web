@@ -11,7 +11,6 @@ import { Input } from "@/components/ui/input";
 import { emailSchema } from "@/lib/zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { cn } from "@nextui-org/theme";
-import Link from "next/link";
 import { useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
@@ -31,9 +30,6 @@ const ForgotForm = ({
       email: "",
     },
   });
-
-  const formStyle =
-    "bg-accent border shadow rounded-md p-4 flex flex-col gap-4 max-w-[400px] mx-auto";
 
   const onSubmit: SubmitHandler<z.infer<typeof emailSchema>> = async (data) => {
     setIsFetching(true);
@@ -66,16 +62,7 @@ const ForgotForm = ({
 
   return (
     <FormProvider {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className={formStyle}>
-        <div>
-          <h2 className="text-center text-lg font-semibold ">
-            Forgot your password?
-          </h2>
-          <p className="text-muted-foreground text-xs text-center">
-            Enter your email address and we&apos;ll send you a code to reset
-            your password.
-          </p>
-        </div>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
         <FormField
           control={form.control}
           name="email"
@@ -94,7 +81,10 @@ const ForgotForm = ({
           )}
         />
         <div>
-          <Button type="submit" className={cn("w-full mt-2 text-sm h-fit p-1")}>
+          <Button
+            type="submit"
+            className="bg-evento-gradient-button rounded-full text-xs self-center px-8 mt-10  text-white"
+          >
             Get my reset code
           </Button>
           <div className={cn("grid  mt-1", { "grid-cols-2": error })}>
@@ -109,31 +99,14 @@ const ForgotForm = ({
               </div>
             )}
             <p className="text-sm text-muted-foreground w-full flex justify-between gap-2 items-center">
-              {onBackToSignIn ? (
-                <span
-                  className="text-muted-foreground text-xs hover:underline w-full text-end cursor-pointer"
-                  onClick={onBackToSignIn} // Use onBackToSignIn when clicked
-                >
-                  Back to Sign In
-                </span>
-              ) : (
-                <Link
-                  href={`/sign-in`}
-                  className="text-muted-foreground text-xs hover:underline w-full text-end"
-                >
-                  Back to Sign In
-                </Link>
-              )}
+              <button
+                className="text-muted-foreground text-xs hover:underline w-full text-end cursor-pointer"
+                onClick={onBackToSignIn} // Use onBackToSignIn when clicked
+              >
+                Back to Sign In
+              </button>
             </p>
           </div>
-        </div>
-        <div className="mt-4 text-justify text-xs w-full">
-          <p className="text-sm text-muted-foreground w-full flex justify-between gap-2">
-            Don&apos;t have an account?
-            <Link href={`/sign-up`} className="text-primary underline">
-              Sign Up
-            </Link>
-          </p>
         </div>
       </form>
     </FormProvider>

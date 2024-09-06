@@ -76,7 +76,7 @@ const ChatPage = () => {
 
   const sendMessage = async () => {
     if (input.trim()) {
-      console.log("Sending message:", user?.userInfo?._id);
+      console.log("Sending message:", user?._id);
       try {
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/users/saveMessage`,
@@ -88,7 +88,7 @@ const ChatPage = () => {
             },
             body: JSON.stringify({
               eventId: selectedEvent?._id || null,
-              senderId: user?.userInfo?._id,
+              senderId: user?._id,
               message: input,
               message_type: 1,
             }),

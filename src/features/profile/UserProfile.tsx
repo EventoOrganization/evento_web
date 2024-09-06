@@ -5,25 +5,22 @@ import { Button } from "@/components/ui/button";
 import EventSection from "@/features/event/components/EventSection";
 import { eventoBtn } from "@/styles/eventoBtn";
 import { EventType } from "@/types/EventType";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 const UserProfile = ({
-  id,
   profile,
   upcomingEvents,
   pastEvents,
   hostingEvents,
   pastHostedEvents,
 }: {
-  id?: string;
   profile?: any;
   upcomingEvents?: EventType[];
   pastEvents?: EventType[];
   hostingEvents?: EventType[];
   pastHostedEvents?: EventType[];
 }) => {
-  console.log("User profile:", profile);
-  console.log("id", id);
   const router = useRouter();
   const pathname = usePathname();
   return (
@@ -31,9 +28,9 @@ const UserProfile = ({
       <div className=" w-full lg:grid lg:grid-cols-3">
         <div className="col-span-2 self-start w-full max-w-lg">
           <div className="flex items-center w-full justify-between pt-10 pb-4 ">
-            {/* {profile?.userInfo?.profileImage ? (
+            {profile?.profileImage ? (
               <Image
-                src={profile?.userInfo?.profileImage}
+                src={profile?.profileImage}
                 alt="user image"
                 width={500}
                 height={500}
@@ -46,25 +43,25 @@ const UserProfile = ({
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
               </div>
-            )}{" "} */}
-            <Avatar className="w-20 h-20 md:w-36 md:h-36">
-              <AvatarImage src="https://github.com/shadcn.png" />
-              <AvatarFallback>CN</AvatarFallback>
-            </Avatar>
-            <div className="flex flex-col items-center">
-              <span className="font-bold text-xl">
-                {profile && profile.totalEventAttended}{" "}
-                {profile && profile.countTotalEventIAttended}
-              </span>
-              <p>Event Attended</p>
-            </div>
-            <div className="flex flex-col items-center">
-              <span className="font-bold text-xl">
-                {profile && profile.following}
-                {profile && profile.countFollowing}
-              </span>
-              <p>Following</p>
-            </div>
+            )}
+            <>
+              <div className="flex flex-col items-center">
+                <span className="font-bold text-xl">
+                  {profile && profile.totalEventAttended !== undefined
+                    ? profile.totalEventAttended
+                    : 0}
+                </span>
+                <p>Event Attended</p>
+              </div>
+              <div className="flex flex-col items-center">
+                <span className="font-bold text-xl">
+                  {profile && profile.following !== undefined
+                    ? profile.following
+                    : 0}
+                </span>
+                <p>Following</p>
+              </div>
+            </>
           </div>
           <div className="flex flex-col items-start gap-4">
             <ul className=" pt-4 text-start">

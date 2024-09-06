@@ -22,13 +22,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const session = getSessionSSR();
-  console.log("Session", session);
+  // console.log("Session", session);
   return (
     <html lang="en" suppressHydrationWarning={true}>
       <body className={cn(inter.className, "relative bg-muted")}>
         <SessionProvider
-          initialUser={session.user}
-          initialToken={session.token}
+          initialUser={session?.user}
+          initialToken={session?.token}
         >
           <Toaster />
           <BackButton />

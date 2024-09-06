@@ -5,23 +5,21 @@ import { cookies } from "next/headers";
 import { decodeToken } from "./auth";
 
 export const mapJwtPayloadToUser = (payload: JwtPayload): UserType => {
-  // Ensure that payload and payload.data exist and contain the necessary fields
-  const data = payload.data || {}; // Fallback to an empty object if data is undefined
-
+  const data = payload;
   return {
-    _id: data.id || "", // Use empty string or some default value if id is missing
-    name: data.name || "Anonymous", // Fallback to 'Anonymous' if name is missing
-    email: data.email || "", // Use empty string if email is missing
+    _id: data._id || data.id || "",
+    name: data.name || "Anonymous",
+    email: data.email || "",
   };
 };
 
 export const getSessionSSR = () => {
   const token = getTokenSSR();
   const decodedToken = token ? decodeToken(token) : null;
-  console.log("Decoded Token:", decodedToken); // Log the decoded token to inspect the structure
+  // console.log("Decoded Token:", decodedToken);
 
   const user = decodedToken ? mapJwtPayloadToUser(decodedToken) : null;
-  console.log("IsLoggedIn SSR", !!token);
+  console.log("User from token:", user);
 
   return {
     token,
@@ -32,11 +30,11 @@ export const getSessionSSR = () => {
 
 export const getTokenSSR = () => {
   const token = cookies().get("token");
+  console.log("Cookie token:", token?.value);
   if (!token?.value) {
-    console.log("token from cookie SSR", !!token?.value);
+    console.log("Token not found in cookies");
     return null;
   } else {
-    console.log("token from cookie SSR", !!token?.value);
-    return token?.value;
+    return token.value;
   }
 };
