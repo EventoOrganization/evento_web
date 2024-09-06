@@ -13,7 +13,6 @@ import { useSession } from "@/contexts/SessionProvider";
 import { handleProfileFieldChange } from "@/features/profile/profileActions";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
-import { useProfileStore } from "@/store/useProfileStore";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
