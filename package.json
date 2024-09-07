@@ -109,5 +109,13 @@
   },
   "peerDependencies": {
     "react-swipeable-views": "^0.14.0"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "eslint --fix"
+    ],
+    "*.{js,jsx,json,css,md}": [
+      "prettier --write"
+    ]
   }
 }

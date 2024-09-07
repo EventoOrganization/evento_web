@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import EventSection from "@/features/event/components/EventSection";
 import { eventoBtn } from "@/styles/eventoBtn";
 import { EventType } from "@/types/EventType";
+import { UserType } from "@/types/UserType";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -15,7 +16,7 @@ const UserProfile = ({
   hostingEvents,
   pastHostedEvents,
 }: {
-  profile?: any;
+  profile?: UserType | null;
   upcomingEvents?: EventType[];
   pastEvents?: EventType[];
   hostingEvents?: EventType[];
@@ -24,10 +25,10 @@ const UserProfile = ({
   const router = useRouter();
   const pathname = usePathname();
   return (
-    <Section className="gap-6 md:mt-20 md:px-20">
+    <Section className="gap-6 md:pt-20 md:px-20">
       <div className=" w-full lg:grid lg:grid-cols-3">
         <div className="col-span-2 self-start w-full max-w-lg">
-          <div className="flex items-center w-full justify-between pt-10 pb-4 ">
+          <div className="flex items-center w-full justify-between ">
             {profile?.profileImage ? (
               <Image
                 src={profile?.profileImage}
@@ -65,27 +66,19 @@ const UserProfile = ({
           </div>
           <div className="flex flex-col items-start gap-4">
             <ul className=" pt-4 text-start">
-              <li className="font-semibold md:text-xl">
-                {profile && profile.userInfo?.name && profile.userInfo?.name}
+              <li className="font-semibold text-xl">
+                {profile && profile.name && profile.name}
               </li>
-              <li>
-                Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nulla,
-                non illum? Quibusdam nulla nostrum molestias.
-              </li>
-              <li>
-                <Link
-                  href="https://dfranck.netlify.app/ "
-                  className="underline text-blue-400"
-                >
-                  https://dfranck.netlify.app/
-                </Link>
-              </li>
+              <li>{profile && profile.bio && profile.bio}</li>
+              <li>{profile && profile.URL && profile.URL}</li>
             </ul>
             {pathname == "/profile" && (
-              <ul className="flex justify-evenly gap-4">
+              <ul className="flex justify-evenly items-center gap-4">
                 <li>
                   <Button
-                    className={"bg-gray-200 text-black rounded-full px-8"}
+                    className={
+                      "bg-gray-200 text-black rounded-full px-8 hover:bg-gray-200/50 "
+                    }
                     onClick={() => router.push("/profile/edit")}
                   >
                     Edit Profile
@@ -94,7 +87,9 @@ const UserProfile = ({
                 <li>
                   <Link
                     href={"/profile/settings"}
-                    className={"bg-gray-200 text-black rounded-full px-8"}
+                    className={
+                      "inline-flex items-center justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-gray-200/50 h-10 py-2 bg-gray-200 text-black rounded-full px-8"
+                    }
                   >
                     Settings
                   </Link>

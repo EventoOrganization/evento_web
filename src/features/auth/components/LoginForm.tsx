@@ -186,6 +186,7 @@ const LoginForm = ({
               />
               <p className="text-sm text-muted-foreground flex justify-between gap-2 items-center mt-1 ">
                 <button
+                  type="button"
                   className="text-muted-foreground text-xs hover:underline w-full text-end cursor-pointer"
                   onClick={onForgotPasswordClick}
                 >
@@ -216,6 +217,7 @@ const LoginForm = ({
           <p className="text-sm sm:text-muted-foreground w-full flex justify-center sm:justify-between gap-2">
             Don&apos;t have an account?
             <button
+              type="button"
               className="underline text-eventoPurple"
               onClick={onSignUpClick}
             >

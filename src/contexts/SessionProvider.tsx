@@ -25,7 +25,6 @@ export const SessionProvider: React.FC<{
 
   useEffect(() => {
     if (!initialUser && !initialToken) {
-      // If no initial data is passed, try to get the session data from cookies
       const sessionData = document.cookie
         .split("; ")
         .find((row) => row.startsWith("sessionData="))

@@ -28,7 +28,6 @@ export default function CurrentUserProfilePage() {
       );
       if (profileRes && profileRes.data) {
         setProfileData(profileRes.data);
-        console.log("Profile data fetched:", profileRes.data);
       } else {
         console.log("Failed to fetch profile data");
       }
@@ -46,7 +45,6 @@ export default function CurrentUserProfilePage() {
   }, [token]);
 
   const onAuthSuccess = () => {
-    console.log("onAuthSuccess called with token:", token);
     if (!token) {
       console.error("No token provided");
       return;
