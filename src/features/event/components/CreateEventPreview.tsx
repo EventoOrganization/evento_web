@@ -8,7 +8,13 @@ import { cn } from "@/lib/utils";
 import { useEventStore } from "@/store/useEventStore";
 import Image from "next/image";
 import CreateEventCarousel from "./CreateEventCarousel";
-const CreateEventPreview = ({ className }: { className?: string }) => {
+const CreateEventPreview = ({
+  className,
+  handleRemoveInterest,
+}: {
+  className?: string;
+  handleRemoveInterest: (interestId: string) => void;
+}) => {
   const eventStore = useEventStore();
   const { user } = useSession();
   // console.log(user);
@@ -99,9 +105,10 @@ const CreateEventPreview = ({ className }: { className?: string }) => {
               eventStore.interests.map((interest: any, index: number) => (
                 <li
                   key={index}
+                  onClick={() => handleRemoveInterest(interest._id)}
                   className="bg-eventoPurpleLight/30 w-fit px-2 py-1 rounded-lg text-sm"
                 >
-                  {interest.label}
+                  {interest.name}
                 </li>
               ))}
           </ul>

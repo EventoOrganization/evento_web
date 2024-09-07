@@ -12,7 +12,6 @@ import { useSession } from "@/contexts/SessionProvider";
 import AuthModal from "@/features/auth/components/AuthModal";
 import { cn } from "@/lib/utils";
 import { useEventStore } from "@/store/useEventStore";
-import { OptionType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -22,12 +21,8 @@ import EventCoHostsModal from "./EventCoHostsModal";
 import EventDateInput from "./EventDateInput";
 import EventDescriptionArea from "./EventDescriptionArea";
 import EventGuestsModal from "./EventGuestsModal";
-import EventInterestSelect from "./EventInterestSelect";
 import EventLocationInput from "./EventLocationInput";
-import EventModeSelect from "./EventModeSelect";
 import QuestionInput from "./EventQuestionsInput";
-import EventTitleInput from "./EventTitleInput";
-import EventTypeSelect from "./EventTypeSelect";
 
 const useSyncFormWithStore = () => {
   const { reset, getValues } = useFormContext();
@@ -69,11 +64,9 @@ const useSyncFormWithStore = () => {
 const EventForm = ({
   className,
   allUsers,
-  interests,
 }: {
   className?: string;
   allUsers?: UserType[];
-  interests?: OptionType[];
 }) => {
   const router = useRouter();
   const eventStore = useEventStore();
@@ -168,12 +161,12 @@ const EventForm = ({
               }
             }}
           >
-            <EventTitleInput />
+            {/* <EventTitleInput /> */}
             <EventDateInput />
-            <div className="grid grid-cols-2 gap-4">
+            {/* <div className="grid grid-cols-2 gap-4">
               <EventTypeSelect />
               <EventModeSelect />
-            </div>
+            </div> */}
             <FormField
               name="media"
               control={form.control}
@@ -197,7 +190,6 @@ const EventForm = ({
             />
             <EventLocationInput />
             <EventDescriptionArea />
-            <EventInterestSelect interests={interests as OptionType[]} />
             <h4 className="text-eventoPurpleLight">More Options</h4>
             <div className="flex flex-wrap gap-2">
               <EventGuestsModal allUsers={allUsers as UserType[]} />

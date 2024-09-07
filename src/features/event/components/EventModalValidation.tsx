@@ -6,15 +6,15 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import AuthModal from "@/features/auth/components/AuthModal"; // Importez AuthModal
-import { isUserLoggedInCSR } from "@/features/event/eventActions";
+import { useSession } from "@/contexts/SessionProvider";
+import AuthModal from "@/features/auth/components/AuthModal";
 import { useState } from "react";
 import Event from "./Event";
 
 const EventModalValidation = ({ onSubmit }: { onSubmit: () => void }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
-
+  const { user } = useSession();
   const openModal = () => {
     console.log("Opening validation modal");
     setIsModalOpen(true);
@@ -27,7 +27,7 @@ const EventModalValidation = ({ onSubmit }: { onSubmit: () => void }) => {
 
   const handleFinalSubmit = () => {
     console.log("Handle final submit clicked");
-    if (isUserLoggedInCSR()) {
+    if (user) {
       console.log("User is logged in");
       handleAuthSuccess();
     } else {

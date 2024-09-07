@@ -64,8 +64,8 @@ const Event = ({ className, event }: { className?: string; event?: any }) => {
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        <div className="flex items-center justify-between">
-          <div className="flex items-center">
+        <div className="flex items-center justify-between ">
+          <div className="flex items-center justify-center ">
             {event?.user?.profileImage &&
             isValidUrl(event.user.profileImage) ? (
               <Image
@@ -79,7 +79,7 @@ const Event = ({ className, event }: { className?: string; event?: any }) => {
               <Avatar>
                 <AvatarImage
                   src={"https://github.com/shadcn.png"}
-                  className="rounded-full w-6 h-6"
+                  className="rounded-full"
                 />
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>

@@ -15,9 +15,12 @@ export type TimeSlot = {
   endTime: string;
 };
 
-type Interest = {
-  value: string;
-  label: string;
+export type Interest = {
+  value?: string;
+  label?: string;
+  name?: string;
+  _id?: string;
+  image?: string;
 };
 
 type EventFormState = {

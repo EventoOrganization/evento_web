@@ -1,6 +1,6 @@
 "use client";
 
-import { isUserLoggedInCSR } from "@/features/event/eventActions";
+import { useSession } from "@/contexts/SessionProvider";
 import { useAuthStore } from "@/store/useAuthStore";
 import { EventType } from "@/types/EventType";
 import { useEffect, useRef, useState } from "react";
@@ -11,7 +11,7 @@ const ChatPage = () => {
   const [messages, setMessages] = useState<string[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<EventType | null>(null);
   const [input, setInput] = useState("");
-  const token = isUserLoggedInCSR();
+  const { token } = useSession();
   const socketRef = useRef<Socket | null>(null);
   const user = useAuthStore((state) => state.user);
   console.log(user);

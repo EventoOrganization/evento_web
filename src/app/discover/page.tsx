@@ -23,7 +23,7 @@ interface Location {
 const DiscoverPage = () => {
   const [events, setEvents] = useState<EventType[]>([] as any[]);
   const [users, setUsers] = useState<any>([] as any[]);
-  const [interests, setInterest] = useState<InterestType[]>([] as any[]);
+  const [interests, setInterests] = useState<InterestType[]>([] as any[]);
   const [selectedInterests, setSelectedInterests] = useState<InterestType[]>(
     [],
   );
@@ -40,7 +40,7 @@ const DiscoverPage = () => {
     try {
       const interestRes = await fetchData<any>("/users/getInterestsListing");
       if (!interestRes.error) {
-        setInterest(interestRes.data);
+        setInterests(interestRes.data);
       }
     } catch (error) {
     } finally {
@@ -53,7 +53,7 @@ const DiscoverPage = () => {
       );
       if (!upcomingEventRes.error) {
         setEvents(upcomingEventRes.data);
-        console.log("Upcoming event", upcomingEventRes.data);
+        // console.log("Upcoming event", upcomingEventRes.data);
       }
     } catch (error) {
     } finally {
@@ -80,14 +80,14 @@ const DiscoverPage = () => {
 
       if (!usersRes.error) {
         setUsers(usersRes.data);
-        console.log(usersRes.data);
+        // console.log(usersRes.data);
       }
     } catch (error) {
     } finally {
     }
   };
   useEffect(() => {
-    console.log("session", session);
+    // console.log("session", session);
     if (!interests.length) getInterests();
     if (!events.length) getUpcomingEvents();
     if (!session?.user && !session?.token) {
@@ -175,7 +175,7 @@ const DiscoverPage = () => {
           </div>
           <div className="relative flex items-center">
             <Search
-              className="w-6 h-6 absolute left-6 text-eventoPurpleDark"
+              className="w-6 h-6 absolute left-4 text-eventoPurpleDark"
               strokeWidth={2.5}
             />
             <Input
@@ -183,7 +183,7 @@ const DiscoverPage = () => {
               placeholder="Search for events or organisers ..."
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
-              className="pl-12 border-none bg-white py-2 rounded-lg w-full"
+              className="pl-14 border-none bg-white py-2 rounded-lg w-full"
             />
           </div>
           <div className="mt-4 flex gap-4">

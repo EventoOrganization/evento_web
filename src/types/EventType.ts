@@ -9,15 +9,18 @@ export type TimeSlotType = {
 };
 
 export type InterestType = {
-  _id: string;
-  name: string;
+  _id?: string;
+  name?: string;
   value?: string;
   label?: string;
+  __v?: number;
+  updatedAt?: string;
   image?: string;
 };
 export type OptionType = {
-  value: string;
-  label: string;
+  _id: string;
+  name: string;
+  image?: string;
 };
 
 export type EventType = {
