@@ -7,9 +7,10 @@ import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { useEffect, useState } from "react";
 
 export default function CurrentUserProfilePage() {
-  const { user } = useSession();
+  const session = useSession();
+  const { user, token } = session;
+  console.log(session);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const token = user?.token;
   const {
     userInfo,
     upcomingEvents,
@@ -18,7 +19,8 @@ export default function CurrentUserProfilePage() {
     setProfileData,
   } = useProfileStore();
   // Function to fetch profile data
-  const getProfileData = async (token: string) => {
+  const getProfileData = async (token: string, forceUpdate = false) => {
+    if (userInfo && !forceUpdate) return;
     try {
       const profileRes = await fetchData<any>(
         `/profile/getLoggedUserProfile`,
@@ -39,17 +41,18 @@ export default function CurrentUserProfilePage() {
   };
 
   useEffect(() => {
+    console.log("User:", user, "Token:", token);
     if (user && token) {
-      getProfileData(token);
+      getProfileData(token, true);
     }
-  }, [token]);
+  }, []);
 
   const onAuthSuccess = () => {
     if (!token) {
       console.error("No token provided");
       return;
     }
-    getProfileData(token);
+    getProfileData(token, true);
   };
   useEffect(() => {
     if (!user) {

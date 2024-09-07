@@ -16,8 +16,6 @@ export const mapJwtPayloadToUser = (payload: JwtPayload): UserType => {
 export const getSessionSSR = () => {
   const token = getTokenSSR();
   const decodedToken = token ? decodeToken(token) : null;
-  // console.log("Decoded Token:", decodedToken);
-
   const user = decodedToken ? mapJwtPayloadToUser(decodedToken) : null;
   console.log("User from token:", user);
 

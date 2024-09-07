@@ -4,10 +4,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useSession } from "@/contexts/SessionProvider";
-import { handleProfileFieldChange } from "@/features/profile/profileActions";
 import { useToast } from "@/hooks/use-toast";
 import { useProfileStore } from "@/store/useProfileStore";
-import { UserType } from "@/types/UserType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -15,11 +13,11 @@ import { useState } from "react";
 const socialPlatforms = [
   // "facebook",
   // "google",
-  "twitter",
+  // "twitter",
   "instagram",
   "linkedin",
   "tiktok",
-  "youtube",
+  // "youtube",
 ];
 const EditProfilePage = () => {
   const session = useSession();
@@ -48,7 +46,7 @@ const EditProfilePage = () => {
       ...formData,
       [e.target.name]: e.target.value,
     });
-    handleProfileFieldChange(e.target.name as keyof UserType, e.target.value);
+    // handleProfileFieldChange(e.target.name as keyof UserType, e.target.value);
   };
   // Handle social links changes
   const handleSocialLinkChange = (
@@ -62,7 +60,7 @@ const EditProfilePage = () => {
         ...updatedLinks[index],
         [field]: value,
       };
-      handleProfileFieldChange("socialLinks", value, index, field);
+      // handleProfileFieldChange("socialLinks", value, index, field);
       return { ...prevFormData, socialLinks: updatedLinks };
     });
   };
@@ -270,27 +268,7 @@ const EditProfilePage = () => {
         {/* Social Links */}
         <div>
           <Label htmlFor="socialLinks">Social Links</Label>
-          <ul>
-            {userInfo?.socialLinks?.map((link, index) => (
-              <li
-                key={index}
-                className="flex items-center gap-2 flex-col w-full md:flex-row "
-              >
-                <p className="text-sm w-full flex justify-between items-center">
-                  {link.platform.charAt(0).toUpperCase() +
-                    link.platform.slice(1)}
-                  <Button
-                    type="button"
-                    className="bg-gray-200 hover:bg-gray-300 text-gray-800 rounded"
-                    onClick={() => removeSocialLink(index)}
-                  >
-                    Remove
-                  </Button>
-                </p>
-                <p className="text-sm">{link.url}</p>{" "}
-              </li>
-            ))}
-          </ul>
+
           {formData.socialLinks.map((link, index) => (
             <div
               key={index}
