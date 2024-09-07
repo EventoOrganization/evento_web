@@ -4,7 +4,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useSession } from "@/contexts/SessionProvider";
 import AuthModal from "@/features/auth/components/AuthModal";
 import { cn } from "@/lib/utils";
-import { UserType } from "@/types/UserType";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
@@ -13,9 +12,10 @@ const UserPrevirew = ({
   user,
   fetchUsers,
 }: {
-  user?: UserType;
+  user?: any;
   fetchUsers?: () => void;
 }) => {
+  const userInfo = user.user;
   const { token } = useSession();
   const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
   const [isFollowing, setIsFollowing] = useState<boolean | null>(
@@ -36,7 +36,7 @@ const UserPrevirew = ({
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({ followingId: user?._id }),
+          body: JSON.stringify({ followingId: userInfo?._id }),
         },
       );
 
@@ -45,7 +45,6 @@ const UserPrevirew = ({
         const data = await response.json();
         setIsFollowing(!isFollowing);
         console.log(data.message, data);
-        // Refresh the user list after following/unfollowing
         if (fetchUsers) fetchUsers();
       } else {
         const errorData = await response.json();
@@ -58,12 +57,15 @@ const UserPrevirew = ({
 
   return (
     <>
-      <Link href={`/profile/${user?._id}`} className="flex items-center gap-4">
-        {user?.profileImage &&
-        user?.profileImage.startsWith("http") &&
-        user?.profileImage ? (
+      <Link
+        href={`/profile/${userInfo?._id}`}
+        className="flex items-center gap-4"
+      >
+        {userInfo?.profileImage &&
+        userInfo?.profileImage.startsWith("http") &&
+        userInfo?.profileImage ? (
           <Image
-            src={user.profileImage}
+            src={userInfo.profileImage}
             alt="user image"
             width={500}
             height={500}
@@ -80,7 +82,7 @@ const UserPrevirew = ({
             </Avatar>
           </div>
         )}
-        {user?.firstName} {user?.lastName}
+        {userInfo?.firstName} {userInfo?.lastName}
       </Link>
       <Button
         variant={"outline"}
