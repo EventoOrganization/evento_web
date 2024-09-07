@@ -34,6 +34,7 @@ export type UserType = {
   deviceToken?: string;
   deviceType?: string;
   otp?: number;
+  socialLinks?: { platform: string; url: string }[];
   phone_verified?: string;
   is_block?: number;
   is_otp_verify?: number;

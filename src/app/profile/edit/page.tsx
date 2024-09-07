@@ -9,13 +9,23 @@ import { useToast } from "@/hooks/use-toast";
 import { useProfileStore } from "@/store/useProfileStore";
 import { UserType } from "@/types/UserType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+const socialPlatforms = [
+  // "facebook",
+  // "google",
+  "twitter",
+  "instagram",
+  "linkedin",
+  "tiktok",
+  "youtube",
+];
 const EditProfilePage = () => {
   const session = useSession();
   const { userInfo } = useProfileStore((state) => state);
   const { toast } = useToast();
-
+  const router = useRouter();
   // Set the form state with the current profile information
   const [formData, setFormData] = useState({
     firstName: "",
@@ -24,6 +34,7 @@ const EditProfilePage = () => {
     bio: "",
     URL: "",
     DOB: "",
+    socialLinks: [{ platform: "", url: "" }],
   });
 
   // Separate state for the profile image file
@@ -39,7 +50,33 @@ const EditProfilePage = () => {
     });
     handleProfileFieldChange(e.target.name as keyof UserType, e.target.value);
   };
+  // Handle social links changes
+  const handleSocialLinkChange = (
+    index: number,
+    field: string,
+    value: string,
+  ) => {
+    setFormData((prevFormData) => {
+      const updatedLinks = [...prevFormData.socialLinks];
+      updatedLinks[index] = {
+        ...updatedLinks[index],
+        [field]: value,
+      };
+      handleProfileFieldChange("socialLinks", value, index, field);
+      return { ...prevFormData, socialLinks: updatedLinks };
+    });
+  };
 
+  const addSocialLink = () => {
+    setFormData({
+      ...formData,
+      socialLinks: [...formData.socialLinks, { platform: "", url: "" }],
+    });
+  };
+  const removeSocialLink = (index: number) => {
+    const updatedLinks = formData.socialLinks.filter((_, i) => i !== index);
+    setFormData({ ...formData, socialLinks: updatedLinks });
+  };
   // Handle file input change for the profile image
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -47,26 +84,32 @@ const EditProfilePage = () => {
     }
   };
 
-  // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       // Create form data for the file upload if profileImage is selected
       const dataToSend = new FormData();
       Object.entries(formData).forEach(([key, value]) => {
-        dataToSend.append(key, value as string);
+        if (value === "" || value === null) {
+          dataToSend.append(key, "null");
+        } else if (key === "socialLinks") {
+          dataToSend.append(key, JSON.stringify(value));
+        } else {
+          dataToSend.append(key, value as string);
+        }
       });
       if (profileImage) {
         dataToSend.append("profileImage", profileImage);
       }
-      console.log("Data to send:", dataToSend);
+      dataToSend.forEach((value, key) => {
+        console.log("dataToSend", `${key}: ${value}`);
+      });
       const updateRes = await fetchData<any>(
         "/profile/updateProfile",
         HttpMethod.PUT,
         dataToSend,
         session?.token,
       );
-
       if (updateRes.error) {
         toast({
           description: "Failed to update profile",
@@ -82,6 +125,8 @@ const EditProfilePage = () => {
       }
     } catch (error) {
       console.error("Error updating profile:", error);
+    } finally {
+      router.push("/profile");
     }
   };
 
@@ -91,12 +136,12 @@ const EditProfilePage = () => {
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* First Name */}
         <div>
-          <label
+          <Label
             htmlFor="firstName"
             className="block text-sm font-medium text-gray-700"
           >
             First Name
-          </label>
+          </Label>
           <Input
             type="text"
             name="firstName"
@@ -110,12 +155,12 @@ const EditProfilePage = () => {
 
         {/* Last Name */}
         <div>
-          <label
+          <Label
             htmlFor="lastName"
             className="block text-sm font-medium text-gray-700"
           >
             Last Name
-          </label>
+          </Label>
           <Input
             type="text"
             name="lastName"
@@ -129,12 +174,12 @@ const EditProfilePage = () => {
 
         {/* Address */}
         <div>
-          <label
+          <Label
             htmlFor="address"
             className="block text-sm font-medium text-gray-700"
           >
             Address
-          </label>
+          </Label>
           <Input
             type="text"
             name="address"
@@ -148,12 +193,12 @@ const EditProfilePage = () => {
 
         {/* Bio */}
         <div>
-          <label
+          <Label
             htmlFor="bio"
             className="block text-sm font-medium text-gray-700"
           >
             Bio
-          </label>
+          </Label>
           <Textarea
             name="bio"
             id="bio"
@@ -167,12 +212,12 @@ const EditProfilePage = () => {
 
         {/* URL */}
         <div>
-          <label
+          <Label
             htmlFor="URL"
             className="block text-sm font-medium text-gray-700"
           >
             URL
-          </label>
+          </Label>
           <Input
             type="url"
             name="URL"
@@ -205,23 +250,98 @@ const EditProfilePage = () => {
 
         {/* Profile Image */}
         <div>
-          <label
+          <Label
             htmlFor="profileImage"
             className="block text-sm font-medium text-gray-700"
           >
             Profile Image
-          </label>
+          </Label>
 
           <Input
             type="file"
             accept="image/*"
             name="profileImage"
             id="profileImage"
-            onChange={handleFileChange} // Handle file change separately
+            onChange={handleFileChange}
             className="mt-1 block w-full"
           />
         </div>
 
+        {/* Social Links */}
+        <div>
+          <Label htmlFor="socialLinks">Social Links</Label>
+          <ul>
+            {userInfo?.socialLinks?.map((link, index) => (
+              <li
+                key={index}
+                className="flex items-center gap-2 flex-col w-full md:flex-row "
+              >
+                <p className="text-sm w-full flex justify-between items-center">
+                  {link.platform.charAt(0).toUpperCase() +
+                    link.platform.slice(1)}
+                  <Button
+                    type="button"
+                    className="bg-gray-200 hover:bg-gray-300 text-gray-800 rounded"
+                    onClick={() => removeSocialLink(index)}
+                  >
+                    Remove
+                  </Button>
+                </p>
+                <p className="text-sm">{link.url}</p>{" "}
+              </li>
+            ))}
+          </ul>
+          {formData.socialLinks.map((link, index) => (
+            <div
+              key={index}
+              className="flex items-center gap-2 flex-col w-full md:flex-row"
+            >
+              {/* Platform Select */}
+              <select
+                value={link.platform}
+                onChange={(e) =>
+                  handleSocialLinkChange(index, "platform", e.target.value)
+                }
+                className="w-full md:w-1/3 mt-4 px-3 py-2 rounded border"
+              >
+                <option value="">Select Platform</option>
+                {socialPlatforms.map((platform) => (
+                  <option key={platform} value={platform}>
+                    {platform.charAt(0).toUpperCase() + platform.slice(1)}
+                  </option>
+                ))}
+              </select>
+
+              {/* URL Input */}
+              <Input
+                type="url"
+                value={link.url}
+                onChange={(e) =>
+                  handleSocialLinkChange(index, "url", e.target.value)
+                }
+                placeholder="URL"
+                className="md:w-2/3"
+              />
+
+              {/* Remove Link Button */}
+              <Button
+                type="button"
+                className="hidden md:block"
+                onClick={() => removeSocialLink(index)}
+              >
+                Remove
+              </Button>
+            </div>
+          ))}
+
+          <Button
+            type="button"
+            className="bg-blue-500 mt-2"
+            onClick={addSocialLink}
+          >
+            Add Social Link
+          </Button>
+        </div>
         <Button
           type="submit"
           className="w-full bg-evento-gradient-button text-white py-2"
