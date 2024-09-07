@@ -9,7 +9,6 @@ import LocationSelector from "@/components/map/LocationSelector";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import UserPrevirew from "@/components/UsersList";
-import DateSelector from "@/features/discover/DateSelector";
 import { filterEvents, filterUsers } from "@/features/discover/discoverActions";
 import TabSelector from "@/features/discover/TabSelector";
 import Event from "@/features/event/components/Event";
@@ -24,13 +23,13 @@ interface Location {
 const DiscoverPage = () => {
   const [events, setEvents] = useState<EventType[]>([] as any[]);
   const [users, setUsers] = useState<any>([] as any[]);
-  const [usersInfo, setUsersInfo] = useState<UserType[]>([] as any[]);
   const [interests, setInterest] = useState<InterestType[]>([] as any[]);
   const [selectedInterests, setSelectedInterests] = useState<InterestType[]>(
     [],
   );
   const [searchText, setSearchText] = useState("");
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
   const [selectedTab, setSelectedTab] = useState("All");
   const [location, setLocation] = useState<Location | null>(null);
   const [distanceFilter, setDistanceFilter] = useState(10);
@@ -54,6 +53,7 @@ const DiscoverPage = () => {
       );
       if (!upcomingEventRes.error) {
         setEvents(upcomingEventRes.data);
+        console.log("Upcoming event", upcomingEventRes.data);
       }
     } catch (error) {
     } finally {
@@ -63,9 +63,8 @@ const DiscoverPage = () => {
     try {
       const usersRes = await fetchData<any>("/users/allUserListing");
       if (!usersRes.error) {
-        setUsersInfo(usersRes.data.allUserListing);
+        setUsers(usersRes.data);
       }
-      console.log(usersRes.data.allUserListing);
     } catch (error) {
     } finally {
     }
@@ -82,13 +81,13 @@ const DiscoverPage = () => {
       if (!usersRes.error) {
         setUsers(usersRes.data);
         console.log(usersRes.data);
-        setUsersInfo(usersRes.data.map((user: any) => user.user));
       }
     } catch (error) {
     } finally {
     }
   };
   useEffect(() => {
+    console.log("session", session);
     if (!interests.length) getInterests();
     if (!events.length) getUpcomingEvents();
     if (!session?.user && !session?.token) {
@@ -105,22 +104,39 @@ const DiscoverPage = () => {
         : [...prev, interest],
     );
   };
+  const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newDate = new Date(e.target.value);
+    setStartDate(newDate); // Now setting as a Date object
+    if (endDate && newDate > endDate) {
+      setEndDate(null);
+    }
+  };
+
+  const handleEndDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEndDate(new Date(e.target.value)); //
+  };
 
   useEffect(() => {
-    const formattedDate = selectedDate ? selectedDate.toISOString() : "";
+    const formattedStartDate = startDate
+      ? startDate.toISOString().substring(0, 10)
+      : "";
+    const formattedEndDate = endDate
+      ? endDate.toISOString().substring(0, 10)
+      : null;
     if (users && users.length > 0 && events && events.length > 0) {
       const filteredEvents = filterEvents(
         events,
         selectedInterests,
         searchText,
-        formattedDate,
+        formattedStartDate,
+        formattedEndDate,
         selectedTab,
         location,
         distanceFilter,
       );
 
       const filteredUsers = filterUsers(
-        usersInfo,
+        users,
         selectedInterests,
         searchText,
         interests,
@@ -132,10 +148,11 @@ const DiscoverPage = () => {
   }, [
     selectedInterests,
     searchText,
-    selectedDate,
+    startDate,
+    endDate,
     selectedTab,
     events,
-    usersInfo,
+    users,
     location,
     distanceFilter,
   ]);
@@ -145,23 +162,18 @@ const DiscoverPage = () => {
       <Section className="flex flex-col-reverse md:grid md:grid-cols-2 gap-20 items-start">
         <ul className="w-full space-y-6">
           <TabSelector onChange={setSelectedTab} />
-          {filteredEvents.map(
-            (event) => (
-              console.log(event),
-              (
-                <li key={event._id}>
-                  <Event event={event} />
-                </li>
-              )
-            ),
-          )}
+          {filteredEvents.map((event) => (
+            <li key={event._id}>
+              <Event event={event} />
+            </li>
+          ))}
         </ul>
-        <div className="flex flex-col gap-2">
-          <div className="flex flex-col gap-2 p-4 rounded bg-muted">
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-2 rounded bg-muted">
             <h4 className="text-purple-600 font-bold">Current Location</h4>
             <LocationSelector onLocationChange={setLocation} />
           </div>
-          <div className="relative flex items-center p-4">
+          <div className="relative flex items-center">
             <Search
               className="w-6 h-6 absolute left-6 text-eventoPurpleDark"
               strokeWidth={2.5}
@@ -174,14 +186,44 @@ const DiscoverPage = () => {
               className="pl-12 border-none bg-white py-2 rounded-lg w-full"
             />
           </div>
-          <div className="p-4 flex gap-4">
+          <div className="mt-4 flex gap-4">
             <h4 className="cursor-pointer text-purple-600 font-bold">
               Select Date
-            </h4>
-            <DateSelector
-              selectedDate={selectedDate}
-              setSelectedDate={setSelectedDate}
-            />
+            </h4>{" "}
+            <div className="flex flex-col gap-2">
+              <Input
+                type="date"
+                value={
+                  startDate ? startDate.toISOString().substring(0, 10) : ""
+                }
+                onChange={handleStartDateChange}
+                className="cursor-pointer "
+              />
+              {startDate && (
+                <Input
+                  type="date"
+                  value={endDate ? endDate.toISOString().substring(0, 10) : ""}
+                  onChange={handleEndDateChange}
+                  min={
+                    startDate
+                      ? startDate.toISOString().substring(0, 10)
+                      : undefined
+                  }
+                  className="cursor-pointer"
+                />
+              )}
+            </div>
+            {startDate && (
+              <button
+                className="text-sm py-2 self-start"
+                onClick={() => {
+                  setStartDate(null);
+                  setEndDate(null);
+                }}
+              >
+                Reset
+              </button>
+            )}
           </div>
           {selectedTab === "Near me" && (
             <div className="hidden">
@@ -195,7 +237,7 @@ const DiscoverPage = () => {
               />
             </div>
           )}
-          <div className="p-4">
+          <div className="mt-4">
             <h4 className="text-purple-600 font-bold">Select Interests</h4>
             <ul className="flex flex-wrap gap-4 mt-4">
               {interests.map((interest) => (
@@ -215,7 +257,7 @@ const DiscoverPage = () => {
               ))}
             </ul>
           </div>
-          <div className="p-4 hidden md:block">
+          <div className="mt-4 hidden md:block">
             <h4 className="text-purple-600 font-bold">Follow Suggestions</h4>
             <ul className="space-y-4 py-4">
               {filteredUsers.map((user) => (

@@ -3,7 +3,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useSession } from "@/contexts/SessionProvider";
 import AuthModal from "@/features/auth/components/AuthModal";
-import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
@@ -15,12 +14,12 @@ const UserPrevirew = ({
   user?: any;
   fetchUsers?: () => void;
 }) => {
-  const userInfo = user.user;
   const { token } = useSession();
   const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
-  const [isFollowing, setIsFollowing] = useState<boolean | null>(
-    user?.status === "following" ? true : false,
+  const [isIFollowingHim, setIsIFollowingHim] = useState<boolean | null>(
+    user?.isIFollowingHim,
   );
+  const isFollowingMe = user?.isFollowingMe;
 
   const handleFollow = async () => {
     if (!token) {
@@ -36,14 +35,14 @@ const UserPrevirew = ({
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({ followingId: userInfo?._id }),
+          body: JSON.stringify({ followingId: user?._id }),
         },
       );
 
       if (response.ok) {
-        setIsFollowing((prevIsFollowing) => !prevIsFollowing);
+        setIsIFollowingHim((prevIsFollowing) => !prevIsFollowing);
         const data = await response.json();
-        setIsFollowing(!isFollowing);
+        setIsIFollowingHim(!isIFollowingHim);
         console.log(data.message, data);
         if (fetchUsers) fetchUsers();
       } else {
@@ -57,15 +56,12 @@ const UserPrevirew = ({
 
   return (
     <>
-      <Link
-        href={`/profile/${userInfo?._id}`}
-        className="flex items-center gap-4"
-      >
-        {userInfo?.profileImage &&
-        userInfo?.profileImage.startsWith("http") &&
-        userInfo?.profileImage ? (
+      <Link href={`/profile/${user?._id}`} className="flex items-center gap-4">
+        {user?.profileImage &&
+        user?.profileImage.startsWith("http") &&
+        user?.profileImage ? (
           <Image
-            src={userInfo.profileImage}
+            src={user.profileImage}
             alt="user image"
             width={500}
             height={500}
@@ -82,18 +78,27 @@ const UserPrevirew = ({
             </Avatar>
           </div>
         )}
-        {userInfo?.firstName} {userInfo?.lastName}
+        {user?.firstName} {user?.lastName}
       </Link>
       <Button
-        variant={"outline"}
-        className={cn("bg-gray-200 text-black rounded-lg px-5", {
-          "bg-evento-gradient-button text-white": !isFollowing,
-        })}
+        variant={"ghost"}
+        className={`
+          px-5 py-2 rounded-lg font-semibold text-white transition-all hover:scale-105 duration-300 hover:text-white
+          ${isIFollowingHim && !isFollowingMe ? "bg-gray-400 hover:bg-gray-500 " : ""}
+          ${isFollowingMe && !isIFollowingHim ? "bg-eventoBlue hover:bg-eventoBlue/80 " : ""}
+          ${isFollowingMe && isIFollowingHim ? " bg-evento-gradient " : ""}
+          ${!isFollowingMe && !isIFollowingHim ? "bg-eventoPurpleLight hover:bg-gray-300 " : ""}
+        `}
         onClick={handleFollow}
       >
-        {isFollowing ? "Unfollow" : "Follow"}
+        {isFollowingMe && !isIFollowingHim
+          ? "Follow Back"
+          : isFollowingMe && isIFollowingHim
+            ? "Friends"
+            : !isFollowingMe && isIFollowingHim
+              ? "Unfollow"
+              : "Follow"}
       </Button>
-
       {isAuthModalOpen && (
         <AuthModal
           onAuthSuccess={() => {

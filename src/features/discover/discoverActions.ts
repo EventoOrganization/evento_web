@@ -27,7 +27,8 @@ export const filterEvents = (
   events: EventType[],
   selectedInterests: InterestType[],
   searchText: string,
-  selectedDate: string,
+  startDate: string | null,
+  endDate: string | null,
   selectedTab: string,
   location: Location | null,
   distanceFilter: number,
@@ -48,24 +49,32 @@ export const filterEvents = (
       event.title?.toLowerCase().includes(searchLower) ||
       event.details?.description?.toLowerCase().includes(searchLower);
 
-    const eventDate = event.details?.date ? new Date(event.details.date) : null;
+    const eventStartDate = event.details?.date
+      ? new Date(event.details.date)
+      : null;
     const eventEndDate = event.details?.endDate
       ? new Date(event.details.endDate)
       : null;
-    const selectedDateObj = selectedDate ? new Date(selectedDate) : null;
+
+    const selectedStartDateObj = startDate ? new Date(startDate) : null;
+    const selectedEndDateObj = endDate ? new Date(endDate) : null;
+
+    if (!selectedStartDateObj && !selectedEndDateObj) {
+      return true;
+    }
 
     const matchesDate =
-      !selectedDateObj ||
-      (eventDate &&
+      (selectedStartDateObj &&
+        eventStartDate &&
         eventEndDate &&
-        selectedDateObj >=
-          new Date(
-            eventDate.getTime() + eventDate.getTimezoneOffset() * 60000,
-          ) &&
-        selectedDateObj <=
-          new Date(
-            eventEndDate.getTime() + eventEndDate.getTimezoneOffset() * 60000,
-          ));
+        selectedStartDateObj >= eventStartDate &&
+        selectedStartDateObj <= eventEndDate) ||
+      (selectedStartDateObj &&
+        selectedEndDateObj &&
+        eventStartDate &&
+        eventEndDate &&
+        eventEndDate >= selectedStartDateObj &&
+        eventStartDate <= selectedEndDateObj);
 
     const isNearMe =
       selectedTab === "Near me" &&
