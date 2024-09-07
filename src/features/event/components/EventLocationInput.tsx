@@ -1,9 +1,3 @@
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useEventStore } from "@/store/useEventStore";
 import { useEffect, useRef, useState } from "react";
@@ -68,26 +62,16 @@ const EventLocationInput = ({
   }, [apiKey]);
 
   return (
-    <FormField
-      name="location"
-      render={({ field }) => (
-        <FormItem>
-          <FormLabel className="sr-only">Event Location</FormLabel>
-          <FormControl>
-            <Input
-              type="text"
-              ref={inputRef}
-              placeholder={placeholder}
-              value={location}
-              onChange={(e) => {
-                setLocation(e.target.value);
-                field.onChange(e.target.value); // Update the form field value
-              }}
-              className="input-class-name" // Add your input class name here
-            />
-          </FormControl>
-        </FormItem>
-      )}
+    <Input
+      type="text"
+      ref={inputRef}
+      placeholder={placeholder}
+      value={eventStore.location || location || ""}
+      onChange={(e) => {
+        setLocation(e.target.value);
+      }}
+      className="input-class-name"
+      required
     />
   );
 };

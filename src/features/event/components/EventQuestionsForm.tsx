@@ -12,7 +12,7 @@ import {
 import { cn } from "@/lib/utils";
 import { Question, useEventStore } from "@/store/useEventStore";
 import { handleFieldChange } from "../eventActions";
-const Form = () => {
+const EventQuestionsForm = () => {
   const {
     questions,
     addQuestion,
@@ -140,4 +140,4 @@ const Form = () => {
   );
 };
 
-export default Form;
+export default EventQuestionsForm;

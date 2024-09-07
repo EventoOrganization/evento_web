@@ -1,18 +1,10 @@
 "use client";
-import { Button } from "@/components/ui/button"; // Import the Button component
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-} from "@/components/ui/form";
-import { cn } from "@/lib/utils"; // Utility function for conditional classNames
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { useEventStore } from "@/store/useEventStore";
 import { useEffect, useState } from "react";
-import { useFormContext } from "react-hook-form";
 import { handleFieldChange } from "../eventActions";
 const EnableChatButton = () => {
-  const { control } = useFormContext();
   const eventStore = useEventStore();
   const [checked, setChecked] = useState(eventStore.includeChat || false);
   useEffect(() => {
@@ -28,28 +20,17 @@ const EnableChatButton = () => {
   };
 
   return (
-    <FormField
-      control={control}
-      name="includeChat"
-      render={({}) => (
-        <FormItem className="space-y-0">
-          <FormLabel className="sr-only">Enable Chat</FormLabel>
-          <FormControl>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={handleButtonClick}
-              className={cn(
-                "transition-colors",
-                checked && "bg-evento-gradient text-white",
-              )}
-            >
-              {checked ? "Chat Enabled" : "Enable Chat"}
-            </Button>
-          </FormControl>
-        </FormItem>
+    <Button
+      type="button"
+      variant="outline"
+      onClick={handleButtonClick}
+      className={cn(
+        "transition-colors",
+        checked && "bg-evento-gradient text-white",
       )}
-    />
+    >
+      {checked ? "Chat Enabled" : "Enable Chat"}
+    </Button>
   );
 };
 

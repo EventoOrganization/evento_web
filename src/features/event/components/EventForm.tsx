@@ -18,11 +18,9 @@ import { useEffect, useState } from "react";
 import { FormProvider, useForm, useFormContext } from "react-hook-form";
 import EnableChatButton from "./EnableChatButton";
 import EventCoHostsModal from "./EventCoHostsModal";
-import EventDateInput from "./EventDateInput";
 import EventDescriptionArea from "./EventDescriptionArea";
 import EventGuestsModal from "./EventGuestsModal";
 import EventLocationInput from "./EventLocationInput";
-import QuestionInput from "./EventQuestionsInput";
 
 const useSyncFormWithStore = () => {
   const { reset, getValues } = useFormContext();
@@ -42,7 +40,6 @@ const useSyncFormWithStore = () => {
       endTime: eventStore.endTime || "",
       description: eventStore.description || "",
       mode: eventStore.mode || "virtual",
-      interestId: eventStore.interestId || [],
       location: eventStore.location || "",
       latitude: eventStore.latitude || "",
       longitude: eventStore.longitude || "",
@@ -162,7 +159,7 @@ const EventForm = ({
             }}
           >
             {/* <EventTitleInput /> */}
-            <EventDateInput />
+            {/* <EventDateInput /> */}
             {/* <div className="grid grid-cols-2 gap-4">
               <EventTypeSelect />
               <EventModeSelect />
@@ -196,7 +193,6 @@ const EventForm = ({
               <EventCoHostsModal allUsers={allUsers as UserType[]} />
               <EnableChatButton />
             </div>
-            <QuestionInput />
           </form>
         </FormProvider>
         <Button

@@ -9,22 +9,14 @@ import {
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
+import { UserType } from "@/types/UserType";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import GuestsAllowFriendCheckbox from "./GuestsAllowFriendCheckbox";
 
-interface User {
-  _id: string;
-  name: string;
-  email: string;
-  profileImage?: string;
-  lastName?: string;
-  firstName?: string;
-}
-
 interface AddUserModalProps {
   title: string;
-  allUsers: User[];
+  allUsers: UserType[];
   selectedUsers: string[]; // Array of user IDs
   onSave: (selectedUsers: string[]) => void;
   storeField: "guests" | "coHosts"; // Specify which field to update in the store
@@ -38,7 +30,9 @@ const AddUserModal = ({
   storeField,
 }: AddUserModalProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [currentSelectedUsers, setCurrentSelectedUsers] = useState<User[]>([]);
+  const [currentSelectedUsers, setCurrentSelectedUsers] = useState<UserType[]>(
+    [],
+  );
 
   useEffect(() => {
     // console.log("Selected Users:", selectedUsers);
@@ -60,13 +54,13 @@ const AddUserModal = ({
       ),
   );
 
-  const addUser = (user: User) => {
+  const addUser = (user: UserType) => {
     setCurrentSelectedUsers([...currentSelectedUsers, user]);
   };
   const isValidUrl = (url: string) => {
     return url.startsWith("http://") || url.startsWith("https://");
   };
-  const removeUser = (user: User) => {
+  const removeUser = (user: UserType) => {
     setCurrentSelectedUsers(
       currentSelectedUsers.filter(
         (selectedUser) => selectedUser._id !== user._id,
@@ -95,7 +89,7 @@ const AddUserModal = ({
             : ""}
         </Button>
       </DialogTrigger>
-      <DialogContent className=" bg-evento-gradient text-white w-[95%] rounded-lg border-none">
+      <DialogContent className=" bg-background w-[95%] rounded-lg border-none">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>
@@ -134,7 +128,7 @@ const AddUserModal = ({
                       <span className="font-semibold text-sm md:text-base">
                         {user.name}
                       </span>
-                      <span className="text-xs text-white">
+                      <span className="text-xs">
                         {user.lastName} {user.firstName}
                       </span>
                     </div>
@@ -179,7 +173,7 @@ const AddUserModal = ({
                     <span className="font-semibold text-sm md:text-base">
                       {user.name}
                     </span>
-                    <span className="text-xs text-white">
+                    <span className="text-xs">
                       {user.lastName} {user.firstName}
                     </span>
                   </div>

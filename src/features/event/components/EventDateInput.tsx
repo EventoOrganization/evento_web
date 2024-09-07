@@ -27,7 +27,6 @@ const EventDateInput = () => {
   const [useMultipleTimes, setUseMultipleTimes] = useState(false);
 
   useEffect(() => {
-    // Ensure the form's timeSlots are kept in sync with the store's timeSlots
     setValue("timeSlots", timeSlots);
   }, [timeSlots, setValue]);
 
