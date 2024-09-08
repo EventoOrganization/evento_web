@@ -17,6 +17,7 @@ import { InterestType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
 import { fetchData } from "@/utils/fetchData";
 import { useEffect, useState } from "react";
+
 const CreateEventPage = () => {
   const eventStore = useEventStore();
   const [media, setMedia] = useState<File[]>([]);
@@ -86,6 +87,53 @@ const CreateEventPage = () => {
     } finally {
     }
   };
+  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const fileInput = e.target as HTMLInputElement;
+
+    if (fileInput.files && fileInput.files.length > 0) {
+      const files = Array.from(fileInput.files);
+      setMedia(files);
+      for (const file of files) {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+
+        reader.onloadend = async () => {
+          const base64data = reader.result as string;
+
+          try {
+            const response = await fetch("/api/uploadTempFile", {
+              method: "POST",
+              body: JSON.stringify({
+                base64data,
+                fileName: file.name,
+              }),
+              headers: {
+                "Content-Type": "application/json",
+              },
+            });
+
+            if (response.ok) {
+              const result = await response.json();
+              const fileUrl = result.filePath;
+              const mediaType = file.type.startsWith("video/")
+                ? "video"
+                : "image";
+              handleFieldChange("mediaPreviews", [
+                { url: fileUrl, type: mediaType },
+              ]);
+            } else {
+              const result = await response.json();
+              console.error("Failed to upload file:", result.message);
+            }
+          } catch (error) {
+            console.error("Error uploading file:", error);
+          }
+        };
+      }
+
+      fileInput.value = "";
+    }
+  };
   const getUsers = async () => {
     try {
       const usersRes = await fetchData<any>("/users/allUserListing");
@@ -134,8 +182,24 @@ const CreateEventPage = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const localMedia = (eventStore.mediaPreviews || [])
+      .filter(
+        (media: any) =>
+          typeof media === "object" &&
+          "url" in media &&
+          media.url.startsWith("/uploads"),
+      )
+      .map((media: any) => ({
+        url: media.url,
+        type: media.type,
+      }));
+
+    const formData = {
+      ...formValues,
+      media: [...media, ...localMedia], // Assure que `media` et `localMedia` sont correctement fusionnés
+    };
     console.log("store Values on Submit:", eventStore);
-    console.log("Form Values on Submit:", formValues);
+    console.log("Form Values on Submit:", formData);
   };
   useEffect(() => {
     getInterests();
@@ -233,6 +297,15 @@ const CreateEventPage = () => {
               </select>
             </div>
           )}
+          <div className="md:hidden">
+            <Input
+              id="file-upload"
+              type="file"
+              accept="image/*,video/*"
+              multiple
+              onChange={handleUpload}
+            />
+          </div>
           {/* <EventLocationInput /> */}
           <EventDate />
           <div>

@@ -104,6 +104,18 @@ const MediaSelectionModal = ({
         type: item.endsWith(".mp4") ? "video" : "image",
       }));
       handleFieldChange("mediaPreviews", mediaItems);
+      const videos = mediaItems.filter(
+        (media) => media.type === "video" && media.url.startsWith("https://"),
+      );
+      const images = mediaItems.filter(
+        (media) => media.type === "image" && media.url.startsWith("https://"),
+      );
+      if (videos.length > 0) {
+        handleFieldChange("videos", videos);
+      }
+      if (images.length > 0) {
+        handleFieldChange("images", images);
+      }
     }
     onClose();
   };

@@ -47,7 +47,7 @@ type EventFormState = {
   mediaPreviews?: string[];
   questions: Question[];
   images: File[];
-  video: File[];
+  videos: File[];
   guestsAllowFriend: boolean;
   additionalField?: any[];
   setEventField: (key: string, value: any) => void;
@@ -89,7 +89,7 @@ export const useEventStore = create<EventFormState>()(
       interestId: [],
       interests: [],
       images: [],
-      video: [],
+      videos: [],
       guestsAllowFriend: false,
       additionalField: [],
 
@@ -171,7 +171,7 @@ export const useEventStore = create<EventFormState>()(
           guests: [],
           interests: [],
           images: [],
-          video: [],
+          videos: [],
           questions: [],
           guestsAllowFriend: false,
           additionalField: [],
