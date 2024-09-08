@@ -6,10 +6,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useSession } from "@/contexts/SessionProvider";
 import CreateEventPreview from "@/features/event/components/CreateEventPreview";
-import EventDate from "@/features/event/components/EventDate";
 // import EnableChatButton from "@/features/event/components/EnableChatButton";
 // import EventCoHostsModal from "@/features/event/components/EventCoHostsModal";
-import EventLocationInput from "@/features/event/components/EventLocationInput";
 // import EventQuestionsForm from "@/features/event/components/EventQuestionsForm";
 // import EventURL from "@/features/event/components/EventURL";
 import { handleFieldChange } from "@/features/event/eventActions";
@@ -26,29 +24,55 @@ const CreateEventPage = () => {
   );
 
   const { user } = useSession();
+  useEffect(() => {
+    setFormValues({
+      title: eventStore.title || "",
+      eventType: eventStore.eventType || "public",
+      name: eventStore.name || "",
+      date: eventStore.date || "",
+      endDate: eventStore.endDate || eventStore.date || "",
+      startTime: eventStore.startTime || "",
+      endTime: eventStore.endTime || "",
+      description: eventStore.description || "",
+      mode: eventStore.mode || "virtual",
+      location: eventStore.location || "",
+      latitude: eventStore.latitude || "",
+      longitude: eventStore.longitude || "",
+      timeSlots: eventStore.timeSlots || [],
+      guests: eventStore.guests || [],
+      coHosts: eventStore.coHosts || [],
+      guestsAllowFriend: eventStore.guestsAllowFriend || false,
+      questions: eventStore.questions || [],
+      additionalField: eventStore.additionalField || [],
+      includeChat: eventStore.includeChat || false,
+      URL: eventStore.URL || "",
+      images: eventStore.images || [],
+      video: eventStore.video || "",
+    });
+  }, [eventStore]);
   const [formValues, setFormValues] = useState({
-    title: "",
-    eventType: "public",
-    name: "",
-    date: "",
-    endDate: "",
-    startTime: "",
-    endTime: "",
-    description: "",
-    mode: "virtual",
-    location: "",
-    latitude: "",
-    longitude: "",
-    timeSlots: [],
-    guests: [],
-    coHosts: [],
-    guestsAllowFriend: false,
-    questions: [],
-    additionalField: [],
-    includeChat: false,
-    URL: "",
-    images: [],
-    video: [],
+    title: eventStore.title || "",
+    eventType: eventStore.eventType || "public",
+    name: eventStore.name || "",
+    date: eventStore.date || "",
+    endDate: eventStore.endDate || eventStore.date || "",
+    startTime: eventStore.startTime || "",
+    endTime: eventStore.endTime || "",
+    description: eventStore.description || "",
+    mode: eventStore.mode || "virtual",
+    location: eventStore.location || "",
+    latitude: eventStore.latitude || "",
+    longitude: eventStore.longitude || "",
+    timeSlots: eventStore.timeSlots || [],
+    guests: eventStore.guests || [],
+    coHosts: eventStore.coHosts || [],
+    guestsAllowFriend: eventStore.guestsAllowFriend || false,
+    questions: eventStore.questions || [],
+    additionalField: eventStore.additionalField || [],
+    includeChat: eventStore.includeChat || false,
+    URL: eventStore.URL || "",
+    images: eventStore.images || [],
+    video: eventStore.video || "",
     // media: eventStore.media || [],
   });
   const getInterests = async () => {
@@ -59,7 +83,6 @@ const CreateEventPage = () => {
         console.log("Interests:", interestRes.data);
       }
     } catch (error) {
-      console.error("Error fetching interests:", error);
     } finally {
     }
   };
@@ -70,7 +93,6 @@ const CreateEventPage = () => {
         // setUsers(usersRes.data);
       }
     } catch (error) {
-      console.error("Error fetching users:", error);
     } finally {
     }
   };
@@ -211,8 +233,8 @@ const CreateEventPage = () => {
               </select>
             </div>
           )}
-          <EventLocationInput />
-          <EventDate />
+          {/* <EventLocationInput />
+          <EventDate /> */}
           <div>
             <Label className="sr-only" htmlFor="description">
               Description
