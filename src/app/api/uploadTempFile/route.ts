@@ -15,7 +15,6 @@ export async function POST(req: NextRequest) {
 
     const uploadsDir = path.join(process.cwd(), "public", "uploads");
 
-    // Assurez-vous que le répertoire uploads existe
     if (!fs.existsSync(uploadsDir)) {
       fs.mkdirSync(uploadsDir, { recursive: true });
     }
@@ -25,9 +24,8 @@ export async function POST(req: NextRequest) {
 
     fs.writeFileSync(filePath, buffer);
 
-    // Retournez le chemin relatif
     const publicFilePath = `/uploads/${fileName}`;
-
+    console.log("publicFilePath", publicFilePath);
     return new NextResponse(
       JSON.stringify({
         message: "File uploaded successfully",

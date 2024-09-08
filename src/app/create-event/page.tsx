@@ -19,6 +19,7 @@ import { fetchData } from "@/utils/fetchData";
 import { useEffect, useState } from "react";
 const CreateEventPage = () => {
   const eventStore = useEventStore();
+  const [media, setMedia] = useState<File[]>([]);
   const [users, setUsers] = useState<UserType[]>([]);
   const [interests, setInterests] = useState<InterestType[]>([]);
   const [selectedInterests, setSelectedInterests] = useState<InterestType[]>(
@@ -48,8 +49,7 @@ const CreateEventPage = () => {
       additionalField: eventStore.additionalField || [],
       includeChat: eventStore.includeChat || false,
       URL: eventStore.URL || "",
-      images: eventStore.images || [],
-      video: eventStore.video || "",
+      media: media || [],
     });
   }, [eventStore]);
   const [formValues, setFormValues] = useState({
@@ -73,9 +73,7 @@ const CreateEventPage = () => {
     additionalField: eventStore.additionalField || [],
     includeChat: eventStore.includeChat || false,
     URL: eventStore.URL || "",
-    images: eventStore.images || [],
-    video: eventStore.video || "",
-    // media: eventStore.media || [],
+    media: media || [],
   });
   const getInterests = async () => {
     try {
@@ -263,7 +261,10 @@ const CreateEventPage = () => {
         </form>
       </Section>
       <Section className="hidden md:block">
-        <CreateEventPreview handleRemoveInterest={handleRemoveInterest} />
+        <CreateEventPreview
+          handleRemoveInterest={handleRemoveInterest}
+          setMedia={setMedia}
+        />
       </Section>
     </div>
   );

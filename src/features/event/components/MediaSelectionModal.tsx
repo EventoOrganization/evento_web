@@ -9,7 +9,6 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useEventStore } from "@/store/useEventStore";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { handleFieldChange } from "../eventActions";
@@ -17,16 +16,17 @@ import { handleFieldChange } from "../eventActions";
 const MediaSelectionModal = ({
   isOpen,
   onClose,
+  setMedia,
 }: {
   isOpen: boolean;
   onClose: () => void;
+  setMedia: (media: File[]) => void;
 }) => {
   const [selectedPredefinedMedia, setSelectedPredefinedMedia] = useState<
     string[]
   >([]);
   const [predefinedMedia, setPredefinedMedia] = useState<string[]>([]);
   const [showPredefined, setShowPredefined] = useState(false);
-  const setEventField = useEventStore((state) => state.setEventField);
 
   useEffect(() => {
     const loadMedia = async () => {
@@ -38,11 +38,8 @@ const MediaSelectionModal = ({
         console.error("Error fetching media:", error);
       }
     };
-
-    if (showPredefined) {
-      loadMedia();
-    }
-  }, [showPredefined]);
+    loadMedia();
+  }, []);
 
   const handleMediaSelect = (media: string) => {
     setSelectedPredefinedMedia((prev) =>
@@ -57,7 +54,7 @@ const MediaSelectionModal = ({
 
     if (fileInput.files && fileInput.files.length > 0) {
       const files = Array.from(fileInput.files);
-
+      setMedia(files);
       for (const file of files) {
         const reader = new FileReader();
         reader.readAsDataURL(file);
@@ -79,16 +76,13 @@ const MediaSelectionModal = ({
 
             if (response.ok) {
               const result = await response.json();
-              const fileUrl = result.filePath; // '/uploads/file.ext'
-
-              if (file.type.startsWith("video/")) {
-                handleFieldChange("videoPreview", fileUrl);
-              } else if (file.type.startsWith("image/")) {
-                handleFieldChange("imagePreviews", (prev: string[]) => [
-                  ...prev,
-                  fileUrl,
-                ]);
-              }
+              const fileUrl = result.filePath;
+              const mediaType = file.type.startsWith("video/")
+                ? "video"
+                : "image";
+              handleFieldChange("mediaPreviews", [
+                { url: fileUrl, type: mediaType },
+              ]);
             } else {
               const result = await response.json();
               console.error("Failed to upload file:", result.message);
@@ -99,18 +93,17 @@ const MediaSelectionModal = ({
         };
       }
 
-      fileInput.value = ""; // Réinitialisez l'input pour permettre la sélection du même fichier
+      fileInput.value = "";
     }
   };
 
   const handleSave = () => {
-    console.log("Selected Media:", selectedPredefinedMedia);
     if (selectedPredefinedMedia.length > 0) {
-      setEventField("imagePreviews", selectedPredefinedMedia); // Set the selected predefined media URLs directly
-      setEventField(
-        "videoPreview",
-        selectedPredefinedMedia.find((item) => item.endsWith(".mp4")),
-      ); // Set video if any selected
+      const mediaItems = selectedPredefinedMedia.map((item) => ({
+        url: item,
+        type: item.endsWith(".mp4") ? "video" : "image",
+      }));
+      handleFieldChange("mediaPreviews", mediaItems);
     }
     onClose();
   };

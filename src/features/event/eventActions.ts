@@ -15,6 +15,11 @@ export const handleFieldChange = (key: string, value: any, index?: number) => {
       const updatedTimeSlots = [...state.timeSlots];
       updatedTimeSlots[index] = { ...updatedTimeSlots[index], ...value };
       return { timeSlots: updatedTimeSlots };
+    } else if (key === "mediaPreviews") {
+      const updatedMediaPreviews = Array.isArray(state.mediaPreviews)
+        ? [...state.mediaPreviews, ...value]
+        : [...value];
+      return { mediaPreviews: updatedMediaPreviews };
     } else {
       return { [key]: value };
     }

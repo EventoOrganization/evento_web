@@ -11,9 +11,11 @@ import CreateEventCarousel from "./CreateEventCarousel";
 const CreateEventPreview = ({
   className,
   handleRemoveInterest,
+  setMedia,
 }: {
   className?: string;
   handleRemoveInterest: (interestId: string) => void;
+  setMedia: (media: File[]) => void;
 }) => {
   const eventStore = useEventStore();
   const { user } = useSession();
@@ -96,7 +98,7 @@ const CreateEventPreview = ({
           </span>
         </div>
         <div>
-          <CreateEventCarousel />
+          <CreateEventCarousel setMedia={setMedia} />
         </div>
         <div className="flex flex-col gap-2">
           <h3>{eventStore.title ? eventStore.title : "Event Title"}</h3>
