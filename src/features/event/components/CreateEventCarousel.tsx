@@ -1,4 +1,5 @@
 "use client";
+import { Button } from "@/components/ui/button";
 import { useEventStore } from "@/store/useEventStore";
 import { cn } from "@nextui-org/theme";
 import { PlusIcon, TrashIcon } from "lucide-react";
@@ -14,17 +15,11 @@ type MediaItem = {
   type: "image" | "video";
 };
 
-const CreateEventCarousel = ({
-  setMedia,
-}: {
-  setMedia: (media: File[]) => void;
-}) => {
+const CreateEventCarousel = () => {
   const [isModalOpen, setModalOpen] = useState(false);
 
-  // Ensure mediaPreviews always return an array of MediaItem objects
   const mediaPreviews = useEventStore((state) => {
     const mediaItems = state.mediaPreviews || [];
-    // Convert strings to objects with default type "image" if necessary
     return mediaItems.map((item) =>
       typeof item === "string"
         ? { url: item, type: item.endsWith(".mp4") ? "video" : "image" }
@@ -83,7 +78,7 @@ const CreateEventCarousel = ({
   };
 
   return (
-    <div className="relative">
+    <div className="relative w-full">
       {mediaPreviews.length === 0 ? (
         <div className="relative w-full pb-[56.25%] cursor-pointer bg-evento-gradient">
           <PlusIcon
@@ -139,13 +134,13 @@ const CreateEventCarousel = ({
                     <source src={item.url} type="video/mp4" />
                     Your browser does not support the video tag.
                   </video>
-                  {/* Bouton de suppression */}
-                  <button
-                    className="absolute top-2 right-2 bg-red-600 text-white p-2 rounded-full"
+                  <Button
+                    variant={"destructive"}
+                    className="absolute top-4 right-10  p-2 rounded-full"
                     onClick={() => deleteMedia(index, item)}
                   >
                     <TrashIcon className="w-6 h-6" />
-                  </button>
+                  </Button>
                 </div>
               ) : (
                 <div
@@ -178,11 +173,7 @@ const CreateEventCarousel = ({
           </Carousel>
         </div>
       )}
-      <MediaSelectionModal
-        isOpen={isModalOpen}
-        onClose={closeModal}
-        setMedia={setMedia}
-      />
+      <MediaSelectionModal isOpen={isModalOpen} onClose={closeModal} />
     </div>
   );
 };

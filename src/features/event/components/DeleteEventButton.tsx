@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { useSession } from "@/contexts/SessionProvider";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -15,12 +16,17 @@ const DeleteEventButton = ({
 }) => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-
+  const { token } = useSession();
   const handleDelete = async () => {
     if (!isHost) return;
     setLoading(true);
     try {
-      await fetchData(`/users/deleteEvent/${eventId}`, HttpMethod.DELETE);
+      await fetchData(
+        `/events/deleteEvent/${eventId}`,
+        HttpMethod.DELETE,
+        undefined,
+        token,
+      );
       setLoading(false);
       router.refresh();
     } catch (error) {

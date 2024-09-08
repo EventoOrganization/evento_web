@@ -9,7 +9,6 @@ import { useEffect, useState } from "react";
 export default function CurrentUserProfilePage() {
   const session = useSession();
   const { user, token } = session;
-  console.log(session);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const {
     userInfo,
@@ -41,24 +40,18 @@ export default function CurrentUserProfilePage() {
   };
 
   useEffect(() => {
-    console.log("User:", user, "Token:", token);
+    console.log("Checking user status with Token:", token);
     if (user && token) {
       getProfileData(token, true);
+    } else {
+      setIsAuthModalOpen(true);
     }
   }, []);
 
   const onAuthSuccess = () => {
-    if (!token) {
-      console.error("No token provided");
-      return;
-    }
-    getProfileData(token, true);
+    setIsAuthModalOpen(false);
+    if (token) getProfileData(token, true);
   };
-  useEffect(() => {
-    if (!user) {
-      setIsAuthModalOpen(true);
-    }
-  });
   return (
     <>
       <UserProfile

@@ -46,8 +46,8 @@ type EventFormState = {
   privateEventLink?: string;
   mediaPreviews?: string[];
   questions: Question[];
-  images: File[];
-  videos: File[];
+  uploadedMedia: { images: File[]; videos: File[] };
+  predefinedMedia: { images: string[]; videos: string[] };
   guestsAllowFriend: boolean;
   additionalField?: any[];
   setEventField: (key: string, value: any) => void;
@@ -62,7 +62,10 @@ type EventFormState = {
     value: string,
   ) => void;
   removeOption: (questionIndex: number, optionIndex: number) => void;
+  addUploadedMedia: (file: File, type: "image" | "video") => void;
+  addPredefinedMedia: (url: string, type: "image" | "video") => void;
 };
+
 export const useEventStore = create<EventFormState>()(
   persist(
     (set) => ({
@@ -86,10 +89,9 @@ export const useEventStore = create<EventFormState>()(
       timeSlots: [],
       coHosts: [],
       guests: [],
-      interestId: [],
       interests: [],
-      images: [],
-      videos: [],
+      uploadedMedia: { images: [], videos: [] },
+      predefinedMedia: { images: [], videos: [] },
       guestsAllowFriend: false,
       additionalField: [],
 
@@ -148,6 +150,30 @@ export const useEventStore = create<EventFormState>()(
           return { questions: updatedQuestions };
         }),
 
+      // Add uploaded media
+      addUploadedMedia: (file, type) =>
+        set((state) => {
+          const updatedMedia = { ...state.uploadedMedia };
+          if (type === "image") {
+            updatedMedia.images.push(file);
+          } else if (type === "video") {
+            updatedMedia.videos.push(file);
+          }
+          return { uploadedMedia: updatedMedia };
+        }),
+
+      // Add predefined media
+      addPredefinedMedia: (url, type) =>
+        set((state) => {
+          const updatedMedia = { ...state.predefinedMedia };
+          if (type === "image") {
+            updatedMedia.images.push(url);
+          } else if (type === "video") {
+            updatedMedia.videos.push(url);
+          }
+          return { predefinedMedia: updatedMedia };
+        }),
+
       clearEventForm: () =>
         set({
           title: "",
@@ -170,8 +196,8 @@ export const useEventStore = create<EventFormState>()(
           coHosts: [],
           guests: [],
           interests: [],
-          images: [],
-          videos: [],
+          uploadedMedia: { images: [], videos: [] },
+          predefinedMedia: { images: [], videos: [] },
           questions: [],
           guestsAllowFriend: false,
           additionalField: [],

@@ -16,11 +16,9 @@ import { handleFieldChange } from "../eventActions";
 const MediaSelectionModal = ({
   isOpen,
   onClose,
-  setMedia,
 }: {
   isOpen: boolean;
   onClose: () => void;
-  setMedia: (media: File[]) => void;
 }) => {
   const [selectedPredefinedMedia, setSelectedPredefinedMedia] = useState<
     string[]
@@ -54,7 +52,6 @@ const MediaSelectionModal = ({
 
     if (fileInput.files && fileInput.files.length > 0) {
       const files = Array.from(fileInput.files);
-      setMedia(files);
       for (const file of files) {
         const reader = new FileReader();
         reader.readAsDataURL(file);

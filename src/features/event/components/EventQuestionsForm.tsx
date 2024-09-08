@@ -91,8 +91,8 @@ const EventQuestionsForm = () => {
                         />
                         <Button
                           type="button"
-                          variant="destructive"
-                          className="bg-muted text-black border shadow"
+                          variant="ghost"
+                          className="bg-gray-200 text-black border shadow"
                           onClick={() => removeOption(index, optionIndex)}
                         >
                           Remove Choice
@@ -101,7 +101,7 @@ const EventQuestionsForm = () => {
                     ))}
                     <Button
                       type="button"
-                      className="bg-blue-400"
+                      className="bg-eventoPink hover:bg-eventoPink/80 border shadow"
                       onClick={() => addOption(index)}
                     >
                       Add Choice
@@ -117,13 +117,12 @@ const EventQuestionsForm = () => {
                       onCheckedChange={(checked) =>
                         updateQuestion(index, { required: checked === true })
                       }
-                      className="checked:bg-red-500"
                     />
                   </div>
                   <Button
                     type="button"
-                    variant="destructive"
-                    className=""
+                    variant="ghost"
+                    className="bg-gray-200 text-black border shadow"
                     onClick={() => removeQuestion(index)}
                   >
                     Remove Question
@@ -131,7 +130,11 @@ const EventQuestionsForm = () => {
                 </div>
               </div>
             ))}
-          <Button type="button" className="mt-2" onClick={addQuestion}>
+          <Button
+            type="button"
+            className="mt-2 bg-eventoPurpleLight hover:bg-eventoPurpleLight/80  border shadow"
+            onClick={addQuestion}
+          >
             Add Question
           </Button>
         </>

@@ -11,11 +11,9 @@ import CreateEventCarousel from "./CreateEventCarousel";
 const CreateEventPreview = ({
   className,
   handleRemoveInterest,
-  setMedia,
 }: {
   className?: string;
-  handleRemoveInterest: (interestId: string) => void;
-  setMedia: (media: File[]) => void;
+  handleRemoveInterest?: (interestId: string) => void;
 }) => {
   const eventStore = useEventStore();
   const { user } = useSession();
@@ -60,7 +58,6 @@ const CreateEventPreview = ({
       }
     }
   };
-  // console.log(eventStore);
 
   return (
     <>
@@ -98,7 +95,7 @@ const CreateEventPreview = ({
           </span>
         </div>
         <div>
-          <CreateEventCarousel setMedia={setMedia} />
+          <CreateEventCarousel />
         </div>
         <div className="flex flex-col gap-2">
           <h3>{eventStore.title ? eventStore.title : "Event Title"}</h3>
@@ -107,7 +104,9 @@ const CreateEventPreview = ({
               eventStore.interests.map((interest: any, index: number) => (
                 <li
                   key={index}
-                  onClick={() => handleRemoveInterest(interest._id)}
+                  onClick={() =>
+                    handleRemoveInterest && handleRemoveInterest(interest._id)
+                  }
                   className="bg-eventoPurpleLight/30 w-fit px-2 py-1 rounded-lg text-sm"
                 >
                   {interest.name}

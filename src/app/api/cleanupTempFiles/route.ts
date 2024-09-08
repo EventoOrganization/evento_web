@@ -4,15 +4,21 @@ import { NextRequest, NextResponse } from "next/server";
 import path from "path";
 
 export async function POST(req: NextRequest) {
-  console.log("Cleaning up temporary files", "req", req);
+  console.log("Cleaning up temporary files");
   if (req.method === "POST") {
     const body = await req.json();
-    const { files } = body;
 
-    files.forEach((fileName: string) => {
+    const files = body;
+
+    files.forEach((file: { url: string }) => {
+      const fileName = path.basename(file.url);
+
       const filePath = path.join(process.cwd(), "public/uploads", fileName);
       if (fs.existsSync(filePath)) {
-        fs.unlinkSync(filePath); // Delete the file
+        fs.unlinkSync(filePath);
+        console.log(`Deleted file: ${filePath}`);
+      } else {
+        console.log(`File not found: ${filePath}`);
       }
     });
 
