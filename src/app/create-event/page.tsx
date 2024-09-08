@@ -26,55 +26,29 @@ const CreateEventPage = () => {
   );
 
   const { user } = useSession();
-  useEffect(() => {
-    setFormValues({
-      title: eventStore.title || "",
-      eventType: eventStore.eventType || "public",
-      name: eventStore.name || "",
-      date: eventStore.date || "",
-      endDate: eventStore.endDate || eventStore.date || "",
-      startTime: eventStore.startTime || "",
-      endTime: eventStore.endTime || "",
-      description: eventStore.description || "",
-      mode: eventStore.mode || "virtual",
-      location: eventStore.location || "",
-      latitude: eventStore.latitude || "",
-      longitude: eventStore.longitude || "",
-      timeSlots: eventStore.timeSlots || [],
-      guests: eventStore.guests || [],
-      coHosts: eventStore.coHosts || [],
-      guestsAllowFriend: eventStore.guestsAllowFriend || false,
-      questions: eventStore.questions || [],
-      additionalField: eventStore.additionalField || [],
-      includeChat: eventStore.includeChat || false,
-      URL: eventStore.URL || "",
-      images: eventStore.images || [],
-      video: eventStore.video || "",
-    });
-  }, [eventStore]);
   const [formValues, setFormValues] = useState({
-    title: eventStore.title || "",
-    eventType: eventStore.eventType || "public",
-    name: eventStore.name || "",
-    date: eventStore.date || "",
-    endDate: eventStore.endDate || eventStore.date || "",
-    startTime: eventStore.startTime || "",
-    endTime: eventStore.endTime || "",
-    description: eventStore.description || "",
-    mode: eventStore.mode || "virtual",
-    location: eventStore.location || "",
-    latitude: eventStore.latitude || "",
-    longitude: eventStore.longitude || "",
-    timeSlots: eventStore.timeSlots || [],
-    guests: eventStore.guests || [],
-    coHosts: eventStore.coHosts || [],
-    guestsAllowFriend: eventStore.guestsAllowFriend || false,
-    questions: eventStore.questions || [],
-    additionalField: eventStore.additionalField || [],
-    includeChat: eventStore.includeChat || false,
-    URL: eventStore.URL || "",
-    images: eventStore.images || [],
-    video: eventStore.video || "",
+    title: "",
+    eventType: "public",
+    name: "",
+    date: "",
+    endDate: "",
+    startTime: "",
+    endTime: "",
+    description: "",
+    mode: "virtual",
+    location: "",
+    latitude: "",
+    longitude: "",
+    timeSlots: [],
+    guests: [],
+    coHosts: [],
+    guestsAllowFriend: false,
+    questions: [],
+    additionalField: [],
+    includeChat: false,
+    URL: "",
+    images: [],
+    video: [],
     // media: eventStore.media || [],
   });
   const getInterests = async () => {
@@ -85,6 +59,7 @@ const CreateEventPage = () => {
         console.log("Interests:", interestRes.data);
       }
     } catch (error) {
+      console.error("Error fetching interests:", error);
     } finally {
     }
   };
@@ -95,6 +70,7 @@ const CreateEventPage = () => {
         // setUsers(usersRes.data);
       }
     } catch (error) {
+      console.error("Error fetching users:", error);
     } finally {
     }
   };
