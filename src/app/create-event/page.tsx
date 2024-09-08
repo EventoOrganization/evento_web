@@ -6,18 +6,20 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useSession } from "@/contexts/SessionProvider";
 import CreateEventPreview from "@/features/event/components/CreateEventPreview";
-// import EnableChatButton from "@/features/event/components/EnableChatButton";
-// import EventCoHostsModal from "@/features/event/components/EventCoHostsModal";
-// import EventQuestionsForm from "@/features/event/components/EventQuestionsForm";
-// import EventURL from "@/features/event/components/EventURL";
+import EnableChatButton from "@/features/event/components/EnableChatButton";
+import EventCoHostsModal from "@/features/event/components/EventCoHostsModal";
+import EventDate from "@/features/event/components/EventDate";
+import EventQuestionsForm from "@/features/event/components/EventQuestionsForm";
+import EventURL from "@/features/event/components/EventURL";
 import { handleFieldChange } from "@/features/event/eventActions";
 import { useEventStore } from "@/store/useEventStore";
 import { InterestType } from "@/types/EventType";
+import { UserType } from "@/types/UserType";
 import { fetchData } from "@/utils/fetchData";
 import { useEffect, useState } from "react";
 const CreateEventPage = () => {
   const eventStore = useEventStore();
-  // const [users, setUsers] = useState<UserType[]>([]);
+  const [users, setUsers] = useState<UserType[]>([]);
   const [interests, setInterests] = useState<InterestType[]>([]);
   const [selectedInterests, setSelectedInterests] = useState<InterestType[]>(
     eventStore.interests || [],
@@ -90,7 +92,7 @@ const CreateEventPage = () => {
     try {
       const usersRes = await fetchData<any>("/users/allUserListing");
       if (!usersRes.error) {
-        // setUsers(usersRes.data);
+        setUsers(usersRes.data);
       }
     } catch (error) {
     } finally {
@@ -233,8 +235,8 @@ const CreateEventPage = () => {
               </select>
             </div>
           )}
-          {/* <EventLocationInput />
-          <EventDate /> */}
+          {/* <EventLocationInput /> */}
+          <EventDate />
           <div>
             <Label className="sr-only" htmlFor="description">
               Description
@@ -249,12 +251,12 @@ const CreateEventPage = () => {
             />
           </div>
           <h4 className="text-eventoPurpleLight">More Options</h4>
-          {/* <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2">
             <EventCoHostsModal allUsers={users as UserType[]} />
             <EnableChatButton />
             <EventURL />
           </div>
-          <EventQuestionsForm /> */}
+          <EventQuestionsForm />
           <Button type="submit" className="bg-blue-500 text-white">
             Submit
           </Button>
