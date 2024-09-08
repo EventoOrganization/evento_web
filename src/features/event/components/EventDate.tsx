@@ -1,24 +1,40 @@
 import { Input } from "@/components/ui/input";
 import { useEventStore } from "@/store/useEventStore";
 import { Label } from "@radix-ui/react-label";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { handleFieldChange } from "../eventActions";
 
 const EventDate = () => {
   const eventStore = useEventStore();
+
+  // Initialise les slots de temps à partir du store ou avec des valeurs par défaut
   const [timeSlots, setTimeSlots] = useState(
     eventStore.timeSlots.length > 0
       ? eventStore.timeSlots
       : [
           {
-            date: "",
+            date: eventStore.date || "", // Utilisation des valeurs du store si présentes
             startTime: eventStore.startTime || "08:00",
             endTime: eventStore.endTime || "18:00",
           },
         ],
   );
+
   const [useMultipleTimes, setUseMultipleTimes] = useState(false);
 
+  // Utilisé pour initialiser correctement les champs lorsque la page est chargée
+  useEffect(() => {
+    if (!eventStore.date && !eventStore.endDate) {
+      const today = new Date().toISOString().split("T")[0]; // Obtient la date d'aujourd'hui
+      handleFieldChange("date", today);
+      handleFieldChange("endDate", today);
+    }
+    handleFieldChange("startTime", "08:00");
+    handleFieldChange("endTime", "18:00");
+    handleFieldChange("timeSlots", timeSlots); // Synchronise les slots avec le store
+  }, []);
+
+  // Génère une plage de dates entre `start` et `end`
   const generateDateRange = (start: string, end: string): string[] => {
     const dates = [];
     const currentDate = new Date(start);
@@ -38,6 +54,7 @@ const EventDate = () => {
       eventStore.date &&
       eventStore.endDate > eventStore.date);
 
+  // Gère le changement de la case à cocher pour les horaires multiples
   const handleCheckboxChange = () => {
     setUseMultipleTimes(!useMultipleTimes);
     if (!useMultipleTimes && eventStore.date && eventStore.endDate) {
@@ -48,17 +65,17 @@ const EventDate = () => {
         endTime: eventStore.endTime || "18:00",
       }));
       setTimeSlots(slots);
-      eventStore.setEventField("timeSlots", slots);
+      handleFieldChange("timeSlots", slots);
     } else {
-      const slots = [
+      const singleSlot = [
         {
           date: eventStore.date || "",
           startTime: eventStore.startTime || "08:00",
           endTime: eventStore.endTime || "18:00",
         },
       ];
-      setTimeSlots(slots);
-      eventStore.setEventField("timeSlots", slots);
+      setTimeSlots(singleSlot);
+      handleFieldChange("timeSlots", singleSlot);
     }
   };
 
@@ -80,8 +97,8 @@ const EventDate = () => {
               "timeSlots",
               {
                 date: e.target.value,
-                startTime: "08:00",
-                endTime: "18:00",
+                startTime: eventStore.startTime || "08:00",
+                endTime: eventStore.endTime || "18:00",
               },
               0,
             );
@@ -181,7 +198,6 @@ const EventDate = () => {
                     { startTime: e.target.value },
                     index,
                   );
-                  eventStore.setEventField("timeSlots", newTimeSlots);
                 }}
               />
               <Input
@@ -198,7 +214,6 @@ const EventDate = () => {
                     { endTime: e.target.value },
                     index,
                   );
-                  eventStore.setEventField("timeSlots", newTimeSlots);
                 }}
               />
             </div>

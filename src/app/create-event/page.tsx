@@ -4,14 +4,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { useSession } from "@/contexts/SessionProvider";
 import CreateEventPreview from "@/features/event/components/CreateEventPreview";
 import EnableChatButton from "@/features/event/components/EnableChatButton";
 import EventCoHostsModal from "@/features/event/components/EventCoHostsModal";
 import EventDate from "@/features/event/components/EventDate";
+import EventLocationInput from "@/features/event/components/EventLocationInput";
 import EventQuestionsForm from "@/features/event/components/EventQuestionsForm";
 import EventURL from "@/features/event/components/EventURL";
 import { handleFieldChange } from "@/features/event/eventActions";
+import { useAuthStore } from "@/store/useAuthStore";
 import { useEventStore } from "@/store/useEventStore";
 import { InterestType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
@@ -27,7 +28,7 @@ const CreateEventPage = () => {
     eventStore.interests || [],
   );
 
-  const { user } = useSession();
+  const { user } = useAuthStore((state) => state);
   useEffect(() => {
     setFormValues({
       title: eventStore.title || "",
@@ -222,7 +223,7 @@ const CreateEventPage = () => {
               required
             />
           </div>
-          {user && !user.name && (
+          {(!user || (user && !user.name)) && (
             <div>
               <Label className="sr-only" htmlFor="name">
                 Organizer Name
@@ -306,7 +307,7 @@ const CreateEventPage = () => {
               onChange={handleUpload}
             />
           </div>
-          {/* <EventLocationInput /> */}
+          <EventLocationInput />
           <EventDate />
           <div>
             <Label className="sr-only" htmlFor="description">
