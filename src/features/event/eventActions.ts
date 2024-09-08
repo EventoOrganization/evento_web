@@ -25,3 +25,12 @@ export const handleFieldChange = (key: string, value: any, index?: number) => {
     }
   });
 };
+
+export const formatDateToEuropean = (date: string): string => {
+  const options: Intl.DateTimeFormatOptions = {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  };
+  return new Date(date).toLocaleDateString("fr-FR", options); // "fr-FR" est pour le format européen
+};

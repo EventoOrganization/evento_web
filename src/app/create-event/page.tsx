@@ -47,11 +47,15 @@ const CreateEventPage = () => {
       guests: eventStore.guests || [],
       coHosts: eventStore.coHosts || [],
       guestsAllowFriend: eventStore.guestsAllowFriend || false,
+      createRSVP: eventStore.createRSVP || false,
       questions: eventStore.questions || [],
       additionalField: eventStore.additionalField || [],
       includeChat: eventStore.includeChat || false,
       URL: eventStore.URL || "",
       media: media || [],
+      images: eventStore.images || [],
+      videos: eventStore.videos || [],
+      interests: eventStore.interests || [],
     });
   }, [eventStore]);
   const [formValues, setFormValues] = useState({
@@ -71,11 +75,15 @@ const CreateEventPage = () => {
     guests: eventStore.guests || [],
     coHosts: eventStore.coHosts || [],
     guestsAllowFriend: eventStore.guestsAllowFriend || false,
+    createRSVP: eventStore.createRSVP || false,
     questions: eventStore.questions || [],
     additionalField: eventStore.additionalField || [],
     includeChat: eventStore.includeChat || false,
     URL: eventStore.URL || "",
     media: media || [],
+    images: eventStore.images || [],
+    videos: eventStore.videos || [],
+    interests: eventStore.interests || [],
   });
   const getInterests = async () => {
     try {

@@ -1,40 +1,70 @@
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { useEventStore } from "@/store/useEventStore";
-import { Label } from "@radix-ui/react-label";
+import { format } from "date-fns";
+import { Calendar as CalendarIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { handleFieldChange } from "../eventActions";
-
 const EventDate = () => {
   const eventStore = useEventStore();
-
-  // Initialise les slots de temps à partir du store ou avec des valeurs par défaut
+  const [useMultipleTimes, setUseMultipleTimes] = useState(false);
+  const [startDate, setStartDate] = useState<Date | undefined>(
+    eventStore.date ? new Date(eventStore.date) : undefined,
+  );
+  const [endDate, setEndDate] = useState<Date | undefined>(
+    eventStore.endDate ? new Date(eventStore.endDate) : undefined,
+  );
   const [timeSlots, setTimeSlots] = useState(
     eventStore.timeSlots.length > 0
       ? eventStore.timeSlots
       : [
           {
-            date: eventStore.date || "", // Utilisation des valeurs du store si présentes
+            date: eventStore.date || "",
             startTime: eventStore.startTime || "08:00",
             endTime: eventStore.endTime || "18:00",
           },
         ],
   );
-
-  const [useMultipleTimes, setUseMultipleTimes] = useState(false);
-
-  // Utilisé pour initialiser correctement les champs lorsque la page est chargée
   useEffect(() => {
     if (!eventStore.date && !eventStore.endDate) {
-      const today = new Date().toISOString().split("T")[0]; // Obtient la date d'aujourd'hui
-      handleFieldChange("date", today);
-      handleFieldChange("endDate", today);
+      const today = new Date();
+      handleFieldChange("date", today.toISOString().split("T")[0]);
+      handleFieldChange("endDate", today.toISOString().split("T")[0]);
     }
     handleFieldChange("startTime", "08:00");
     handleFieldChange("endTime", "18:00");
-    handleFieldChange("timeSlots", timeSlots); // Synchronise les slots avec le store
-  }, []);
+    handleFieldChange("timeSlots", timeSlots);
+  }, [timeSlots]);
 
-  // Génère une plage de dates entre `start` et `end`
+  const handleStartDateChange = (date: Date | undefined) => {
+    const formattedDate = date ? format(date, "yyyy-MM-dd") : "";
+    setStartDate(date);
+    if (date) {
+      handleFieldChange("date", formattedDate);
+      setTimeSlots((prevSlots) => [
+        ...prevSlots,
+        {
+          date: formattedDate,
+          startTime: eventStore.startTime || "08:00",
+          endTime: eventStore.endTime || "18:00",
+        },
+      ]);
+    }
+  };
+
+  const handleEndDateChange = (date: Date | undefined) => {
+    const formattedDate = date ? format(date, "yyyy-MM-dd") : "";
+    setEndDate(date);
+    if (date) {
+      handleFieldChange("endDate", formattedDate);
+    }
+  };
   const generateDateRange = (start: string, end: string): string[] => {
     const dates = [];
     const currentDate = new Date(start);
@@ -54,7 +84,6 @@ const EventDate = () => {
       eventStore.date &&
       eventStore.endDate > eventStore.date);
 
-  // Gère le changement de la case à cocher pour les horaires multiples
   const handleCheckboxChange = () => {
     setUseMultipleTimes(!useMultipleTimes);
     if (!useMultipleTimes && eventStore.date && eventStore.endDate) {
@@ -82,43 +111,53 @@ const EventDate = () => {
   return (
     <>
       <div className="grid grid-cols-2 gap-4">
-        <Label className="sr-only" htmlFor="date">
-          Start date
-        </Label>
-        <Input
-          type="date"
-          id="date"
-          value={eventStore.date || ""}
-          required
-          className="rounded-xl bg-muted sm:bg-background"
-          onChange={(e) => {
-            handleFieldChange("date", e.target.value);
-            handleFieldChange(
-              "timeSlots",
-              {
-                date: e.target.value,
-                startTime: eventStore.startTime || "08:00",
-                endTime: eventStore.endTime || "18:00",
-              },
-              0,
-            );
-            if (!eventStore.endDate || eventStore.endDate === eventStore.date) {
-              handleFieldChange("endDate", e.target.value);
-            }
-          }}
-        />
-        <Label className="sr-only" htmlFor="endDate">
-          End date
-        </Label>
-        <Input
-          type="date"
-          id="endDate"
-          value={eventStore.endDate || ""}
-          className="rounded-xl bg-muted sm:bg-background"
-          onChange={(e) => {
-            handleFieldChange("endDate", e.target.value);
-          }}
-        />
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              className="w-full justify-start text-left font-normal"
+            >
+              <CalendarIcon className="mr-2 h-4 w-4" />
+              {startDate ? (
+                format(startDate, "dd/MM/yyyy")
+              ) : (
+                <span>Select start date</span>
+              )}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0">
+            <Calendar
+              mode="single"
+              selected={startDate}
+              onSelect={handleStartDateChange}
+              initialFocus
+            />
+          </PopoverContent>
+        </Popover>
+
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              className="w-full justify-start text-left font-normal"
+            >
+              <CalendarIcon className="mr-2 h-4 w-4" />
+              {endDate ? (
+                format(endDate, "dd/MM/yyyy")
+              ) : (
+                <span>Select end date</span>
+              )}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0">
+            <Calendar
+              mode="single"
+              selected={endDate}
+              onSelect={handleEndDateChange}
+              initialFocus
+            />
+          </PopoverContent>
+        </Popover>
       </div>
       {shouldShowCheckbox && (
         <div className="flex items-center mt-2">
