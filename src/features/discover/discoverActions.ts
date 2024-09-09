@@ -1,9 +1,9 @@
 import { EventType, InterestType } from "@/types/EventType";
-import { UserType } from "@/types/UserType";
 interface Location {
   lat: number;
   lng: number;
 }
+
 export const getDistanceFromLatLonInKm = (
   lat1: number,
   lon1: number,
@@ -27,8 +27,7 @@ export const filterEvents = (
   events: EventType[],
   selectedInterests: InterestType[],
   searchText: string,
-  startDate: string | null,
-  endDate: string | null,
+  selectedDate: string,
   selectedTab: string,
   location: Location | null,
   distanceFilter: number,
@@ -49,32 +48,24 @@ export const filterEvents = (
       event.title?.toLowerCase().includes(searchLower) ||
       event.details?.description?.toLowerCase().includes(searchLower);
 
-    const eventStartDate = event.details?.date
-      ? new Date(event.details.date)
-      : null;
+    const eventDate = event.details?.date ? new Date(event.details.date) : null;
     const eventEndDate = event.details?.endDate
       ? new Date(event.details.endDate)
       : null;
-
-    const selectedStartDateObj = startDate ? new Date(startDate) : null;
-    const selectedEndDateObj = endDate ? new Date(endDate) : null;
-
-    if (!selectedStartDateObj && !selectedEndDateObj) {
-      return true;
-    }
+    const selectedDateObj = selectedDate ? new Date(selectedDate) : null;
 
     const matchesDate =
-      (selectedStartDateObj &&
-        eventStartDate &&
+      !selectedDateObj ||
+      (eventDate &&
         eventEndDate &&
-        selectedStartDateObj >= eventStartDate &&
-        selectedStartDateObj <= eventEndDate) ||
-      (selectedStartDateObj &&
-        selectedEndDateObj &&
-        eventStartDate &&
-        eventEndDate &&
-        eventEndDate >= selectedStartDateObj &&
-        eventStartDate <= selectedEndDateObj);
+        selectedDateObj >=
+          new Date(
+            eventDate.getTime() + eventDate.getTimezoneOffset() * 60000,
+          ) &&
+        selectedDateObj <=
+          new Date(
+            eventEndDate.getTime() + eventEndDate.getTimezoneOffset() * 60000,
+          ));
 
     const isNearMe =
       selectedTab === "Near me" &&
@@ -92,39 +83,5 @@ export const filterEvents = (
     const matchesTab = selectedTab === "All" || isNearMe || isVirtual;
 
     return matchesInterest && matchesSearchText && matchesDate && matchesTab;
-  });
-};
-export const filterUsers = (
-  users: UserType[],
-  selectedInterests: InterestType[],
-  searchText: string,
-  allInterests: InterestType[],
-) => {
-  const searchLower = searchText.toLowerCase();
-
-  return users.filter((user) => {
-    const userInterests = user.interest
-      ? (user.interest
-          .map(
-            (interestId) =>
-              allInterests.find((interest) => interest._id === interestId) ||
-              null,
-          )
-          .filter(Boolean) as InterestType[])
-      : [];
-    const matchesInterest =
-      selectedInterests.length === 0 ||
-      selectedInterests.some((interest) =>
-        userInterests.some((userInterest) => userInterest._id === interest._id),
-      );
-
-    const userName =
-      user.firstName && user.lastName
-        ? `${user.firstName} ${user.lastName}`
-        : user.firstName || user.lastName || "";
-
-    const matchesSearchText = userName.toLowerCase().includes(searchLower);
-
-    return matchesInterest && matchesSearchText;
   });
 };

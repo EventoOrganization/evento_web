@@ -11,10 +11,13 @@ const EventLocationInput = ({
   const [location, setLocation] = useState<string>("");
   const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const [isScriptLoaded, setIsScriptLoaded] = useState(false); // To track script loading
+  const [isScriptLoaded, setIsScriptLoaded] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    // This code runs only on the client-side
+    if (!isMounted) {
+      return;
+    }
     if (typeof window !== "undefined") {
       const existingScript = document.querySelector(
         `script[src*="https://maps.googleapis.com/maps/api/js"]`,
@@ -67,8 +70,10 @@ const EventLocationInput = ({
         initializeAutocomplete();
       }
     }
-  }, [apiKey, isScriptLoaded]); // Only runs when script loads or apiKey changes
-
+  }, [apiKey, isScriptLoaded]);
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
   return (
     <Input
       type="text"

@@ -21,7 +21,7 @@ export type UserType = {
   pastEvents?: EventType[];
   totalEventAttended?: number;
   interests?: InterestType[];
-  interest?: string[];
+  interest?: InterestType[];
   aboutMe?: string;
   bio?: string;
   DOB?: string;

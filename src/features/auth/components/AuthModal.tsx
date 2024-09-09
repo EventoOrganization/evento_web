@@ -24,7 +24,7 @@ const AuthModal = ({
   onClose,
 }: {
   onAuthSuccess: () => void;
-  onClose: () => void;
+  onClose?: () => void;
 }) => {
   const { startSession } = useSession();
   const { setUser } = useAuthStore();
@@ -116,7 +116,7 @@ const AuthModal = ({
       onOpenChange={(open) => {
         console.log("Auth modal open state changed:", open);
         setIsModalOpen(open);
-        if (!open) onClose();
+        if (!open && onClose) onClose();
       }}
     >
       <DialogContent className="rounded-xl">

@@ -14,9 +14,9 @@ export default function NavbarApp() {
       <nav className="fixed bottom-6 bg-background z-20 rounded-lg flex justify-evenly w-full shadow max-w-80 md:max-w-2xl mx-auto py-2 md:py-4 h-fit items-center">
         <Link href="/" className="relative group">
           <HomeIcon2 pathname={pathname === "/"} className="md:w-8 md:h-8" />
-          <span className="absolute left-1/2 border shadow -translate-x-1/2 bottom-full mb-2 px-2 py-1 bg-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+          {/* <span className="absolute left-1/2 border shadow -translate-x-1/2 bottom-full mb-2 px-2 py-1 bg-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200">
             Back to home
-          </span>
+          </span> */}
         </Link>
 
         <Link href="/discover" className="relative group">
@@ -25,9 +25,9 @@ export default function NavbarApp() {
             // fill="pink"
             className="md:w-8 md:h-8 "
           />
-          <span className="absolute left-1/2 border shadow -translate-x-1/2 bottom-full mb-2 px-2 py-1 bg-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+          {/* <span className="absolute left-1/2 border shadow -translate-x-1/2 bottom-full mb-2 px-2 py-1 bg-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200">
             Discover more events
-          </span>
+          </span> */}
         </Link>
 
         <Link href="/create-event" className="relative group">
@@ -35,9 +35,9 @@ export default function NavbarApp() {
             pathname={pathname === "/create-event"}
             className="md:w-8 md:h-8"
           />
-          <span className="absolute left-1/2 border shadow -translate-x-1/2 bottom-full mb-2 px-2 py-1 bg-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+          {/* <span className="absolute left-1/2 border shadow -translate-x-1/2 bottom-full mb-2 px-2 py-1 bg-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200">
             Create an event
-          </span>
+          </span> */}
         </Link>
 
         <Link href="/profile" className="relative group">
@@ -45,9 +45,9 @@ export default function NavbarApp() {
             pathname={pathname === "/profile"}
             className="md:w-8 md:h-8"
           />
-          <span className="absolute left-1/2 border shadow -translate-x-1/2 bottom-full mb-2 px-2 py-1 bg-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+          {/* <span className="absolute left-1/2 border shadow -translate-x-1/2 bottom-full mb-2 px-2 py-1 bg-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200">
             Your profile
-          </span>
+          </span> */}
         </Link>
 
         <Link href="/tchat" className="relative group">
@@ -55,9 +55,9 @@ export default function NavbarApp() {
             pathname={pathname === "/tchat"}
             className="md:w-8 md:h-8"
           />
-          <span className="absolute left-1/2 border shadow -translate-x-1/2 bottom-full mb-2 px-2 py-1 bg-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+          {/* <span className="absolute left-1/2 border shadow -translate-x-1/2 bottom-full mb-2 px-2 py-1 bg-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200">
             Messaging
-          </span>
+          </span> */}
         </Link>
       </nav>
     </div>

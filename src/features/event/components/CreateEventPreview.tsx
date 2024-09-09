@@ -63,39 +63,43 @@ const CreateEventPreview = ({
     <>
       <div
         className={cn(
-          "bg-white border shadow rounded p-4 w-full flex flex-col h-fit gap-4 hover:shadow-xl hover:bg-slate-50 cursor-pointer relative",
+          "bg-white border shadow rounded p-4 w-full grid grid-cols-1 lg:grid-cols-2  h-fit gap-4 hover:shadow-xl hover:bg-slate-50 cursor-pointer relative",
           className,
         )}
       >
-        <div className="flex items-center justify-between">
-          <div className="flex items-center">
-            {user?.profileImage ? (
-              <Image
-                src={user.profileImage}
-                alt="user image"
-                width={500}
-                height={500}
-                className="w-6 h-6 rounded-full"
-              />
-            ) : (
-              <Avatar>
-                <AvatarImage
-                  src={"https://github.com/shadcn.png"}
-                  className="rounded-full w-6 h-6"
-                />
-                <AvatarFallback>CN</AvatarFallback>
-              </Avatar>
-            )}
-            <h4 className="ml-2">
-              {user && user.name ? user.name : eventStore.name || "Username"}
-            </h4>
+        <div className="flex items-center justify-between ">
+          <div className="flex flex-col w-full">
+            <div className="flex justify-between items-center mb-4">
+              <div className="flex gap-2 items-center">
+                {user?.profileImage ? (
+                  <Image
+                    src={user.profileImage}
+                    alt="user image"
+                    width={30}
+                    height={30}
+                    className="w-full h-full rounded-full"
+                  />
+                ) : (
+                  <Avatar>
+                    <AvatarImage
+                      src={"https://github.com/shadcn.png"}
+                      className="rounded-full w-full h-full"
+                    />
+                    <AvatarFallback>CN</AvatarFallback>
+                  </Avatar>
+                )}
+                <h4 className="ml-2">
+                  {user && user.name
+                    ? user.name
+                    : eventStore.name || "Username"}
+                </h4>
+              </div>
+              <span className="text-sm">
+                {eventStore.date ? renderDate() : "Date"}
+              </span>
+            </div>
+            <CreateEventCarousel />
           </div>
-          <span className="ml-4">
-            {eventStore.date ? renderDate() : "Date"}
-          </span>
-        </div>
-        <div>
-          <CreateEventCarousel />
         </div>
         <div className="flex flex-col gap-2">
           <h3>{eventStore.title ? eventStore.title : "Event Title"}</h3>

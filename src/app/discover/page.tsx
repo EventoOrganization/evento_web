@@ -1,101 +1,63 @@
 "use client";
 
-import { useSession } from "@/contexts/SessionProvider";
-import { fetchData, HttpMethod } from "@/utils/fetchData";
-import { useEffect, useState } from "react";
-
 import Section from "@/components/layout/Section";
 import LocationSelector from "@/components/map/LocationSelector";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import UserPrevirew from "@/components/UsersList";
-import { filterEvents, filterUsers } from "@/features/discover/discoverActions";
+import { useSession } from "@/contexts/SessionProvider";
+import AuthModal from "@/features/auth/components/AuthModal";
+import DateSelector from "@/features/discover/DateSelector";
+import { filterEvents } from "@/features/discover/discoverActions";
 import TabSelector from "@/features/discover/TabSelector";
 import Event from "@/features/event/components/Event";
 import { cn } from "@/lib/utils";
+import useEventoStore from "@/store/useEventoStore";
 import { EventType, InterestType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
 import { Search } from "lucide-react";
+import { useEffect, useState } from "react";
+
 interface Location {
   lat: number;
   lng: number;
 }
+
 const DiscoverPage = () => {
-  const [events, setEvents] = useState<EventType[]>([] as any[]);
-  const [users, setUsers] = useState<any>([] as any[]);
-  const [interests, setInterests] = useState<InterestType[]>([] as any[]);
+  const {
+    users,
+    events,
+    interests,
+    loadInterests,
+    loadUpcomingEvents,
+    loadUsersPlus,
+  } = useEventoStore();
   const [selectedInterests, setSelectedInterests] = useState<InterestType[]>(
     [],
   );
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [searchText, setSearchText] = useState("");
-  const [startDate, setStartDate] = useState<Date | null>(null);
-  const [endDate, setEndDate] = useState<Date | null>(null);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTab, setSelectedTab] = useState("All");
   const [location, setLocation] = useState<Location | null>(null);
   const [distanceFilter, setDistanceFilter] = useState(10);
-  const [filteredEvents, setFilteredEvents] = useState(events);
-  const [filteredUsers, setFilteredUsers] = useState([] as UserType[]);
+  const [filteredEvents, setFilteredEvents] = useState<EventType[]>([]);
+  // const [filterUsers, setFilterUsers] = useState<UserType[]>([]);
   const session = useSession();
-  const getInterests = async () => {
-    try {
-      const interestRes = await fetchData<any>("/users/getInterestsListing");
-      if (!interestRes.error) {
-        setInterests(interestRes.data);
-      }
-    } catch (error) {
-    } finally {
-    }
-  };
-  const getUpcomingEvents = async () => {
-    try {
-      const upcomingEventRes = await fetchData<any>(
-        "/events/getUpcomingEvents",
-      );
-      if (!upcomingEventRes.error) {
-        setEvents(upcomingEventRes.data);
-        // console.log("Upcoming event", upcomingEventRes.data);
-      }
-    } catch (error) {
-    } finally {
-    }
-  };
-  const getUsers = async () => {
-    try {
-      const usersRes = await fetchData<any>("/users/allUserListing");
-      if (!usersRes.error) {
-        setUsers(usersRes.data);
-      }
-    } catch (error) {
-    } finally {
-    }
-  };
-  const getUsersPlus = async () => {
-    try {
-      const usersRes = await fetchData<any>(
-        `/users/followStatusForUsersYouFollow/${session?.user?._id}`,
-        HttpMethod.GET,
-        null,
-        session?.token,
-      );
+  const [isHydrated, setIsHydrated] = useState(false);
 
-      if (!usersRes.error) {
-        setUsers(usersRes.data);
-        // console.log(usersRes.data);
-      }
-    } catch (error) {
-    } finally {
-    }
-  };
+  // Wait until the client has fully hydrated to prevent SSR mismatches
   useEffect(() => {
-    // console.log("session", session);
-    if (!interests.length) getInterests();
-    if (!events.length) getUpcomingEvents();
-    if (!session?.user && !session?.token) {
-      getUsers();
-    } else {
-      getUsersPlus();
-    }
-  }, [session]);
+    setIsHydrated(true);
+  }, []);
+
+  useEffect(() => {
+    loadInterests();
+    loadUpcomingEvents();
+    if (session.user && session.token)
+      loadUsersPlus(session.user._id, session.token);
+  }, []);
 
   const handleInterestToggle = (interest: InterestType) => {
     setSelectedInterests((prev) =>
@@ -104,78 +66,70 @@ const DiscoverPage = () => {
         : [...prev, interest],
     );
   };
-  const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newDate = new Date(e.target.value);
-    setStartDate(newDate); // Now setting as a Date object
-    if (endDate && newDate > endDate) {
-      setEndDate(null);
-    }
-  };
-
-  const handleEndDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEndDate(new Date(e.target.value)); //
-  };
 
   useEffect(() => {
-    const formattedStartDate = startDate
-      ? startDate.toISOString().substring(0, 10)
-      : "";
-    const formattedEndDate = endDate
-      ? endDate.toISOString().substring(0, 10)
-      : null;
+    const formattedDate = selectedDate ? selectedDate.toISOString() : "";
     if (users && users.length > 0 && events && events.length > 0) {
       const filteredEvents = filterEvents(
         events,
         selectedInterests,
         searchText,
-        formattedStartDate,
-        formattedEndDate,
+        formattedDate,
         selectedTab,
         location,
         distanceFilter,
       );
 
-      const filteredUsers = filterUsers(
-        users,
-        selectedInterests,
-        searchText,
-        interests,
-      );
-
       setFilteredEvents(filteredEvents);
-      setFilteredUsers(filteredUsers);
     }
   }, [
     selectedInterests,
     searchText,
-    startDate,
-    endDate,
+    selectedDate,
     selectedTab,
     events,
-    users,
     location,
     distanceFilter,
   ]);
 
+  if (!isHydrated) {
+    return null;
+  }
+
   return (
     <>
+      <div className="relative flex justify-center items-center mt-10 text-eventoPurpleLight gap-2">
+        <h2 className="animate-slideInLeft font-black opacity-0">
+          <span>Discover</span>
+        </h2>
+        <h2 className="event-text animate-slideInRight flex opacity-0 items-center bg-evento-gradient text-white rounded shadow">
+          <span className=" flex justify-center items-center">
+            <img src="/logo.png" alt="E" className="w-12 h-12" />
+          </span>
+          <span className="-translate-x-1.5">vents</span>
+        </h2>
+      </div>
       <Section className="flex flex-col-reverse md:grid md:grid-cols-2 gap-20 items-start">
         <ul className="w-full space-y-6">
-          <TabSelector onChange={setSelectedTab} />
-          {filteredEvents.map((event) => (
-            <li key={event._id}>
-              <Event event={event} />
-            </li>
-          ))}
+          <TabSelector
+            onChange={setSelectedTab}
+            tabs={["All", "Near me", "Virtual"]}
+          />
+          {filteredEvents &&
+            filteredEvents.map((event) => (
+              <li key={event._id}>
+                <Event event={event} />
+              </li>
+            ))}
         </ul>
-        <div className="flex flex-col gap-4">
-          <div className="flex flex-col gap-2 rounded bg-muted">
+        <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2 p-4 rounded bg-muted">
             <h4 className="text-purple-600 font-bold">Current Location</h4>
             <LocationSelector onLocationChange={setLocation} />
           </div>
-          <div className="relative flex items-center">
+          <div className="relative flex items-center p-4">
             <Search
-              className="w-6 h-6 absolute left-4 text-eventoPurpleDark"
+              className="w-6 h-6 absolute left-6 text-eventoPurpleDark"
               strokeWidth={2.5}
             />
             <Input
@@ -183,47 +137,17 @@ const DiscoverPage = () => {
               placeholder="Search for events or organisers ..."
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
-              className="pl-14 border-none bg-white py-2 rounded-lg w-full"
+              className="pl-12 border-none bg-white py-2 rounded-lg w-full"
             />
           </div>
-          <div className="mt-4 flex gap-4">
+          <div className="p-4 flex gap-4">
             <h4 className="cursor-pointer text-purple-600 font-bold">
               Select Date
-            </h4>{" "}
-            <div className="flex flex-col gap-2">
-              <Input
-                type="date"
-                value={
-                  startDate ? startDate.toISOString().substring(0, 10) : ""
-                }
-                onChange={handleStartDateChange}
-                className="cursor-pointer "
-              />
-              {startDate && (
-                <Input
-                  type="date"
-                  value={endDate ? endDate.toISOString().substring(0, 10) : ""}
-                  onChange={handleEndDateChange}
-                  min={
-                    startDate
-                      ? startDate.toISOString().substring(0, 10)
-                      : undefined
-                  }
-                  className="cursor-pointer"
-                />
-              )}
-            </div>
-            {startDate && (
-              <button
-                className="text-sm py-2 self-start"
-                onClick={() => {
-                  setStartDate(null);
-                  setEndDate(null);
-                }}
-              >
-                Reset
-              </button>
-            )}
+            </h4>
+            <DateSelector
+              selectedDate={selectedDate}
+              setSelectedDate={setSelectedDate}
+            />
           </div>
           {selectedTab === "Near me" && (
             <div className="hidden">
@@ -237,7 +161,7 @@ const DiscoverPage = () => {
               />
             </div>
           )}
-          <div className="mt-4">
+          <div className="p-4">
             <h4 className="text-purple-600 font-bold">Select Interests</h4>
             <ul className="flex flex-wrap gap-4 mt-4">
               {interests.map((interest) => (
@@ -257,17 +181,32 @@ const DiscoverPage = () => {
               ))}
             </ul>
           </div>
-          <div className="mt-4 hidden md:block">
+          <div className="p-4 hidden md:block">
             <h4 className="text-purple-600 font-bold">Follow Suggestions</h4>
             <ul className="space-y-4 py-4">
-              {filteredUsers.map((user) => (
-                <li key={user._id} className="flex justify-between">
-                  <UserPrevirew user={user} />
-                </li>
-              ))}
+              {session.isAuthenticated ? (
+                users.map((user: UserType) => (
+                  <li key={user._id} className="flex justify-between">
+                    <UserPrevirew user={user} />
+                  </li>
+                ))
+              ) : (
+                <>
+                  <p>Login to find friend who like same interest than you !</p>
+                  <Button
+                    className="bg-evento-gradient w-full"
+                    onClick={() => setIsAuthModalOpen(true)}
+                  >
+                    Login
+                  </Button>
+                </>
+              )}
             </ul>
           </div>
         </div>
+        {isAuthModalOpen && (
+          <AuthModal onAuthSuccess={() => setIsAuthModalOpen(false)} />
+        )}
       </Section>
     </>
   );

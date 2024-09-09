@@ -7,7 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { Button } from "./ui/button";
-const UserPrevirew = ({
+const UsersList = ({
   user,
   fetchUsers,
 }: {
@@ -112,4 +112,4 @@ const UserPrevirew = ({
   );
 };
 
-export default UserPrevirew;
+export default UsersList;

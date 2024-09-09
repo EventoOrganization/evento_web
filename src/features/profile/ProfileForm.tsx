@@ -1,5 +1,6 @@
 "use client";
 import { useProfileStore } from "@/store/useProfileStore";
+import { InterestType } from "@/types/EventType";
 import { useEffect, useState } from "react";
 
 type FormValues = {
@@ -25,7 +26,7 @@ type FormValues = {
   is_block?: number;
   is_otp_verify?: number;
   interests?: string[];
-  interest?: string[];
+  interest?: InterestType[];
 };
 
 const ProfileForm = () => {

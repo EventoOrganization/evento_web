@@ -1,32 +1,31 @@
 "use client";
-import AttendeesList from "@/components/AttendeesList";
-import AvatarStack from "@/components/AvatarStack";
 import MapPinIcon2 from "@/components/icons/MappPinIcon2";
 import Section from "@/components/layout/Section";
-import TruncatedText from "@/components/TruncatedText";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import RenderMedia from "@/components/RenderMedia";
 import { Button } from "@/components/ui/button";
-import { useSession } from "@/contexts/SessionProvider";
+import TabSelector from "@/features/discover/TabSelector";
 import EventActionIcons from "@/features/event/components/EventActionIcons";
-import { ChevronRightIcon } from "lucide-react";
+import EventTimeSlots from "@/features/event/components/EventTimeSlots";
+import { EventType, InterestType, TimeSlotType } from "@/types/EventType";
+import { fetchData } from "@/utils/fetchData";
+import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-type AttendeeType = {
-  user: {
-    _id: string;
-    firstName: string;
-    lastName: string;
-    name: string;
-    profileImage: string;
-  };
-  isGoing: boolean;
-  isFavourite: boolean;
-  isFollowing: boolean;
-};
+// type AttendeeType = {
+//   user: {
+//     _id: string;
+//     firstName: string;
+//     lastName: string;
+//     name: string;
+//     profileImage: string;
+//   };
+//   isGoing: boolean;
+//   isFavourite: boolean;
+//   isFollowing: boolean;
+// };
 const EventPage = () => {
   const { id } = useParams();
-  const token = useSession();
   const eventId = Array.isArray(id) ? id[0] : id;
   const [event, setEvent] = useState<any>(null);
   const [selectedTab, setSelectedTab] = useState("Description"); // état pour gérer les onglets
@@ -41,22 +40,10 @@ const EventPage = () => {
 
   const fetchEventData = async (eventId: string) => {
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/users/evento/${eventId}`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
+      const eventRes = await fetchData<EventType>(
+        `/events/getEvent/${eventId}`,
       );
-
-      if (response.ok) {
-        const data = await response.json();
-        setEvent(data.body);
-      } else {
-        console.error("Failed to fetch event data.");
-      }
+      setEvent(eventRes.data);
     } catch (error) {
       console.error("Error fetching event:", error);
     }
@@ -65,178 +52,122 @@ const EventPage = () => {
   if (!event) {
     return <div>Loading...</div>;
   }
-
+  const renderDate = () => {
+    const startDate = event?.details?.date;
+    const endDate = event?.details?.endDate;
+    const formatDate = (dateString: string) => {
+      const date = new Date(dateString);
+      const options: Intl.DateTimeFormatOptions = {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      };
+      return date.toLocaleDateString("en-US", options);
+    };
+    if (
+      !endDate ||
+      new Date(endDate).getTime() === new Date(startDate).getTime()
+    ) {
+      return `le ${formatDate(startDate)}`;
+    } else {
+      const startDay = new Date(startDate).getDate();
+      const endDay = new Date(endDate).getDate();
+      const monthYear = new Date(startDate).toLocaleDateString("fr-FR", {
+        month: "long",
+        year: "numeric",
+      });
+      return `From ${startDay} to ${endDay} ${monthYear}`;
+    }
+  };
   const isValidUrl = (url: string) => {
     return url.startsWith("http://") || url.startsWith("https://");
   };
 
   return (
-    <Section className="px-10 py-6 h-fit bg-white border shadow rounded grid grid-cols-1 md:grid-cols-2 gap-10 ">
-      <div className="h-full flex flex-col gap-4 relative">
-        <div className="flex items-center gap-4">
-          <div className="w-8 h-8">
+    <div className="md:flex grid grid-cols-1  w-screen h-screen">
+      <RenderMedia event={event} />
+      <Section className=" justify-start py-4 w-full">
+        <div className="flex items-center w-full  justify-between mb-4">
+          <div className="flex items-center  gap-2 ">
             {event?.user?.profileImage &&
             isValidUrl(event.user.profileImage) ? (
               <Image
                 src={event?.user.profileImage}
                 alt="user image"
-                width={500}
-                height={500}
-                className="w-8 h-8 rounded-full"
+                width={30}
+                height={30}
+                className="w-full h-full rounded-full"
               />
             ) : (
               <Avatar>
                 <AvatarImage
                   src={"https://github.com/shadcn.png"}
-                  className="rounded-full w-8 h-8"
+                  className="rounded-full w-8 h-8 "
                 />
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>
             )}
+            <h4 className="ml-2">{(event && event?.details.name) || ""}</h4>
           </div>
-          <h3>{event?.user?.name}</h3>
+          <span className="text-sm">{renderDate()}</span>
         </div>
-
-        <div className="relative h-full flex">
-          {event.details.images[0] && (
-            <Image
-              src={event.details.images[0]}
-              alt="event image"
-              fill
-              className="h-full object-cover relative"
-            />
-          )}
-        </div>
-      </div>
-
-      <div className="h-full flex flex-col gap-4 relative">
-        <div className="flex justify-around">
-          <button
-            className={`${
-              selectedTab === "Description"
-                ? "font-bold text-eventoPurpleLight"
-                : "text-black"
-            }`}
-            onClick={() => setSelectedTab("Description")}
-          >
-            Description
-          </button>
-          <button
-            className={`${
-              selectedTab === "Attendees"
-                ? "font-bold text-eventoPurpleLight"
-                : "text-black"
-            }`}
-            onClick={() => setSelectedTab("Attendees")}
-          >
-            Attendees
-          </button>
-        </div>
-        <div className="h-full flex flex-col">
+        <TabSelector
+          onChange={setSelectedTab}
+          tabs={["Description", "Attendees"]}
+          className=""
+        />
+        <Section className="justify-start items-start space-y-4 px-0 pb-20">
           {selectedTab === "Description" && (
-            <div className="flex flex-col h-full gap-2">
-              <h3>{event?.title}</h3>
+            <>
+              <h1 className="text-xl font-bold">{event?.title}</h1>
               <ul className="flex gap-2 flex-wrap">
-                {event?.interest?.map((interest: any) => (
+                {event?.interest?.map((interest: InterestType) => (
                   <li
-                    key={interest._id || interest.name}
-                    className="bg-eventoPurpleLight/30 w-fit px-2 py-1 rounded-lg text-sm"
+                    key={interest._id}
+                    className="text-sm bg-evento-gradient rounded w-fit text-white px-3 py-2"
                   >
                     {interest.name}
                   </li>
                 ))}
               </ul>
-
-              <div className="flex justify-between items-center">
-                <Button
-                  variant={"ghost"}
-                  className="flex gap-2 pl-0 max-w-xs truncate"
-                  onClick={() => {
-                    const address = event?.details?.location;
-                    if (address) {
-                      const encodedAddress = encodeURIComponent(address);
-                      const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`;
-                      window.open(googleMapsUrl, "_blank");
-                    } else {
-                      alert("Address is not available.");
-                    }
-                  }}
-                >
-                  <MapPinIcon2 fill="#7858C3" className="text-muted w-5 h-5" />
-                  <span className="truncate">{event?.details?.location}</span>
-                </Button>
-                <p className="whitespace-nowrap">
-                  {event?.details?.startTime} - {event?.details?.endTime}
-                </p>
-              </div>
-              <TruncatedText text={event?.details?.description} />
-              <div className="flex justify-between items-center">
-                <div>
-                  <AvatarStack eventId={event?._id} />
-                </div>
-                <EventActionIcons event={event} />
-              </div>
-            </div>
-          )}
-          {selectedTab === "Attendees" && (
-            <div className="flex flex-col h-full  gap-2">
-              <h3>Attendees List</h3>
-
-              {/* Going List */}
-              <div>
-                <h4 className="font-semibold text-lg text-eventoPurpleLight">
-                  Going (
-                  {
-                    event?.attendees?.filter(
-                      (attendee: AttendeeType) => attendee.isGoing,
-                    ).length
+              <p>
+                {event?.details.timeslots &&
+                  event.details.timeslots
+                    .map((slot: TimeSlotType) => slot.date)
+                    .join(", ")}
+              </p>
+              <EventTimeSlots event={event} />
+              <Button
+                variant={"ghost"}
+                className="flex gap-2 truncate max-w-full bg-eventoPurpleLight text-white hover:text-white hover:bg-eventoPurpleLight/80"
+                onClick={() => {
+                  const address = event && event?.details?.location;
+                  if (address) {
+                    const encodedAddress = encodeURIComponent(address);
+                    const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`;
+                    window.open(googleMapsUrl, "_blank");
+                  } else {
+                    alert("Address is not available.");
                   }
-                  )
-                </h4>
-                <ul className="mb-4">
-                  {event?.attendees
-                    ?.filter((attendee: AttendeeType) => attendee.isGoing)
-                    .map((attendee: any) => (
-                      <li
-                        key={attendee.user._id}
-                        className="flex items-center justify-between gap-2"
-                      >
-                        <AttendeesList user={attendee.user} />
-                      </li>
-                    ))}
-                </ul>
-              </div>
-
-              {/* Saved (Favourite) List */}
-              <div>
-                <h4 className="font-semibold flex gap-2 text-lg text-eventoPurpleLight">
-                  <ChevronRightIcon />
-                  Saved (
-                  {
-                    event?.attendees?.filter(
-                      (attendee: AttendeeType) => attendee.isFavourite,
-                    ).length
-                  }
-                  )
-                </h4>
-                <ul>
-                  {event?.attendees
-                    ?.filter((attendee: AttendeeType) => attendee.isFavourite)
-                    .map((attendee: any) => (
-                      <li
-                        key={attendee.user._id}
-                        className="flex items-center justify-between gap-2"
-                      >
-                        <AttendeesList user={attendee.user} />
-                      </li>
-                    ))}
-                </ul>
-              </div>
-            </div>
+                }}
+              >
+                <MapPinIcon2 fill="#fff" className="text-muted w-5 h-5" />
+                <span className="truncate">
+                  {event && event?.details?.location}
+                </span>
+              </Button>
+              <p className="text-sm">{event?.details?.description}</p>
+            </>
           )}
-        </div>
-      </div>
-    </Section>
+          <EventActionIcons />
+        </Section>
+        {selectedTab === "Attendees" && (
+          <div>
+            <p className="text-sm">Attendees</p>
+          </div>
+        )}
+      </Section>
+    </div>
   );
 };
 

@@ -16,7 +16,10 @@ import EventQuestionsForm from "@/features/event/components/EventQuestionsForm";
 import EventURL from "@/features/event/components/EventURL";
 import { handleFieldChange } from "@/features/event/eventActions";
 import { useToast } from "@/hooks/use-toast";
+import useOnScroll from "@/hooks/useOnScroll";
+import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/store/useAuthStore";
+import useEventoStore from "@/store/useEventoStore";
 import { useEventStore } from "@/store/useEventStore";
 import { EventType, InterestType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
@@ -29,15 +32,19 @@ const CreateEventPage = () => {
   const [users, setUsers] = useState<UserType[]>([]);
   const [isEventModalOpen, setIsEventModalOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const [interests, setInterests] = useState<InterestType[]>([]);
+  const { interests, loadInterests } = useEventoStore();
+  const [isMounted, setIsMounted] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
   const { isAuthenticated, token } = useSession();
   const [selectedInterests, setSelectedInterests] = useState<InterestType[]>(
     eventStore.interests || [],
   );
-
+  const scrollY = useOnScroll();
   const { user } = useAuthStore((state) => state);
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
   useEffect(() => {
     setFormValues({
       title: eventStore.title || "",
@@ -101,17 +108,7 @@ const CreateEventPage = () => {
     setIsEventModalOpen(!isEventModalOpen);
     handleSubmit(e);
   };
-  const getInterests = async () => {
-    try {
-      const interestRes = await fetchData<any>("/users/getInterestsListing");
-      if (!interestRes.error) {
-        setInterests(interestRes.data);
-        console.log("Interests:", interestRes.data);
-      }
-    } catch (error) {
-    } finally {
-    }
-  };
+
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const fileInput = e.target as HTMLInputElement;
 
@@ -207,7 +204,6 @@ const CreateEventPage = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!isAuthenticated) {
-      console.log("User is not authenticated", isAuthenticated);
       setIsAuthModalOpen(!isAuthModalOpen);
     } else {
       try {
@@ -238,8 +234,6 @@ const CreateEventPage = () => {
           uploadedMedia: [...localMedia],
           predefinedMedia: [...awsMedia],
         };
-        console.log("store Values on Submit:", eventStore);
-        console.log("Form Values on Submit:", formData);
 
         await fetchData<EventType>(
           "/events/createEvent",
@@ -285,12 +279,24 @@ const CreateEventPage = () => {
     }
   };
   useEffect(() => {
-    getInterests();
+    if (interests.length === 0) loadInterests();
     getUsers();
   }, []);
   return (
     <>
-      <div className=" w-full flex">
+      <div className="relative flex justify-center items-center mt-10 text-eventoPurpleLight gap-2">
+        <h2 className="animate-slideInLeft font-black opacity-0">
+          <span>Create</span>
+        </h2>
+        <h2 className="event-text animate-slideInRight flex opacity-0 items-center bg-evento-gradient text-white rounded shadow">
+          <span className=" flex justify-center items-center">
+            <img src="/logo.png" alt="E" className="w-12 h-12" />
+          </span>
+          <span className="-translate-x-1.5">vent</span>
+        </h2>
+      </div>
+
+      <div className=" w-full flex md:grid md:grid-cols-2 lg:grid-cols-3 gap-4">
         <Section className=" max-w-5xl w-full justify-start ">
           <form onSubmit={handleSubmit} className="space-y-4  w-full">
             <div>
@@ -389,7 +395,7 @@ const CreateEventPage = () => {
                 onChange={handleUpload}
               />
             </div>
-            <EventLocationInput />
+            {isMounted && <EventLocationInput />}
             <EventDate />
             <div>
               <Label className="sr-only" htmlFor="description">
@@ -413,14 +419,17 @@ const CreateEventPage = () => {
             <EventQuestionsForm />
             <Button
               type="button"
-              className="bg-evento-gradient w-full text-white"
+              className={cn(
+                "bg-evento-gradient text-white fixed md:static bottom-20 left-1/2 -translate-x-1/2 md:translate-x-0 opacity-0 md:opacity-100 w-[85%] md:w-full transition-opacity duration-300 ease-in-out",
+                { "opacity-100": scrollY > 20 },
+              )}
               onClick={() => setIsEventModalOpen(true)}
             >
               Preview
             </Button>
           </form>
         </Section>
-        <Section className="hidden md:block">
+        <Section className="hidden md:block lg:col-span-2">
           <CreateEventPreview handleRemoveInterest={handleRemoveInterest} />
         </Section>
       </div>

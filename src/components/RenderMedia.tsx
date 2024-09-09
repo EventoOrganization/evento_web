@@ -1,17 +1,16 @@
 "use client";
 import { EventType } from "@/types/EventType";
-import { cn } from "@nextui-org/theme";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+// import { usePathname } from "next/navigation";
+import { useRef, useState } from "react";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 
 const RenderMedia = ({ event }: { event: EventType }) => {
   const mediaItems: string[] = [];
   const [isSwiping, setIsSwiping] = useState(false);
-  const [portraitStates, setPortraitStates] = useState<boolean[]>([]); // State to store portrait flags
+  // const pathname = usePathname();
   const touchStartX = useRef(0);
-
   if (event?.details?.images) {
     mediaItems.push(...event.details.images);
   }
@@ -19,11 +18,6 @@ const RenderMedia = ({ event }: { event: EventType }) => {
   if (event?.details?.video) {
     mediaItems.push(event.details.video);
   }
-
-  const isValidUrl = (url: string) => {
-    return url.startsWith("http://") || url.startsWith("https://");
-  };
-
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.touches[0].clientX;
   };
@@ -39,28 +33,9 @@ const RenderMedia = ({ event }: { event: EventType }) => {
     setIsSwiping(false);
   };
 
-  // useEffect to check if the media items are portrait or landscape
-  useEffect(() => {
-    const checkPortraitStates = async () => {
-      const portraitFlags = await Promise.all(
-        mediaItems.map((mediaUrl) => {
-          return new Promise<boolean>((resolve) => {
-            const img = new window.Image();
-            img.src = mediaUrl;
-            img.onload = () => {
-              resolve(img.naturalHeight > img.naturalWidth);
-            };
-          });
-        }),
-      );
-      setPortraitStates(portraitFlags); // Store portrait flags in state
-    };
-
-    if (mediaItems.length > 0) {
-      checkPortraitStates();
-    }
-  }, [mediaItems]);
-
+  const handleVideoError = (url: string) => {
+    console.error(`Failed to load video from ${url}`);
+  };
   return (
     <div
       onTouchStart={handleTouchStart}
@@ -75,11 +50,11 @@ const RenderMedia = ({ event }: { event: EventType }) => {
         useKeyboardArrows={true}
       >
         {mediaItems.map((item, index) =>
-          isValidUrl(item) && item.endsWith(".mp4") ? (
+          item === "video" ? (
             <div
               key={index}
               className="relative w-full pb-[56.25%]"
-              onClick={(e: React.MouseEvent<HTMLDivElement>) => {
+              onClick={(e) => {
                 if (!isSwiping) {
                   e.stopPropagation();
                 }
@@ -87,10 +62,8 @@ const RenderMedia = ({ event }: { event: EventType }) => {
             >
               <video
                 controls
-                className={cn(
-                  "absolute top-0 left-1/2 -translate-x-1/2 h-full",
-                  portraitStates[index] ? "object-contain" : "object-cover",
-                )}
+                className="absolute top-0 left-0 w-full h-full object-cover"
+                onError={() => handleVideoError(item)}
               >
                 <source src={item} type="video/mp4" />
                 Your browser does not support the video tag.
@@ -99,8 +72,8 @@ const RenderMedia = ({ event }: { event: EventType }) => {
           ) : (
             <div
               key={index}
-              className="relative w-full pb-[56.25%]"
-              onClick={(e: React.MouseEvent<HTMLDivElement>) => {
+              className="relative w-full  pb-[56.25%]"
+              onClick={(e) => {
                 if (!isSwiping) {
                   e.stopPropagation();
                 }
@@ -108,18 +81,10 @@ const RenderMedia = ({ event }: { event: EventType }) => {
             >
               <Image
                 src={item}
-                alt={`Event media ${index + 1}`}
-                fill
-                sizes="(max-width: 768px) 100vw,
-                (max-width: 1200px) 50vw,
-                33vw"
-                className={cn(
-                  " h-full",
-                  portraitStates[index] ? "object-contain" : "object-cover ",
-                  {
-                    "opacity-20": !event,
-                  },
-                )}
+                alt={`Preview media ${index + 1}`}
+                width={1920}
+                height={1080}
+                className="h-auto max-h-screen"
                 priority
               />
             </div>

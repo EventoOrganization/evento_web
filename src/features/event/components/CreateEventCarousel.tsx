@@ -136,7 +136,7 @@ const CreateEventCarousel = () => {
                   </video>
                   <Button
                     variant={"destructive"}
-                    className="absolute top-4 right-10  p-2 rounded-full"
+                    className="absolute top-4 right-10 p-2 rounded-full"
                     onClick={() => deleteMedia(index, item)}
                   >
                     <TrashIcon className="w-6 h-6" />
@@ -160,13 +160,13 @@ const CreateEventCarousel = () => {
                     className="h-auto"
                     priority
                   />
-                  {/* Bouton de suppression */}
-                  <button
-                    className="absolute top-2 right-2 bg-red-600 text-white p-2 rounded-full"
+                  <Button
+                    variant={"destructive"}
+                    className="absolute top-4 right-10 p-2 rounded-full"
                     onClick={() => deleteMedia(index, item)}
                   >
                     <TrashIcon className="w-6 h-6" />
-                  </button>
+                  </Button>
                 </div>
               ),
             )}

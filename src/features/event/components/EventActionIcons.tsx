@@ -103,7 +103,16 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-        // Directly update the event.isGoing here
+
+        // Si l'événement est marqué comme "favourite", le retirer des favoris
+        if (favouriteStatus[event._id]) {
+          setFavouriteStatus((prevStatus) => ({
+            ...prevStatus,
+            [event._id]: false,
+          }));
+        }
+
+        // Toggle going status
         setGoingStatus((prevStatus) => ({
           ...prevStatus,
           [event._id]: !prevStatus[event._id],
@@ -115,6 +124,7 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
       }
     }
   };
+
   // handle favourite status
   const handleFavourite = async () => {
     if (!token) {
@@ -144,7 +154,16 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-        // event.isFavourite = !event.isFavourite;
+
+        // Si l'événement est marqué comme "going", le retirer des participants
+        if (goingStatus[event._id]) {
+          setGoingStatus((prevStatus) => ({
+            ...prevStatus,
+            [event._id]: false,
+          }));
+        }
+
+        // Toggle favourite status
         setFavouriteStatus((prevStatus) => ({
           ...prevStatus,
           [event._id]: !prevStatus[event._id],

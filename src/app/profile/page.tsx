@@ -10,6 +10,7 @@ export default function CurrentUserProfilePage() {
   const session = useSession();
   const { user, token } = session;
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [userTriedToCloseModal, setUserTriedToCloseModal] = useState(false);
   const {
     userInfo,
     upcomingEvents,
@@ -17,7 +18,7 @@ export default function CurrentUserProfilePage() {
     filteredUpcomingEventsAttened,
     setProfileData,
   } = useProfileStore();
-  // Function to fetch profile data
+
   const getProfileData = async (token: string, forceUpdate = false) => {
     if (userInfo && !forceUpdate) return;
     try {
@@ -30,41 +31,69 @@ export default function CurrentUserProfilePage() {
       if (profileRes && profileRes.data) {
         setProfileData(profileRes.data);
       } else {
-        console.log("Failed to fetch profile data");
+        console.log("Échec de la récupération des données de profil");
       }
     } catch (error) {
-      console.error("Error fetching profile data:", error);
+      console.error(
+        "Erreur lors de la récupération des données de profil :",
+        error,
+      );
     } finally {
-      console.log("Finished fetching profile data");
+      console.log("Fin de la récupération des données de profil");
     }
   };
 
   useEffect(() => {
-    console.log("Checking user status with Token:", token);
+    console.log(
+      "Vérification du statut de l'utilisateur avec le token :",
+      token,
+    );
     if (user && token) {
       getProfileData(token, true);
     } else {
       setIsAuthModalOpen(true);
     }
-  }, []);
+  }, [token, user]);
+
+  useEffect(() => {
+    if (!session.isAuthenticated && userTriedToCloseModal) {
+      console.log("Rouvrir la modal car l'utilisateur n'est pas authentifié.");
+      setIsAuthModalOpen(true);
+    }
+  }, [userTriedToCloseModal, session.isAuthenticated]);
+
+  useEffect(() => {
+    if (!session.isAuthenticated && !isAuthModalOpen) {
+      console.log(
+        "L'utilisateur n'est pas authentifié et la modal est fermée, réouverture de la modal.",
+      );
+      setIsAuthModalOpen(true);
+    }
+  }, [session.isAuthenticated, isAuthModalOpen]);
 
   const onAuthSuccess = () => {
     setIsAuthModalOpen(false);
+    setUserTriedToCloseModal(false);
     if (token) getProfileData(token, true);
   };
+
+  const handleModalClose = () => {
+    setIsAuthModalOpen(false);
+    setUserTriedToCloseModal(true);
+  };
+
   return (
     <>
-      <UserProfile
-        profile={userInfo}
-        upcomingEvents={filteredUpcomingEventsAttened}
-        pastEvents={pastEvents}
-        hostingEvents={upcomingEvents}
-      />
-      {isAuthModalOpen && (
-        <AuthModal
-          onAuthSuccess={() => onAuthSuccess()}
-          onClose={() => setIsAuthModalOpen(false)}
+      {session.isAuthenticated && (
+        <UserProfile
+          profile={userInfo}
+          upcomingEvents={filteredUpcomingEventsAttened}
+          pastEvents={pastEvents}
+          hostingEvents={upcomingEvents}
         />
+      )}
+      {isAuthModalOpen && (
+        <AuthModal onAuthSuccess={onAuthSuccess} onClose={handleModalClose} />
       )}
     </>
   );

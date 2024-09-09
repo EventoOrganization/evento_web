@@ -92,16 +92,16 @@ const UserProfile = ({
             </ul>
           </div>
         </div>
-        <div className="mt-2">
+        <div className="mt-2 flex gap-10 justify-between">
           {profile?.socialLinks && profile?.socialLinks?.length > 0 && (
             <div className="flex flex-col items-start gap-4">
               <h4 className="hidden md:block">Social Links</h4>
               {profile?.socialLinks?.length > 0 && (
                 <ul className="flex md:flex-col gap-4">
                   {profile.socialLinks.map((link, index) => (
-                    <li key={index} className="flex items-center gap-2">
+                    <li key={index} className="">
                       <Link
-                        className="text-blue-500 underline text-sm flex items-center gap-2"
+                        className=""
                         href={link.url}
                         target="_blank"
                         rel="noreferrer"
@@ -114,44 +114,22 @@ const UserProfile = ({
               )}
             </div>
           )}
+          {profile?.interest && profile?.interest?.length > 0 && (
+            <div className="md:flex flex-col items-start hidden gap-4">
+              <h4 className="hidden md:block">Interests</h4>
+              <ul className="flex lg:flex-col gap-4">
+                {profile.interest.map((interest, index) => (
+                  <li
+                    key={index}
+                    className="flex items-center gap-2 bg-evento-gradient text-white px-2 py-1 m-1 rounded h-10"
+                  >
+                    {interest.name}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
-        {/* <div className="hidden lg:flex flex-col">
-          <h3 className="mb-4 text-eventoPurpleLight">Following Suggestions</h3>
-          <ul className="w-full flex flex-col gap-4">
-            <li className="w-full flex justify-between">
-              <span className="flex items-center gap-4">
-                <Avatar className="w-10 h-10">
-                  <AvatarImage src="https://github.com/shadcn.png" />
-                  <AvatarFallback>CN</AvatarFallback>
-                </Avatar>
-                Suggest{" "}
-              </span>
-              <Button className={eventoBtn}>Follow</Button>
-            </li>
-            <li className="w-full flex justify-between">
-              <span className="flex items-center gap-4">
-                <Avatar className="w-10 h-10">
-                  <AvatarImage src="https://github.com/shadcn.png" />
-                  <AvatarFallback>CN</AvatarFallback>
-                </Avatar>
-                Suggest{" "}
-              </span>
-              <Button className={"bg-gray-200 text-black rounded-full px-5"}>
-                Following
-              </Button>
-            </li>
-            <li className="w-full flex justify-between">
-              <span className="flex items-center gap-4">
-                <Avatar className="w-10 h-10">
-                  <AvatarImage src="https://github.com/shadcn.png" />
-                  <AvatarFallback>CN</AvatarFallback>
-                </Avatar>
-                Suggest{" "}
-              </span>
-              <Button className={eventoBtn}>Follow</Button>
-            </li>
-          </ul>
-        </div> */}
       </div>
       <EventSection
         title="Upcoming Events"

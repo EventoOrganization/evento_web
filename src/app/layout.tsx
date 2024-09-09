@@ -22,7 +22,6 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const session = getSessionSSR();
-  // console.log("Session", session);
   return (
     <html lang="en" suppressHydrationWarning={true}>
       <body className={cn(inter.className, "relative bg-muted")}>
@@ -33,7 +32,7 @@ export default function RootLayout({
           <Toaster />
           <BackButton />
           {/* <Header /> */}
-          <Main className="pb-28  px-0 lg:px-10 max-w-7xl mx-auto ">
+          <Main className={cn("pb-28 px-0 lg:px-10 max-w-7xl mx-auto")}>
             {children}
           </Main>
           <NavbarApp />
