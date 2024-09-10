@@ -234,6 +234,27 @@ const CreateEventPage = () => {
       });
       return;
     }
+    if (
+      !formValues.timeSlots ||
+      !formValues.coHosts ||
+      !formValues.createRSVP ||
+      !formValues.questions ||
+      !formValues.includeChat ||
+      !formValues.URL ||
+      !formValues.interests
+    ) {
+      console.warn("Non-required fields are missing or empty:", {
+        timeSlots: formValues.timeSlots,
+        coHosts: formValues.coHosts,
+        createRSVP: formValues.createRSVP,
+        questions: formValues.questions,
+        includeChat: formValues.includeChat,
+        URL: formValues.URL,
+        interests: formValues.interests,
+      });
+      // return;
+    }
+
     const localMedia = (eventStore.mediaPreviews || [])
       .filter(
         (media: any) =>
@@ -266,32 +287,24 @@ const CreateEventPage = () => {
 
     console.log("Form Data on Submit:", formData);
 
-    try {
-      const response = await fetchData<EventType>(
-        "/events/createEvent",
-        HttpMethod.POST,
-        formData,
-        token,
-      );
+    const response = await fetchData<EventType>(
+      "/events/createEvent",
+      HttpMethod.POST,
+      formData,
+      token,
+    );
 
-      if (response.ok) {
-        toast({
-          title: "Event created successfully",
-          className: "bg-evento-gradient-button text-white",
-          duration: 3000,
-        });
-        router.push("/success");
-      } else {
-        throw new Error(response.error || "Failed to create event");
-      }
-    } catch (error) {
-      console.error("Error creating event:", error);
+    if (response.ok) {
       toast({
-        title: "Error creating event",
-        description: "Please try again.",
-        className: "bg-red-500 text-white",
+        title: "Event created successfully",
+        className: "bg-evento-gradient-button text-white",
         duration: 3000,
       });
+      router.push("/success");
+    } else if (response.error) {
+      throw new Error(response.error);
+    } else {
+      throw new Error("Failed to create event");
     }
   };
 
