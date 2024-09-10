@@ -90,7 +90,7 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
       try {
         console.log("Before toggle goingStatus:", goingStatus[event._id]);
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/users/attendEventConfm`,
+          `${process.env.NEXT_PUBLIC_API_URL}/events/attendEventStatus`,
           {
             method: "POST",
             headers: {
@@ -106,10 +106,7 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
 
         // Si l'événement est marqué comme "favourite", le retirer des favoris
         if (favouriteStatus[event._id]) {
-          setFavouriteStatus((prevStatus) => ({
-            ...prevStatus,
-            [event._id]: false,
-          }));
+          handleFavourite();
         }
 
         // Toggle going status
@@ -141,7 +138,7 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
           favouriteStatus[event._id],
         );
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/users/eventFavourite`,
+          `${process.env.NEXT_PUBLIC_API_URL}/events/favouriteEventStatus`,
           {
             method: "POST",
             headers: {
@@ -155,15 +152,9 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
           throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        // Si l'événement est marqué comme "going", le retirer des participants
         if (goingStatus[event._id]) {
-          setGoingStatus((prevStatus) => ({
-            ...prevStatus,
-            [event._id]: false,
-          }));
+          handleGoing();
         }
-
-        // Toggle favourite status
         setFavouriteStatus((prevStatus) => ({
           ...prevStatus,
           [event._id]: !prevStatus[event._id],
@@ -197,11 +188,13 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
       console.log("Web Share API is not supported in this browser.");
     }
   };
-
   return (
     <div className={`flex gap-2 ${className}`}>
       <button
-        onClick={handleGoing}
+        onClick={(e) => {
+          handleGoing();
+          e.stopPropagation();
+        }}
         className="relative flex items-center justify-center w-10 h-10"
       >
         {event && !goingStatus[event?._id] ? (
@@ -219,7 +212,10 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
         )}
       </button>
       <button
-        onClick={handleFavourite}
+        onClick={(e) => {
+          handleFavourite();
+          e.stopPropagation();
+        }}
         className="relative flex items-center justify-center w-10 h-10"
       >
         {event && favouriteStatus[event?._id] ? (
@@ -239,7 +235,10 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
         />
       </button>
       <button
-        onClick={handleSend}
+        onClick={(e) => {
+          handleSend();
+          e.stopPropagation();
+        }}
         className="relative flex items-center justify-center w-10 h-10"
       >
         <Send

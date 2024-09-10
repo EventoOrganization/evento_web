@@ -12,6 +12,7 @@ import DateSelector from "@/features/discover/DateSelector";
 import { filterEvents } from "@/features/discover/discoverActions";
 import TabSelector from "@/features/discover/TabSelector";
 import Event from "@/features/event/components/Event";
+import EventModal from "@/features/event/components/EventModal";
 import { cn } from "@/lib/utils";
 import useEventoStore from "@/store/useEventoStore";
 import { EventType, InterestType } from "@/types/EventType";
@@ -36,6 +37,8 @@ const DiscoverPage = () => {
   const [selectedInterests, setSelectedInterests] = useState<InterestType[]>(
     [],
   );
+  const [selectedEvent, setSelectedEvent] = useState<EventType | null>(null);
+  const [isEventModalOpen, setIsEventModalOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -95,7 +98,10 @@ const DiscoverPage = () => {
   if (!isHydrated) {
     return null;
   }
-
+  const handleEventClick = (event: EventType) => {
+    setSelectedEvent(event);
+    setIsEventModalOpen(true);
+  };
   return (
     <>
       <div className="relative flex justify-center items-center mt-10 text-eventoPurpleLight gap-2">
@@ -117,7 +123,7 @@ const DiscoverPage = () => {
           />
           {filteredEvents &&
             filteredEvents.map((event) => (
-              <li key={event._id}>
+              <li key={event._id} onClick={() => handleEventClick(event)}>
                 <Event event={event} />
               </li>
             ))}
@@ -206,7 +212,12 @@ const DiscoverPage = () => {
         </div>
         {isAuthModalOpen && (
           <AuthModal onAuthSuccess={() => setIsAuthModalOpen(false)} />
-        )}
+        )}{" "}
+        <EventModal
+          isOpen={isEventModalOpen}
+          event={selectedEvent}
+          onClose={() => setIsEventModalOpen(false)}
+        />
       </Section>
     </>
   );

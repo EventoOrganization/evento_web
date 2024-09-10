@@ -9,14 +9,12 @@ import { cn } from "@/lib/utils";
 import { Loader } from "lucide-react";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import EventActionIcons from "./EventActionIcons";
-import EventModal from "./EventModal";
 
 const Event = ({ className, event }: { className?: string; event?: any }) => {
   const pathname = usePathname();
-  const [isEventModalOpen, setIsEventModalOpen] = useState(false);
+
   const renderDate = () => {
     if (!event || !event.details) return <Loader />;
     const startDate = event?.details?.date;
@@ -53,11 +51,10 @@ const Event = ({ className, event }: { className?: string; event?: any }) => {
   return (
     <>
       <div
-        onClick={() => setIsEventModalOpen(true)}
         className={cn(
           "bg-white border shadow rounded p-4 w-full grid grid-cols-1 lg:grid-cols-2  h-fit gap-4 hover:shadow-xl hover:bg-slate-50 cursor-pointer relative",
           className,
-          { "lg:grid-cols-1": pathname === "/discover" || !isEventModalOpen },
+          { "lg:grid-cols-1": pathname === "/discover" },
         )}
       >
         <div className=" ">
@@ -108,7 +105,8 @@ const Event = ({ className, event }: { className?: string; event?: any }) => {
               <Button
                 variant={"ghost"}
                 className="flex gap-2 pl-0 max-w-xs truncate"
-                onClick={() => {
+                onClick={(e) => {
+                  e.stopPropagation();
                   const address = event && event?.details?.location;
                   if (address) {
                     const encodedAddress = encodeURIComponent(address);
@@ -138,11 +136,6 @@ const Event = ({ className, event }: { className?: string; event?: any }) => {
           </div>
         </div>
       </div>
-      <EventModal
-        isOpen={isEventModalOpen}
-        event={event}
-        onClose={() => setIsEventModalOpen(false)}
-      />
     </>
   );
 };
