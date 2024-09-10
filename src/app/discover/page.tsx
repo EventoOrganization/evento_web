@@ -5,7 +5,7 @@ import LocationSelector from "@/components/map/LocationSelector";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import UserPrevirew from "@/components/UsersList";
+import UsersList from "@/components/UsersList";
 import { useSession } from "@/contexts/SessionProvider";
 import AuthModal from "@/features/auth/components/AuthModal";
 import DateSelector from "@/features/discover/DateSelector";
@@ -192,7 +192,7 @@ const DiscoverPage = () => {
               {session.isAuthenticated ? (
                 users.map((user: UserType) => (
                   <li key={user._id} className="flex justify-between">
-                    <UserPrevirew user={user} />
+                    <UsersList user={user} />
                   </li>
                 ))
               ) : (

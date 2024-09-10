@@ -9,15 +9,17 @@ import {
   CircleCheck,
   CircleCheckBig,
   Send,
+  X,
 } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import RefusalModal from "./RefusalModal";
 
 type EventActionIconsProps = {
   event?: EventType;
   className?: string;
 };
 
-const EventActionIcons: React.FC<EventActionIconsProps> = ({
+const PrivateEventActionIcons: React.FC<EventActionIconsProps> = ({
   event,
   className = "",
 }) => {
@@ -25,11 +27,17 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
   const [goingStatus, setGoingStatus] = useState<boolean>(
     event?.isGoing ?? false,
   );
-  const [favouriteStatus, setFavouriteStatus] = useState<boolean>(
+  const [maybeStatus, setMaybeStatus] = useState<boolean>(
     event?.isFavourite ?? false,
   );
+  const [refusedStatus, setRefusedStatus] = useState<boolean>(
+    event?.isRefused ?? false,
+  );
   const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
+  const [isRefusalModalOpen, setIsRefusalModalOpen] = useState(false);
+  const [refusalReason, setRefusalReason] = useState<string>("");
 
+  // Handle Going status
   const handleGoing = async () => {
     if (!token) {
       setIsAuthModalOpen(true);
@@ -46,16 +54,19 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
               "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
             },
-            body: JSON.stringify({ eventId: event._id, userId: user?._id }),
+            body: JSON.stringify({ eventId: event?._id, userId: user?._id }),
           },
         );
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        if (favouriteStatus) {
-          handleFavourite();
-          setFavouriteStatus(false);
+        if (maybeStatus) {
+          handleMaybe();
+          setMaybeStatus(false);
+        } else if (refusedStatus) {
+          handleRefused();
+          setRefusedStatus(false);
         }
         setGoingStatus(!goingStatus);
       } catch (error) {
@@ -65,42 +76,80 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
     }
   };
 
-  // handle favourite status
-  const handleFavourite = async () => {
+  // Handle Maybe status
+  const handleMaybe = async () => {
     if (!token) {
-      console.log("Not logged in");
       setIsAuthModalOpen(true);
       return;
-    } else if (!event) {
-      console.log("No event");
-      return;
-    } else {
-      try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/events/favouriteEventStatus`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({ eventId: event._id }),
+    }
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/events/favouriteEventStatus`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
           },
-        );
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        if (goingStatus) {
-          handleGoing();
-          setGoingStatus(false);
-        }
-
-        setFavouriteStatus(!favouriteStatus);
-      } catch (error) {
-        console.error("Error marking event as favourite:", error);
-        alert("Failed to mark as favourite. Please try again.");
+          body: JSON.stringify({ eventId: event?._id, userId: user?._id }),
+        },
+      );
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
+
+      if (goingStatus) {
+        handleGoing();
+        setGoingStatus(false);
+      } else if (refusedStatus) {
+        handleRefused();
+        setRefusedStatus(false);
+      }
+      setMaybeStatus(!maybeStatus);
+    } catch (error) {
+      console.error("Error marking event as maybe:", error);
+      alert("Failed to mark as maybe. Please try again.");
+    }
+  };
+
+  const handleRefused = async () => {
+    if (!token) {
+      setIsAuthModalOpen(true);
+      return;
+    }
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/events/refusedEventStatus`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            eventId: event?._id,
+            reason: refusalReason,
+            userId: user?._id,
+          }),
+        },
+      );
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      if (goingStatus) {
+        handleGoing();
+        setGoingStatus(false);
+      } else if (maybeStatus) {
+        handleMaybe();
+        setMaybeStatus(false);
+      }
+
+      setRefusedStatus(!refusedStatus);
+      setRefusalReason("");
+    } catch (error) {
+      console.error("Error marking event as refused:", error);
+      alert("Failed to mark as refused. Please try again.");
     }
   };
 
@@ -122,7 +171,7 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
       console.log("Web Share API is not supported in this browser.");
     }
   };
-  useEffect(() => {}, [goingStatus, favouriteStatus]);
+
   return (
     <div className={`flex gap-2 ${className}`}>
       <button
@@ -148,12 +197,12 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
       </button>
       <button
         onClick={(e) => {
-          handleFavourite();
+          handleMaybe();
           e.stopPropagation();
         }}
         className="relative flex items-center justify-center w-10 h-10"
       >
-        {event && favouriteStatus ? (
+        {event && maybeStatus ? (
           <BookmarkCheck className="z-10 text-white" />
         ) : (
           <Bookmark className="text-eventoPurpleLight" />
@@ -163,7 +212,29 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
           className={cn(
             "absolute inset-0 text-eventoPurpleLight rounded-full w-full h-full",
             {
-              "bg-eventoPurpleLight text-white": event && favouriteStatus,
+              "bg-eventoPurpleLight text-white": event && maybeStatus,
+            },
+          )}
+        />
+      </button>
+      <button
+        onClick={(e) => {
+          refusedStatus ? handleRefused() : setIsRefusalModalOpen(true);
+          e.stopPropagation();
+        }}
+        className="relative flex items-center justify-center w-10 h-10"
+      >
+        {event && refusedStatus ? (
+          <X className="z-10 text-white" />
+        ) : (
+          <X className="text-eventoPurpleLight" />
+        )}
+        <Circle
+          strokeWidth={1.5}
+          className={cn(
+            "absolute inset-0 text-eventoPurpleLight rounded-full w-full h-full",
+            {
+              "bg-eventoPurpleLight text-white": event && refusedStatus,
             },
           )}
         />
@@ -192,9 +263,16 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
             setIsAuthModalOpen(false);
           }}
         />
-      )}
+      )}{" "}
+      <RefusalModal
+        isOpen={isRefusalModalOpen}
+        onClose={() => setIsRefusalModalOpen(false)}
+        setRefusalReason={setRefusalReason}
+        onSubmit={handleRefused}
+        refusalReason={refusalReason}
+      />
     </div>
   );
 };
 
-export default EventActionIcons;
+export default PrivateEventActionIcons;

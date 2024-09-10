@@ -1,35 +1,27 @@
 "use client";
+import CollapsibleList from "@/components/CollapsibleList";
 import MapPinIcon2 from "@/components/icons/MappPinIcon2";
 import Section from "@/components/layout/Section";
 import RenderMedia from "@/components/RenderMedia";
 import { Button } from "@/components/ui/button";
+import { useSession } from "@/contexts/SessionProvider";
 import TabSelector from "@/features/discover/TabSelector";
 import EventActionIcons from "@/features/event/components/EventActionIcons";
 import EventTimeSlots from "@/features/event/components/EventTimeSlots";
-import { EventType, InterestType, TimeSlotType } from "@/types/EventType";
+import PrivateEventActionIcons from "@/features/event/components/PrivateEventActionIcons";
+import { EventType, InterestType } from "@/types/EventType";
 import { fetchData } from "@/utils/fetchData";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-// type AttendeeType = {
-//   user: {
-//     _id: string;
-//     firstName: string;
-//     lastName: string;
-//     name: string;
-//     profileImage: string;
-//   };
-//   isGoing: boolean;
-//   isFavourite: boolean;
-//   isFollowing: boolean;
-// };
+
 const EventPage = () => {
   const { id } = useParams();
   const eventId = Array.isArray(id) ? id[0] : id;
-  const [event, setEvent] = useState<any>(null);
-  const [selectedTab, setSelectedTab] = useState("Description"); // état pour gérer les onglets
-
+  const [event, setEvent] = useState<EventType | null>(null);
+  const [selectedTab, setSelectedTab] = useState("Description");
+  const { user } = useSession();
   useEffect(() => {
     if (eventId && !event) {
       fetchEventData(eventId);
@@ -40,8 +32,9 @@ const EventPage = () => {
 
   const fetchEventData = async (eventId: string) => {
     try {
+      const userIdQuery = user && user._id ? `?userId=${user._id}` : "";
       const eventRes = await fetchData<EventType>(
-        `/events/getEvent/${eventId}`,
+        `/events/getEvent/${eventId}${userIdQuery}`,
       );
       setEvent(eventRes.data);
     } catch (error) {
@@ -52,27 +45,29 @@ const EventPage = () => {
   if (!event) {
     return <div>Loading...</div>;
   }
+  const formatDate = (dateString: string | undefined) => {
+    if (!dateString) return ""; // Return empty or a default string if date is undefined
+    const date = new Date(dateString);
+    const options: Intl.DateTimeFormatOptions = {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    };
+    return date.toLocaleDateString("en-US", options);
+  };
+
   const renderDate = () => {
     const startDate = event?.details?.date;
     const endDate = event?.details?.endDate;
-    const formatDate = (dateString: string) => {
-      const date = new Date(dateString);
-      const options: Intl.DateTimeFormatOptions = {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      };
-      return date.toLocaleDateString("en-US", options);
-    };
     if (
       !endDate ||
-      new Date(endDate).getTime() === new Date(startDate).getTime()
+      new Date(endDate).getTime() === new Date(startDate || "").getTime()
     ) {
-      return `le ${formatDate(startDate)}`;
+      return `On ${formatDate(startDate)}`;
     } else {
-      const startDay = new Date(startDate).getDate();
+      const startDay = new Date(startDate || "").getDate();
       const endDay = new Date(endDate).getDate();
-      const monthYear = new Date(startDate).toLocaleDateString("fr-FR", {
+      const monthYear = new Date(startDate || "").toLocaleDateString("fr-FR", {
         month: "long",
         year: "numeric",
       });
@@ -84,9 +79,9 @@ const EventPage = () => {
   };
 
   return (
-    <div className="md:flex grid grid-cols-1  w-screen h-screen">
+    <div className="md:grid-cols-2 grid grid-cols-1 w-screen h-screen">
       <RenderMedia event={event} />
-      <Section className=" justify-start py-4 w-full">
+      <Section className=" justify-start lg:p-20 lg:pt-10 w-full">
         <div className="flex items-center w-full  justify-between mb-4">
           <div className="flex items-center  gap-2 ">
             {event?.user?.profileImage &&
@@ -107,7 +102,9 @@ const EventPage = () => {
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>
             )}
-            <h4 className="ml-2">{(event && event?.details.name) || ""}</h4>
+            <h4 className="ml-2">
+              {(event.details && event?.details.name) || ""}
+            </h4>
           </div>
           <span className="text-sm">{renderDate()}</span>
         </div>
@@ -116,26 +113,23 @@ const EventPage = () => {
           tabs={["Description", "Attendees"]}
           className=""
         />
-        <Section className="justify-start items-start space-y-4 px-0 pb-20">
-          {selectedTab === "Description" && (
+        {selectedTab === "Description" && (
+          <div className="space-y-4 pb-20 w-full">
             <>
               <h1 className="text-xl font-bold">{event?.title}</h1>
-              <ul className="flex gap-2 flex-wrap">
-                {event?.interest?.map((interest: InterestType) => (
-                  <li
-                    key={interest._id}
-                    className="text-sm bg-evento-gradient rounded w-fit text-white px-3 py-2"
-                  >
-                    {interest.name}
-                  </li>
-                ))}
-              </ul>
-              <p>
-                {event?.details.timeslots &&
-                  event.details.timeslots
-                    .map((slot: TimeSlotType) => slot.date)
-                    .join(", ")}
-              </p>
+              {event?.interest && (
+                <ul className="flex gap-2 flex-wrap">
+                  {event?.interest?.map((interest: InterestType) => (
+                    <li
+                      key={interest._id}
+                      className="text-sm bg-evento-gradient rounded w-fit text-white px-3 py-2"
+                    >
+                      {interest.name}
+                    </li>
+                  ))}
+                </ul>
+              )}
+
               <EventTimeSlots event={event} />
               <Button
                 variant={"ghost"}
@@ -158,12 +152,26 @@ const EventPage = () => {
               </Button>
               <p className="text-sm">{event?.details?.description}</p>
             </>
-          )}
-          <EventActionIcons />
-        </Section>
+
+            {event.eventType === "public" && <EventActionIcons event={event} />}
+            {event.eventType === "private" && (
+              <PrivateEventActionIcons event={event} />
+            )}
+          </div>
+        )}
         {selectedTab === "Attendees" && (
-          <div>
-            <p className="text-sm">Attendees</p>
+          <div className="space-y-4 pb-20 w-full">
+            <h1 className="text-xl font-bold">{event?.title}</h1>
+            <CollapsibleList
+              title={`Going`}
+              count={event?.attendees?.length || 0}
+              users={event?.attendees || []}
+            />
+            <CollapsibleList
+              title={`Saved`}
+              count={event?.favouritees?.length || 0}
+              users={event?.favouritees || []}
+            />
           </div>
         )}
       </Section>

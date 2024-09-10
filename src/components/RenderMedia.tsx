@@ -72,7 +72,7 @@ const RenderMedia = ({ event }: { event: EventType }) => {
           ) : (
             <div
               key={index}
-              className="relative w-full  pb-[56.25%]"
+              className="relative w-full"
               onClick={(e) => {
                 if (!isSwiping) {
                   e.stopPropagation();
@@ -84,7 +84,8 @@ const RenderMedia = ({ event }: { event: EventType }) => {
                 alt={`Preview media ${index + 1}`}
                 width={1920}
                 height={1080}
-                className="h-auto max-h-screen"
+                layout="responsive"
+                className="h-auto lg:max-h-screen"
                 priority
               />
             </div>

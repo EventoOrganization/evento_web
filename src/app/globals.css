@@ -84,4 +84,20 @@
   h4 {
     @apply font-bold;
   }
+  .portrait {
+    height: 75vh; /* or any other appropriate height */
+    width: auto;
+  }
+
+  .landscape {
+    width: 100%;
+    height: auto;
+  }
+
+  @media (min-width: 1024px) {
+    /* for larger screens */
+    .portrait {
+      height: 60vh; /* Adjust height as needed */
+    }
+  }
 }

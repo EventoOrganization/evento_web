@@ -26,6 +26,7 @@ export type OptionType = {
 export type EventType = {
   _id: string;
   title: string;
+  user: UserType;
   eventType: "public" | "private";
   name: string;
   mode: "virtual" | "in-person";
@@ -48,6 +49,8 @@ export type EventType = {
   interest?: InterestType[];
   imagePreviews?: string[];
   videoPreview?: string;
+  attendees?: UserType[];
+  favouritees?: UserType[];
   questions?: Question[];
   guestsAllowFriend: boolean;
   additionalField?: any;
@@ -55,6 +58,7 @@ export type EventType = {
   isGoing?: boolean;
   isHosted?: boolean;
   isFavourite?: boolean;
+  isRefused?: boolean;
 };
 export type FileType = {
   name: string;
