@@ -34,7 +34,7 @@ const ProfileForm = () => {
 
   // Initialize form values with userInfo or set empty defaults
   const [formValues, setFormValues] = useState<FormValues>({
-    name: userInfo?.name || "",
+    name: userInfo?.username || "",
     firstName: userInfo?.firstName || "",
     lastName: userInfo?.lastName || "",
     email: userInfo?.email || "",
@@ -83,7 +83,7 @@ const ProfileForm = () => {
   useEffect(() => {
     if (userInfo) {
       setFormValues({
-        name: userInfo?.name || "",
+        name: userInfo?.username || "",
         firstName: userInfo?.firstName || "",
         lastName: userInfo?.lastName || "",
         email: userInfo?.email || "",

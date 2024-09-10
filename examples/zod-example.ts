@@ -3,14 +3,14 @@ import { z, ZodError } from "zod";
 
 // Define a schema
 const userSchema = z.object({
-  name: z.string(),
+  username: z.string(),
   email: z.string().email(),
   age: z.number().int().nonnegative(),
 });
 
 // Example data
 const userData = {
-  name: "John Doe",
+  username: "John Doe",
   email: "john.doe@example.com",
   age: 30,
 };

@@ -52,7 +52,7 @@ const Header = () => {
               )}
               variant={"outline"}
             >
-              <Link href="/profile">{user?.name || "Profile"}</Link>
+              <Link href="/profile">{user?.username || "Profile"}</Link>
             </Button>
           ) : (
             <Button

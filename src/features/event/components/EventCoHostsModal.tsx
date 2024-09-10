@@ -1,19 +1,11 @@
 import { useEventStore } from "@/store/useEventStore";
+import { UserType } from "@/types/UserType";
 import { useEffect, useState } from "react";
 import AddUserModal from "./AddUserModal";
 
-interface User {
-  _id: string;
-  name: string;
-  email: string;
-  profileImage?: string;
-  lastName?: string;
-  firstName?: string;
-}
-
-const EventCoHostsModal = ({ allUsers }: { allUsers: User[] }) => {
+const EventCoHostsModal = ({ allUsers }: { allUsers: UserType[] }) => {
   const eventStore = useEventStore();
-  const [coHosts, setCoHosts] = useState<User[]>([]);
+  const [coHosts, setCoHosts] = useState<UserType[]>([]);
 
   useEffect(() => {
     // Initialize coHosts from the store

@@ -74,7 +74,7 @@ const UserProfile = ({
           <div className="flex flex-col items-start gap-4 ">
             <ul className=" pt-4 text-start">
               <li className="font-semibold text-xl">
-                {profile && profile.name && profile.name}
+                {profile && profile.username && profile.username}
               </li>
               <li>{profile && profile.bio && profile.bio}</li>
               {profile && profile.URL && (

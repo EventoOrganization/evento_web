@@ -28,7 +28,7 @@ const Dropdown = ({ title, users }: { title: string; users: UserType[] }) => {
                   src={user.profileImage}
                   width={30}
                   height={30}
-                  alt={user.name}
+                  alt={user.username}
                   className="w-10 h-10 rounded-full mr-3"
                 />
               ) : (
@@ -40,7 +40,7 @@ const Dropdown = ({ title, users }: { title: string; users: UserType[] }) => {
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
               )}
-              <span className="flex-1">{user.name}</span>
+              <span className="flex-1">{user.username}</span>
               <button className="text-blue-500 hover:text-blue-700">
                 Follow
               </button>

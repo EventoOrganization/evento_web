@@ -10,8 +10,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
-import { Question, useEventStore } from "@/store/useEventStore";
+import { useEventStore } from "@/store/useEventStore";
 import { handleFieldChange } from "../eventActions";
+import { QuestionType } from "@/types/EventType";
 const EventQuestionsForm = () => {
   const {
     questions,
@@ -61,7 +62,7 @@ const EventQuestionsForm = () => {
                   value={question.type}
                   onValueChange={(value) =>
                     updateQuestion(index, {
-                      type: value as Question["type"],
+                      type: value as QuestionType["type"],
                     })
                   }
                 >

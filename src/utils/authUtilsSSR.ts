@@ -8,7 +8,7 @@ export const mapJwtPayloadToUser = (payload: JwtPayload): UserType => {
   const data = payload;
   return {
     _id: data._id || data.id || "",
-    name: data.name || "",
+    username: data.username || "",
     profileImage: data.profileImage || "",
     email: data.email || "",
   };

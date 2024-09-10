@@ -23,7 +23,7 @@ const EditProfilePage = () => {
 
   // Initialize form state based on userInfo
   const [formData, setFormData] = useState({
-    name: userInfo?.name || "",
+    name: userInfo?.username || "",
     firstName: userInfo?.firstName || "",
     lastName: userInfo?.lastName || "",
     address: userInfo?.address || "",
@@ -41,7 +41,7 @@ const EditProfilePage = () => {
   useEffect(() => {
     if (userInfo) {
       setFormData({
-        name: userInfo.name || "",
+        name: userInfo.username || "",
         firstName: userInfo.firstName || "",
         lastName: userInfo.lastName || "",
         address: userInfo.address || "",

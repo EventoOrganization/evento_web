@@ -20,7 +20,7 @@ import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 
 const userInfoSchema = z.object({
-  name: z.string().min(1, "Username is required"),
+  username: z.string().min(1, "Username is required"),
   profileImage: z.instanceof(File).optional(),
 });
 
@@ -32,7 +32,7 @@ const UserInfoForm = ({ onAuthSuccess }: { onAuthSuccess: () => void }) => {
   const form = useForm<z.infer<typeof userInfoSchema>>({
     resolver: zodResolver(userInfoSchema),
     defaultValues: {
-      name: "",
+      username: "",
       profileImage: undefined,
     },
   });
@@ -50,7 +50,7 @@ const UserInfoForm = ({ onAuthSuccess }: { onAuthSuccess: () => void }) => {
     setIsFetching(true);
     const formData = new FormData();
 
-    formData.append("name", data.name);
+    formData.append("username", data.username);
     if (data.profileImage) {
       formData.append("profileImage", data.profileImage);
     }
@@ -69,7 +69,7 @@ const UserInfoForm = ({ onAuthSuccess }: { onAuthSuccess: () => void }) => {
           duration: 3000,
         });
       } else {
-        handleProfileFieldChange("name", updateRes?.data?.name);
+        handleProfileFieldChange("username", updateRes?.data?.username);
         handleProfileFieldChange("profileImage", updateRes?.data?.profileImage);
         toast({
           description: "User info updated successfully",
@@ -133,7 +133,7 @@ const UserInfoForm = ({ onAuthSuccess }: { onAuthSuccess: () => void }) => {
           {/* Username input */}
           <FormField
             control={form.control}
-            name="name"
+            name="username"
             render={({ field }) => (
               <FormItem className="w-full">
                 <FormLabel className="sr-only">Username</FormLabel>
@@ -144,9 +144,9 @@ const UserInfoForm = ({ onAuthSuccess }: { onAuthSuccess: () => void }) => {
                     className="input-class"
                   />
                 </FormControl>
-                {form.formState.errors.name && (
+                {form.formState.errors.username && (
                   <p className="text-sm font-medium text-destructive">
-                    {form.formState.errors.name.message}
+                    {form.formState.errors.username.message}
                   </p>
                 )}
               </FormItem>

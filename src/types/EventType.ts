@@ -1,4 +1,3 @@
-import { Question } from "@/store/useEventStore";
 import { UserType } from "./UserType";
 
 // src/types/EventType.ts
@@ -21,6 +20,13 @@ export type OptionType = {
   _id: string;
   name: string;
   image?: string;
+};
+export type QuestionType = {
+  id: string;
+  question: string;
+  type: "text" | "multiple-choice" | "checkbox";
+  options?: string[];
+  required: boolean;
 };
 
 export type EventType = {
@@ -51,7 +57,7 @@ export type EventType = {
   videoPreview?: string;
   attendees?: UserType[];
   favouritees?: UserType[];
-  questions?: Question[];
+  questions?: QuestionType[];
   guestsAllowFriend: boolean;
   additionalField?: any;
   details?: EventDetailsType;

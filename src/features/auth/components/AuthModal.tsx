@@ -36,7 +36,7 @@ const AuthModal = ({
     | "reset-password"
     | "verify"
     | "user-info"
-  >("login");
+  >("signup");
   const handleLoginSuccess = () => {
     onAuthSuccess();
     setIsModalOpen(false);
@@ -56,7 +56,6 @@ const AuthModal = ({
     }
     setUser(loginRes.data);
     startSession(loginRes.data, loginRes.data.token);
-    onAuthSuccess();
   };
   const switchForm = (
     form:
@@ -69,6 +68,9 @@ const AuthModal = ({
   ) => {
     console.log("Switching to", form);
     setCurrentForm(form);
+    if (form === "user-info") {
+      // setCanClose(true);
+    }
   };
 
   const renderForm = () => {
@@ -114,9 +116,14 @@ const AuthModal = ({
     <Dialog
       open={isModalOpen}
       onOpenChange={(open) => {
-        console.log("Auth modal open state changed:", open);
         setIsModalOpen(open);
         if (!open && onClose) onClose();
+
+        toast({
+          description: "Please complete the process before closing the modal.",
+          variant: "destructive",
+          duration: 3000,
+        });
       }}
     >
       <DialogContent className="rounded-xl">

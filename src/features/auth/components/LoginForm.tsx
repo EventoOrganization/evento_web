@@ -86,12 +86,12 @@ const LoginForm = ({
       const token = loginResult.token;
       const loginUserData = {
         _id: loginResult._id,
-        name: loginResult.name,
+        username: loginResult.username,
         email: loginResult.email,
         profileImage: loginResult.profileImage,
         token: token,
       };
-
+      console.log("loginUserData", loginUserData);
       // Set user data in the store
       setUser(loginUserData);
       startSession(loginUserData, token);

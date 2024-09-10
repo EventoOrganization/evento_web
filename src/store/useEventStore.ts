@@ -1,32 +1,11 @@
+import { InterestType, QuestionType, TimeSlotType } from "@/types/EventType";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-
-export type Question = {
-  id: string;
-  question: string;
-  type: "text" | "multiple-choice" | "checkbox";
-  options?: string[];
-  required: boolean;
-};
-
-export type TimeSlot = {
-  date: string;
-  startTime: string;
-  endTime: string;
-};
-
-export type Interest = {
-  value?: string;
-  label?: string;
-  name?: string;
-  _id?: string;
-  image?: string;
-};
 
 type EventFormState = {
   title: string;
   eventType: "public" | "private";
-  name: string;
+  username: string;
   mode: "virtual" | "in-person" | "both";
   date: string;
   endDate?: string;
@@ -41,11 +20,11 @@ type EventFormState = {
   URL?: string;
   coHosts?: string[];
   guests?: string[];
-  interests?: Interest[];
-  timeSlots: TimeSlot[];
+  interests?: InterestType[];
+  timeSlots: TimeSlotType[];
   privateEventLink?: string;
   mediaPreviews?: string[];
-  questions: Question[];
+  questions: QuestionType[];
   uploadedMedia: { images: File[]; videos: File[] };
   predefinedMedia: { images: string[]; videos: string[] };
   guestsAllowFriend: boolean;
@@ -53,7 +32,10 @@ type EventFormState = {
   setEventField: (key: string, value: any) => void;
   clearEventForm: () => void;
   addQuestion: () => void;
-  updateQuestion: (index: number, updatedQuestion: Partial<Question>) => void;
+  updateQuestion: (
+    index: number,
+    updatedQuestion: Partial<QuestionType>,
+  ) => void;
   removeQuestion: (index: number) => void;
   addOption: (questionIndex: number) => void;
   updateOption: (
@@ -72,7 +54,7 @@ export const useEventStore = create<EventFormState>()(
       questions: [],
       title: "",
       eventType: "public",
-      name: "",
+      username: "",
       mode: "virtual",
       date: "",
       endDate: undefined,
@@ -178,7 +160,7 @@ export const useEventStore = create<EventFormState>()(
         set({
           title: "",
           eventType: "public",
-          name: "",
+          username: "",
           mode: "virtual",
           date: "",
           endDate: undefined,

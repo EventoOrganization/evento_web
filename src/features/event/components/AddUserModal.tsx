@@ -126,7 +126,7 @@ const AddUserModal = ({
                     )}
                     <div className="flex flex-col">
                       <span className="font-semibold text-sm md:text-base">
-                        {user.name}
+                        {user.username}
                       </span>
                       <span className="text-xs">
                         {user.lastName} {user.firstName}
@@ -171,7 +171,7 @@ const AddUserModal = ({
                   )}
                   <div className="flex flex-col">
                     <span className="font-semibold text-sm md:text-base">
-                      {user.name}
+                      {user.username}
                     </span>
                     <span className="text-xs">
                       {user.lastName} {user.firstName}

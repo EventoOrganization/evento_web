@@ -33,7 +33,7 @@ const useSyncFormWithStore = () => {
     reset({
       title: eventStore.title || "",
       eventType: eventStore.eventType || "public",
-      name: eventStore.name || user?.name || "",
+      username: eventStore.username || user?.username || "",
       date: eventStore.date || "",
       endDate: eventStore.endDate || eventStore.date || "",
       startTime: eventStore.startTime || "",

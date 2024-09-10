@@ -2,7 +2,7 @@ import { EventType, InterestType } from "./EventType";
 
 export type UserType = {
   _id: string;
-  name: string;
+  username: string;
   status?: string;
   firstName?: string;
   lastName?: string;

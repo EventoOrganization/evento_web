@@ -89,9 +89,9 @@ const CreateEventPreview = ({
                   </Avatar>
                 )}
                 <h4 className="ml-2">
-                  {user && user.name
-                    ? user.name
-                    : eventStore.name || "Username"}
+                  {user && user.username
+                    ? user.username
+                    : eventStore.username || "Username"}
                 </h4>
               </div>
               <span className="text-sm">

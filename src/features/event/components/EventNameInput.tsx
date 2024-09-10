@@ -22,7 +22,7 @@ const EventNameInput = ({ className }: { className?: string }) => {
 
   return (
     <FormField
-      name="name"
+      name="username"
       render={({ field }) => (
         <FormItem>
           <FormLabel className="sr-only">Name</FormLabel>
@@ -30,12 +30,12 @@ const EventNameInput = ({ className }: { className?: string }) => {
             <Input
               placeholder="Name"
               {...field}
-              {...register("name")}
-              value={eventStore.name}
+              {...register("username")}
+              value={eventStore.username}
               className={cn("", className)}
               onChange={(e) => {
                 field.onChange(e);
-                handleFieldChange("name", e.target.value);
+                handleFieldChange("username", e.target.value);
               }}
             />
           </FormControl>

@@ -80,10 +80,10 @@ const AttendeesList = ({
             </Avatar>
           </div>
         )}
-        {user?.name}
+        {user?.username}
         {user?.firstName} {user?.lastName}
       </Link>
-      {user?.name !== loggedUser?.name && (
+      {user?.username !== loggedUser?.username && (
         <Button
           variant={"outline"}
           className={cn("bg-gray-200 text-black rounded-lg px-5", {
