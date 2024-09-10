@@ -1,5 +1,4 @@
 "use client";
-import AvatarStack from "@/components/AvatarStack";
 import MapPinIcon2 from "@/components/icons/MappPinIcon2";
 import RenderMedia from "@/components/RenderMedia";
 import TruncatedText from "@/components/TruncatedText";
@@ -129,9 +128,7 @@ const Event = ({ className, event }: { className?: string; event?: any }) => {
             <TruncatedText text={event?.details?.description} />
           </div>
           <div className="flex justify-between items-center">
-            <div>
-              <AvatarStack eventId={event?._id} />
-            </div>
+            <div>{/* <AvatarStack eventId={event?._id} /> */}</div>
             <EventActionIcons event={event} />
           </div>
         </div>

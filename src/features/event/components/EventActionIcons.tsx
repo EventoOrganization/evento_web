@@ -22,62 +22,14 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
   className = "",
 }) => {
   const { token, user } = useSession();
-  const [goingStatus, setGoingStatus] = useState<Record<string, boolean>>({});
-  const [favouriteStatus, setFavouriteStatus] = useState<
-    Record<string, boolean>
-  >({});
+  const [goingStatus, setGoingStatus] = useState<boolean>(
+    event?.isGoing ?? false,
+  );
+  const [favouriteStatus, setFavouriteStatus] = useState<boolean>(
+    event?.isFavourite ?? false,
+  );
   const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
-  // check initial status
-  const refreshStatus = async () => {
-    // console.log("refreshing status", token);
-    if (!event || !token) return;
-    try {
-      const [attendingResponse, favouriteResponse] = await Promise.all([
-        fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/users/isAttending/${event._id}`,
-          {
-            credentials: "include",
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          },
-        ),
-        fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/users/isFavourite/${event._id}`,
-          {
-            credentials: "include",
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          },
-        ),
-      ]);
 
-      if (!attendingResponse.ok || !favouriteResponse.ok) {
-        throw new Error("Error fetching event status");
-      }
-
-      const attendingData = await attendingResponse.json();
-      const favouriteData = await favouriteResponse.json();
-
-      setGoingStatus((prevStatus) => ({
-        ...prevStatus,
-        [event._id]: attendingData.attending,
-      }));
-
-      setFavouriteStatus((prevStatus) => ({
-        ...prevStatus,
-        [event._id]: favouriteData.favourite,
-      }));
-    } catch (error) {
-      console.error("Error checking event status:", error);
-    }
-  };
-
-  useEffect(() => {
-    refreshStatus();
-  }, [event, token]);
-  // handle going status
   const handleGoing = async () => {
     if (!token) {
       console.log("Not logged in");
@@ -88,7 +40,6 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
       return;
     } else {
       try {
-        console.log("Before toggle goingStatus:", goingStatus[event._id]);
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/events/attendEventStatus`,
           {
@@ -105,16 +56,13 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
         }
 
         // Si l'événement est marqué comme "favourite", le retirer des favoris
-        if (favouriteStatus[event._id]) {
+        if (favouriteStatus) {
           handleFavourite();
+          setFavouriteStatus(false);
         }
 
         // Toggle going status
-        setGoingStatus((prevStatus) => ({
-          ...prevStatus,
-          [event._id]: !prevStatus[event._id],
-        }));
-        console.log("After toggle goingStatus:", !goingStatus[event._id]);
+        setGoingStatus(!goingStatus);
       } catch (error) {
         console.error("Error marking event as going:", error);
         alert("Failed to mark as going. Please try again.");
@@ -133,10 +81,6 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
       return;
     } else {
       try {
-        console.log(
-          "Before toggle favouriteStatus:",
-          favouriteStatus[event._id],
-        );
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/events/favouriteEventStatus`,
           {
@@ -152,17 +96,12 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
           throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        if (goingStatus[event._id]) {
+        if (goingStatus) {
           handleGoing();
+          setGoingStatus(false);
         }
-        setFavouriteStatus((prevStatus) => ({
-          ...prevStatus,
-          [event._id]: !prevStatus[event._id],
-        }));
-        console.log(
-          "After toggle favouriteStatus:",
-          !favouriteStatus[event._id],
-        );
+
+        setFavouriteStatus(!favouriteStatus);
       } catch (error) {
         console.error("Error marking event as favourite:", error);
         alert("Failed to mark as favourite. Please try again.");
@@ -188,6 +127,7 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
       console.log("Web Share API is not supported in this browser.");
     }
   };
+  useEffect(() => {}, [goingStatus, favouriteStatus]);
   return (
     <div className={`flex gap-2 ${className}`}>
       <button
@@ -197,7 +137,7 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
         }}
         className="relative flex items-center justify-center w-10 h-10"
       >
-        {event && !goingStatus[event?._id] ? (
+        {event && !goingStatus ? (
           <CircleCheck
             strokeWidth={1.5}
             className={cn("text-eventoPurpleLight w-full h-full")}
@@ -218,7 +158,7 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
         }}
         className="relative flex items-center justify-center w-10 h-10"
       >
-        {event && favouriteStatus[event?._id] ? (
+        {event && favouriteStatus ? (
           <BookmarkCheck className="z-10 text-white" />
         ) : (
           <Bookmark className="text-eventoPurpleLight" />
@@ -228,8 +168,7 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
           className={cn(
             "absolute inset-0 text-eventoPurpleLight rounded-full w-full h-full",
             {
-              "bg-eventoPurpleLight text-white":
-                event && favouriteStatus[event?._id],
+              "bg-eventoPurpleLight text-white": event && favouriteStatus,
             },
           )}
         />
@@ -256,7 +195,6 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
           onClose={() => setIsAuthModalOpen(false)}
           onAuthSuccess={() => {
             setIsAuthModalOpen(false);
-            refreshStatus();
           }}
         />
       )}

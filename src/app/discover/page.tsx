@@ -54,10 +54,9 @@ const DiscoverPage = () => {
   useEffect(() => {
     setIsHydrated(true);
   }, []);
-
   useEffect(() => {
     loadInterests();
-    loadUpcomingEvents();
+    loadUpcomingEvents(session.user || undefined);
     if (session.user && session.token)
       loadUsersPlus(session.user._id, session.token);
   }, []);

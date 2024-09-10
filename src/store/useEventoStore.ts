@@ -11,7 +11,7 @@ interface EventoStoreState {
 
   events: EventType[];
   setEvents: (events: EventType[]) => void;
-  loadUpcomingEvents: () => Promise<void>;
+  loadUpcomingEvents: (user?: UserType) => Promise<void>;
 
   users: UserType[];
   setUsers: (users: UserType[]) => void;
@@ -45,13 +45,15 @@ const useEventoStore = create<EventoStoreState>()(
           console.error("Error fetching interests:", error);
         }
       },
-
       // Load Upcoming Events
-      loadUpcomingEvents: async () => {
+      loadUpcomingEvents: async (user) => {
         // if (get().events.length > 0) return;
 
+        const userIdQuery = user && user._id ? `?userId=${user._id}` : "";
         try {
-          const upcomingEventRes = await fetchData("/events/getUpcomingEvents");
+          const upcomingEventRes = await fetchData(
+            `/events/getUpcomingEvents${userIdQuery}`,
+          );
           if (upcomingEventRes && !upcomingEventRes.error) {
             set({ events: upcomingEventRes.data as EventType[] });
           } else {
@@ -61,10 +63,8 @@ const useEventoStore = create<EventoStoreState>()(
           console.error("Error fetching events:", error);
         }
       },
-
       loadUsersPlus: async (userId: string, token: string) => {
-        // if (get().users.length > 0) return;
-
+        if (get().users.length > 0) return;
         try {
           const usersRes = await fetchData(
             `/users/followStatusForUsersYouFollow/${userId}`,

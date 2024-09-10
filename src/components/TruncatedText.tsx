@@ -36,7 +36,13 @@ const TruncatedText = ({
       </p>
       {isOverflowing && (
         <div className="w-full flex justify-end items-start">
-          <button onClick={toggleText} className="text-blue-500 underline">
+          <button
+            onClick={(e) => {
+              toggleText();
+              e.stopPropagation();
+            }}
+            className="text-blue-500 underline"
+          >
             {isExpanded ? "Read Less" : "Read More"}
           </button>
         </div>
