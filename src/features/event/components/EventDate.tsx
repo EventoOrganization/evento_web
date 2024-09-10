@@ -7,12 +7,13 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useEventStore } from "@/store/useEventStore";
-import { format } from "date-fns";
+import { format, startOfDay } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { handleFieldChange } from "../eventActions";
 const EventDate = () => {
   const eventStore = useEventStore();
+  const today = startOfDay(new Date());
   const [useMultipleTimes, setUseMultipleTimes] = useState(false);
   const [startDate, setStartDate] = useState<Date | undefined>(
     eventStore.date ? new Date(eventStore.date) : undefined,
@@ -25,7 +26,7 @@ const EventDate = () => {
       ? eventStore.timeSlots
       : [
           {
-            date: eventStore.date || "",
+            date: eventStore.date || new Date().toISOString().split("T")[0],
             startTime: eventStore.startTime || "08:00",
             endTime: eventStore.endTime || "18:00",
           },
@@ -43,18 +44,20 @@ const EventDate = () => {
   }, [timeSlots]);
 
   const handleStartDateChange = (date: Date | undefined) => {
-    const formattedDate = date ? format(date, "yyyy-MM-dd") : "";
-    setStartDate(date);
-    if (date) {
-      handleFieldChange("date", formattedDate);
-      setTimeSlots((prevSlots) => [
-        ...prevSlots,
-        {
-          date: formattedDate,
-          startTime: eventStore.startTime || "08:00",
-          endTime: eventStore.endTime || "18:00",
-        },
-      ]);
+    if (date && date >= today) {
+      const formattedDate = date ? format(date, "yyyy-MM-dd") : "";
+      setStartDate(date);
+      if (date) {
+        handleFieldChange("date", formattedDate);
+        setTimeSlots((prevSlots) => [
+          ...prevSlots,
+          {
+            date: formattedDate,
+            startTime: eventStore.startTime || "08:00",
+            endTime: eventStore.endTime || "18:00",
+          },
+        ]);
+      }
     }
   };
 

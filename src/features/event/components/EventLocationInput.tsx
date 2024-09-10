@@ -13,67 +13,63 @@ const EventLocationInput = ({
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [isScriptLoaded, setIsScriptLoaded] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    if (!isMounted) {
-      return;
-    }
-    if (typeof window !== "undefined") {
-      const existingScript = document.querySelector(
-        `script[src*="https://maps.googleapis.com/maps/api/js"]`,
-      );
-
-      const loadScript = (url: string, callback: () => void): void => {
-        const script = document.createElement("script");
-        script.type = "text/javascript";
-        script.src = url;
-        script.async = true;
-        script.defer = true;
-        script.onload = callback;
-        document.head.appendChild(script);
-      };
-
-      const initializeAutocomplete = (): void => {
-        if (window.google && window.google.maps && inputRef.current) {
-          const autocomplete = new window.google.maps.places.Autocomplete(
-            inputRef.current!,
-            { types: ["geocode"] },
-          );
-
-          autocompleteRef.current = autocomplete;
-
-          autocomplete.addListener("place_changed", () => {
-            const place = autocomplete.getPlace();
-            if (place && place.geometry && place.geometry.location) {
-              const address = place.formatted_address || "";
-              const lat = place.geometry.location.lat();
-              const lng = place.geometry.location.lng();
-
-              setLocation(address);
-              eventStore.setEventField("location", address);
-              eventStore.setEventField("latitude", lat.toString());
-              eventStore.setEventField("longitude", lng.toString());
-            }
-          });
-        }
-      };
-
-      if (!existingScript && !isScriptLoaded) {
-        loadScript(
-          `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places`,
-          () => {
-            setIsScriptLoaded(true);
-            initializeAutocomplete();
-          },
-        );
-      } else if (existingScript) {
-        initializeAutocomplete();
-      }
-    }
-  }, [apiKey, isScriptLoaded]);
   useEffect(() => {
     setIsMounted(true);
-  }, []);
+  }, [isMounted]);
+
+  if (typeof window !== "undefined" && isMounted) {
+    const existingScript = document.querySelector(
+      `script[src*="https://maps.googleapis.com/maps/api/js"]`,
+    );
+
+    const loadScript = (url: string, callback: () => void): void => {
+      const script = document.createElement("script");
+      script.type = "text/javascript";
+      script.src = url;
+      script.async = true;
+      script.defer = true;
+      script.onload = callback;
+      document.head.appendChild(script);
+    };
+
+    const initializeAutocomplete = (): void => {
+      if (window.google && window.google.maps && inputRef.current) {
+        const autocomplete = new window.google.maps.places.Autocomplete(
+          inputRef.current!,
+          { types: ["geocode"] },
+        );
+
+        autocompleteRef.current = autocomplete;
+
+        autocomplete.addListener("place_changed", () => {
+          const place = autocomplete.getPlace();
+          if (place && place.geometry && place.geometry.location) {
+            const address = place.formatted_address || "";
+            const lat = place.geometry.location.lat();
+            const lng = place.geometry.location.lng();
+
+            setLocation(address);
+            eventStore.setEventField("location", address);
+            eventStore.setEventField("latitude", lat.toString());
+            eventStore.setEventField("longitude", lng.toString());
+          }
+        });
+      }
+    };
+
+    if (!existingScript && !isScriptLoaded) {
+      loadScript(
+        `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places`,
+        () => {
+          setIsScriptLoaded(true);
+          initializeAutocomplete();
+        },
+      );
+    } else if (existingScript) {
+      initializeAutocomplete();
+    }
+  }
+
   return (
     <Input
       type="text"

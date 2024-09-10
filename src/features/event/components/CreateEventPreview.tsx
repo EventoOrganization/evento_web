@@ -77,13 +77,13 @@ const CreateEventPreview = ({
                     alt="user image"
                     width={30}
                     height={30}
-                    className="w-full h-full rounded-full"
+                    className="w-8 h-8 rounded-full"
                   />
                 ) : (
                   <Avatar>
                     <AvatarImage
                       src={"https://github.com/shadcn.png"}
-                      className="rounded-full w-full h-full"
+                      className="rounded-full w-8 h-8"
                     />
                     <AvatarFallback>CN</AvatarFallback>
                   </Avatar>
