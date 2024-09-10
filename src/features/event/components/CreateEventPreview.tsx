@@ -63,7 +63,7 @@ const CreateEventPreview = ({
     <>
       <div
         className={cn(
-          "bg-white border shadow rounded p-4 w-full grid grid-cols-1 lg:grid-cols-2  h-fit gap-4 hover:shadow-xl hover:bg-slate-50 cursor-pointer relative",
+          "bg-white border shadow rounded p-4 w-full grid grid-cols-1 h-fit gap-4 hover:shadow-xl hover:bg-slate-50 cursor-pointer relative",
           className,
         )}
       >

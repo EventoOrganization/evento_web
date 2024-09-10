@@ -1,85 +1,71 @@
-"use client";
 import { Input } from "@/components/ui/input";
 import { useEventStore } from "@/store/useEventStore";
 import { useEffect, useRef, useState } from "react";
 
-const EventLocationInput = ({
-  apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
-  placeholder = "Enter event location...",
-}) => {
+const EventLocationInput = ({}) => {
+  const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "";
   const eventStore = useEventStore();
-  const [location, setLocation] = useState<string>("");
-  const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
-  const inputRef = useRef<HTMLInputElement | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const [isScriptLoaded, setIsScriptLoaded] = useState(false);
-  const [isMounted, setIsMounted] = useState(false);
+  const placeholder = eventStore.location || "Enter event location...";
   useEffect(() => {
-    setIsMounted(true);
-  }, [isMounted]);
+    if (typeof window === "undefined" || isScriptLoaded) return;
 
-  if (typeof window !== "undefined" && isMounted) {
-    const existingScript = document.querySelector(
-      `script[src*="https://maps.googleapis.com/maps/api/js"]`,
-    );
+    const scriptId = "google-maps-script";
+    const existingScript = document.getElementById(scriptId);
 
-    const loadScript = (url: string, callback: () => void): void => {
+    const loadScript = () => {
+      if (existingScript) return;
+
       const script = document.createElement("script");
+      script.id = scriptId;
       script.type = "text/javascript";
-      script.src = url;
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places`;
       script.async = true;
       script.defer = true;
-      script.onload = callback;
+      script.onload = () => setIsScriptLoaded(true);
       document.head.appendChild(script);
     };
 
-    const initializeAutocomplete = (): void => {
-      if (window.google && window.google.maps && inputRef.current) {
-        const autocomplete = new window.google.maps.places.Autocomplete(
-          inputRef.current!,
-          { types: ["geocode"] },
-        );
+    loadScript();
 
-        autocompleteRef.current = autocomplete;
-
-        autocomplete.addListener("place_changed", () => {
-          const place = autocomplete.getPlace();
-          if (place && place.geometry && place.geometry.location) {
-            const address = place.formatted_address || "";
-            const lat = place.geometry.location.lat();
-            const lng = place.geometry.location.lng();
-
-            setLocation(address);
-            eventStore.setEventField("location", address);
-            eventStore.setEventField("latitude", lat.toString());
-            eventStore.setEventField("longitude", lng.toString());
-          }
-        });
+    return () => {
+      const loadedScript = document.getElementById(scriptId);
+      if (loadedScript) {
+        loadedScript.remove();
       }
     };
+  }, [apiKey, isScriptLoaded]);
 
-    if (!existingScript && !isScriptLoaded) {
-      loadScript(
-        `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places`,
-        () => {
-          setIsScriptLoaded(true);
-          initializeAutocomplete();
-        },
-      );
-    } else if (existingScript) {
-      initializeAutocomplete();
-    }
-  }
+  useEffect(() => {
+    if (!isScriptLoaded || !window.google || !inputRef.current) return;
+
+    const autocomplete = new window.google.maps.places.Autocomplete(
+      inputRef.current,
+      {
+        types: ["geocode"],
+      },
+    );
+
+    autocomplete.addListener("place_changed", () => {
+      const place = autocomplete.getPlace();
+      if (place.geometry) {
+        const { location } = place.geometry;
+        const address = place.formatted_address || "";
+        eventStore.setEventField("location", address);
+        eventStore.setEventField("latitude", location?.lat().toString());
+        eventStore.setEventField("longitude", location?.lng().toString());
+      }
+    });
+
+    return () => autocomplete.unbindAll();
+  }, [eventStore, isScriptLoaded]);
 
   return (
     <Input
-      type="text"
       ref={inputRef}
+      type="text"
       placeholder={placeholder}
-      value={eventStore.location || location || ""}
-      onChange={(e) => {
-        setLocation(e.target.value);
-        eventStore.setEventField("location", e.target.value); // Update store directly as user types
-      }}
       className="input-class-name"
       required
     />
