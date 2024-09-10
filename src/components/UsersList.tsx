@@ -53,7 +53,6 @@ const UsersList = ({
       console.error("An error occurred:", error);
     }
   };
-  console.log(user);
   return (
     <div className="flex justify-between w-full items-center">
       <Link href={`/profile/${user?._id}`} className="flex items-center gap-4">

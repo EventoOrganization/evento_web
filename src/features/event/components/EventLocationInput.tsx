@@ -2,70 +2,77 @@ import { Input } from "@/components/ui/input";
 import { useEventStore } from "@/store/useEventStore";
 import { useEffect, useRef, useState } from "react";
 
-const EventLocationInput = ({}) => {
+const EventLocationInput = () => {
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "";
   const eventStore = useEventStore();
   const inputRef = useRef<HTMLInputElement>(null);
   const [isScriptLoaded, setIsScriptLoaded] = useState(false);
-  const placeholder = eventStore.location || "Enter event location...";
+  const [autocomplete, setAutocomplete] =
+    useState<google.maps.places.Autocomplete | null>(null);
+
   useEffect(() => {
-    if (typeof window === "undefined" || isScriptLoaded) return;
+    if (typeof window === "undefined") return;
 
     const scriptId = "google-maps-script";
-    const existingScript = document.getElementById(scriptId);
+    let script = document.getElementById(scriptId) as HTMLScriptElement;
 
-    const loadScript = () => {
-      if (existingScript) return;
-
-      const script = document.createElement("script");
+    if (!script) {
+      // Script doesn't exist, so we create it
+      script = document.createElement("script");
       script.id = scriptId;
-      script.type = "text/javascript";
       script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places`;
       script.async = true;
       script.defer = true;
       script.onload = () => setIsScriptLoaded(true);
       document.head.appendChild(script);
-    };
-
-    loadScript();
+    } else {
+      // Script exists, ensure it is loaded
+      if (window.google) {
+        setIsScriptLoaded(true);
+      } else {
+        script.onload = () => setIsScriptLoaded(true);
+      }
+    }
 
     return () => {
-      const loadedScript = document.getElementById(scriptId);
-      if (loadedScript) {
-        loadedScript.remove();
-      }
+      // Don't remove the script on unmount
+      // as other components might rely on it
     };
-  }, [apiKey, isScriptLoaded]);
+  }, [apiKey]);
 
   useEffect(() => {
-    if (!isScriptLoaded || !window.google || !inputRef.current) return;
+    if (isScriptLoaded && window.google && inputRef.current && !autocomplete) {
+      try {
+        const newAutocomplete = new window.google.maps.places.Autocomplete(
+          inputRef.current,
+          { types: ["geocode"] },
+        );
+        setAutocomplete(newAutocomplete);
 
-    const autocomplete = new window.google.maps.places.Autocomplete(
-      inputRef.current,
-      {
-        types: ["geocode"],
-      },
-    );
-
-    autocomplete.addListener("place_changed", () => {
-      const place = autocomplete.getPlace();
-      if (place.geometry) {
-        const { location } = place.geometry;
-        const address = place.formatted_address || "";
-        eventStore.setEventField("location", address);
-        eventStore.setEventField("latitude", location?.lat().toString());
-        eventStore.setEventField("longitude", location?.lng().toString());
+        newAutocomplete.addListener("place_changed", () => {
+          const place = newAutocomplete.getPlace();
+          if (place.geometry) {
+            const { location } = place.geometry;
+            const address = place.formatted_address || "";
+            eventStore.setEventField("location", address);
+            eventStore.setEventField("latitude", location?.lat().toString());
+            eventStore.setEventField("longitude", location?.lng().toString());
+          }
+        });
+      } catch (error) {
+        console.error(
+          "Failed to initialize Google Places Autocomplete:",
+          error,
+        );
       }
-    });
-
-    return () => autocomplete.unbindAll();
-  }, [eventStore, isScriptLoaded]);
+    }
+  }, [isScriptLoaded, inputRef, autocomplete, eventStore]);
 
   return (
     <Input
       ref={inputRef}
       type="text"
-      placeholder={placeholder}
+      placeholder={eventStore.location || "Enter event location..."}
       className="input-class-name"
       required
     />

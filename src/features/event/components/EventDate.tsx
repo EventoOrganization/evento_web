@@ -97,6 +97,7 @@ const EventDate = () => {
         endTime: eventStore.endTime || "18:00",
       }));
       setTimeSlots(slots);
+      handleFieldChange("isTimeSlotsEnabled", true);
       handleFieldChange("timeSlots", slots);
     } else {
       const singleSlot = [
@@ -107,6 +108,7 @@ const EventDate = () => {
         },
       ];
       setTimeSlots(singleSlot);
+      handleFieldChange("isTimeSlotsEnabled", false);
       handleFieldChange("timeSlots", singleSlot);
     }
   };

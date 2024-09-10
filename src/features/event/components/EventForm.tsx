@@ -19,7 +19,6 @@ import { FormProvider, useForm, useFormContext } from "react-hook-form";
 import EnableChatButton from "./EnableChatButton";
 import EventCoHostsModal from "./EventCoHostsModal";
 import EventDescriptionArea from "./EventDescriptionArea";
-import EventGuestsModal from "./EventGuestsModal";
 import EventLocationInput from "./EventLocationInput";
 
 const useSyncFormWithStore = () => {
@@ -189,7 +188,6 @@ const EventForm = ({
             <EventDescriptionArea />
             <h4 className="text-eventoPurpleLight">More Options</h4>
             <div className="flex flex-wrap gap-2">
-              <EventGuestsModal allUsers={allUsers as UserType[]} />
               <EventCoHostsModal allUsers={allUsers as UserType[]} />
               <EnableChatButton />
             </div>

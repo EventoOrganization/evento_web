@@ -42,7 +42,7 @@ const CreateEventPage = () => {
     setFormValues({
       title: eventStore.title || "",
       eventType: eventStore.eventType || "public",
-      username: eventStore.username || "",
+      username: user?.username || "",
       date: eventStore.date || "",
       endDate: eventStore.endDate || eventStore.date || "",
       startTime: eventStore.startTime || "",
@@ -69,7 +69,7 @@ const CreateEventPage = () => {
   const [formValues, setFormValues] = useState({
     title: eventStore.title || "",
     eventType: eventStore.eventType || "public",
-    username: eventStore.username || "",
+    username: user?.username || "",
     date: eventStore.date || "",
     endDate: eventStore.endDate || eventStore.date || "",
     startTime: eventStore.startTime || "",
@@ -206,84 +206,95 @@ const CreateEventPage = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     if (!isAuthenticated) {
-      console.log("User is not authenticated", isAuthenticated);
       setIsAuthModalOpen(!isAuthModalOpen);
-    } else {
-      try {
-        const localMedia = (eventStore.mediaPreviews || [])
-          .filter(
-            (media: any) =>
-              typeof media === "object" &&
-              "url" in media &&
-              media.url.startsWith("/uploads"),
-          )
-          .map((media: any) => ({
-            url: media.url,
-            type: media.type,
-          }));
-        const awsMedia = (eventStore.mediaPreviews || [])
-          .filter(
-            (media: any) =>
-              typeof media === "object" &&
-              "url" in media &&
-              !media.url.startsWith("/uploads"),
-          )
-          .map((media: any) => ({
-            url: media.url,
-            type: media.type,
-          }));
-        const formData = {
-          ...formValues,
-          uploadedMedia: [...localMedia],
-          predefinedMedia: [...awsMedia],
-        };
-        console.log("store Values on Submit:", eventStore);
-        console.log("Form Values on Submit:", formData);
+      return;
+    }
 
-        await fetchData<EventType>(
-          "/events/createEvent",
-          HttpMethod.POST,
-          formData,
-          token,
-        );
+    if (
+      !formValues.title ||
+      !formValues.username ||
+      !formValues.eventType ||
+      !formValues.mode ||
+      !formValues.location ||
+      !formValues.latitude ||
+      !formValues.longitude ||
+      !formValues.date ||
+      !formValues.endDate ||
+      !formValues.startTime ||
+      !formValues.endTime ||
+      !formValues.description
+    ) {
+      toast({
+        title: "Error",
+        description: "Please fill in all required fields.",
+        className: "bg-red-500 text-white",
+        duration: 3000,
+      });
+      return;
+    }
+    const localMedia = (eventStore.mediaPreviews || [])
+      .filter(
+        (media: any) =>
+          typeof media === "object" &&
+          "url" in media &&
+          media.url.startsWith("/uploads"),
+      )
+      .map((media: any) => ({
+        url: media.url,
+        type: media.type,
+      }));
 
-        try {
-          await fetch("/api/cleanupTempFiles", {
-            method: "POST",
-            body: JSON.stringify(localMedia),
-            headers: {
-              "Content-Type": "application/json",
-            },
-          });
-        } catch (error) {
-          console.error("Error cleaning up temp files:", error);
-          toast({
-            title: "Error creating event",
-            description: "Please try again.",
-            className: "bg-red-500 text-white",
-            duration: 3000,
-          });
-        }
-      } catch (error) {
-        console.error("Error creating event:", error);
-        toast({
-          title: "Error creating event",
-          description: "Please try again.",
-          className: "bg-red-500 text-white",
-          duration: 3000,
-        });
-      } finally {
+    const awsMedia = (eventStore.mediaPreviews || [])
+      .filter(
+        (media: any) =>
+          typeof media === "object" &&
+          "url" in media &&
+          !media.url.startsWith("/uploads"),
+      )
+      .map((media: any) => ({
+        url: media.url,
+        type: media.type,
+      }));
+
+    const formData = {
+      ...formValues,
+      uploadedMedia: [...localMedia],
+      predefinedMedia: [...awsMedia],
+    };
+
+    console.log("Form Data on Submit:", formData);
+
+    try {
+      const response = await fetchData<EventType>(
+        "/events/createEvent",
+        HttpMethod.POST,
+        formData,
+        token,
+      );
+
+      if (response.ok) {
         toast({
           title: "Event created successfully",
           className: "bg-evento-gradient-button text-white",
           duration: 3000,
         });
-        eventStore.clearEventForm();
-        router.push("/profile");
+        router.push("/success");
+      } else {
+        throw new Error(response.error || "Failed to create event");
       }
+    } catch (error) {
+      console.error("Error creating event:", error);
+      toast({
+        title: "Error creating event",
+        description: "Please try again.",
+        className: "bg-red-500 text-white",
+        duration: 3000,
+      });
     }
   };
+
   useEffect(() => {
     getInterests();
     getUsers();
@@ -308,12 +319,12 @@ const CreateEventPage = () => {
             </div>
             {(!user || (user && !user.username)) && (
               <div>
-                <Label className="sr-only" htmlFor="name">
+                <Label className="sr-only" htmlFor="username">
                   Organizer Name
                 </Label>
                 <Input
-                  id="name"
-                  name="name"
+                  id="username"
+                  name="username"
                   value={eventStore.username}
                   onChange={handleChange}
                   placeholder="Organizer name"

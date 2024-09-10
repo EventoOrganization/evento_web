@@ -8,6 +8,8 @@ export enum HttpMethod {
 export type FetchDataResult<T> = {
   data: T | null;
   error: string | null;
+  status: number;
+  ok: boolean;
 };
 
 export const fetchData = async <T, B = any>(
@@ -51,8 +53,9 @@ export const fetchData = async <T, B = any>(
     );
 
     const contentType = response.headers.get("content-type");
+    const isSuccess = response.status >= 200 && response.status < 300;
 
-    if (!response.ok) {
+    if (!isSuccess) {
       let errorMessage = `HTTP error! status: ${response.status}`;
 
       if (contentType && contentType.includes("application/json")) {
@@ -69,6 +72,8 @@ export const fetchData = async <T, B = any>(
       return {
         data: null,
         error: errorMessage,
+        status: response.status,
+        ok: false,
       };
     }
 
@@ -78,19 +83,39 @@ export const fetchData = async <T, B = any>(
 
       if (data?.body) {
         console.log(`response from ${endpoint} with data.body:`, data.body);
-        return { data: data.body as T, error: null };
+        return {
+          data: data.body as T,
+          error: null,
+          status: response.status,
+          ok: true,
+        };
       } else if (data?.data) {
         console.log(`response from ${endpoint} with data.data:`, data.data);
-        return { data: data.data as T, error: null };
+        return {
+          data: data.data as T,
+          error: null,
+          status: response.status,
+          ok: true,
+        };
       } else if (data?.message) {
         console.log(
           `response from ${endpoint} with data.message:`,
           data.message,
         );
-        return { data: null, error: data.message };
+        return {
+          data: null,
+          error: data.message,
+          status: response.status,
+          ok: false,
+        };
       } else {
         console.log(" response from ", endpoint, " with data:", data);
-        return { data: data as T, error: null };
+        return {
+          data: data as T,
+          error: null,
+          status: response.status,
+          ok: true,
+        };
       }
     } else {
       throw new Error("La réponse n'est pas au format JSON.");
@@ -101,6 +126,8 @@ export const fetchData = async <T, B = any>(
       error: `Failed to fetch data from ${endpoint}: ${
         error instanceof Error ? error.message : "Unknown error"
       }`,
+      status: 500,
+      ok: false,
     };
   }
 };

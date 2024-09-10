@@ -11,7 +11,9 @@ import CreateEventCarousel from "./CreateEventCarousel";
 const CreateEventPreview = ({
   className,
   handleRemoveInterest,
+  inModal = false,
 }: {
+  inModal?: boolean;
   className?: string;
   handleRemoveInterest?: (interestId: string) => void;
 }) => {
@@ -35,7 +37,7 @@ const CreateEventPreview = ({
       !endDate ||
       new Date(endDate).getTime() === new Date(startDate).getTime()
     ) {
-      return `le ${formatDate(startDate)}`; // Single date
+      return `le ${formatDate(startDate)}`;
     } else {
       const startDay = new Date(startDate).getDate();
       const endDay = new Date(endDate).getDate();
@@ -58,13 +60,50 @@ const CreateEventPreview = ({
       }
     }
   };
+  // const renderAverageTimes = () => {
+  //   if (eventStore.timeSlots.length === 0) return "No times available";
 
+  //   let totalStartMinutes = 0,
+  //     totalEndMinutes = 0;
+
+  //   eventStore.timeSlots.forEach((slot) => {
+  //     const startTime = parse(slot.startTime, "HH:mm", new Date());
+  //     const endTime = parse(slot.endTime, "HH:mm", new Date());
+  //     totalStartMinutes += differenceInMinutes(
+  //       startTime,
+  //       new Date(0, 0, 0, 0, 0),
+  //     );
+  //     totalEndMinutes += differenceInMinutes(endTime, new Date(0, 0, 0, 0, 0));
+  //   });
+
+  //   const averageStartMinutes = totalStartMinutes / eventStore.timeSlots.length;
+  //   const averageEndMinutes = totalEndMinutes / eventStore.timeSlots.length;
+
+  //   const averageStartTime = new Date(0, 0, 0, 0, averageStartMinutes);
+  //   const averageEndTime = new Date(0, 0, 0, 0, averageEndMinutes);
+
+  //   return `${format(averageStartTime, "HH:mm")} - ${format(averageEndTime, "HH:mm")}`;
+  // };
+  // const renderMinMaxTimes = () => {
+  //   if (eventStore.timeSlots.length === 0) return "No times available";
+
+  //   let minStartTime = "23:59";
+  //   let maxEndTime = "00:00";
+
+  //   eventStore.timeSlots.forEach((slot) => {
+  //     if (slot.startTime < minStartTime) minStartTime = slot.startTime;
+  //     if (slot.endTime > maxEndTime) maxEndTime = slot.endTime;
+  //   });
+
+  //   return `${minStartTime}min - ${maxEndTime}max`;
+  // };
   return (
     <>
       <div
         className={cn(
           "bg-white border shadow rounded p-4 w-full grid grid-cols-1 h-fit gap-4 hover:shadow-xl hover:bg-slate-50 cursor-pointer relative",
           className,
+          { "lg:grid-cols-2 items-start p-10 gap-10": inModal },
         )}
       >
         <div className="flex items-center justify-between ">
@@ -134,6 +173,8 @@ const CreateEventPreview = ({
               {eventStore.startTime ? eventStore.startTime : "08:00"} -{" "}
               {eventStore.endTime ? eventStore.endTime : "18:00"}
             </p>
+            {/* <p className="whitespace-nowrap">{renderAverageTimes()}</p> */}
+            {/* <p className="whitespace-nowrap">{renderMinMaxTimes()}</p> */}
           </div>
           {/* Placeholder for TruncatedText */}
           <div className="w-fullp-4 rounded">{eventStore.description}</div>

@@ -33,7 +33,7 @@ const CreateEventModal = ({
       </DialogHeader>
       <DialogContent className="bg-transparent border-none max-w-[90vw]  md:max-w-screen-md lg:max-w-screen-lg max-h-[calc(100vh-64px)] p-0 w-full h-full">
         <ScrollArea className="rounded h-full">
-          <CreateEventPreview />
+          <CreateEventPreview inModal={true} />
         </ScrollArea>
         <div className="grid grid-cols-2 gap-4 items-end">
           <Button variant="ghost" className="bg-gray-200" onClick={onClose}>

@@ -1,7 +1,7 @@
 import { useEventStore } from "@/store/useEventStore";
 import { UserType } from "@/types/UserType";
-import { useEffect, useState } from "react";
-import AddUserModal from "./AddUserModal";
+import { useState } from "react";
+import AddCoHostsModal from "./AddUserModal";
 
 const EventCoHostsModal = ({
   allUsers,
@@ -11,25 +11,23 @@ const EventCoHostsModal = ({
   currentUserId?: string;
 }) => {
   const eventStore = useEventStore();
-  const [coHosts, setCoHosts] = useState<UserType[]>([]);
+  const [coHosts, setCoHosts] = useState<{ userId: string; status: string }[]>(
+    [],
+  );
 
-  useEffect(() => {
-    const initialCoHosts = allUsers
-      .filter((user) => user._id !== currentUserId)
-      .filter((user) => eventStore.coHosts?.includes(user._id));
-
-    setCoHosts(initialCoHosts);
-  }, [allUsers, eventStore.coHosts, currentUserId]);
-
-  const handleSave = (selectedCoHosts: string[]) => {
+  const handleSave = (
+    selectedCoHosts: { userId: string; status: string }[],
+  ) => {
+    setCoHosts(selectedCoHosts);
     eventStore.setEventField("coHosts", selectedCoHosts);
   };
+
   const filteredUsers = allUsers.filter((user) => user._id !== currentUserId);
-  console.log("filteredUsers", filteredUsers, currentUserId);
+
   return (
-    <AddUserModal
+    <AddCoHostsModal
       title="Add Co-Hosts"
-      selectedUsers={coHosts.map((user) => user._id)}
+      selectedUsers={coHosts}
       allUsers={filteredUsers}
       onSave={handleSave}
       storeField="coHosts"

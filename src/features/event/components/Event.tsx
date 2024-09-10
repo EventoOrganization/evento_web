@@ -66,13 +66,13 @@ const Event = ({ className, event }: { className?: string; event?: any }) => {
                   alt="user image"
                   width={30}
                   height={30}
-                  className="w-full h-full rounded-full"
+                  className="w-10 h-10 rounded-full"
                 />
               ) : (
                 <Avatar>
                   <AvatarImage
                     src={"https://github.com/shadcn.png"}
-                    className="rounded-full w-full h-full "
+                    className="rounded-full w-10 h-10 "
                   />
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
