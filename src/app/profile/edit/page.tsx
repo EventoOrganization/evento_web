@@ -30,7 +30,7 @@ const EditProfilePage = () => {
     bio: userInfo?.bio || "",
     URL: userInfo?.URL || "",
     DOB: userInfo?.DOB || "",
-    interest: userInfo?.interest || [],
+    interests: userInfo?.interests || [],
     socialLinks: userInfo?.socialLinks || [{ platform: "", url: "" }],
   });
 
@@ -48,7 +48,7 @@ const EditProfilePage = () => {
         bio: userInfo.bio || "",
         URL: userInfo.URL || "",
         DOB: userInfo.DOB || "",
-        interest: userInfo.interest || [],
+        interests: userInfo.interests || [],
         socialLinks: userInfo.socialLinks || [{ platform: "", url: "" }],
       });
     }
@@ -110,21 +110,21 @@ const EditProfilePage = () => {
     );
     if (
       selectedInterest &&
-      !formData.interest.some((i) => i._id === selectedInterestId)
+      !formData.interests.some((i) => i._id === selectedInterestId)
     ) {
       setFormData({
         ...formData,
-        interest: [...formData.interest, selectedInterest],
+        interests: [...formData.interests, selectedInterest],
       });
     }
   };
 
   // Remove an interest from the form
   const removeInterest = (interestId: string) => {
-    const updatedInterests = formData.interest.filter(
-      (interest) => interest._id !== interestId,
+    const updatedInterests = formData.interests.filter(
+      (interests) => interests._id !== interestId,
     );
-    setFormData({ ...formData, interest: updatedInterests });
+    setFormData({ ...formData, interests: updatedInterests });
   };
 
   // Handle form submission
@@ -134,7 +134,7 @@ const EditProfilePage = () => {
 
     // Add text data
     Object.entries(formData).forEach(([key, value]) => {
-      if (key !== "socialLinks" && key !== "interest" && value) {
+      if (key !== "socialLinks" && key !== "interests" && value) {
         dataToSend.append(key, value as string);
       }
     });
@@ -145,8 +145,8 @@ const EditProfilePage = () => {
     }
 
     // Add interests
-    if (formData.interest.length > 0) {
-      const interestIds = formData.interest.map((interest) => interest._id);
+    if (formData.interests.length > 0) {
+      const interestIds = formData.interests.map((interest) => interest._id);
       dataToSend.append("interest", JSON.stringify(interestIds));
     }
 
@@ -253,7 +253,7 @@ const EditProfilePage = () => {
             ))}
           </select>
           <div className="flex gap-2 py-2">
-            {formData.interest.map((interest) => (
+            {formData.interests.map((interest) => (
               <Button
                 key={interest._id}
                 className="bg-evento-gradient hover:opacity-80"

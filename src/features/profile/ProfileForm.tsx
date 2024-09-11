@@ -25,8 +25,7 @@ type FormValues = {
   phone_verified?: string;
   is_block?: number;
   is_otp_verify?: number;
-  interests?: string[];
-  interest?: InterestType[];
+  interests?: InterestType[];
 };
 
 const ProfileForm = () => {
@@ -44,7 +43,7 @@ const ProfileForm = () => {
     profileImage: userInfo?.profileImage || "",
     bio: userInfo?.bio || "",
     aboutMe: userInfo?.aboutMe || "",
-    interest: userInfo?.interest || [],
+    interests: userInfo?.interests || [],
   });
 
   const [editFields, setEditFields] = useState<string[]>([]); // Track which fields are editable
@@ -93,7 +92,7 @@ const ProfileForm = () => {
         profileImage: userInfo?.profileImage || "",
         bio: userInfo?.bio || "",
         aboutMe: userInfo?.aboutMe || "",
-        interest: userInfo?.interest || [],
+        interests: userInfo?.interests || [],
       });
     }
   }, [userInfo]);
