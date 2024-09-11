@@ -87,8 +87,9 @@ const RenderMedia = ({ event }: { event: EventType }) => {
               <Image
                 src={item.url}
                 alt={`Preview media ${index + 1}`}
-                layout="fill"
-                objectFit="contain"
+                fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                style={{ objectFit: "contain" }}
                 className="w-full h-full"
                 priority
               />

@@ -65,7 +65,7 @@ const EventImageUpload = () => {
                   src={src}
                   alt={`Image preview ${index}`}
                   fill
-                  objectFit="cover"
+                  style={{ objectFit: "cover" }}
                   className="rounded-lg"
                 />
               </div>

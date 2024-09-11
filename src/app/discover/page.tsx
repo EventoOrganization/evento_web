@@ -8,7 +8,6 @@ import { Label } from "@/components/ui/label";
 import UsersList from "@/components/UsersList";
 import { useSession } from "@/contexts/SessionProvider";
 import AuthModal from "@/features/auth/components/AuthModal";
-import CombinedLocationInput from "@/features/discover/CombinedLocationInput";
 import DateSelector from "@/features/discover/DateSelector";
 import { filterEvents } from "@/features/discover/discoverActions";
 import TabSelector from "@/features/discover/TabSelector";
@@ -132,7 +131,7 @@ const DiscoverPage = () => {
           <div className="flex flex-col gap-2 p-4 rounded bg-muted">
             <h4 className="text-purple-600 font-bold">Current Location</h4>
             <LocationSelector onLocationChange={setLocation} />
-            <CombinedLocationInput />
+            {/* <CombinedLocationInput /> */}
           </div>
           <div className="relative flex items-center p-4">
             <Search
