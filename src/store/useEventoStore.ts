@@ -1,7 +1,8 @@
+// src/store/useEventoStore.ts
 import { EventType, InterestType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
-import create from "zustand";
+import { create } from "zustand"; // Utilisation de l'import nommé
 import { persist } from "zustand/middleware";
 
 interface EventoStoreState {
@@ -17,7 +18,18 @@ interface EventoStoreState {
   setUsers: (users: UserType[]) => void;
   loadUsersPlus: (userId: string, token: string) => Promise<void>;
 }
-
+const customStorage = {
+  getItem: (name: string) => {
+    const item = localStorage.getItem(name);
+    return item ? JSON.parse(item) : null;
+  },
+  setItem: (name: string, value: any) => {
+    localStorage.setItem(name, JSON.stringify(value));
+  },
+  removeItem: (name: string) => {
+    localStorage.removeItem(name);
+  },
+};
 const useEventoStore = create<EventoStoreState>()(
   persist(
     (set, get) => ({
@@ -47,8 +59,6 @@ const useEventoStore = create<EventoStoreState>()(
       },
       // Load Upcoming Events
       loadUpcomingEvents: async (user) => {
-        // if (get().events.length > 0) return;
-
         const userIdQuery = user && user._id ? `?userId=${user._id}` : "";
         try {
           const upcomingEventRes = await fetchData(
@@ -64,7 +74,7 @@ const useEventoStore = create<EventoStoreState>()(
         }
       },
       loadUsersPlus: async (userId: string, token: string) => {
-        if (get().users.length > 0) return;
+        // if (get().users.length > 0) return;
         try {
           const usersRes = await fetchData(
             `/users/followStatusForUsersYouFollow/${userId}`,
@@ -84,10 +94,10 @@ const useEventoStore = create<EventoStoreState>()(
       },
     }),
     {
-      name: "evento-store",
-      getStorage: () => localStorage,
+      name: "evento-store", // clé unique pour localStorage
+      storage: customStorage, // Remplace getStorage par storage
     },
   ),
 );
 
-export default useEventoStore;
+export { useEventoStore }; // Utilisation de l'export nommé

@@ -1,7 +1,7 @@
 // src/store/useProfileStore.ts
 import { EventType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
-import create from "zustand";
+import { create } from "zustand"; // Utilisation de l'import nommé
 import { persist } from "zustand/middleware";
 
 interface ProfileStoreState {
@@ -12,9 +12,21 @@ interface ProfileStoreState {
   filteredUpcomingEventsAttened: EventType[];
   setProfileData: (data: Partial<ProfileStoreState>) => void;
 }
+const customStorage = {
+  getItem: (name: string) => {
+    const item = localStorage.getItem(name);
+    return item ? JSON.parse(item) : null;
+  },
+  setItem: (name: string, value: any) => {
+    localStorage.setItem(name, JSON.stringify(value));
+  },
+  removeItem: (name: string) => {
+    localStorage.removeItem(name);
+  },
+};
 
-export const useProfileStore = create(
-  persist<ProfileStoreState>(
+const useProfileStore = create<ProfileStoreState>()(
+  persist(
     (set) => ({
       userInfo: null,
       upcomingEvents: [],
@@ -24,8 +36,10 @@ export const useProfileStore = create(
       setProfileData: (data) => set(data),
     }),
     {
-      name: "profile-store", // unique name for the storage (localStorage key)
-      getStorage: () => localStorage, // specify localStorage (default)
+      name: "profile-store",
+      storage: customStorage,
     },
   ),
 );
+
+export { useProfileStore };

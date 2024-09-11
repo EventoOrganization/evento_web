@@ -8,13 +8,14 @@ import { Label } from "@/components/ui/label";
 import UsersList from "@/components/UsersList";
 import { useSession } from "@/contexts/SessionProvider";
 import AuthModal from "@/features/auth/components/AuthModal";
+import CombinedLocationInput from "@/features/discover/CombinedLocationInput";
 import DateSelector from "@/features/discover/DateSelector";
 import { filterEvents } from "@/features/discover/discoverActions";
 import TabSelector from "@/features/discover/TabSelector";
 import Event from "@/features/event/components/Event";
 import EventModal from "@/features/event/components/EventModal";
 import { cn } from "@/lib/utils";
-import useEventoStore from "@/store/useEventoStore";
+import { useEventoStore } from "@/store/useEventoStore";
 import { EventType, InterestType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
 import { Search } from "lucide-react";
@@ -131,7 +132,7 @@ const DiscoverPage = () => {
           <div className="flex flex-col gap-2 p-4 rounded bg-muted">
             <h4 className="text-purple-600 font-bold">Current Location</h4>
             <LocationSelector onLocationChange={setLocation} />
-            {/* <CombinedLocationInput /> */}
+            <CombinedLocationInput />
           </div>
           <div className="relative flex items-center p-4">
             <Search

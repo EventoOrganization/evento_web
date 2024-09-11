@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useSession } from "@/contexts/SessionProvider";
 import { useToast } from "@/hooks/use-toast";
-import useEventoStore from "@/store/useEventoStore";
+import { useEventoStore } from "@/store/useEventoStore";
 import { useProfileStore } from "@/store/useProfileStore";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 // import { useRouter } from "next/navigation";
