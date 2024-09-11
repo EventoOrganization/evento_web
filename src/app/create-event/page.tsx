@@ -297,17 +297,18 @@ const CreateEventPage = () => {
     );
 
     if (response.ok) {
-      toast({
-        title: "Event created successfully",
-        className: "bg-evento-gradient-button text-white",
-        duration: 3000,
-      });
-      router.push("/success");
     } else if (response.error) {
       throw new Error(response.error);
     } else {
       throw new Error("Failed to create event");
     }
+    eventStore.clearEventForm();
+    toast({
+      title: "Event created successfully",
+      className: "bg-evento-gradient-button text-white",
+      duration: 3000,
+    });
+    router.push("/success");
   };
 
   useEffect(() => {
