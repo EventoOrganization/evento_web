@@ -74,7 +74,7 @@ const EventLocationInput = () => {
       type="text"
       placeholder={eventStore.location || "Enter event location..."}
       className="input-class-name"
-      required
+      // required
     />
   );
 };
