@@ -131,6 +131,7 @@ const DiscoverPage = () => {
           <div className="flex flex-col gap-2 p-4 rounded bg-muted">
             <h4 className="text-purple-600 font-bold">Current Location</h4>
             <LocationSelector onLocationChange={setLocation} />
+            {/* <CombinedLocationInput /> */}
           </div>
           <div className="relative flex items-center p-4">
             <Search

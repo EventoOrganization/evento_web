@@ -286,29 +286,24 @@ const CreateEventPage = () => {
       uploadedMedia: [...initialMedia],
       predefinedMedia: [...predefinedMedia],
     };
-
     console.log("Form Data on Submit:", formData);
-
     const response = await fetchData<EventType>(
       "/events/createEvent",
       HttpMethod.POST,
       formData,
       token,
     );
-
-    if (response.ok) {
-    } else if (response.error) {
-      throw new Error(response.error);
+    if (response.error) {
+      console.error("Error creating event:", response.error);
     } else {
-      throw new Error("Failed to create event");
+      eventStore.clearEventForm();
+      toast({
+        title: "Event created successfully",
+        className: "bg-evento-gradient-button text-white",
+        duration: 3000,
+      });
+      router.push("/success");
     }
-    eventStore.clearEventForm();
-    toast({
-      title: "Event created successfully",
-      className: "bg-evento-gradient-button text-white",
-      duration: 3000,
-    });
-    router.push("/success");
   };
 
   useEffect(() => {
