@@ -228,7 +228,7 @@ const CreateEventPage = () => {
     ) {
       toast({
         title: "Error",
-        description: "Please fill in all required fields.",
+        description: "Please fill in all  fields.",
         className: "bg-red-500 text-white",
         duration: 3000,
       });
@@ -243,7 +243,7 @@ const CreateEventPage = () => {
       !formValues.URL ||
       !formValues.interests
     ) {
-      console.warn("Non-required fields are missing or empty:", {
+      console.warn("Non- fields are missing or empty:", {
         timeSlots: formValues.timeSlots,
         coHosts: formValues.coHosts,
         createRSVP: formValues.createRSVP,
@@ -342,7 +342,6 @@ const CreateEventPage = () => {
                 value={eventStore.title}
                 onChange={handleChange}
                 placeholder="Enter event title"
-                required
               />
             </div>
             {(!user || (user && !user.username)) && (
@@ -356,7 +355,6 @@ const CreateEventPage = () => {
                   value={eventStore.username}
                   onChange={handleChange}
                   placeholder="Organizer name"
-                  required
                 />
               </div>
             )}
@@ -371,7 +369,6 @@ const CreateEventPage = () => {
                   value={eventStore.eventType}
                   onChange={handleChange}
                   className="form-select w-full text-sm px-3 py-2 rounded-md border"
-                  required
                 >
                   <option value="public">Public</option>
                   <option value="private">Private</option>
@@ -387,7 +384,6 @@ const CreateEventPage = () => {
                   value={eventStore.mode}
                   onChange={handleChange}
                   className="form-select w-full text-sm px-3 py-2 rounded-md border"
-                  required
                 >
                   <option value="virtual">Virtual</option>
                   <option value="in-person">In-person</option>
@@ -437,7 +433,6 @@ const CreateEventPage = () => {
               <Textarea
                 id="description"
                 name="description"
-                required
                 value={eventStore.description}
                 onChange={handleChange}
                 placeholder="Enter event description"

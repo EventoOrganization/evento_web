@@ -241,7 +241,10 @@ const EditProfilePage = () => {
         {/* Interests */}
         <div>
           <Label htmlFor="interests">Interests</Label>
-          <select onChange={handleInterestsChange}>
+          <select
+            onChange={handleInterestsChange}
+            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+          >
             <option value="">Choose interest...</option>
             {interests.map((interest) => (
               <option key={interest._id} value={interest._id}>
@@ -249,10 +252,11 @@ const EditProfilePage = () => {
               </option>
             ))}
           </select>
-          <div>
+          <div className="flex gap-2 py-2">
             {formData.interest.map((interest) => (
               <Button
                 key={interest._id}
+                className="bg-evento-gradient hover:opacity-80"
                 onClick={() => removeInterest(interest._id as string)}
               >
                 {interest.name} (remove)
@@ -314,10 +318,21 @@ const EditProfilePage = () => {
                   handleSocialLinkChange(index, "url", e.target.value)
                 }
               />
-              <Button onClick={() => removeSocialLink(index)}>Remove</Button>
+              <Button
+                onClick={() => removeSocialLink(index)}
+                className="bg-gray-300 text-black hover:bg-gray-200"
+                variant={"ghost"}
+              >
+                Remove
+              </Button>
             </div>
           ))}
-          <Button onClick={addSocialLink}>Add Social Link</Button>
+          <Button
+            onClick={addSocialLink}
+            className="hover:bg-eventoBlue bg-eventoBlue  hover:opacity-80 mt-2"
+          >
+            Add Social Link
+          </Button>
         </div>
 
         <Button

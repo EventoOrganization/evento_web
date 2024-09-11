@@ -80,10 +80,9 @@ const EventPage = () => {
 
   return (
     <div className="md:grid-cols-2 grid grid-cols-1 w-screen h-screen">
-      <RenderMedia event={event} />
-      <Section className=" justify-start lg:p-20 lg:pt-10 w-full">
-        <div className="flex items-center w-full  justify-between mb-4">
-          <div className="flex items-center  gap-2 ">
+      <div className="p-10">
+        <div className="flex items-center w-full justify-between mb-4">
+          <div className="flex items-center gap-2 ">
             {event?.user?.profileImage &&
             isValidUrl(event.user.profileImage) ? (
               <Image
@@ -103,11 +102,14 @@ const EventPage = () => {
               </Avatar>
             )}
             <h4 className="ml-2">
-              {(event.details && event?.details.name) || ""}
+              {(event.details && event?.user?.username) || ""}
             </h4>
           </div>
           <span className="text-sm">{renderDate()}</span>
         </div>
+        <RenderMedia event={event} />
+      </div>
+      <Section className=" justify-start p-10 w-full">
         <TabSelector
           onChange={setSelectedTab}
           tabs={["Description", "Attendees"]}

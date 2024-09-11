@@ -77,7 +77,12 @@ const UsersList = ({
             </Avatar>
           </div>
         )}
-        {user?.firstName} {user?.lastName}
+        <ul>
+          <li className="font-bold">{user?.username}</li>
+          <li className="text-sm">
+            {user?.firstName} {user?.lastName}
+          </li>
+        </ul>
       </Link>
       <Button
         variant={"ghost"}

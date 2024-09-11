@@ -24,19 +24,29 @@ const EventLocationInput = () => {
       script.async = true;
       script.defer = true;
       script.onload = () => setIsScriptLoaded(true);
+      script.onerror = () => {
+        console.error("Failed to load Google Maps script");
+        setIsScriptLoaded(false);
+      };
       document.head.appendChild(script);
+    } else if (window.google) {
+      // Script exists and is already loaded
+      setIsScriptLoaded(true);
     } else {
-      // Script exists, ensure it is loaded
-      if (window.google) {
-        setIsScriptLoaded(true);
-      } else {
-        script.onload = () => setIsScriptLoaded(true);
-      }
+      // Script exists but is not yet loaded
+      script.onload = () => setIsScriptLoaded(true);
+      script.onerror = () => {
+        console.error("Failed to load Google Maps script");
+        setIsScriptLoaded(false);
+      };
     }
 
+    // Clean up the script if the component unmounts
     return () => {
-      // Don't remove the script on unmount
-      // as other components might rely on it
+      const scriptToRemove = document.getElementById(scriptId);
+      if (scriptToRemove) {
+        document.head.removeChild(scriptToRemove);
+      }
     };
   }, [apiKey]);
 
@@ -66,7 +76,7 @@ const EventLocationInput = () => {
         );
       }
     }
-  }, [isScriptLoaded, inputRef, autocomplete, eventStore]);
+  }, [isScriptLoaded, inputRef.current, autocomplete, eventStore]);
 
   return (
     <Input

@@ -4,18 +4,19 @@ import RenderMedia from "@/components/RenderMedia";
 import TruncatedText from "@/components/TruncatedText";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import DiscoverRenderMedia from "@/features/discover/DiscoverRenderMedia";
+import EventActionIcons from "@/features/event/components/EventActionIcons";
 import { cn } from "@/lib/utils";
 import { Loader } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-import EventActionIcons from "./EventActionIcons";
 
-const Event = ({ className, event }: { className?: string; event?: any }) => {
-  const pathname = usePathname();
-
+const DiscoverEventPreview = ({
+  className,
+  event,
+}: {
+  className?: string;
+  event?: any;
+}) => {
   const renderDate = () => {
     if (!event || !event.details) return <Loader />;
     const startDate = event?.details?.date;
@@ -45,23 +46,23 @@ const Event = ({ className, event }: { className?: string; event?: any }) => {
     }
   };
 
+  const isValidUrl = (url: string) => {
+    return url.startsWith("http://") || url.startsWith("https://");
+  };
+
   return (
     <>
       <div
         className={cn(
           "bg-white border maw-w-md shadow rounded p-4 w-full grid grid-cols-1 lg:grid-cols-2  h-fit gap-4 hover:shadow-xl hover:bg-slate-50 cursor-pointer relative",
           className,
-          { "lg:grid-cols-1": pathname === "/discover" },
         )}
       >
         <div className=" ">
           <div className="flex items-center justify-between mb-4">
-            <Link
-              href={`/profile/${event?.user?._id}`}
-              onClick={(e) => e.stopPropagation()}
-              className="flex items-center gap-2"
-            >
-              {event?.user?.profileImage ? (
+            <div className="flex items-center gap-2">
+              {event?.user?.profileImage &&
+              isValidUrl(event.user.profileImage) ? (
                 <Image
                   src={event?.user.profileImage}
                   alt="user image"
@@ -78,16 +79,12 @@ const Event = ({ className, event }: { className?: string; event?: any }) => {
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
               )}
-              <h4 className="ml-2">{(event && event?.user.username) || ""}</h4>
-            </Link>
+              <h4 className="ml-2">{(event && event?.details.name) || ""}</h4>
+            </div>
             <span className="text-sm">{renderDate()}</span>
           </div>
           <div>
-            {pathname === "/discover" ? (
-              <DiscoverRenderMedia event={event} />
-            ) : (
-              <RenderMedia event={event} />
-            )}
+            <RenderMedia event={event} />
           </div>
         </div>
         <div>
@@ -142,4 +139,4 @@ const Event = ({ className, event }: { className?: string; event?: any }) => {
   );
 };
 
-export default Event;
+export default DiscoverEventPreview;

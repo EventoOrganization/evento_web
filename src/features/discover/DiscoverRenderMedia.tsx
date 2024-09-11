@@ -49,23 +49,25 @@ const RenderMedia = ({ event }: { event: EventType }) => {
     >
       <Carousel
         showThumbs={false}
-        dynamicHeight={true}
+        dynamicHeight={false}
         infiniteLoop={true}
         emulateTouch={true}
         useKeyboardArrows={true}
+        className=" relative"
       >
         {initialMedias.map((item, index) =>
           item.type === "video" ? (
             <div
               key={index}
-              className="relative w-full"
+              className="relative w-full h-[340px]"
               onClick={(e) => {
                 e.stopPropagation();
               }}
             >
               <video
                 controls
-                className="absolute top-0 left-0 w-full h-full object-cover"
+                autoPlay
+                className="w-full h-full"
                 onError={() => handleVideoError(item.url)}
               >
                 <source src={item.url} type="video/mp4" />
@@ -75,7 +77,7 @@ const RenderMedia = ({ event }: { event: EventType }) => {
           ) : (
             <div
               key={index}
-              className="relative w-full"
+              className="relative w-full h-[340px]"
               onClick={(e) => {
                 if (!isSwiping) {
                   e.stopPropagation();
@@ -85,10 +87,9 @@ const RenderMedia = ({ event }: { event: EventType }) => {
               <Image
                 src={item.url}
                 alt={`Preview media ${index + 1}`}
-                width={500}
-                height={300}
-                layout="responsive"
-                className="h-auto lg:max-h-screen"
+                layout="fill"
+                objectFit="contain"
+                className="w-full h-full"
                 priority
               />
             </div>
