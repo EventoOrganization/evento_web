@@ -38,7 +38,7 @@ export const filterEvents = (
       selectedInterests.length === 0 ||
       selectedInterests.some((selectedInterest) => {
         return (
-          event.interest?.some((interest) => {
+          event.interests?.some((interest) => {
             return interest._id === selectedInterest._id;
           }) ?? false
         );

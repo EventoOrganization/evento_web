@@ -40,9 +40,6 @@ const EventPreview = ({
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
-  const isValidUrl = (url: string) => {
-    return url.startsWith("http://") || url.startsWith("https://");
-  };
 
   return (
     <>
@@ -78,16 +75,15 @@ const EventPreview = ({
           <CardDescription></CardDescription>
         </CardHeader>
         <CardContent>
-          {event?.details?.images?.[0] &&
-            isValidUrl(event.details.images[0]) && (
-              <Image
-                src={event.details.images[0]}
-                alt="Event Image"
-                width={245}
-                height={245}
-                className="w-full inset-0 h-full absolute object-cover"
-              />
-            )}
+          {event?.initialMedia[0].url && (
+            <Image
+              src={event?.initialMedia[0].url}
+              alt="Event Image"
+              width={245}
+              height={245}
+              className="w-full inset-0 h-full absolute object-cover"
+            />
+          )}
         </CardContent>
         <CardFooter className="p-0 h-32  bg-black/60 font-bold text-white z-10">
           <ul className=" p-5 flex flex-col justify-center w-full h-full">

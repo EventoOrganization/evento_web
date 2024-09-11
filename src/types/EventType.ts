@@ -30,6 +30,12 @@ export type QuestionType = {
 };
 
 export type EventType = {
+  initialMedia: [
+    {
+      url: string;
+      type: string;
+    },
+  ];
   _id: string;
   title: string;
   user: UserType;
@@ -49,10 +55,9 @@ export type EventType = {
   coHosts?: UserType[];
   guests?: UserType[];
   guestsCohostAdd?: UserType[];
-  interests: InterestType[];
   timeSlots: TimeSlotType[];
   privateEventLink?: string;
-  interest?: InterestType[];
+  interests?: InterestType[];
   imagePreviews?: string[];
   videoPreview?: string;
   attendees?: UserType[];

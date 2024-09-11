@@ -8,6 +8,7 @@ import "react-responsive-carousel/lib/styles/carousel.min.css";
 
 const RenderMedia = ({ event }: { event: EventType }) => {
   const mediaItems: string[] = [];
+  const initialMedias = event?.initialMedia || [];
   const [isSwiping, setIsSwiping] = useState(false);
   // const pathname = usePathname();
   const touchStartX = useRef(0);
@@ -36,11 +37,15 @@ const RenderMedia = ({ event }: { event: EventType }) => {
   const handleVideoError = (url: string) => {
     console.error(`Failed to load video from ${url}`);
   };
+  const handleClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+  };
   return (
     <div
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
+      onClick={handleClick}
     >
       <Carousel
         showThumbs={false}
@@ -49,23 +54,21 @@ const RenderMedia = ({ event }: { event: EventType }) => {
         emulateTouch={true}
         useKeyboardArrows={true}
       >
-        {mediaItems.map((item, index) =>
-          item === "video" ? (
+        {initialMedias.map((item, index) =>
+          item.type === "video" ? (
             <div
               key={index}
               className="relative w-full pb-[56.25%]"
               onClick={(e) => {
-                if (!isSwiping) {
-                  e.stopPropagation();
-                }
+                e.stopPropagation();
               }}
             >
               <video
                 controls
                 className="absolute top-0 left-0 w-full h-full object-cover"
-                onError={() => handleVideoError(item)}
+                onError={() => handleVideoError(item.url)}
               >
-                <source src={item} type="video/mp4" />
+                <source src={item.url} type="video/mp4" />
                 Your browser does not support the video tag.
               </video>
             </div>
@@ -80,7 +83,7 @@ const RenderMedia = ({ event }: { event: EventType }) => {
               }}
             >
               <Image
-                src={item}
+                src={item.url}
                 alt={`Preview media ${index + 1}`}
                 width={1920}
                 height={1080}

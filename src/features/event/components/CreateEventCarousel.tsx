@@ -1,4 +1,5 @@
 "use client";
+import { handleDeleteMedia } from "@/app/create-event/action";
 import { Button } from "@/components/ui/button";
 import { useEventStore } from "@/store/useEventStore";
 import { cn } from "@nextui-org/theme";
@@ -8,7 +9,6 @@ import { useRef, useState } from "react";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import MediaSelectionModal from "./MediaSelectionModal";
-
 // Definition of the MediaItem type
 type MediaItem = {
   url: string;
@@ -40,38 +40,31 @@ const CreateEventCarousel = () => {
       setIsSwiping(true);
     }
   };
+  const deleteMedia = async (index: number, mediaItem: MediaItem) => {
+    // Retirer le média de mediaPreviews dans le store local
+    useEventStore.setState((state) => ({
+      mediaPreviews: state?.mediaPreviews?.filter((_, i) => i !== index),
+    }));
 
+    // Extraire la clé du fichier S3
+    const fileKey = mediaItem.url.replace(
+      `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/`,
+      "",
+    );
+
+    // Appeler l'action côté serveur pour supprimer le fichier si nécessaire
+    const success = await handleDeleteMedia(fileKey);
+    if (success) {
+    } else {
+      console.error(`Failed to delete file: ${fileKey}`);
+    }
+  };
   const handleTouchEnd = () => {
     setIsSwiping(false);
   };
 
   const openModal = () => setModalOpen(true);
   const closeModal = () => setModalOpen(false);
-
-  const deleteMedia = async (index: number, mediaItem: MediaItem) => {
-    useEventStore.setState((state) => ({
-      mediaPreviews: state?.mediaPreviews?.filter((_, i) => i !== index),
-    }));
-
-    const fileName = mediaItem.url.split("/").pop();
-    if (fileName) {
-      try {
-        const response = await fetch("/api/cleanupTempFiles", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ files: [fileName] }),
-        });
-
-        if (!response.ok) {
-          console.error("Failed to delete file from server");
-        }
-      } catch (error) {
-        console.error("Error deleting file:", error);
-      }
-    }
-  };
 
   const handleVideoError = (url: string) => {
     console.error(`Failed to load video from ${url}`);

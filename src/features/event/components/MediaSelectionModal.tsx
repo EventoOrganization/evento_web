@@ -1,3 +1,4 @@
+import { handleUpload } from "@/app/create-event/action"; // Importer votre fonction d'upload
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -23,9 +24,13 @@ const MediaSelectionModal = ({
   const [selectedPredefinedMedia, setSelectedPredefinedMedia] = useState<
     string[]
   >([]);
+  const [mediaPreviews, setMediaPreviews] = useState<
+    { url: string; type: string }[]
+  >([]);
   const [predefinedMedia, setPredefinedMedia] = useState<string[]>([]);
   const [showPredefined, setShowPredefined] = useState(false);
 
+  // Charger les médias prédéfinis au montage du composant
   useEffect(() => {
     const loadMedia = async () => {
       try {
@@ -39,6 +44,7 @@ const MediaSelectionModal = ({
     loadMedia();
   }, []);
 
+  // Sélectionner ou désélectionner un média prédéfini
   const handleMediaSelect = (media: string) => {
     setSelectedPredefinedMedia((prev) =>
       prev.includes(media)
@@ -47,73 +53,61 @@ const MediaSelectionModal = ({
     );
   };
 
-  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const fileInput = e.target as HTMLInputElement;
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files) {
+      const formData = new FormData();
+      Array.from(files).forEach((file) => formData.append("file", file));
 
-    if (fileInput.files && fileInput.files.length > 0) {
-      const files = Array.from(fileInput.files);
-      for (const file of files) {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
+      try {
+        const urls = await handleUpload(formData);
+        if (urls) {
+          const newMedia = urls.map((fileUrl: string, index: number) => {
+            const file = files[index];
+            const mediaType = file.type.startsWith("video/")
+              ? "video"
+              : "image";
+            return { url: fileUrl, type: mediaType };
+          });
 
-        reader.onloadend = async () => {
-          const base64data = reader.result as string;
-
-          try {
-            const response = await fetch("/api/uploadTempFile", {
-              method: "POST",
-              body: JSON.stringify({
-                base64data,
-                fileName: file.name,
-              }),
-              headers: {
-                "Content-Type": "application/json",
-              },
-            });
-
-            if (response.ok) {
-              const result = await response.json();
-              const fileUrl = result.filePath;
-              const mediaType = file.type.startsWith("video/")
-                ? "video"
-                : "image";
-              handleFieldChange("mediaPreviews", [
-                { url: fileUrl, type: mediaType },
-              ]);
-            } else {
-              const result = await response.json();
-              console.error("Failed to upload file:", result.message);
-            }
-          } catch (error) {
-            console.error("Error uploading file:", error);
-          }
-        };
+          // Ajouter les nouveaux médias uploadés à mediaPreviews
+          setMediaPreviews((prev) => [...prev, ...newMedia]);
+          handleFieldChange("mediaPreviews", [...mediaPreviews, ...newMedia]);
+        }
+      } catch (error) {
+        console.error("Error uploading files:", error);
       }
-
-      fileInput.value = "";
     }
   };
 
+  // Enregistrer tous les médias (uploadés + prédéfinis)
   const handleSave = () => {
-    if (selectedPredefinedMedia.length > 0) {
-      const mediaItems = selectedPredefinedMedia.map((item) => ({
-        url: item,
-        type: item.endsWith(".mp4") ? "video" : "image",
-      }));
-      handleFieldChange("mediaPreviews", mediaItems);
-      const videos = mediaItems.filter(
-        (media) => media.type === "video" && media.url.startsWith("https://"),
-      );
-      const images = mediaItems.filter(
-        (media) => media.type === "image" && media.url.startsWith("https://"),
-      );
-      if (videos.length > 0) {
-        handleFieldChange("videos", videos);
-      }
-      if (images.length > 0) {
-        handleFieldChange("images", images);
-      }
+    // Médias prédéfinis sélectionnés
+    const predefinedMediaItems = selectedPredefinedMedia.map((item) => ({
+      url: item,
+      type: item.endsWith(".mp4") ? "video" : "image",
+    }));
+
+    // Fusionner les médias uploadés avec les médias prédéfinis sélectionnés
+    const allMediaItems = [...mediaPreviews, ...predefinedMediaItems];
+
+    // Mettre à jour les mediaPreviews avec tous les médias
+    handleFieldChange("mediaPreviews", allMediaItems);
+    // Filtrer et mettre à jour les vidéos et images séparément si besoin
+    const videos = allMediaItems.filter(
+      (media) => media.type === "video" && media.url.startsWith("https://"),
+    );
+    const images = allMediaItems.filter(
+      (media) => media.type === "image" && media.url.startsWith("https://"),
+    );
+
+    if (videos.length > 0) {
+      handleFieldChange("videos", videos);
     }
+    if (images.length > 0) {
+      handleFieldChange("images", images);
+    }
+
     onClose();
   };
 
@@ -184,7 +178,7 @@ const MediaSelectionModal = ({
                 type="file"
                 accept="image/*,video/*"
                 multiple
-                onChange={handleUpload}
+                onChange={handleFileUpload}
               />
             </div>
           )}

@@ -255,24 +255,26 @@ const CreateEventPage = () => {
       // return;
     }
 
-    const localMedia = (eventStore.mediaPreviews || [])
+    const initialMedia = (eventStore.mediaPreviews || [])
       .filter(
         (media: any) =>
           typeof media === "object" &&
           "url" in media &&
-          media.url.startsWith("/uploads"),
+          media.url.startsWith("https://evento-media-bucket.s3.") &&
+          media.url.includes("/events/initialMedia"),
       )
       .map((media: any) => ({
         url: media.url,
         type: media.type,
       }));
 
-    const awsMedia = (eventStore.mediaPreviews || [])
+    const predefinedMedia = (eventStore.mediaPreviews || [])
       .filter(
         (media: any) =>
           typeof media === "object" &&
           "url" in media &&
-          !media.url.startsWith("/uploads"),
+          media.url.startsWith("https://evento-media-bucket.s3.") &&
+          !media.url.includes("/events/initialMedia"),
       )
       .map((media: any) => ({
         url: media.url,
@@ -281,8 +283,8 @@ const CreateEventPage = () => {
 
     const formData = {
       ...formValues,
-      uploadedMedia: [...localMedia],
-      predefinedMedia: [...awsMedia],
+      uploadedMedia: [...initialMedia],
+      predefinedMedia: [...predefinedMedia],
     };
 
     console.log("Form Data on Submit:", formData);

@@ -11,6 +11,7 @@ export default function CurrentUserProfilePage() {
   const { user, token } = session;
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [userTriedToCloseModal, setUserTriedToCloseModal] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const {
     userInfo,
     upcomingEvents,
@@ -18,7 +19,9 @@ export default function CurrentUserProfilePage() {
     filteredUpcomingEventsAttened,
     setProfileData,
   } = useProfileStore();
-
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
   const getProfileData = async (token: string, forceUpdate = false) => {
     if (userInfo && !forceUpdate) return;
     try {
@@ -84,7 +87,7 @@ export default function CurrentUserProfilePage() {
 
   return (
     <>
-      {session.isAuthenticated && (
+      {isMounted && session.isAuthenticated && (
         <UserProfile
           profile={userInfo}
           upcomingEvents={filteredUpcomingEventsAttened}

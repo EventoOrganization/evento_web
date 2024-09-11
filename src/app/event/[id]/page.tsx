@@ -117,9 +117,9 @@ const EventPage = () => {
           <div className="space-y-4 pb-20 w-full">
             <>
               <h1 className="text-xl font-bold">{event?.title}</h1>
-              {event?.interest && (
+              {event?.interests && (
                 <ul className="flex gap-2 flex-wrap">
-                  {event?.interest?.map((interest: InterestType) => (
+                  {event?.interests?.map((interest: InterestType) => (
                     <li
                       key={interest._id}
                       className="text-sm bg-evento-gradient rounded w-fit text-white px-3 py-2"
