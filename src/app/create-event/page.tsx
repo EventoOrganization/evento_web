@@ -317,6 +317,18 @@ const CreateEventPage = () => {
   }, []);
   return (
     <>
+      {" "}
+      <div className="relative flex justify-center items-center mt-10 text-eventoPurpleLight gap-2">
+        <h2 className="animate-slideInLeft font-black opacity-0">
+          <span>Create</span>
+        </h2>
+        <h2 className="event-text animate-slideInRight flex opacity-0 items-center bg-evento-gradient text-white rounded shadow">
+          <span className=" flex justify-center items-center">
+            <img src="/logo.png" alt="E" className="w-12 h-12" />
+          </span>
+          <span className="-translate-x-1.5">vent</span>
+        </h2>
+      </div>
       <div className=" w-full flex">
         <Section className=" max-w-5xl w-full justify-start ">
           <form onSubmit={handleSubmit} className="space-y-4  w-full">
