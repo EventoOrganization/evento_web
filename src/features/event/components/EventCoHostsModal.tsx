@@ -30,7 +30,6 @@ const EventCoHostsModal = ({
       selectedUsers={coHosts}
       allUsers={filteredUsers}
       onSave={handleSave}
-      storeField="coHosts"
     />
   );
 };

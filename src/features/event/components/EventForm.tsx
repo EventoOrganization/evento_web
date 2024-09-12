@@ -43,9 +43,9 @@ const useSyncFormWithStore = () => {
       latitude: eventStore.latitude || "",
       longitude: eventStore.longitude || "",
       timeSlots: eventStore.timeSlots || [],
-      guests: eventStore.guests || [],
+
       coHosts: eventStore.coHosts || [],
-      guestsAllowFriend: eventStore.guestsAllowFriend || false,
+
       questions: eventStore.questions || [],
       additionalField: eventStore.additionalField || [],
       includeChat: eventStore.includeChat || false,

@@ -7,10 +7,12 @@ import { Button } from "@/components/ui/button";
 import { useSession } from "@/contexts/SessionProvider";
 import TabSelector from "@/features/discover/TabSelector";
 import EventActionIcons from "@/features/event/components/EventActionIcons";
+import EventGuestModal from "@/features/event/components/EventGuestModal";
 import EventTimeSlots from "@/features/event/components/EventTimeSlots";
 import PrivateEventActionIcons from "@/features/event/components/PrivateEventActionIcons";
 import { EventType, InterestType } from "@/types/EventType";
-import { fetchData } from "@/utils/fetchData";
+import { UserType } from "@/types/UserType";
+import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import Image from "next/image";
 import { useParams } from "next/navigation";
@@ -20,13 +22,17 @@ const EventPage = () => {
   const { id } = useParams();
   const eventId = Array.isArray(id) ? id[0] : id;
   const [event, setEvent] = useState<EventType | null>(null);
+  const [users, setUsers] = useState<UserType[]>([]);
   const [selectedTab, setSelectedTab] = useState("Description");
-  const { user } = useSession();
+  const { user, token } = useSession();
   useEffect(() => {
     if (eventId && !event) {
       fetchEventData(eventId);
-    } else if (event) {
-      console.log("event:", event);
+    }
+    if (user && token) {
+      loadUsersPlus(user._id, token);
+    } else {
+      loadusers();
     }
   }, [eventId, event]);
 
@@ -41,12 +47,32 @@ const EventPage = () => {
       console.error("Error fetching event:", error);
     }
   };
-
+  const loadusers = async () => {
+    try {
+      const usersRes = await fetchData<UserType[]>(
+        `/users/userListWithFollowingStatus`,
+      );
+      setUsers(usersRes.data as UserType[]);
+    } catch (error) {}
+  };
+  const loadUsersPlus = async (userId: string, token: string) => {
+    try {
+      const usersRes = await fetchData(
+        `/users/followStatusForUsersYouFollow/${userId}`,
+        HttpMethod.GET,
+        null,
+        token,
+      );
+      setUsers(usersRes.data as UserType[]);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+  };
   if (!event) {
     return <div>Loading...</div>;
   }
   const formatDate = (dateString: string | undefined) => {
-    if (!dateString) return ""; // Return empty or a default string if date is undefined
+    if (!dateString) return "";
     const date = new Date(dateString);
     const options: Intl.DateTimeFormatOptions = {
       year: "numeric",
@@ -74,17 +100,13 @@ const EventPage = () => {
       return `From ${startDay} to ${endDay} ${monthYear}`;
     }
   };
-  const isValidUrl = (url: string) => {
-    return url.startsWith("http://") || url.startsWith("https://");
-  };
 
   return (
     <div className="md:grid-cols-2 grid grid-cols-1 w-screen h-screen">
       <div className="p-10">
         <div className="flex items-center w-full justify-between mb-4">
           <div className="flex items-center gap-2 ">
-            {event?.user?.profileImage &&
-            isValidUrl(event.user.profileImage) ? (
+            {event?.user?.profileImage ? (
               <Image
                 src={event?.user.profileImage}
                 alt="user image"
@@ -134,8 +156,8 @@ const EventPage = () => {
 
               <EventTimeSlots event={event} />
               <Button
-                variant={"ghost"}
-                className="flex gap-2 truncate max-w-full bg-eventoPurpleLight text-white hover:text-white hover:bg-eventoPurpleLight/80"
+                variant={"default"}
+                className="flex gap-2 truncate max-w-full bg-evento-gradient text-white"
                 onClick={() => {
                   const address = event && event?.details?.location;
                   if (address) {
@@ -163,7 +185,13 @@ const EventPage = () => {
         )}
         {selectedTab === "Attendees" && (
           <div className="space-y-4 pb-20 w-full">
-            <h1 className="text-xl font-bold">{event?.title}</h1>
+            <div className="flex items-center justify-between">
+              <h1 className="text-xl font-bold">{event?.title}</h1>
+              {event.guestsAllowFriend ||
+                (event.isAdmin && (
+                  <EventGuestModal allUsers={users} event={event} />
+                ))}
+            </div>
             <CollapsibleList
               title={`Going`}
               count={event?.attendees?.length || 0}

@@ -7,128 +7,119 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input"; // Import Input component for filtering
+import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useSession } from "@/contexts/SessionProvider";
 import { cn } from "@/lib/utils";
+import { EventType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
+import { fetchData, HttpMethod } from "@/utils/fetchData";
 import Image from "next/image";
+import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import EventAddTempGuest from "./EventAddTempGuest";
 
-interface AddUserModalProps {
-  title: string;
-  allUsers: UserType[];
-  selectedUsers: { userId: string; status: string }[] | string;
-  onSave: (selectedUsers: { userId: string; status: string }[]) => void;
-}
-
-const AddUserModal = ({
+const EventGuestModal = ({
   allUsers,
-  title,
-  selectedUsers,
   onSave,
-}: AddUserModalProps) => {
+  event,
+}: {
+  allUsers: UserType[];
+  onSave?: () => void;
+  event?: EventType;
+}) => {
+  const { id: eventId } = useParams();
   const [isOpen, setIsOpen] = useState(false);
-  const [currentSelectedUsers, setCurrentSelectedUsers] = useState<
-    { user: UserType; status: string }[]
-  >([]);
-  const [filter, setFilter] = useState<string>(""); // New state for filtering users
-
+  const [currentSelectedUsers, setCurrentSelectedUsers] = useState<UserType[]>(
+    [],
+  );
+  const [guestsAllowFriend, setGuestsAllowFriend] = useState(
+    event?.guestsAllowFriend || false,
+  );
+  const { user } = useSession();
+  const [filter, setFilter] = useState<string>("");
+  const attendeeIds = event?.attendees?.map((a) => a._id) || [];
+  const favouriteIds = event?.favouritees?.map((f) => f._id) || [];
+  const excludedUserIds = [...attendeeIds, ...favouriteIds];
   useEffect(() => {
-    if (Array.isArray(selectedUsers)) {
-      const initialSelectedUsers = allUsers
-        .filter((user) => selectedUsers.some((s) => s.userId === user._id))
-        .map((user) => ({
-          user,
-          status:
-            selectedUsers.find((s) => s.userId === user._id)?.status ||
-            "read-only",
-        }));
-      setCurrentSelectedUsers(initialSelectedUsers);
-    } else {
-      setCurrentSelectedUsers([]);
+    if (user) {
+      excludedUserIds.push(user._id);
     }
-  }, [selectedUsers, allUsers]);
-
-  // Function to handle changes in the input field and update the filter
+  }, [user, attendeeIds, favouriteIds]);
   const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFilter(e.target.value.toLowerCase());
   };
 
-  // Filter available users based on the filter input (username, firstName, or lastName)
-  const availableUsers = allUsers
-    .filter(
-      (user) =>
-        !currentSelectedUsers.some(
-          (selectedUser) => selectedUser.user._id === user._id,
-        ),
-    )
-    .filter(
-      (user) =>
-        user?.username.toLowerCase().includes(filter) ||
-        user?.firstName?.toLowerCase().includes(filter) ||
-        user?.lastName?.toLowerCase().includes(filter),
-    );
-
   const addUser = (user: UserType) => {
-    setCurrentSelectedUsers([
-      ...currentSelectedUsers,
-      { user, status: "read-only" },
-    ]);
+    setCurrentSelectedUsers((prevUsers) => [...prevUsers, user]);
   };
-
-  const isValidUrl = (url: string) => {
-    return url.startsWith("http://") || url.startsWith("https://");
+  const handleAddTempGuest = (tempGuest: UserType) => {
+    setCurrentSelectedUsers([...currentSelectedUsers, tempGuest]);
   };
-
   const removeUser = (user: UserType) => {
     setCurrentSelectedUsers(
       currentSelectedUsers.filter(
-        (selectedUser) => selectedUser.user._id !== user._id,
+        (selectedUser) => selectedUser._id !== user._id,
       ),
     );
   };
 
-  const handleStatusChange = (userId: string, newStatus: string) => {
-    setCurrentSelectedUsers((prevSelectedUsers) =>
-      prevSelectedUsers.map((selectedUser) =>
-        selectedUser.user._id === userId
-          ? { ...selectedUser, status: newStatus }
-          : selectedUser,
-      ),
-    );
-  };
+  const handleSubmitGuests = async () => {
+    const guestIds = currentSelectedUsers.map((user) => user._id);
 
-  const handleSave = () => {
-    onSave(
-      currentSelectedUsers.map(({ user, status }) => ({
-        userId: user._id,
-        status,
-      })),
-    );
+    const updateData = {
+      guests: guestIds,
+      guestsAllowFriend: guestsAllowFriend,
+    };
+
+    try {
+      const response = await fetchData(
+        `/events/updateEvent/${eventId}`,
+        HttpMethod.PUT,
+        updateData,
+      );
+
+      if (response.ok) {
+        console.log("Guests and preference updated successfully!");
+      } else {
+        console.error("Error updating guests and preference", response.error);
+      }
+    } catch (error) {
+      console.error("Error submitting guests:", error);
+    }
+
     setIsOpen(false);
+    if (onSave) onSave();
   };
 
+  const filteredUsers = allUsers.filter(
+    (user) =>
+      !excludedUserIds.includes(user._id) &&
+      !currentSelectedUsers.some((selected) => selected._id === user._id) &&
+      (user.username.toLowerCase().includes(filter) ||
+        user.firstName?.toLowerCase().includes(filter) ||
+        user.lastName?.toLowerCase().includes(filter)),
+  );
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button
-          variant="outline"
+          variant="default"
           type="button"
-          className={cn({
+          className={cn("bg-eventoBlue hover:bg-eventoBlue/80", {
             "bg-evento-gradient text-white": currentSelectedUsers.length > 0,
           })}
         >
-          {title}
+          Add Guests
           {currentSelectedUsers.length > 0
             ? ` (${currentSelectedUsers.length})`
             : ""}
         </Button>
       </DialogTrigger>
-      <DialogContent className="bg-background w-[95%] rounded-lg border-none">
+      <DialogContent className="bg-background w-[95%] rounded-lg border-none max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
+          <DialogTitle>Guests</DialogTitle>
         </DialogHeader>
-
         {/* Input for filtering users */}
         <Input
           type="text"
@@ -137,21 +128,20 @@ const AddUserModal = ({
           onChange={handleFilterChange}
           className="mb-4"
         />
-
         <div className="flex flex-col-reverse justify-between gap-4">
           <div>
             <h3 className="mb-2">
-              All Users {"( "} {availableUsers.length} {" )"}
+              All Users {"( "} {filteredUsers.length} {" )"}
             </h3>
             <ScrollArea className="h-48 border rounded">
-              {availableUsers.length > 0 ? (
-                availableUsers.map((user) => (
+              {filteredUsers.length > 0 ? (
+                filteredUsers.map((user) => (
                   <div
                     key={user._id}
                     className="p-2 flex items-center cursor-pointer hover:bg-muted/20 space-x-4"
                     onClick={() => addUser(user)}
                   >
-                    {user.profileImage && isValidUrl(user?.profileImage) ? (
+                    {user.profileImage ? (
                       <Image
                         src={user.profileImage}
                         alt="user image"
@@ -183,20 +173,19 @@ const AddUserModal = ({
               )}
             </ScrollArea>
           </div>
-
           <div>
             <h3 className="mb-2">
               Selected {"( "}
               {currentSelectedUsers.length} {" )"}
             </h3>
             <ScrollArea className="h-48 border rounded">
-              {currentSelectedUsers.map(({ user, status }) => (
+              {currentSelectedUsers.map((user) => (
                 <div
                   key={user._id}
                   className="p-2 flex items-center justify-between cursor-pointer hover:bg-muted/20 space-x-4"
                 >
                   <div className="flex items-center space-x-4">
-                    {user.profileImage && isValidUrl(user?.profileImage) ? (
+                    {user.profileImage ? (
                       <Image
                         src={user.profileImage}
                         alt="user image"
@@ -223,18 +212,6 @@ const AddUserModal = ({
                     </div>
                   </div>
 
-                  {/* Dropdown for selecting the role */}
-                  <select
-                    value={status}
-                    onChange={(e) =>
-                      handleStatusChange(user._id, e.target.value)
-                    }
-                    className="border rounded p-1"
-                  >
-                    <option value="read-only">Read-only</option>
-                    <option value="admin">Admin</option>
-                  </select>
-
                   <Button
                     variant="destructive"
                     size="sm"
@@ -247,11 +224,23 @@ const AddUserModal = ({
             </ScrollArea>
           </div>
         </div>
+        <EventAddTempGuest onAddTempGuest={handleAddTempGuest} />
+        <div className="flex items-center gap-2">
+          <input
+            type="checkbox"
+            id="guestsAllowFriend"
+            checked={guestsAllowFriend}
+            onChange={(e) => setGuestsAllowFriend(e.target.checked)}
+          />
+          <label htmlFor="guestsAllowFriend">
+            Allow guests to bring friends
+          </label>
+        </div>
         <div className="mt-4 flex items-center justify-between">
           <Button
             type="button"
             className="bg-evento-gradient-button border shadow mt-2"
-            onClick={handleSave}
+            onClick={handleSubmitGuests} // Call the submission handler here
           >
             Save
           </Button>
@@ -261,4 +250,4 @@ const AddUserModal = ({
   );
 };
 
-export default AddUserModal;
+export default EventGuestModal;

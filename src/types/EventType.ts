@@ -54,6 +54,8 @@ export type EventType = {
   location?: string;
   coHosts?: UserType[];
   guests?: UserType[];
+  coHostStatus?: boolean;
+  isAdmin?: boolean;
   guestsCohostAdd?: UserType[];
   timeSlots: TimeSlotType[];
   privateEventLink?: string;

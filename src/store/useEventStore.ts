@@ -19,7 +19,6 @@ type EventFormState = {
   location?: string;
   URL?: string;
   coHosts?: string[];
-  guests?: string[];
   interests?: InterestType[];
   isTimeSlotsEnabled: boolean;
   timeSlots: TimeSlotType[];
@@ -28,7 +27,6 @@ type EventFormState = {
   questions: QuestionType[];
   uploadedMedia: { images: File[]; videos: File[] };
   predefinedMedia: { images: string[]; videos: string[] };
-  guestsAllowFriend: boolean;
   additionalField?: any[];
   setEventField: (key: string, value: any) => void;
   clearEventForm: () => void;
@@ -72,11 +70,9 @@ export const useEventStore = create<EventFormState>()(
       timeSlots: [],
       isTimeSlotsEnabled: false,
       coHosts: [],
-      guests: [],
       interests: [],
       uploadedMedia: { images: [], videos: [] },
       predefinedMedia: { images: [], videos: [] },
-      guestsAllowFriend: false,
       additionalField: [],
 
       setEventField: (key, value) =>
@@ -179,12 +175,10 @@ export const useEventStore = create<EventFormState>()(
           timeSlots: [],
           isTimeSlotsEnabled: false,
           coHosts: [],
-          guests: [],
           interests: [],
           uploadedMedia: { images: [], videos: [] },
           predefinedMedia: { images: [], videos: [] },
           questions: [],
-          guestsAllowFriend: false,
           additionalField: [],
         }),
     }),
