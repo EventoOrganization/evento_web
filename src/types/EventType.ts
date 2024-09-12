@@ -41,7 +41,7 @@ export type EventType = {
   user: UserType;
   eventType: "public" | "private";
   name: string;
-  mode: "virtual" | "in-person";
+  mode: "virtual" | "in-person" | "both";
   date: string;
   endDate?: string;
   startTime: string;
@@ -86,7 +86,7 @@ export type EventDetailsType = {
     type: "Point";
     coordinates: [number, number];
   };
-  mode?: "virtual" | "in-person";
+  mode: "virtual" | "in-person" | "both";
   location?: string;
   longitude?: string;
   latitude?: string;

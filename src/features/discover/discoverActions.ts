@@ -30,7 +30,6 @@ export const filterEvents = (
   selectedDate: string,
   selectedTab: string,
   location: Location | null,
-  distanceFilter: number,
 ) => {
   const searchLower = searchText.toLowerCase();
   return events.filter((event) => {
@@ -75,10 +74,12 @@ export const filterEvents = (
         location.lng,
         event.details?.loc?.coordinates[1] || 0,
         event.details?.loc?.coordinates[0] || 0,
-      ) <= distanceFilter;
+      ) < 10;
 
     const isVirtual =
-      selectedTab === "Virtual" && event.details?.mode === "virtual";
+      selectedTab === "Virtual" &&
+      event.details?.mode !== undefined &&
+      (event.details.mode === "virtual" || event.details.mode === "both");
 
     const matchesTab = selectedTab === "All" || isNearMe || isVirtual;
 

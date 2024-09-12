@@ -3,7 +3,6 @@
 import Section from "@/components/layout/Section";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import UsersList from "@/components/UsersList";
 import { useSession } from "@/contexts/SessionProvider";
 import AuthModal from "@/features/auth/components/AuthModal";
@@ -44,7 +43,6 @@ const DiscoverPage = () => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTab, setSelectedTab] = useState("All");
   const [location, setLocation] = useState<Location | null>(null);
-  const [distanceFilter, setDistanceFilter] = useState(10);
   const [filteredEvents, setFilteredEvents] = useState<EventType[]>([]);
   // const [filterUsers, setFilterUsers] = useState<UserType[]>([]);
   const session = useSession();
@@ -79,7 +77,6 @@ const DiscoverPage = () => {
         formattedDate,
         selectedTab,
         location,
-        distanceFilter,
       );
 
       setFilteredEvents(filteredEvents);
@@ -91,7 +88,6 @@ const DiscoverPage = () => {
     selectedTab,
     events,
     location,
-    distanceFilter,
   ]);
 
   if (!isHydrated) {
@@ -157,18 +153,6 @@ const DiscoverPage = () => {
               setSelectedDate={setSelectedDate}
             />
           </div>
-          {selectedTab === "Near me" && (
-            <div className="hidden">
-              <Label>Distance (km):</Label>
-              <Input
-                type="number"
-                value={distanceFilter}
-                onChange={(e) => setDistanceFilter(parseInt(e.target.value))}
-                min="1"
-                max="100"
-              />
-            </div>
-          )}
           <div className="p-4">
             <h4 className="text-purple-600 font-bold">Select Interests</h4>
             <ul className="flex flex-wrap gap-4 mt-4">
