@@ -1,7 +1,6 @@
 "use client";
 
 import Section from "@/components/layout/Section";
-import LocationSelector from "@/components/map/LocationSelector";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,6 +9,7 @@ import { useSession } from "@/contexts/SessionProvider";
 import AuthModal from "@/features/auth/components/AuthModal";
 import DateSelector from "@/features/discover/DateSelector";
 import { filterEvents } from "@/features/discover/discoverActions";
+import MyGoogleMapComponent from "@/features/discover/MyGoogleMapComponent";
 import TabSelector from "@/features/discover/TabSelector";
 import Event from "@/features/event/components/Event";
 import EventModal from "@/features/event/components/EventModal";
@@ -128,10 +128,12 @@ const DiscoverPage = () => {
             ))}
         </ul>
         <div className="flex flex-col gap-2">
-          <div className="flex flex-col gap-2 p-4 rounded bg-muted">
-            <h4 className="text-purple-600 font-bold">Current Location</h4>
-            <LocationSelector onLocationChange={setLocation} />
-            {/* <CombinedLocationInput /> */}
+          <div className="flex flex-col gap-2 p-4 pb-0 rounded bg-muted">
+            {/* <LocationSelector onLocationChange={setLocation} /> */}
+            <MyGoogleMapComponent
+              location={location || { lat: 0, lng: 0 }}
+              setLocation={setLocation}
+            />
           </div>
           <div className="relative flex items-center p-4">
             <Search
