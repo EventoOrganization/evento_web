@@ -36,7 +36,6 @@ const CreateEventPage = () => {
   const [selectedInterests, setSelectedInterests] = useState<InterestType[]>(
     eventStore.interests || [],
   );
-
   const { user } = useAuthStore((state) => state);
   useEffect(() => {
     setFormValues({
@@ -48,7 +47,7 @@ const CreateEventPage = () => {
       startTime: eventStore.startTime || "",
       endTime: eventStore.endTime || "",
       description: eventStore.description || "",
-      mode: eventStore.mode || "virtual",
+      mode: eventStore.mode || "in-person",
       location: eventStore.location || "",
       latitude: eventStore.latitude || "",
       longitude: eventStore.longitude || "",
@@ -75,7 +74,7 @@ const CreateEventPage = () => {
     startTime: eventStore.startTime || "",
     endTime: eventStore.endTime || "",
     description: eventStore.description || "",
-    mode: eventStore.mode || "virtual",
+    mode: eventStore.mode || "in-person",
     location: eventStore.location || "",
     latitude: eventStore.latitude || "",
     longitude: eventStore.longitude || "",
@@ -419,7 +418,7 @@ const CreateEventPage = () => {
                 onChange={handleUpload}
               />
             </div>
-            <EventLocationInput />
+            {eventStore.mode !== "virtual" && <EventLocationInput />}
             <EventDate />
             <div>
               <Label className="sr-only" htmlFor="description">
