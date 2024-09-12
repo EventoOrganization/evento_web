@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "git checkout main && git pull origin main && git checkout - && git merge main && next dev",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "prepare": "husky install",

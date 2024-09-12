@@ -1,4 +1,4 @@
-import { UserType } from "./UserType";
+import { TempUserType, UserType } from "./UserType";
 
 // src/types/EventType.ts
 export type TimeSlotType = {
@@ -54,6 +54,7 @@ export type EventType = {
   location?: string;
   coHosts?: UserType[];
   guests?: UserType[];
+  tempGuests?: TempUserType[];
   coHostStatus?: boolean;
   isAdmin?: boolean;
   guestsCohostAdd?: UserType[];

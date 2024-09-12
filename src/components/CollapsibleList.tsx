@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { UserType } from "@/types/UserType";
+import { TempUserType, UserType } from "@/types/UserType";
 import { ChevronDownIcon } from "lucide-react";
 import { useState } from "react";
 import UsersList from "./UsersList";
@@ -11,7 +11,7 @@ const CollapsibleList = ({
 }: {
   title: string;
   count: number;
-  users: UserType[];
+  users: (UserType | TempUserType)[];
 }) => {
   const [isOpen, setIsOpen] = useState(title === "Going" ? true : false);
   return (
@@ -32,7 +32,7 @@ const CollapsibleList = ({
       </button>
       {isOpen && (
         <div className="mt-2 space-y-2">
-          {users.map((user: UserType) => (
+          {users.map((user) => (
             <UsersList key={user._id} user={user} />
           ))}
         </div>

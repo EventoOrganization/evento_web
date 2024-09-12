@@ -35,7 +35,7 @@ const EventGuestModal = ({
     SelectedUser[]
   >([]);
 
-  const { user } = useSession();
+  const { user, token } = useSession();
   const [filter, setFilter] = useState<string>("");
   const attendeeIds = event?.attendees?.map((a) => a._id) || [];
   const favouriteIds = event?.favouritees?.map((f) => f._id) || [];
@@ -71,7 +71,11 @@ const EventGuestModal = ({
   const handleSubmitGuests = async () => {
     const guests = currentSelectedUsers
       .filter((user) => !!user._id)
-      .map((user) => user._id);
+      .map((user) => ({
+        id: user._id,
+        email: user.email,
+        username: user.username,
+      }));
 
     const tempGuests = currentSelectedUsers
       .filter((user) => !user._id)
@@ -82,14 +86,14 @@ const EventGuestModal = ({
     const updateData = {
       guests,
       tempGuests,
-      invitedBy: user?._id,
+      user,
     };
-    console.log("Data to be sent to the backend:", updateData);
     try {
       const response = await fetchData(
         `/events/addGuests/${eventId}`,
         HttpMethod.PATCH,
         updateData,
+        token,
       );
 
       if (response.ok) {

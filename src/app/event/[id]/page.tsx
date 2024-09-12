@@ -17,7 +17,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-
 const EventPage = () => {
   const { id } = useParams();
   const eventId = Array.isArray(id) ? id[0] : id;
@@ -101,9 +100,20 @@ const EventPage = () => {
       return `From ${startDay} to ${endDay} ${monthYear}`;
     }
   };
-
+  const combinedGuests = [
+    ...(event?.guests?.map((guest) => ({ ...guest, status: "guest" })) || []),
+    ...(event?.tempGuests?.map((tempGuest) => ({
+      ...tempGuest,
+      status: "tempGuest",
+    })) || []),
+  ];
   return (
     <div className="md:grid-cols-2 grid grid-cols-1 w-screen h-screen">
+      {/* <EventInvitation
+        event={event}
+        user={user}
+        eventLink={`http://localhost:3000/event/${event._id}`}
+      /> */}
       <div className="p-10">
         <div className="flex items-center w-full justify-between mb-4">
           <div className="flex items-center gap-2 ">
@@ -211,6 +221,11 @@ const EventPage = () => {
               title={`Saved`}
               count={event?.favouritees?.length || 0}
               users={event?.favouritees || []}
+            />
+            <CollapsibleList
+              title={`Guests`}
+              count={combinedGuests.length}
+              users={combinedGuests}
             />
           </div>
         )}
