@@ -14,7 +14,6 @@ const CollapsibleList = ({
   users: UserType[];
 }) => {
   const [isOpen, setIsOpen] = useState(title === "Going" ? true : false);
-
   return (
     <div className="mb-4 w-full  ease-in-out">
       <button

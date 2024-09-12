@@ -5,7 +5,7 @@ import { useSession } from "@/contexts/SessionProvider";
 import AuthModal from "@/features/auth/components/AuthModal";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 const UsersList = ({
   user,
@@ -19,8 +19,12 @@ const UsersList = ({
   const [isIFollowingHim, setIsIFollowingHim] = useState<boolean | null>(
     user?.isIFollowingHim,
   );
+  const [isLoggedUser, setIsLoggedUser] = useState<boolean>(false);
   const isFollowingMe = user?.isFollowingMe;
-
+  const session = useSession();
+  useEffect(() => {
+    if (session?.user?._id === user?._id) setIsLoggedUser(true);
+  }, []);
   const handleFollow = async () => {
     if (!token) {
       setIsAuthModalOpen(true);
@@ -84,25 +88,27 @@ const UsersList = ({
           </li>
         </ul>
       </Link>
-      <Button
-        variant={"ghost"}
-        className={`
+      {!isLoggedUser && (
+        <Button
+          variant={"ghost"}
+          className={`
           px-5 py-2 rounded-lg font-semibold text-white transition-all hover:scale-105 duration-300 hover:text-white
           ${isIFollowingHim && !isFollowingMe ? "bg-gray-400 hover:bg-gray-500 " : ""}
           ${isFollowingMe && !isIFollowingHim ? "bg-eventoBlue hover:bg-eventoBlue/80 " : ""}
           ${isFollowingMe && isIFollowingHim ? " bg-evento-gradient " : ""}
           ${!isFollowingMe && !isIFollowingHim ? "bg-eventoPurpleLight hover:bg-gray-300 " : ""}
         `}
-        onClick={handleFollow}
-      >
-        {isFollowingMe && !isIFollowingHim
-          ? "Follow Back"
-          : isFollowingMe && isIFollowingHim
-            ? "Friends"
-            : !isFollowingMe && isIFollowingHim
-              ? "Unfollow"
-              : "Follow"}
-      </Button>
+          onClick={handleFollow}
+        >
+          {isFollowingMe && !isIFollowingHim
+            ? "Follow Back"
+            : isFollowingMe && isIFollowingHim
+              ? "Friends"
+              : !isFollowingMe && isIFollowingHim
+                ? "Unfollow"
+                : "Follow"}
+        </Button>
+      )}
       {isAuthModalOpen && (
         <AuthModal
           onAuthSuccess={() => {
