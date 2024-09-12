@@ -12,13 +12,14 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useSession } from "@/contexts/SessionProvider";
 import { cn } from "@/lib/utils";
 import { EventType } from "@/types/EventType";
-import { UserType } from "@/types/UserType";
+import { TempUserType, UserType } from "@/types/UserType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import CSVImport from "./CSVImport";
 import EventAddTempGuest from "./EventAddTempGuest";
-
+type SelectedUser = UserType | TempUserType;
 const EventGuestModal = ({
   allUsers,
   onSave,
@@ -30,9 +31,9 @@ const EventGuestModal = ({
 }) => {
   const { id: eventId } = useParams();
   const [isOpen, setIsOpen] = useState(false);
-  const [currentSelectedUsers, setCurrentSelectedUsers] = useState<UserType[]>(
-    [],
-  );
+  const [currentSelectedUsers, setCurrentSelectedUsers] = useState<
+    SelectedUser[]
+  >([]);
   const [guestsAllowFriend, setGuestsAllowFriend] = useState(
     event?.guestsAllowFriend || false,
   );
@@ -50,16 +51,21 @@ const EventGuestModal = ({
     setFilter(e.target.value.toLowerCase());
   };
 
-  const addUser = (user: UserType) => {
+  const addUser = (user: TempUserType) => {
     setCurrentSelectedUsers((prevUsers) => [...prevUsers, user]);
   };
   const handleAddTempGuest = (tempGuest: UserType) => {
     setCurrentSelectedUsers([...currentSelectedUsers, tempGuest]);
   };
-  const removeUser = (user: UserType) => {
+  const handleAddTempGuestsFromCSV = (tempGuests: TempUserType[]) => {
+    setCurrentSelectedUsers((prevUsers) => [...prevUsers, ...tempGuests]);
+  };
+  const removeUser = (user: any) => {
     setCurrentSelectedUsers(
       currentSelectedUsers.filter(
-        (selectedUser) => selectedUser._id !== user._id,
+        (selectedUser) =>
+          selectedUser.username + selectedUser.email !==
+          user.username + user.email,
       ),
     );
   };
@@ -120,14 +126,6 @@ const EventGuestModal = ({
         <DialogHeader>
           <DialogTitle>Guests</DialogTitle>
         </DialogHeader>
-        {/* Input for filtering users */}
-        <Input
-          type="text"
-          placeholder="Search by username, first name, or last name"
-          value={filter}
-          onChange={handleFilterChange}
-          className="mb-4"
-        />
         <div className="flex flex-col-reverse justify-between gap-4">
           <div>
             <h3 className="mb-2">
@@ -137,7 +135,7 @@ const EventGuestModal = ({
               {filteredUsers.length > 0 ? (
                 filteredUsers.map((user) => (
                   <div
-                    key={user._id}
+                    key={user._id || user.username + user.email}
                     className="p-2 flex items-center cursor-pointer hover:bg-muted/20 space-x-4"
                     onClick={() => addUser(user)}
                   >
@@ -181,7 +179,7 @@ const EventGuestModal = ({
             <ScrollArea className="h-48 border rounded">
               {currentSelectedUsers.map((user) => (
                 <div
-                  key={user._id}
+                  key={user._id || user.username + user.email}
                   className="p-2 flex items-center justify-between cursor-pointer hover:bg-muted/20 space-x-4"
                 >
                   <div className="flex items-center space-x-4">
@@ -224,7 +222,15 @@ const EventGuestModal = ({
             </ScrollArea>
           </div>
         </div>
+        <Input
+          type="text"
+          placeholder="Search by username, first name, or last name"
+          value={filter}
+          onChange={handleFilterChange}
+          className="mb-4"
+        />
         <EventAddTempGuest onAddTempGuest={handleAddTempGuest} />
+        <CSVImport onAddTempGuests={handleAddTempGuestsFromCSV} />
         <div className="flex items-center gap-2">
           <input
             type="checkbox"

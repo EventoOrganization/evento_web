@@ -188,7 +188,8 @@ const EventPage = () => {
             <div className="flex items-center justify-between">
               <h1 className="text-xl font-bold">{event?.title}</h1>
               {event.guestsAllowFriend ||
-                (event.isAdmin && (
+                event.isAdmin ||
+                (event.isHosted && (
                   <EventGuestModal allUsers={users} event={event} />
                 ))}
             </div>

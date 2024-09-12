@@ -1,3 +1,5 @@
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { useState } from "react";
 
 const EventAddTempGuest = ({ onAddTempGuest }: { onAddTempGuest: any }) => {
@@ -14,22 +16,30 @@ const EventAddTempGuest = ({ onAddTempGuest }: { onAddTempGuest: any }) => {
 
   return (
     <>
-      <form onSubmit={handleAddGuest}>
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="Email"
-          required
-        />
-        <input
-          type="text"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          placeholder="Username"
-          required
-        />
-        <button type="submit">Add Temp Guest</button>
+      <h4>Add friends from outside!</h4>
+      <form onSubmit={handleAddGuest} className="flex gap-2">
+        <div className="grid grid-cols-2 gap-2">
+          <Input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Email"
+            required
+          />
+          <Input
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            placeholder="Username"
+            required
+          />
+        </div>
+        <Button
+          type="submit"
+          className="w-fit bg-eventoBlue hover:bg-eventoBlue/80"
+        >
+          Add
+        </Button>
       </form>
     </>
   );
