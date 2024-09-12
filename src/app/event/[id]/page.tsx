@@ -24,6 +24,7 @@ const EventPage = () => {
   const [event, setEvent] = useState<EventType | null>(null);
   const [users, setUsers] = useState<UserType[]>([]);
   const [selectedTab, setSelectedTab] = useState("Description");
+
   const { user, token } = useSession();
   useEffect(() => {
     if (eventId && !event) {
@@ -193,6 +194,14 @@ const EventPage = () => {
                   <EventGuestModal allUsers={users} event={event} />
                 ))}
             </div>
+            {event.isHosted && (
+              <div className="flex items-center gap-2">
+                <input type="checkbox" id="guestsAllowFriend" />
+                <label htmlFor="guestsAllowFriend">
+                  Allow guests to bring friends
+                </label>
+              </div>
+            )}
             <CollapsibleList
               title={`Going`}
               count={event?.attendees?.length || 0}

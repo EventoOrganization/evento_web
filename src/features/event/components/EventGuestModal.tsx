@@ -34,9 +34,7 @@ const EventGuestModal = ({
   const [currentSelectedUsers, setCurrentSelectedUsers] = useState<
     SelectedUser[]
   >([]);
-  const [guestsAllowFriend, setGuestsAllowFriend] = useState(
-    event?.guestsAllowFriend || false,
-  );
+
   const { user } = useSession();
   const [filter, setFilter] = useState<string>("");
   const attendeeIds = event?.attendees?.map((a) => a._id) || [];
@@ -71,17 +69,26 @@ const EventGuestModal = ({
   };
 
   const handleSubmitGuests = async () => {
-    const guestIds = currentSelectedUsers.map((user) => user._id);
+    const guests = currentSelectedUsers
+      .filter((user) => !!user._id)
+      .map((user) => user._id);
 
+    const tempGuests = currentSelectedUsers
+      .filter((user) => !user._id)
+      .map((tempGuest) => ({
+        email: tempGuest.email,
+        username: tempGuest.username,
+      }));
     const updateData = {
-      guests: guestIds,
-      guestsAllowFriend: guestsAllowFriend,
+      guests,
+      tempGuests,
+      invitedBy: user?._id,
     };
-
+    console.log("Data to be sent to the backend:", updateData);
     try {
       const response = await fetchData(
-        `/events/updateEvent/${eventId}`,
-        HttpMethod.PUT,
+        `/events/addGuests/${eventId}`,
+        HttpMethod.PATCH,
         updateData,
       );
 
@@ -231,17 +238,7 @@ const EventGuestModal = ({
         />
         <EventAddTempGuest onAddTempGuest={handleAddTempGuest} />
         <CSVImport onAddTempGuests={handleAddTempGuestsFromCSV} />
-        <div className="flex items-center gap-2">
-          <input
-            type="checkbox"
-            id="guestsAllowFriend"
-            checked={guestsAllowFriend}
-            onChange={(e) => setGuestsAllowFriend(e.target.checked)}
-          />
-          <label htmlFor="guestsAllowFriend">
-            Allow guests to bring friends
-          </label>
-        </div>
+
         <div className="mt-4 flex items-center justify-between">
           <Button
             type="button"

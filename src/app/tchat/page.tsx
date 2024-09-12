@@ -41,7 +41,6 @@ const ChatPage = () => {
   }, []);
 
   useEffect(() => {
-    // Fetch events with active chat
     const fetchUserEvents = async () => {
       try {
         const response = await fetch(
@@ -111,59 +110,61 @@ const ChatPage = () => {
   };
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Chat Rooms</h1>
-      {events.length === 0 ? (
-        <p className="text-gray-600">No events with active chat available.</p>
-      ) : (
-        <div className="mb-6">
-          <h2 className="text-xl font-semibold mb-2">
-            Select an event to chat:
-          </h2>
-          <ul className="space-y-2">
-            {events.map((event) => (
-              <li key={event._id}>
-                <button
-                  onClick={() => handleSelectEvent(event)}
-                  className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors"
-                >
-                  {event.title}
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-      {selectedEvent && (
-        <div className="bg-evento-gradient p-4 rounded-lg shadow-lg">
-          <h2 className="text-xl font-semibold mb-4">
-            Chat Room: {selectedEvent.title}
-          </h2>
-          <div className="mb-4 h-64 overflow-y-auto p-4 bg-white text-black rounded-lg shadow-inner">
-            {messages.map((msg, index) => (
-              <div key={index} className="mb-2 p-2 bg-gray-200 rounded-lg">
-                {msg}
-              </div>
-            ))}
+    <>
+      <div className="p-6">
+        <h1 className="text-2xl font-bold mb-4">Chat Rooms</h1>
+        {events.length === 0 ? (
+          <p className="text-gray-600">No events with active chat available.</p>
+        ) : (
+          <div className="mb-6">
+            <h2 className="text-xl font-semibold mb-2">
+              Select an event to chat:
+            </h2>
+            <ul className="space-y-2">
+              {events.map((event) => (
+                <li key={event._id}>
+                  <button
+                    onClick={() => handleSelectEvent(event)}
+                    className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors"
+                  >
+                    {event.title}
+                  </button>
+                </li>
+              ))}
+            </ul>
           </div>
-          <div className="flex items-center space-x-2">
-            <input
-              type="text"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="Type a message..."
-              className="flex-grow p-2 border rounded-lg"
-            />
-            <button
-              onClick={sendMessage}
-              className="bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600 transition-colors"
-            >
-              Send
-            </button>
+        )}
+        {selectedEvent && (
+          <div className="bg-evento-gradient p-4 rounded-lg shadow-lg">
+            <h2 className="text-xl font-semibold mb-4">
+              Chat Room: {selectedEvent.title}
+            </h2>
+            <div className="mb-4 h-64 overflow-y-auto p-4 bg-white text-black rounded-lg shadow-inner">
+              {messages.map((msg, index) => (
+                <div key={index} className="mb-2 p-2 bg-gray-200 rounded-lg">
+                  {msg}
+                </div>
+              ))}
+            </div>
+            <div className="flex items-center space-x-2">
+              <input
+                type="text"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder="Type a message..."
+                className="flex-grow p-2 border rounded-lg"
+              />
+              <button
+                onClick={sendMessage}
+                className="bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600 transition-colors"
+              >
+                Send
+              </button>
+            </div>
           </div>
-        </div>
-      )}
-    </div>
+        )}
+      </div>
+    </>
   );
 };
 
