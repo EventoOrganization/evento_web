@@ -297,7 +297,7 @@ const CreateEventPage = () => {
         className: "bg-evento-gradient-button text-white",
         duration: 3000,
       });
-      router.push("/success");
+      router.push(`/create-event/${response.data?._id}/success`);
     }
   };
 
