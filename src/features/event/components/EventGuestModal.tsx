@@ -103,6 +103,7 @@ const EventGuestModal = ({
           className: "bg-evento-gradient text-white",
           duration: 3000,
         });
+        setCurrentSelectedUsers([]);
       } else {
         console.error("Error updating guests and preference", response.error);
         toast({
