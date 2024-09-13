@@ -102,7 +102,6 @@ const DiscoverPage = () => {
     setSelectedEvent(event);
     setIsEventModalOpen(true);
   };
-  console.log(filteredEvents);
   return (
     <>
       <div className="relative flex justify-center items-center mt-10 text-eventoPurpleLight gap-2">
