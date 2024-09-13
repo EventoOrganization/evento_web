@@ -3,6 +3,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useSession } from "@/contexts/SessionProvider";
 import AuthModal from "@/features/auth/components/AuthModal";
+import { useToast } from "@/hooks/use-toast";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -15,6 +16,8 @@ const UsersList = ({
   fetchUsers?: () => void;
 }) => {
   const { token } = useSession();
+  const { toast } = useToast();
+  const [loading, setLoading] = useState<boolean>(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
   const [isIFollowingHim, setIsIFollowingHim] = useState<boolean | null>(
     user?.isIFollowingHim,
@@ -23,13 +26,19 @@ const UsersList = ({
   const isFollowingMe = user?.isFollowingMe;
   const session = useSession();
   useEffect(() => {
-    if (session?.user?._id === user?._id) setIsLoggedUser(true);
-  }, []);
+    if (session?.user && user) {
+      if (session.user._id === user._id) {
+        setIsLoggedUser(true);
+      }
+    }
+  }, [session, user, isIFollowingHim, isFollowingMe]);
+
   const handleFollow = async () => {
     if (!token) {
       setIsAuthModalOpen(true);
       return;
     }
+    setLoading(true);
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/users/follow`,
@@ -45,9 +54,13 @@ const UsersList = ({
 
       if (response.ok) {
         setIsIFollowingHim((prevIsFollowing) => !prevIsFollowing);
-        const data = await response.json();
         setIsIFollowingHim(!isIFollowingHim);
-        console.log(data.message, data);
+        toast({
+          title: "Success",
+          description: `You ${!isIFollowingHim ? "followed" : "unfollowed"} this user`,
+          duration: 2000,
+          className: "bg-evento-gradient text-white",
+        });
         if (fetchUsers) fetchUsers();
       } else {
         const errorData = await response.json();
@@ -55,9 +68,10 @@ const UsersList = ({
       }
     } catch (error) {
       console.error("An error occurred:", error);
+    } finally {
+      setLoading(false);
     }
   };
-  console.log(user);
   return (
     <div className="flex justify-between w-full items-center">
       <Link href={`/profile/${user?._id}`} className="flex items-center gap-4">
@@ -100,14 +114,17 @@ const UsersList = ({
           ${!isFollowingMe && !isIFollowingHim ? "bg-eventoPurpleLight hover:bg-gray-300 " : ""}
         `}
           onClick={handleFollow}
+          disabled={loading}
         >
-          {isFollowingMe && !isIFollowingHim
-            ? "Follow Back"
-            : isFollowingMe && isIFollowingHim
-              ? "Friends"
-              : !isFollowingMe && isIFollowingHim
-                ? "Unfollow"
-                : "Follow"}
+          {loading
+            ? "Processing..."
+            : isFollowingMe && !isIFollowingHim
+              ? "Follow Back"
+              : isFollowingMe && isIFollowingHim
+                ? "Friends"
+                : !isFollowingMe && isIFollowingHim
+                  ? "Unfollow"
+                  : "Follow"}
         </Button>
       )}
       {isAuthModalOpen && (

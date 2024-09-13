@@ -103,20 +103,21 @@ export const fetchData = async <T, B = any>(
           `response from ${endpoint} with data.message:`,
           data.message,
         );
-        return {
-          data: null,
-          error: data.message,
-          status: response.status,
-          ok: false,
-        };
-      } else {
-        console.log(" response from ", endpoint, " with data:", data);
-        return {
-          data: data as T,
-          error: null,
-          status: response.status,
-          ok: true,
-        };
+        if (response.status >= 200 && response.status < 300) {
+          return {
+            data: data as T,
+            error: null,
+            status: response.status,
+            ok: true,
+          };
+        } else {
+          return {
+            data: null,
+            error: data.message,
+            status: response.status,
+            ok: false,
+          };
+        }
       }
     } else {
       throw new Error("La réponse n'est pas au format JSON.");
@@ -131,4 +132,12 @@ export const fetchData = async <T, B = any>(
       ok: false,
     };
   }
+
+  // Ajoutez un return par défaut ici pour satisfaire TypeScript
+  return {
+    data: null,
+    error: "Unexpected error occurred",
+    status: 500,
+    ok: false,
+  };
 };

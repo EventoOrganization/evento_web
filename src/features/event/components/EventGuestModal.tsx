@@ -10,6 +10,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useSession } from "@/contexts/SessionProvider";
+import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { EventType } from "@/types/EventType";
 import { TempUserType, UserType } from "@/types/UserType";
@@ -34,7 +35,7 @@ const EventGuestModal = ({
   const [currentSelectedUsers, setCurrentSelectedUsers] = useState<
     SelectedUser[]
   >([]);
-
+  const { toast } = useToast();
   const { user, token } = useSession();
   const [filter, setFilter] = useState<string>("");
   const attendeeIds = event?.attendees?.map((a) => a._id) || [];
@@ -97,22 +98,37 @@ const EventGuestModal = ({
       );
 
       if (response.ok) {
-        console.log("Guests and preference updated successfully!");
+        toast({
+          description: "Guests and preference updated successfully!",
+          className: "bg-evento-gradient text-white",
+          duration: 3000,
+        });
       } else {
         console.error("Error updating guests and preference", response.error);
+        toast({
+          description: "Error updating guests and preference",
+          variant: "destructive",
+          duration: 3000,
+        });
       }
     } catch (error) {
       console.error("Error submitting guests:", error);
+      toast({
+        description: "Error submitting guests please contact the support",
+        variant: "destructive",
+        duration: 3000,
+      });
     }
 
     setIsOpen(false);
     if (onSave) onSave();
   };
 
-  const filteredUsers = allUsers.filter(
+  const filteredUsers = (allUsers ?? []).filter(
     (user) =>
       !excludedUserIds.includes(user._id) &&
       !currentSelectedUsers.some((selected) => selected._id === user._id) &&
+      !event?.guests?.some((guest) => guest._id === user._id) &&
       (user.username.toLowerCase().includes(filter) ||
         user.firstName?.toLowerCase().includes(filter) ||
         user.lastName?.toLowerCase().includes(filter)),

@@ -10,6 +10,7 @@ import EventActionIcons from "@/features/event/components/EventActionIcons";
 import EventGuestModal from "@/features/event/components/EventGuestModal";
 import EventTimeSlots from "@/features/event/components/EventTimeSlots";
 import PrivateEventActionIcons from "@/features/event/components/PrivateEventActionIcons";
+import { useToast } from "@/hooks/use-toast";
 import { EventType, InterestType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
@@ -17,14 +18,16 @@ import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
+
 const EventPage = () => {
   const { id } = useParams();
   const eventId = Array.isArray(id) ? id[0] : id;
   const [event, setEvent] = useState<EventType | null>(null);
   const [users, setUsers] = useState<UserType[]>([]);
   const [selectedTab, setSelectedTab] = useState("Description");
-
+  const [isGuestAllowed, setIsGuestAllowed] = useState<boolean | null>(null);
   const { user, token } = useSession();
+  const { toast } = useToast();
   useEffect(() => {
     if (eventId && !event) {
       fetchEventData(eventId);
@@ -34,7 +37,7 @@ const EventPage = () => {
     } else {
       loadusers();
     }
-  }, [eventId, event]);
+  }, [eventId]);
 
   const fetchEventData = async (eventId: string) => {
     try {
@@ -43,6 +46,7 @@ const EventPage = () => {
         `/events/getEvent/${eventId}${userIdQuery}`,
       );
       setEvent(eventRes.data);
+      setIsGuestAllowed(eventRes.data && eventRes.data.guestsAllowFriend);
     } catch (error) {
       console.error("Error fetching event:", error);
     }
@@ -80,6 +84,38 @@ const EventPage = () => {
       day: "numeric",
     };
     return date.toLocaleDateString("en-US", options);
+  };
+  const handleGuestsAllowFriendChange = async () => {
+    try {
+      const response = await fetchData(
+        `/events/${event._id}/updateGuestsAllowFriend`,
+        HttpMethod.PUT,
+        { guestsAllowFriend: !isGuestAllowed },
+        token,
+      );
+      if (response.ok) {
+        setIsGuestAllowed(!isGuestAllowed);
+        toast({
+          description: `Guests ${!isGuestAllowed ? "allowed" : "denied"} updated successfully!`,
+          className: "bg-evento-gradient text-white",
+          duration: 3000,
+        });
+      } else {
+        console.error("Error updating guestsAllowFriend:", response.error);
+        toast({
+          description: "Error updating guestsAllowFriend",
+          variant: "destructive",
+          duration: 3000,
+        });
+      }
+    } catch (error) {
+      console.error("Error updating guestsAllowFriend:", error);
+      toast({
+        description: "Error updating guestsAllowFriend",
+        variant: "destructive",
+        duration: 3000,
+      });
+    }
   };
 
   const renderDate = () => {
@@ -206,7 +242,12 @@ const EventPage = () => {
             </div>
             {event.isHosted && (
               <div className="flex items-center gap-2">
-                <input type="checkbox" id="guestsAllowFriend" />
+                <input
+                  type="checkbox"
+                  id="guestsAllowFriend"
+                  onChange={handleGuestsAllowFriendChange}
+                  checked={isGuestAllowed ?? false}
+                />
                 <label htmlFor="guestsAllowFriend">
                   Allow guests to bring friends
                 </label>
@@ -222,11 +263,13 @@ const EventPage = () => {
               count={event?.favouritees?.length || 0}
               users={event?.favouritees || []}
             />
-            <CollapsibleList
-              title={`Guests`}
-              count={combinedGuests.length}
-              users={combinedGuests}
-            />
+            {combinedGuests.length > 0 && (
+              <CollapsibleList
+                title={`Guests`}
+                count={combinedGuests.length}
+                users={combinedGuests}
+              />
+            )}
           </div>
         )}
       </Section>
