@@ -36,14 +36,16 @@ const DiscoverPage = () => {
   const [selectedInterests, setSelectedInterests] = useState<InterestType[]>(
     [],
   );
-  const [selectedEvent, setSelectedEvent] = useState<EventType | null>(null);
+  const [selectedEvent, setSelectedEvent] = useState<EventType | null>();
   const [isEventModalOpen, setIsEventModalOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTab, setSelectedTab] = useState("All");
   const [location, setLocation] = useState<Location | null>(null);
-  const [filteredEvents, setFilteredEvents] = useState<EventType[]>([]);
+  const [filteredEvents, setFilteredEvents] = useState<EventType[]>(
+    events || [],
+  );
   // const [filterUsers, setFilterUsers] = useState<UserType[]>([]);
   const session = useSession();
   const [isHydrated, setIsHydrated] = useState(false);
@@ -88,6 +90,9 @@ const DiscoverPage = () => {
     selectedTab,
     events,
     location,
+    events,
+    interests,
+    users,
   ]);
 
   if (!isHydrated) {
@@ -97,6 +102,7 @@ const DiscoverPage = () => {
     setSelectedEvent(event);
     setIsEventModalOpen(true);
   };
+  console.log(filteredEvents);
   return (
     <>
       <div className="relative flex justify-center items-center mt-10 text-eventoPurpleLight gap-2">
