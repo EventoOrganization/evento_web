@@ -4,8 +4,10 @@ import { persist, PersistStorage } from "zustand/middleware";
 
 export type AuthState = {
   user: UserType | null;
+  rememberMe: boolean;
   setUser: (user: UserType) => void;
   clearUser: () => void;
+  toggleRememberMe: (remember: boolean) => void;
 };
 
 const isServer = typeof window === "undefined";
@@ -38,12 +40,16 @@ export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
       user: null,
+      rememberMe: false,
       setUser: (user: UserType) => {
         console.log("Setting user in store:", user);
         set({ user });
       },
       clearUser: () => {
         set({ user: null });
+      },
+      toggleRememberMe: (remember: boolean) => {
+        set({ rememberMe: remember });
       },
     }),
     {

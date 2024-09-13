@@ -1,4 +1,3 @@
-import BackButton from "@/components/BackButton";
 import Main from "@/components/layout/Main";
 import NavbarApp from "@/components/Navbar";
 import { Toaster } from "@/components/ui/toaster";
@@ -30,7 +29,6 @@ export default function RootLayout({
           initialToken={session?.token}
         >
           <Toaster />
-          <BackButton />
           {/* <Header /> */}
           <Main className={cn("pb-28 px-0 lg:px-10 max-w-7xl mx-auto")}>
             {children}

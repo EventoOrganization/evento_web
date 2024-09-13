@@ -202,7 +202,10 @@ const DiscoverPage = () => {
           </div>
         </div>
         {isAuthModalOpen && (
-          <AuthModal onAuthSuccess={() => setIsAuthModalOpen(false)} />
+          <AuthModal
+            onAuthSuccess={() => setIsAuthModalOpen(false)}
+            onClose={() => setIsAuthModalOpen(false)}
+          />
         )}{" "}
         <EventModal
           isOpen={isEventModalOpen}

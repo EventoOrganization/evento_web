@@ -17,10 +17,9 @@ import { useAuthStore } from "@/store/useAuthStore";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
-// Extend signInSchema to include rememberMe
 const extendedSignInSchema = signInSchema.extend({
   rememberMe: z.boolean().optional(),
 });
@@ -49,7 +48,7 @@ const LoginForm = ({
     },
   });
   const router = useRouter();
-  const setUser = useAuthStore((state) => state.setUser);
+  const { setUser, user, rememberMe } = useAuthStore((state) => state);
   const { startSession } = useSession();
   const { toast } = useToast();
   const formStyle =
@@ -114,10 +113,14 @@ const LoginForm = ({
         setError("An unexpected error occurred.");
       }
     } finally {
-      setIsFetching(false); // Ensure isFetching is false after the request completes
+      setIsFetching(false);
     }
   };
-
+  useEffect(() => {
+    if (rememberMe && user) {
+      form.setValue("email", user.email);
+    }
+  }, [rememberMe, user, form]);
   return (
     <FormProvider {...form}>
       <form
@@ -125,11 +128,7 @@ const LoginForm = ({
         className={cn(formStyle, className)}
       >
         <div className="justify-center flex flex-col gap-4">
-          <div>
-            {/* <h2 className={cn("sm:text-center text-xl font-semibold")}>
-              Sign In
-            </h2> */}
-          </div>
+          <div></div>
           <FormField
             control={form.control}
             name="email"
@@ -175,9 +174,9 @@ const LoginForm = ({
                     <span className="flex gap-2 items-center">
                       <Checkbox
                         checked={field.value}
-                        onCheckedChange={(checked: boolean | string | null) =>
-                          field.onChange(!!checked)
-                        }
+                        onCheckedChange={(checked: boolean | string | null) => {
+                          field.onChange(!!checked);
+                        }}
                       />
                       <p>Remember me</p>
                     </span>
