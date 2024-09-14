@@ -46,7 +46,11 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
               "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
             },
-            body: JSON.stringify({ eventId: event._id, userId: user?._id }),
+            body: JSON.stringify({
+              eventId: event._id,
+              userId: user?._id,
+              attendStatus: goingStatus,
+            }),
           },
         );
         if (!response.ok) {

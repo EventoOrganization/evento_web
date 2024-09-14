@@ -42,7 +42,6 @@ export const useAuthStore = create<AuthState>()(
       user: null,
       rememberMe: false,
       setUser: (user: UserType) => {
-        console.log("Setting user in store:", user);
         set({ user });
       },
       clearUser: () => {

@@ -2,6 +2,7 @@ import Main from "@/components/layout/Main";
 import NavbarApp from "@/components/Navbar";
 import { Toaster } from "@/components/ui/toaster";
 import { SessionProvider } from "@/contexts/SessionProvider";
+import { SocketProvider } from "@/contexts/SocketProvider";
 import { cn } from "@/lib/utils";
 import { getSessionSSR } from "@/utils/authUtilsSSR";
 import type { Metadata } from "next";
@@ -28,12 +29,14 @@ export default function RootLayout({
           initialUser={session?.user}
           initialToken={session?.token}
         >
-          <Toaster />
-          {/* <Header /> */}
-          <Main className={cn("pb-28 px-0 lg:px-10 max-w-7xl mx-auto")}>
-            {children}
-          </Main>
-          <NavbarApp />
+          <SocketProvider>
+            <Toaster />
+            {/* <Header /> */}
+            <Main className={cn("pb-28 px-0 lg:px-10 max-w-7xl mx-auto")}>
+              {children}
+            </Main>
+            <NavbarApp />
+          </SocketProvider>
         </SessionProvider>
       </body>
     </html>

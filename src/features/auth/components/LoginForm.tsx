@@ -68,7 +68,6 @@ const LoginForm = ({
           password: data.password,
         },
       );
-      console.log("loginResult", loginResult);
       if (error) {
         toast({
           description: error,

@@ -36,6 +36,7 @@ export type EventType = {
       type: string;
     },
   ];
+  username?: string;
   _id: string;
   title: string;
   user: UserType;
