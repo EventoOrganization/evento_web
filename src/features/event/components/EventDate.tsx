@@ -8,9 +8,11 @@ import {
 } from "@/components/ui/popover";
 import { useEventStore } from "@/store/useEventStore";
 import { format, startOfDay } from "date-fns";
+import { fr } from "date-fns/locale";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { handleFieldChange } from "../eventActions";
+
 const EventDate = () => {
   const eventStore = useEventStore();
   const today = startOfDay(new Date());
@@ -47,6 +49,10 @@ const EventDate = () => {
     if (date && date >= today) {
       const formattedDate = date ? format(date, "yyyy-MM-dd") : "";
       setStartDate(date);
+      if (!endDate || date > endDate) {
+        setEndDate(date);
+        handleFieldChange("endDate", formattedDate);
+      }
       if (date) {
         handleFieldChange("date", formattedDate);
         setTimeSlots((prevSlots) => [
@@ -126,7 +132,13 @@ const EventDate = () => {
               {startDate ? (
                 format(startDate, "dd/MM/yyyy")
               ) : (
-                <span>Select start date</span>
+                <>
+                  {eventStore.date ? (
+                    format(new Date(eventStore.date), "dd/MM/yyyy")
+                  ) : (
+                    <span>Select start date</span>
+                  )}
+                </>
               )}
             </Button>
           </PopoverTrigger>
@@ -135,7 +147,9 @@ const EventDate = () => {
               mode="single"
               selected={startDate}
               onSelect={handleStartDateChange}
+              fromDate={today}
               initialFocus
+              locale={fr}
             />
           </PopoverContent>
         </Popover>
@@ -150,7 +164,13 @@ const EventDate = () => {
               {endDate ? (
                 format(endDate, "dd/MM/yyyy")
               ) : (
-                <span>Select end date</span>
+                <>
+                  {eventStore.endDate ? (
+                    format(new Date(eventStore.endDate), "dd/MM/yyyy")
+                  ) : (
+                    <span>Select end date</span>
+                  )}
+                </>
               )}
             </Button>
           </PopoverTrigger>
@@ -160,6 +180,8 @@ const EventDate = () => {
               selected={endDate}
               onSelect={handleEndDateChange}
               initialFocus
+              fromDate={startDate || today}
+              locale={fr}
             />
           </PopoverContent>
         </Popover>
