@@ -17,7 +17,7 @@ import { useEventoStore } from "@/store/useEventoStore";
 import { EventType, InterestType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
 import { fetchData } from "@/utils/fetchData";
-import { Search } from "lucide-react";
+import { Loader, Search } from "lucide-react";
 import { useEffect, useState } from "react";
 
 interface Location {
@@ -121,41 +121,44 @@ const DiscoverPage = () => {
   };
   return (
     <>
-      <div className="relative flex justify-center items-center mt-10 text-eventoPurpleLight gap-2">
+      <div className="relative flex justify-center items-center mt-4 md:mt-10 text-eventoPurpleLight gap-2">
         <h2 className="animate-slideInLeft font-black opacity-0">
-          <span>Discover</span>
+          <span>Discover Event</span>
         </h2>
-        <h2 className="event-text animate-slideInRight flex opacity-0 items-center bg-evento-gradient text-white rounded shadow">
+        {/* <h2 className="event-text animate-slideInRight flex opacity-0 items-center bg-evento-gradient text-white rounded shadow">
           <span className=" flex justify-center items-center">
             <img src="/logo.png" alt="E" className="w-12 h-12" />
           </span>
           <span className="-translate-x-1.5">vents</span>
-        </h2>
+        </h2> */}
       </div>
-      <Section className="flex flex-col-reverse md:grid md:grid-cols-2 gap-20 items-start">
+      <Section className="flex flex-col-reverse md:grid md:grid-cols-2 pt-4 md:pt-10 gap-20 items-start">
         <ul className="w-full space-y-6">
           <TabSelector
             onChange={setSelectedTab}
             tabs={["All", "Near me", "Virtual"]}
           />
-          {filteredEvents &&
+          {filteredEvents ? (
             filteredEvents.map((event) => (
               <li key={event._id} onClick={() => handleEventClick(event)}>
                 <Event event={event} />
               </li>
-            ))}
+            ))
+          ) : (
+            <Loader />
+          )}
         </ul>
         <div className="flex flex-col gap-2">
-          <div className="flex flex-col gap-2 p-4 pb-0 rounded bg-muted">
+          <div className="flex flex-col gap-2 md:p-4 pb-0 rounded bg-muted">
             {/* <LocationSelector onLocationChange={setLocation} /> */}
             <MyGoogleMapComponent
               location={location || { lat: 0, lng: 0 }}
               setLocation={setLocation}
             />
           </div>
-          <div className="relative flex items-center p-4">
+          <div className="relative flex items-center md:p-4">
             <Search
-              className="w-6 h-6 absolute left-6 text-eventoPurpleDark"
+              className="w-6 h-6 absolute left-3 md:left-6 text-eventoPurpleDark"
               strokeWidth={2.5}
             />
             <Input

@@ -91,6 +91,11 @@ const MyGoogleMapComponent = ({
       setLocation({ lat, lng });
       setMapCenter({ lat, lng });
       fetchAddress(lat, lng);
+      if (pathname === "/create-event") {
+        eventStore.setEventField("latitude", lat.toString());
+        eventStore.setEventField("longitude", lng.toString());
+        eventStore.setEventField("location", address);
+      }
     }
   };
 
@@ -119,7 +124,11 @@ const MyGoogleMapComponent = ({
         className="flex items-center justify-between cursor-pointer"
         onClick={() => setIsMapVisible(!isMapVisible)}
       >
-        <h4 className="text-purple-600 font-bold">Current Location</h4>
+        <h4 className="text-purple-600 font-bold">
+          {pathname === "/create-event"
+            ? "Choose Location"
+            : "Current Location"}
+        </h4>
         <span className="flex items-center gap-2">
           <p>Map</p>
           <ChevronDown
