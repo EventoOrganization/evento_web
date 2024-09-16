@@ -16,6 +16,7 @@ import { cn } from "@/lib/utils";
 import { useEventoStore } from "@/store/useEventoStore";
 import { EventType, InterestType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
+import { fetchData } from "@/utils/fetchData";
 import { Search } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -27,15 +28,16 @@ interface Location {
 const DiscoverPage = () => {
   const {
     users,
-    events,
+    // events,
     interests,
     loadInterests,
-    loadUpcomingEvents,
+    // loadUpcomingEvents,
     loadUsersPlus,
   } = useEventoStore();
   const [selectedInterests, setSelectedInterests] = useState<InterestType[]>(
     [],
   );
+  const [events, setEvents] = useState<EventType[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<EventType | null>();
   const [isEventModalOpen, setIsEventModalOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
@@ -56,11 +58,25 @@ const DiscoverPage = () => {
   }, []);
   useEffect(() => {
     loadInterests();
-    loadUpcomingEvents(session.user || undefined);
+    loadUpcomingEvents((session.user as UserType) || null);
     if (session.user && session.token)
       loadUsersPlus(session.user._id, session.token);
   }, []);
-
+  const loadUpcomingEvents = async (user: UserType) => {
+    const userIdQuery = user && user._id ? `?userId=${user._id}` : "";
+    try {
+      const upcomingEventRes = await fetchData(
+        `/events/getUpcomingEvents${userIdQuery}`,
+      );
+      if (upcomingEventRes && !upcomingEventRes.error) {
+        setEvents(upcomingEventRes.data as EventType[]);
+      } else {
+        console.error("Failed to fetch events:", upcomingEventRes?.error);
+      }
+    } catch (error) {
+      console.error("Error fetching events:", error);
+    }
+  };
   const handleInterestToggle = (interest: InterestType) => {
     setSelectedInterests((prev) =>
       prev.some((i) => i._id === interest._id)
@@ -71,7 +87,7 @@ const DiscoverPage = () => {
 
   useEffect(() => {
     const formattedDate = selectedDate ? selectedDate.toISOString() : "";
-    if (users && users.length > 0 && events && events.length > 0) {
+    if (events && events.length > 0) {
       const filteredEvents = filterEvents(
         events,
         selectedInterests,
@@ -80,7 +96,7 @@ const DiscoverPage = () => {
         selectedTab,
         location,
       );
-
+      console.log("Filtered events:", filteredEvents);
       setFilteredEvents(filteredEvents);
     }
   }, [
@@ -91,9 +107,9 @@ const DiscoverPage = () => {
     events,
     location,
     events,
+    events,
     interests,
     users,
-    isHydrated,
   ]);
 
   if (!isHydrated) {
