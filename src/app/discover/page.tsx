@@ -93,6 +93,7 @@ const DiscoverPage = () => {
     events,
     interests,
     users,
+    isHydrated,
   ]);
 
   if (!isHydrated) {
