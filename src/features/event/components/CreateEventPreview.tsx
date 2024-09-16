@@ -178,6 +178,7 @@ const CreateEventPreview = ({
           </div>
           {/* Placeholder for TruncatedText */}
           <pre className="w-fullp-4 rounded">{eventStore.description}</pre>
+          <p className="text-blue-500 underline">{eventStore.URL}</p>
         </div>
       </div>
     </>
