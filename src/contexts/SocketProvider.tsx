@@ -5,7 +5,6 @@ import io, { Socket } from "socket.io-client";
 
 interface SocketContextType {
   socket: Socket | null;
-  notifications: string[];
 }
 
 const SocketContext = createContext<SocketContextType | null>(null);
@@ -14,15 +13,19 @@ export const useSocket = () => useContext(SocketContext);
 
 export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
   const [socket, setSocket] = useState<Socket | null>(null);
-  const [notifications, setNotifications] = useState<string[]>([]);
   const { token, user } = useSession();
 
   useEffect(() => {
-    if (!token || !user) return;
+    if (!token || !user) {
+      socket?.disconnect();
+      return;
+    }
 
     const newSocket = io(`${process.env.NEXT_PUBLIC_API_URL}`, {
       transports: ["websocket"],
       auth: { token },
+      reconnectionAttempts: 5,
+      reconnectionDelay: 3000,
     });
 
     newSocket.on("connect", () => {
@@ -32,26 +35,21 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
       newSocket.emit("connect_user", { userId: user._id });
     });
 
-    newSocket.on("notification", (notification) => {
-      console.log("Notification received:", notification);
-      setNotifications((prevNotifications) => [
-        ...prevNotifications,
-        notification,
-      ]);
-    });
-
     newSocket.on("disconnect", () => {
       console.log("Socket disconnected");
     });
 
     return () => {
-      newSocket.disconnect();
+      if (newSocket.connected) {
+        newSocket.disconnect();
+        console.log("Socket disconnected via cleanup");
+      }
       setSocket(null);
     };
   }, [token, user]);
 
   return (
-    <SocketContext.Provider value={{ socket, notifications }}>
+    <SocketContext.Provider value={{ socket }}>
       {children}
     </SocketContext.Provider>
   );
