@@ -6,12 +6,12 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useSession } from "@/contexts/SessionProvider";
 import AuthModal from "@/features/auth/components/AuthModal";
+import MyGoogleMapComponent from "@/features/discover/MyGoogleMapComponent";
 import CreateEventModal from "@/features/event/components/CreateEventModal";
 import CreateEventPreview from "@/features/event/components/CreateEventPreview";
 import EnableChatButton from "@/features/event/components/EnableChatButton";
 import EventCoHostsModal from "@/features/event/components/EventCoHostsModal";
 import EventDate from "@/features/event/components/EventDate";
-import EventLocationInput from "@/features/event/components/EventLocationInput";
 import EventQuestionsForm from "@/features/event/components/EventQuestionsForm";
 import EventURL from "@/features/event/components/EventURL";
 import { handleFieldChange } from "@/features/event/eventActions";
@@ -23,7 +23,6 @@ import { UserType } from "@/types/UserType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-
 const CreateEventPage = () => {
   const eventStore = useEventStore();
   const [users, setUsers] = useState<UserType[]>([]);
@@ -36,6 +35,7 @@ const CreateEventPage = () => {
   const [selectedInterests, setSelectedInterests] = useState<InterestType[]>(
     eventStore.interests || [],
   );
+  const [location, setLocation] = useState({ lat: 0, lng: 0 });
   const { user } = useAuthStore((state) => state);
   useEffect(() => {
     setFormValues({
@@ -414,7 +414,12 @@ const CreateEventPage = () => {
                 onChange={handleUpload}
               />
             </div>
-            {eventStore.mode !== "virtual" && <EventLocationInput />}
+            {eventStore.mode !== "virtual" && (
+              <MyGoogleMapComponent
+                location={location}
+                setLocation={setLocation}
+              />
+            )}
             <EventDate />
             <div>
               <Label className="sr-only" htmlFor="description">
