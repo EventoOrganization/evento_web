@@ -12,13 +12,13 @@ const HowItWorks = () => {
     {
       title: "Create your own Event",
       image: "/create.webp",
-      description: "Create your own event.",
+      description: "Create and host your own events.",
       link: "/create-event",
     },
     {
-      title: "Manage your Events",
+      title: "Follow your events",
       image: "/profile.webp",
-      description: "Follow your upcoming and past events,.",
+      description: "Connect with other event attendees.",
       link: "/profile",
     },
   ];
@@ -34,15 +34,15 @@ const HowItWorks = () => {
             <Link
               href={step.link}
               key={index}
-              className="border relative step p-4 bg-black shadow-md rounded-lg flex flex-col items-center aspect-square"
+              className="border relative step p-4 bg-evento-gradient  shadow-md rounded-lg flex flex-col items-center "
             >
               <Image
                 src={step.image}
                 alt={step.title}
                 fill
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                className="absolute w-full h-full rounded-lg inset-0 opacity-80"
-                style={{ filter: "blur(2px)" }}
+                className="absolute w-full h-full rounded-lg inset-0 opacity-40"
+                style={{ filter: "blur(1px)" }}
               />
               <h3 className="text-xl text-white font-black mb-2 z-10 p-4 rounded ">
                 {step.title}
