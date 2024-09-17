@@ -24,6 +24,7 @@ const EditProfilePage = () => {
   const { toast } = useToast();
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
+
   const [autocomplete, setAutocomplete] =
     useState<google.maps.places.Autocomplete | null>(null);
   const { isLoaded } = useJsApiLoader({

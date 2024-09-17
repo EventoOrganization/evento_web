@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 
 export default function CurrentUserProfilePage() {
   const session = useSession();
-  const { user, token } = session;
+  const { token } = session;
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const {
@@ -21,9 +21,9 @@ export default function CurrentUserProfilePage() {
   } = useProfileStore();
   useEffect(() => {
     setIsMounted(true);
-  }, []);
+    if (token) getProfileData(token);
+  }, [token]);
   const getProfileData = async (token: string) => {
-    if (userInfo) return;
     try {
       const profileRes = await fetchData<any>(
         `/profile/getLoggedUserProfile`,
@@ -46,11 +46,6 @@ export default function CurrentUserProfilePage() {
     }
   };
 
-  useEffect(() => {
-    if (user && token) {
-      getProfileData(token);
-    }
-  }, []);
   return (
     <>
       {isMounted && session.isAuthenticated ? (
