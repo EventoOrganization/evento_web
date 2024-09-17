@@ -4,6 +4,7 @@ import Section from "@/components/layout/Section";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
+import Loader from "@/components/ui/Loader";
 import {
   Popover,
   PopoverContent,
@@ -63,6 +64,7 @@ const DiscoverPage = () => {
   const [filteredEvents, setFilteredEvents] = useState<EventType[]>(
     events || [],
   );
+  const [isPending, setIsPending] = useState(false);
   // const [filterUsers, setFilterUsers] = useState<UserType[]>([]);
   const session = useSession();
   const [isHydrated, setIsHydrated] = useState(false);
@@ -80,6 +82,7 @@ const DiscoverPage = () => {
   const loadUpcomingEvents = async (user: UserType) => {
     const userIdQuery = user && user._id ? `?userId=${user._id}` : "";
     try {
+      setIsPending(true);
       const upcomingEventRes = await fetchData(
         `/events/getUpcomingEvents${userIdQuery}`,
       );
@@ -90,6 +93,8 @@ const DiscoverPage = () => {
       }
     } catch (error) {
       console.error("Error fetching events:", error);
+    } finally {
+      setIsPending(false);
     }
   };
   const handleInterestToggle = (interest: InterestType) => {
@@ -184,7 +189,11 @@ const DiscoverPage = () => {
               onClick={() => setToggleSearch(!toggleSearch)}
             />
           </li>
-          {filteredEvents.length > 0 ? (
+          {isPending ? (
+            <div className="w-full h-96 rounded">
+              <Loader />
+            </div>
+          ) : filteredEvents.length > 0 ? (
             filteredEvents.map((event) => (
               <li key={event._id} onClick={() => handleEventClick(event)}>
                 <Event event={event} />
