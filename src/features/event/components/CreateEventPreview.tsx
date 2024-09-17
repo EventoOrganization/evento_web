@@ -177,7 +177,8 @@ const CreateEventPreview = ({
             {/* <p className="whitespace-nowrap">{renderMinMaxTimes()}</p> */}
           </div>
           {/* Placeholder for TruncatedText */}
-          <div className="w-fullp-4 rounded">{eventStore.description}</div>
+          <pre className="w-fullp-4 rounded">{eventStore.description}</pre>
+          <p className="text-blue-500 underline">{eventStore.URL}</p>
         </div>
       </div>
     </>

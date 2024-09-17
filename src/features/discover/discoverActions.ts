@@ -27,10 +27,20 @@ export const filterEvents = (
   events: EventType[],
   selectedInterests: InterestType[],
   searchText: string,
-  selectedDate: string,
   selectedTab: string,
   location: Location | null,
+  startDate: Date | null,
+  endDate: Date | null,
 ) => {
+  console.log("*Filtering events*:", {
+    events,
+    selectedInterests,
+    searchText,
+    selectedTab,
+    location,
+    startDate,
+    endDate,
+  });
   const searchLower = searchText.toLowerCase();
   return events.filter((event) => {
     const matchesInterest =
@@ -46,25 +56,35 @@ export const filterEvents = (
     const matchesSearchText =
       event.title?.toLowerCase().includes(searchLower) ||
       event.details?.description?.toLowerCase().includes(searchLower);
-
-    const eventDate = event.details?.date ? new Date(event.details.date) : null;
+    const eventStartDate = event.details?.date
+      ? new Date(event.details.date)
+      : null;
     const eventEndDate = event.details?.endDate
       ? new Date(event.details.endDate)
       : null;
-    const selectedDateObj = selectedDate ? new Date(selectedDate) : null;
+
+    const startDay = startDate
+      ? new Date(startDate).setHours(0, 0, 0, 0)
+      : null;
+    const endDay = endDate ? new Date(endDate).setHours(0, 0, 0, 0) : startDay;
+
+    const eventStartDay = eventStartDate
+      ? eventStartDate.setHours(0, 0, 0, 0)
+      : null;
+    const eventEndDay = eventEndDate
+      ? eventEndDate.setHours(0, 0, 0, 0)
+      : eventStartDay;
 
     const matchesDate =
-      !selectedDateObj ||
-      (eventDate &&
-        eventEndDate &&
-        selectedDateObj >=
-          new Date(
-            eventDate.getTime() + eventDate.getTimezoneOffset() * 60000,
-          ) &&
-        selectedDateObj <=
-          new Date(
-            eventEndDate.getTime() + eventEndDate.getTimezoneOffset() * 60000,
-          ));
+      !startDay ||
+      !eventStartDay ||
+      !eventEndDay ||
+      (typeof eventStartDay === "number" &&
+        typeof eventEndDay === "number" &&
+        typeof startDay === "number" &&
+        typeof endDay === "number" &&
+        eventStartDay <= endDay &&
+        eventEndDay >= startDay);
 
     const isNearMe =
       selectedTab === "Near me" &&

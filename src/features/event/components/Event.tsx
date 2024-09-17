@@ -27,13 +27,13 @@ const Event = ({ className, event }: { className?: string; event?: any }) => {
         month: "long",
         day: "numeric",
       };
-      return date.toLocaleDateString("en-US", options);
+      return date.toLocaleDateString("fr-FR", options);
     };
     if (
       !endDate ||
       new Date(endDate).getTime() === new Date(startDate).getTime()
     ) {
-      return `le ${formatDate(startDate)}`;
+      return `In ${formatDate(startDate)}`;
     } else {
       const startDay = new Date(startDate).getDate();
       const endDay = new Date(endDate).getDate();
@@ -55,11 +55,11 @@ const Event = ({ className, event }: { className?: string; event?: any }) => {
         )}
       >
         <div className=" ">
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between gap-4 mb-4 ">
             <Link
               href={`/profile/${event?.user?._id}`}
               onClick={(e) => e.stopPropagation()}
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 "
             >
               {event?.user?.profileImage ? (
                 <Image
@@ -67,20 +67,20 @@ const Event = ({ className, event }: { className?: string; event?: any }) => {
                   alt="user image"
                   width={30}
                   height={30}
-                  className="w-10 h-10 rounded-full"
+                  className="w-10 h-10 min-w-10  rounded-full"
                 />
               ) : (
                 <Avatar>
                   <AvatarImage
                     src={"https://github.com/shadcn.png"}
-                    className="rounded-full w-10 h-10 "
+                    className="rounded-full min-w-10 w-10 h-10 "
                   />
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
               )}
               <h4 className="ml-2">{(event && event?.user.username) || ""}</h4>
             </Link>
-            <span className="text-sm">{renderDate()}</span>
+            <span className="text-sm text-right">{renderDate()}</span>
           </div>
           <div>
             {pathname === "/discover" ? (

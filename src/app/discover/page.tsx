@@ -2,11 +2,16 @@
 
 import Section from "@/components/layout/Section";
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import UsersList from "@/components/UsersList";
 import { useSession } from "@/contexts/SessionProvider";
 import AuthModal from "@/features/auth/components/AuthModal";
-import DateSelector from "@/features/discover/DateSelector";
 import { filterEvents } from "@/features/discover/discoverActions";
 import MyGoogleMapComponent from "@/features/discover/MyGoogleMapComponent";
 import TabSelector from "@/features/discover/TabSelector";
@@ -16,7 +21,15 @@ import { cn } from "@/lib/utils";
 import { useEventoStore } from "@/store/useEventoStore";
 import { EventType, InterestType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
-import { Search } from "lucide-react";
+import { fetchData } from "@/utils/fetchData";
+import { format, startOfDay } from "date-fns";
+import { fr } from "date-fns/locale";
+import {
+  Calendar as CalendarIcon,
+  MenuIcon,
+  Search,
+  XIcon,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 
 interface Location {
@@ -27,20 +40,24 @@ interface Location {
 const DiscoverPage = () => {
   const {
     users,
-    events,
+    // events,
     interests,
     loadInterests,
-    loadUpcomingEvents,
+    // loadUpcomingEvents,
     loadUsersPlus,
   } = useEventoStore();
   const [selectedInterests, setSelectedInterests] = useState<InterestType[]>(
     [],
   );
+  const [showReset, setShowReset] = useState(false);
+  const today = startOfDay(new Date());
+  const [events, setEvents] = useState<EventType[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<EventType | null>();
   const [isEventModalOpen, setIsEventModalOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [searchText, setSearchText] = useState("");
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
   const [selectedTab, setSelectedTab] = useState("All");
   const [location, setLocation] = useState<Location | null>(null);
   const [filteredEvents, setFilteredEvents] = useState<EventType[]>(
@@ -49,18 +66,32 @@ const DiscoverPage = () => {
   // const [filterUsers, setFilterUsers] = useState<UserType[]>([]);
   const session = useSession();
   const [isHydrated, setIsHydrated] = useState(false);
-
+  const [toggleSearch, setToggleSearch] = useState(false);
   // Wait until the client has fully hydrated to prevent SSR mismatches
   useEffect(() => {
     setIsHydrated(true);
   }, []);
   useEffect(() => {
     loadInterests();
-    loadUpcomingEvents(session.user || undefined);
+    loadUpcomingEvents((session.user as UserType) || null);
     if (session.user && session.token)
       loadUsersPlus(session.user._id, session.token);
   }, []);
-
+  const loadUpcomingEvents = async (user: UserType) => {
+    const userIdQuery = user && user._id ? `?userId=${user._id}` : "";
+    try {
+      const upcomingEventRes = await fetchData(
+        `/events/getUpcomingEvents${userIdQuery}`,
+      );
+      if (upcomingEventRes && !upcomingEventRes.error) {
+        setEvents(upcomingEventRes.data as EventType[]);
+      } else {
+        console.error("Failed to fetch events:", upcomingEventRes?.error);
+      }
+    } catch (error) {
+      console.error("Error fetching events:", error);
+    }
+  };
   const handleInterestToggle = (interest: InterestType) => {
     setSelectedInterests((prev) =>
       prev.some((i) => i._id === interest._id)
@@ -70,29 +101,33 @@ const DiscoverPage = () => {
   };
 
   useEffect(() => {
-    const formattedDate = selectedDate ? selectedDate.toISOString() : "";
-    if (users && users.length > 0 && events && events.length > 0) {
+    // const formattedStartDate = startDate ? startDate.toISOString() : "";
+    // const formattedEndDate = endDate ? endDate.toISOString() : "";
+    if (events && events.length > 0) {
       const filteredEvents = filterEvents(
         events,
         selectedInterests,
         searchText,
-        formattedDate,
         selectedTab,
         location,
+        startDate,
+        endDate,
       );
-
+      console.log("Filtered events:", filteredEvents);
       setFilteredEvents(filteredEvents);
     }
   }, [
     selectedInterests,
     searchText,
-    selectedDate,
     selectedTab,
     events,
     location,
     events,
+    events,
     interests,
     users,
+    startDate,
+    endDate,
   ]);
 
   if (!isHydrated) {
@@ -102,43 +137,88 @@ const DiscoverPage = () => {
     setSelectedEvent(event);
     setIsEventModalOpen(true);
   };
+  const resetDate = () => {
+    setStartDate(null);
+    setEndDate(null);
+    setShowReset(false);
+  };
+  const handleStartDateChange = (date: Date | undefined) => {
+    if (date && date >= today) {
+      setStartDate(date);
+      if (!endDate || date > endDate) {
+        setEndDate(date);
+      }
+    }
+    setShowReset(true);
+  };
+
+  const handleEndDateChange = (date: Date | undefined) => {
+    if (!startDate) {
+      setStartDate(today);
+    }
+    setEndDate(date || null);
+    setShowReset(true);
+  };
   return (
     <>
       <div className="relative flex justify-center items-center mt-10 text-eventoPurpleLight gap-2">
         <h2 className="animate-slideInLeft font-black opacity-0">
-          <span>Discover</span>
+          <span>Discover Event</span>
         </h2>
-        <h2 className="event-text animate-slideInRight flex opacity-0 items-center bg-evento-gradient text-white rounded shadow">
+        {/* <h2 className="event-text animate-slideInRight flex opacity-0 items-center bg-evento-gradient text-white rounded shadow">
           <span className=" flex justify-center items-center">
             <img src="/logo.png" alt="E" className="w-12 h-12" />
           </span>
           <span className="-translate-x-1.5">vents</span>
-        </h2>
+        </h2> */}
       </div>
-      <Section className="flex flex-col-reverse md:grid md:grid-cols-2 gap-20 items-start">
+      <Section className="flex flex-col-reverse md:grid md:grid-cols-2  md:gap-20 items-start justify-end">
         <ul className="w-full space-y-6">
-          <TabSelector
-            onChange={setSelectedTab}
-            tabs={["All", "Near me", "Virtual"]}
-          />
-          {filteredEvents &&
+          <li className="flex items-center sticky top-0 z-50 bg-muted py-4">
+            <TabSelector
+              onChange={setSelectedTab}
+              tabs={["All", "Near me", "Virtual"]}
+            />
+            <MenuIcon
+              className="md:hidden"
+              onClick={() => setToggleSearch(!toggleSearch)}
+            />
+          </li>
+          {filteredEvents.length > 0 ? (
             filteredEvents.map((event) => (
               <li key={event._id} onClick={() => handleEventClick(event)}>
                 <Event event={event} />
               </li>
-            ))}
+            ))
+          ) : (
+            <li className="text-muted-foreground text-center">
+              <p>No events found.</p>
+            </li>
+          )}
         </ul>
-        <div className="flex flex-col gap-2">
-          <div className="flex flex-col gap-2 p-4 pb-0 rounded bg-muted">
+        <div
+          className={cn(
+            "flex flex-col gap-2 w-full transition-all duration-300 bg-muted md:translate-x-0 md:max-h-fit md:opacity-100 sticky top-0 z-50",
+            {
+              "translate-x-[-100%] h-0 opacity-0": !toggleSearch,
+              "translate-x-0 max-h-fit opacity-100 pt-5": toggleSearch,
+            },
+          )}
+        >
+          <XIcon
+            className="md:hidden self-end"
+            onClick={() => setToggleSearch(!toggleSearch)}
+          />
+          <div className="flex flex-col gap-2 md:p-4 py-0 pt-0 rounded bg-muted">
             {/* <LocationSelector onLocationChange={setLocation} /> */}
             <MyGoogleMapComponent
               location={location || { lat: 0, lng: 0 }}
               setLocation={setLocation}
             />
           </div>
-          <div className="relative flex items-center p-4">
+          <div className="relative flex items-center md:p-4">
             <Search
-              className="w-6 h-6 absolute left-6 text-eventoPurpleDark"
+              className="w-6 h-6 absolute left-3 md:left-6 text-eventoPurpleDark"
               strokeWidth={2.5}
             />
             <Input
@@ -149,35 +229,93 @@ const DiscoverPage = () => {
               className="pl-12 border-none bg-white py-2 rounded-lg w-full"
             />
           </div>
-          <div className="p-4 flex gap-4">
-            <h4 className="cursor-pointer text-purple-600 font-bold">
-              Select Date
-            </h4>
-            <DateSelector
-              selectedDate={selectedDate}
-              setSelectedDate={setSelectedDate}
-            />
+          <div className="md:p-4  gap-4 ">
+            <div className="flex justify-between items-center ">
+              <h4 className=" text-purple-600 font-bold">Select Date</h4>
+              {showReset && (
+                <button
+                  onClick={resetDate}
+                  className=" text-sm hover:underline"
+                >
+                  Reset
+                </button>
+              )}
+            </div>
+            <div className="relative grid grid-cols-2 gap-4">
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className="w-full justify-start text-left font-normal"
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {startDate ? (
+                      format(startDate, "dd/MM/yyyy")
+                    ) : (
+                      <span>Select Start Date</span>
+                    )}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0">
+                  <Calendar
+                    mode="single"
+                    selected={startDate || today}
+                    onSelect={handleStartDateChange}
+                    initialFocus
+                    fromDate={today}
+                    locale={fr}
+                  />
+                </PopoverContent>
+              </Popover>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className="w-full justify-start text-left font-normal"
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {endDate ? (
+                      format(endDate, "dd/MM/yyyy")
+                    ) : (
+                      <span>Select End Date</span>
+                    )}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0">
+                  <Calendar
+                    mode="single"
+                    selected={endDate || today}
+                    onSelect={handleEndDateChange}
+                    initialFocus
+                    fromDate={startDate || today}
+                    locale={fr}
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
           </div>
           <div className="p-4">
             <h4 className="text-purple-600 font-bold">Select Interests</h4>
             <ul className="flex flex-wrap gap-4 mt-4">
               {interests.map((interest) => (
-                <li
+                <Button
                   key={interest._id}
-                  onClick={() => handleInterestToggle(interest)}
+                  asChild
                   className={cn(
-                    "cursor-pointer bg-gray-200 rounded px-2 py-1 w-fit hover:bg-eventoPurpleLight/50 focus:border-eventoBlue",
+                    "cursor-pointer bg-gray-200 text-black hover:bg-eventoPurpleLight/60",
                     {
-                      "bg-eventoPurpleLight/20":
+                      "bg-evento-gradient text-white":
                         selectedInterests.includes(interest),
                     },
                   )}
                 >
-                  {interest.name}
-                </li>
+                  <li onClick={() => handleInterestToggle(interest)}>
+                    {interest.name}
+                  </li>
+                </Button>
               ))}
             </ul>
-          </div>
+          </div>{" "}
           <div className="p-4 hidden md:block">
             <h4 className="text-purple-600 font-bold">Follow Suggestions</h4>
             <ul className="space-y-4 py-4">

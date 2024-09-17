@@ -16,12 +16,7 @@ const TabSelector = ({ onChange, tabs, className }: TabSelectorProps) => {
   };
 
   return (
-    <div
-      className={cn(
-        "relative flex justify-around w-full pb-4 text-xl",
-        className,
-      )}
-    >
+    <div className={cn(" flex justify-around w-full text-xl ", className)}>
       {tabs &&
         tabs.map((tab) => (
           <div

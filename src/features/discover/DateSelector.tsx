@@ -33,7 +33,7 @@ const DateSelector = ({
       <DatePicker
         selected={selectedDate}
         onChange={handleDateChange}
-        placeholderText="All"
+        placeholderText="Select Date"
         className="cursor-pointer text-purple-600 font-bold placeholder-black text-center"
       />
       {showReset && (

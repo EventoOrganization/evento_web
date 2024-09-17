@@ -121,7 +121,10 @@ const AuthModal = ({
         if (!open && onClose) onClose();
       }}
     >
-      <DialogContent className="rounded-xl">
+      <DialogContent
+        className="rounded-xl"
+        onClick={(e) => e.stopPropagation()}
+      >
         <DialogHeader className="flex-row items-center gap-4 ">
           <BackButton />
           <div className="space-y-1">

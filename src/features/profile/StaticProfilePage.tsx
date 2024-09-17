@@ -10,7 +10,7 @@ const StaticProfilePage = ({
 }) => {
   return (
     <>
-      <Section className="gap-6 md:pt-20 md:px-20 flex flex-col items-center">
+      <Section className="gap-6 grid md:grid-cols-2 md:pt-20 md:px-20 items-center">
         <div className="w-full lg:grid lg:grid-cols-3">
           <div className="col-span-2 self-start w-full max-w-lg text-center">
             <div className="flex items-center justify-center w-full mb-4">

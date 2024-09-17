@@ -1,8 +1,10 @@
 "use client";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { useEventStore } from "@/store/useEventStore";
 import { StandaloneSearchBox, useJsApiLoader } from "@react-google-maps/api";
 import { ChevronDown } from "lucide-react";
+import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import GoogleMapsMap from "./GoogleMapsMap";
 
@@ -20,9 +22,10 @@ const MyGoogleMapComponent = ({
   location: Location;
   setLocation: (location: Location) => void;
 }) => {
+  const pathname = usePathname();
   const [address, setAddress] = useState<string>("");
   const [isMapVisible, setIsMapVisible] = useState<boolean>(false);
-
+  const eventStore = useEventStore();
   const [mapCenter, setMapCenter] = useState<Location>({
     lat: 37.7749,
     lng: -122.4194,
@@ -34,7 +37,6 @@ const MyGoogleMapComponent = ({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
     libraries,
   });
-
   const fetchAddress = async (lat: number, lng: number) => {
     if (!isLoaded) {
       console.error("Google Maps API is not loaded yet.");
@@ -89,6 +91,11 @@ const MyGoogleMapComponent = ({
       setLocation({ lat, lng });
       setMapCenter({ lat, lng });
       fetchAddress(lat, lng);
+      if (pathname === "/create-event") {
+        eventStore.setEventField("latitude", lat.toString());
+        eventStore.setEventField("longitude", lng.toString());
+        eventStore.setEventField("location", address);
+      }
     }
   };
 
@@ -102,6 +109,11 @@ const MyGoogleMapComponent = ({
         setLocation({ lat, lng });
         setMapCenter({ lat, lng });
         fetchAddress(lat, lng);
+        if (pathname === "/create-event") {
+          eventStore.setEventField("latitude", lat.toString());
+          eventStore.setEventField("longitude", lng.toString());
+          eventStore.setEventField("location", place.formatted_address);
+        }
       }
     }
   }, []);
@@ -112,7 +124,11 @@ const MyGoogleMapComponent = ({
         className="flex items-center justify-between cursor-pointer"
         onClick={() => setIsMapVisible(!isMapVisible)}
       >
-        <h4 className="text-purple-600 font-bold">Current Location</h4>
+        <h4 className="text-purple-600 font-bold">
+          {pathname === "/create-event"
+            ? "Choose Location"
+            : "Current Location"}
+        </h4>
         <span className="flex items-center gap-2">
           <p>Map</p>
           <ChevronDown
@@ -130,7 +146,13 @@ const MyGoogleMapComponent = ({
           >
             <Input
               type="text"
-              placeholder={address ? address : "Enter a location"}
+              placeholder={
+                pathname === "/create-event"
+                  ? eventStore.location
+                  : address
+                    ? address
+                    : "Enter a location"
+              }
             />
           </StandaloneSearchBox>
         ) : (
