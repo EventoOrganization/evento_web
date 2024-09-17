@@ -32,11 +32,6 @@ const EventLocationInput = () => {
         newAutocomplete.addListener("place_changed", () => {
           const place = newAutocomplete.getPlace();
           if (place.geometry) {
-            const { location } = place.geometry;
-            const address = place.formatted_address || "";
-            eventStore.setEventField("location", address);
-            eventStore.setEventField("latitude", location?.lat().toString());
-            eventStore.setEventField("longitude", location?.lng().toString());
           }
         });
       } catch (error) {
@@ -46,7 +41,7 @@ const EventLocationInput = () => {
         );
       }
     }
-  }, [isLoaded, inputRef.current, autocomplete, eventStore]);
+  }, [isLoaded, inputRef.current, autocomplete]);
 
   return (
     <Input

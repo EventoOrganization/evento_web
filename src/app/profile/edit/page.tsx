@@ -8,19 +8,29 @@ import { useToast } from "@/hooks/use-toast";
 import { useProfileStore } from "@/store/useProfileStore";
 import { InterestType } from "@/types/EventType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
+import { useJsApiLoader } from "@react-google-maps/api";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 // Social media platforms list
 const socialPlatforms = ["instagram", "linkedin", "tiktok"];
-
+const libraries: ("places" | "geometry" | "drawing" | "visualization")[] = [
+  "places",
+];
 const EditProfilePage = () => {
   const session = useSession();
   const [interests, setInterests] = useState<InterestType[]>([]);
   const { userInfo, setProfileData } = useProfileStore((state) => state);
   const { toast } = useToast();
   const router = useRouter();
-
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [autocomplete, setAutocomplete] =
+    useState<google.maps.places.Autocomplete | null>(null);
+  const { isLoaded } = useJsApiLoader({
+    id: "google-maps-script",
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
+    libraries,
+  });
   // Initialize form state based on userInfo
   const [formData, setFormData] = useState({
     username: userInfo?.username || "",
@@ -197,11 +207,36 @@ const EditProfilePage = () => {
     }
   };
   useEffect(() => {
-    if (interests.length === 0) {
-      loadInterests();
-    }
+    loadInterests();
   }, []);
-  console.log("interests", interests);
+
+  useEffect(() => {
+    if (isLoaded && window.google && inputRef.current && !autocomplete) {
+      try {
+        const newAutocomplete = new window.google.maps.places.Autocomplete(
+          inputRef.current,
+          { types: ["geocode"] },
+        );
+        setAutocomplete(newAutocomplete);
+
+        newAutocomplete.addListener("place_changed", () => {
+          const place = newAutocomplete.getPlace();
+          if (place.geometry) {
+            const address = place.formatted_address || "";
+            setFormData((prevData) => ({
+              ...prevData,
+              address: address,
+            }));
+          }
+        });
+      } catch (error) {
+        console.error(
+          "Failed to initialize Google Places Autocomplete:",
+          error,
+        );
+      }
+    }
+  }, [isLoaded, inputRef.current, autocomplete]);
   return (
     <div className="container mx-auto max-w-lg py-10">
       <h1 className="text-2xl font-semibold mb-6">Edit Profile</h1>
@@ -243,13 +278,13 @@ const EditProfilePage = () => {
         <div>
           <Label htmlFor="address">Address</Label>
           <Input
+            ref={inputRef}
             type="text"
             name="address"
             value={formData.address}
             onChange={handleChange}
           />
         </div>
-
         {/* Bio */}
         <div>
           <Label htmlFor="bio">Bio</Label>
