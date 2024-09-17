@@ -1,19 +1,19 @@
 import Section from "@/components/layout/Section";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 import EventPreview from "./EventPreview";
 const EventSection = ({
   title,
   events,
   sectionStyle,
   noEventsMessage,
-}: any) => {
-  // Unifier la structure des événements pour qu'ils soient tous dans le même format
-  // const processedEvents = events.map((event: any) =>
-  //   event.eventId ? event.eventId : event,
-  // );
-
-  // console.log(title, processedEvents);
-
+}: {
+  title: string;
+  events?: any[];
+  sectionStyle?: string;
+  noEventsMessage?: string;
+}) => {
   return (
     <Section className={sectionStyle}>
       <h3 className="font-bold text-lg">
@@ -33,7 +33,12 @@ const EventSection = ({
             <EventPreview key={index} event={event} />
           ))
         ) : (
-          <p>{noEventsMessage}</p>
+          <Button className="w-fit" variant="outline" asChild>
+            <Link href="/create-event">
+              Create your first event!{" "}
+              <span className="sr-only">{noEventsMessage}</span>
+            </Link>
+          </Button>
         )}
       </div>
     </Section>

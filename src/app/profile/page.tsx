@@ -50,7 +50,7 @@ export default function CurrentUserProfilePage() {
     if (user && token) {
       getProfileData(token);
     }
-  }, [token, user]);
+  }, []);
   return (
     <>
       {isMounted && session.isAuthenticated ? (
