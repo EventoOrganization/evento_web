@@ -40,11 +40,13 @@ export default function UserProfilePage({
     return <div>Loading...</div>;
   } else {
     return (
-      <UserProfile
-        profile={profileData.userInfo}
-        upcomingEvents={profileData?.userInfo.upcomingEvents || []}
-        pastEvents={profileData?.userInfo.pastEvents || []}
-      />
+      <>
+        <UserProfile
+          profile={profileData.userInfo}
+          upcomingEvents={profileData?.upcomingEvents || []}
+          pastEvents={profileData?.pastEvents || []}
+        />
+      </>
     );
   }
 }

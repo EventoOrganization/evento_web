@@ -32,7 +32,7 @@ const TruncatedText = ({
         )}
         style={{ display: "-webkit-box", WebkitBoxOrient: "vertical" }}
       >
-        {text}
+        <pre>{text}</pre>
       </p>
       {isOverflowing && (
         <div className="w-full flex justify-end items-start">

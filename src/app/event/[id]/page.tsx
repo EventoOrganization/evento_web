@@ -16,6 +16,7 @@ import { UserType } from "@/types/UserType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import Image from "next/image";
+import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -152,7 +153,10 @@ const EventPage = () => {
       /> */}
       <div className="p-10">
         <div className="flex items-center w-full justify-between mb-4">
-          <div className="flex items-center gap-2 ">
+          <Link
+            className="flex items-center gap-2 "
+            href={`/profile/${event?.user?._id}`}
+          >
             {event?.user?.profileImage ? (
               <Image
                 src={event?.user.profileImage}
@@ -173,7 +177,7 @@ const EventPage = () => {
             <h4 className="ml-2">
               {(event.details && event?.user?.username) || ""}
             </h4>
-          </div>
+          </Link>
           <span className="text-sm">{renderDate()}</span>
         </div>
         <RenderMedia event={event} />

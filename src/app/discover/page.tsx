@@ -198,7 +198,7 @@ const DiscoverPage = () => {
         </ul>
         <div
           className={cn(
-            "flex flex-col gap-2 w-full transition-all duration-300 bg-muted md:translate-x-0 md:max-h-fit md:opacity-100 sticky top-0 z-50",
+            "flex flex-col gap-2 w-full transition-all duration-300 bg-muted md:translate-x-0 md:max-h-fit md:opacity-100 sticky top-0 z-20",
             {
               "translate-x-[-100%] h-0 opacity-0": !toggleSearch,
               "translate-x-0 max-h-fit opacity-100 pt-5": toggleSearch,

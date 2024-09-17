@@ -7,7 +7,6 @@ import ChatInput from "@/features/chat/components/ChatInput";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/store/useAuthStore";
 import { EventType } from "@/types/EventType";
-import moment from "moment";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { Socket } from "socket.io-client";
@@ -234,12 +233,7 @@ const ChatPage = () => {
                         {(conversation as EventType).title ||
                           (conversation as MessageType).lastmessage?.message}
                       </h3>
-                      <p className="text-sm text-gray-500 truncate">
-                        {moment(
-                          (conversation as MessageType)?.lastmessage
-                            ?.timestamp || new Date(),
-                        ).format("HH:mm A")}
-                      </p>
+                      <p className="text-sm text-gray-500 truncate"></p>
                     </div>
                   </li>
                 ))}
@@ -287,9 +281,7 @@ const ChatPage = () => {
                     ) : msg.message_type === 3 ? (
                       <video src={msg.message} controls width="300" />
                     ) : null}
-                    <span className="block text-xs text-gray-500">
-                      {moment(msg.timestamp).format("HH:mm A")}
-                    </span>
+                    <span className="block text-xs text-gray-500"></span>
                   </div>
                 ))}
               </div>
