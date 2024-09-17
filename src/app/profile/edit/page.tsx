@@ -5,10 +5,10 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useSession } from "@/contexts/SessionProvider";
 import { useToast } from "@/hooks/use-toast";
-import { useEventoStore } from "@/store/useEventoStore";
 import { useProfileStore } from "@/store/useProfileStore";
+import { InterestType } from "@/types/EventType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
-// import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 // Social media platforms list
@@ -16,14 +16,14 @@ const socialPlatforms = ["instagram", "linkedin", "tiktok"];
 
 const EditProfilePage = () => {
   const session = useSession();
-  const { interests } = useEventoStore();
+  const [interests, setInterests] = useState<InterestType[]>([]);
   const { userInfo, setProfileData } = useProfileStore((state) => state);
   const { toast } = useToast();
-  // const router = useRouter();
+  const router = useRouter();
 
   // Initialize form state based on userInfo
   const [formData, setFormData] = useState({
-    name: userInfo?.username || "",
+    username: userInfo?.username || "",
     firstName: userInfo?.firstName || "",
     lastName: userInfo?.lastName || "",
     address: userInfo?.address || "",
@@ -41,7 +41,7 @@ const EditProfilePage = () => {
   useEffect(() => {
     if (userInfo) {
       setFormData({
-        name: userInfo.username || "",
+        username: userInfo.username || "",
         firstName: userInfo.firstName || "",
         lastName: userInfo.lastName || "",
         address: userInfo.address || "",
@@ -49,7 +49,7 @@ const EditProfilePage = () => {
         URL: userInfo.URL || "",
         DOB: userInfo.DOB || "",
         interests: userInfo.interests || [],
-        socialLinks: userInfo.socialLinks || [{ platform: "", url: "" }],
+        socialLinks: userInfo.socialLinks || [],
       });
     }
   }, [userInfo]);
@@ -63,7 +63,18 @@ const EditProfilePage = () => {
       [e.target.name]: e.target.value,
     });
   };
-
+  const loadInterests = async () => {
+    try {
+      const interestRes = await fetchData("/users/getInterestsListing");
+      if (interestRes && !interestRes.error) {
+        setInterests(interestRes.data as InterestType[]);
+      } else {
+        console.error("Failed to fetch interests:", interestRes?.error);
+      }
+    } catch (error) {
+      console.error("Error fetching interests:", error);
+    }
+  };
   // Handle changes for social links
   const handleSocialLinkChange = (
     index: number,
@@ -181,20 +192,27 @@ const EditProfilePage = () => {
       }
     } catch (error) {
       console.error("Error updating profile:", error);
+    } finally {
+      router.push("/profile");
     }
   };
-
+  useEffect(() => {
+    if (interests.length === 0) {
+      loadInterests();
+    }
+  }, []);
+  console.log("interests", interests);
   return (
     <div className="container mx-auto max-w-lg py-10">
       <h1 className="text-2xl font-semibold mb-6">Edit Profile</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Username */}
         <div>
-          <Label htmlFor="name">Username</Label>
+          <Label htmlFor="username">Username</Label>
           <Input
             type="text"
-            name="name"
-            value={formData.name}
+            name="username"
+            value={formData.username}
             onChange={handleChange}
           />
         </div>
@@ -294,7 +312,7 @@ const EditProfilePage = () => {
         </div>
 
         {/* Social Links */}
-        <div>
+        <div className="flex flex-col gap-2">
           <Label htmlFor="socialLinks">Social Links</Label>
           {formData.socialLinks.map((link, index) => (
             <div key={index} className="flex gap-2">
@@ -319,6 +337,7 @@ const EditProfilePage = () => {
                 }
               />
               <Button
+                type="button"
                 onClick={() => removeSocialLink(index)}
                 className="bg-gray-300 text-black hover:bg-gray-200"
                 variant={"ghost"}
@@ -328,8 +347,9 @@ const EditProfilePage = () => {
             </div>
           ))}
           <Button
+            type="button"
             onClick={addSocialLink}
-            className="hover:bg-eventoBlue bg-eventoBlue  hover:opacity-80 mt-2"
+            className="hover:bg-eventoBlue bg-eventoBlue  hover:opacity-80 mt-2 w-fit"
           >
             Add Social Link
           </Button>
