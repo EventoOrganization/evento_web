@@ -298,19 +298,21 @@ const DiscoverPage = () => {
             <h4 className="text-purple-600 font-bold">Select Interests</h4>
             <ul className="flex flex-wrap gap-4 mt-4">
               {interests.map((interest) => (
-                <li
+                <Button
                   key={interest._id}
-                  onClick={() => handleInterestToggle(interest)}
+                  asChild
                   className={cn(
-                    "cursor-pointer bg-gray-200 rounded px-2 py-1 w-fit hover:bg-eventoPurpleLight/50 focus:border-eventoBlue",
+                    "cursor-pointer bg-gray-200 text-black hover:bg-eventoPurpleLight/60",
                     {
-                      "bg-eventoPurpleLight/20":
+                      "bg-evento-gradient text-white":
                         selectedInterests.includes(interest),
                     },
                   )}
                 >
-                  {interest.name}
-                </li>
+                  <li onClick={() => handleInterestToggle(interest)}>
+                    {interest.name}
+                  </li>
+                </Button>
               ))}
             </ul>
           </div>{" "}
