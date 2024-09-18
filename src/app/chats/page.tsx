@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/store/useAuthStore";
 import { EventType } from "@/types/EventType";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Socket } from "socket.io-client";
 type MessageType = {
@@ -21,6 +22,7 @@ type MessageType = {
 };
 
 const ChatPage = () => {
+  const router = useRouter();
   const [conversations, setConversations] = useState<
     (EventType | MessageType)[]
   >([]);
@@ -105,18 +107,23 @@ const ChatPage = () => {
   // Function to handle selecting a conversation
 
   const sendMessage = async () => {
+    if (!socketRef.current) return;
+
     const formData = new FormData();
     formData.append("senderId", user?._id ?? "");
-    formData.append("eventId", selectedEvent?._id ?? "");
-    formData.append("receiverId", selectedReceiverId ?? "");
+    if (selectedEvent) {
+      // Si c'est un événement, envoyer dans la room du groupe
+      formData.append("groupId", selectedEvent._id ?? "");
+    } else if (selectedReceiverId) {
+      // Si c'est une conversation privée
+      formData.append("receiverId", selectedReceiverId ?? "");
+    }
     formData.append("message_type", String(messageType)); // Convertir le numéro en chaîne
 
     if (file) {
       formData.append("file", file);
     }
-    // for (let pair of formData.entries()) {
-    //   console.log(pair[0] + ", " + pair[1]);
-    // }
+
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/chats/saveMessage`,
@@ -133,6 +140,13 @@ const ChatPage = () => {
         setMessages((prev) => [...prev, data.message]);
         setFile(null);
         setMessageType(1);
+
+        // Envoyer le message dans la room via Socket.io
+        socketRef.current.emit("send_message", {
+          message: data.message,
+          groupId: selectedEvent?._id ?? null,
+          receiverId: selectedReceiverId ?? null,
+        });
       } else {
         console.error("Failed to send message:", response.statusText);
       }
@@ -142,14 +156,24 @@ const ChatPage = () => {
   };
 
   const handleSelectConversation = (conversation: EventType | MessageType) => {
-    setSelectedEvent(conversation as EventType);
+    if ("_id" in conversation) {
+      if (conversation.hasOwnProperty("title")) {
+        setSelectedEvent(conversation as EventType);
+        socketRef.current?.emit("joinRoom", conversation._id);
+        setSelectedReceiverId(undefined);
 
-    // Gestion des événements et des conversations privées
-    const receiverId = (conversation as MessageType)?.receiverId || "";
-    setSelectedReceiverId(receiverId);
+        // Mettre à jour l'URL avec l'ID de l'événement
+        router.push(`/chats?roomId=${conversation._id}`);
+      } else {
+        setSelectedReceiverId((conversation as MessageType)?.receiverId || "");
+        setSelectedEvent(null);
+        socketRef.current?.emit("joinRoom", conversation._id);
 
-    socketRef.current?.emit("joinRoom", conversation?._id);
-    setMessages([]); // Clear messages when a new event is selected
+        // Mettre à jour l'URL avec l'ID de la conversation privée
+        router.push(`/chats?roomId=${conversation._id}`);
+      }
+      setMessages([]);
+    }
   };
 
   const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {

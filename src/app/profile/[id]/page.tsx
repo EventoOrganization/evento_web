@@ -11,6 +11,7 @@ export default function UserProfilePage({
 }) {
   const { id: userId } = params;
   const [profileData, setProfileData] = useState<any>(null);
+
   const getProfileData = async () => {
     if (profileData) return;
     try {

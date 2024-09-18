@@ -27,12 +27,12 @@ const TruncatedText = ({
       <p
         ref={textRef}
         className={cn(
-          `${isExpanded ? "" : "line-clamp-2"} break-words w-full  whitespace-normal`,
+          `${isExpanded ? "" : "line-clamp-2"} break-words w-full  whitespace-pre-wrap`,
           className,
         )}
         style={{ display: "-webkit-box", WebkitBoxOrient: "vertical" }}
       >
-        <pre>{text}</pre>
+        {text}
       </p>
       {isOverflowing && (
         <div className="w-full flex justify-end items-start">
