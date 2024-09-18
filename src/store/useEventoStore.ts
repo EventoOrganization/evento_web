@@ -17,6 +17,12 @@ interface EventoStoreState {
   users: UserType[];
   setUsers: (users: UserType[]) => void;
   loadUsersPlus: (userId: string, token: string) => Promise<void>;
+
+  eventStatuses: Record<string, { going: boolean; favourite: boolean }>;
+  setEventStatus: (
+    eventId: string,
+    status: { going: boolean; favourite: boolean },
+  ) => void;
 }
 const customStorage = {
   getItem: (name: string) => {
@@ -36,12 +42,22 @@ const useEventoStore = create<EventoStoreState>()(
       interests: [],
       events: [],
       users: [],
-
+      eventStatuses: {},
       // Setters
       setInterests: (interests: InterestType[]) => set({ interests }),
       setEvents: (events: EventType[]) => set({ events }),
       setUsers: (users: UserType[]) => set({ users }),
-
+      setEventStatus: (
+        eventId: string,
+        status: { going: boolean; favourite: boolean },
+      ) => {
+        set((state) => ({
+          eventStatuses: {
+            ...state.eventStatuses,
+            [eventId]: status,
+          },
+        }));
+      },
       // Load Interests
       loadInterests: async () => {
         if (get().interests.length > 0) return;

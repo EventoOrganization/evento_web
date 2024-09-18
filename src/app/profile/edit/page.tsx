@@ -283,8 +283,8 @@ const EditProfilePage = () => {
 
         {/* Interests */}
         <div>
-          <label htmlFor="interests">Interests</label>
-          <ul className="flex flex-wrap gap-4 justify-between">
+          <Label>Interests</Label>
+          <ul className="flex flex-wrap gap-4 justify-between ">
             {interests.map((interest) => (
               <li key={interest._id} className="list-none">
                 <Button

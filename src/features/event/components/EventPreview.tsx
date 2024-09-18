@@ -10,11 +10,13 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { useEventStatusStore } from "@/store/useEventStatusStore";
 import { EventType } from "@/types/EventType";
 import { BookmarkCheck, Circle, CircleCheckBig } from "lucide-react";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import EventModal from "./EventModal";
+
 const EventPreview = ({
   className,
   event,
@@ -22,8 +24,26 @@ const EventPreview = ({
   className?: string;
   event?: EventType;
 }) => {
-  // console.log("Events:", event);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const { eventStatuses, setEventStatus } = useEventStatusStore();
+
+  const currentStatus = (event && eventStatuses[event?._id]) || {
+    going: event?.isGoing || false,
+    favourite: event?.isFavourite || false,
+    refused: event?.isRefused || false,
+  };
+
+  useEffect(() => {
+    if (event) {
+      setEventStatus(event._id, {
+        going: currentStatus.going,
+        favourite: currentStatus.favourite,
+        refused: currentStatus.refused,
+      });
+    }
+  }, [event, currentStatus.going, currentStatus.favourite, setEventStatus]);
+
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     const options: Intl.DateTimeFormatOptions = {
@@ -33,6 +53,7 @@ const EventPreview = ({
     };
     return date.toLocaleDateString("en-US", options);
   };
+
   const handleCardClick = () => {
     setIsModalOpen(true);
   };
@@ -52,15 +73,15 @@ const EventPreview = ({
       >
         <CardHeader>
           <CardTitle className="z-10 w-10 h-10 self-end space-y-2">
-            {event?.isGoing && (
+            {currentStatus.going && (
               <CircleCheckBig
                 strokeWidth={1.5}
                 className={cn(
                   "text-white bg-eventoPurpleLight rounded-full w-full h-full",
                 )}
               />
-            )}{" "}
-            {event?.isFavourite && (
+            )}
+            {currentStatus.favourite && (
               <div className=" w-10 h-10 relative">
                 <Circle
                   strokeWidth={1.5}

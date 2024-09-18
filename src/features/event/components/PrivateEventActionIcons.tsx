@@ -1,6 +1,8 @@
 import { useSession } from "@/contexts/SessionProvider";
 import AuthModal from "@/features/auth/components/AuthModal";
+import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import { useEventStatusStore } from "@/store/useEventStatusStore";
 import { EventType } from "@/types/EventType";
 import {
   Bookmark,
@@ -11,11 +13,11 @@ import {
   Send,
   X,
 } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import RefusalModal from "./RefusalModal";
 
 type EventActionIconsProps = {
-  event?: EventType;
+  event: EventType;
   className?: string;
 };
 
@@ -23,21 +25,38 @@ const PrivateEventActionIcons: React.FC<EventActionIconsProps> = ({
   event,
   className = "",
 }) => {
+  const { toast } = useToast();
   const { token, user } = useSession();
-  const [goingStatus, setGoingStatus] = useState<boolean>(
-    event?.isGoing ?? false,
-  );
-  const [maybeStatus, setMaybeStatus] = useState<boolean>(
-    event?.isFavourite ?? false,
-  );
-  const [refusedStatus, setRefusedStatus] = useState<boolean>(
-    event?.isRefused ?? false,
-  );
+  const {
+    eventStatuses,
+    toggleGoing,
+    toggleFavourite,
+    setEventStatus,
+    toggleRefused,
+  } = useEventStatusStore();
+  const currentStatus = eventStatuses[event._id] || {
+    going: event.isGoing || false,
+    favourite: event.isFavourite || false,
+    refused: event.isRefused || false,
+  };
   const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
   const [isRefusalModalOpen, setIsRefusalModalOpen] = useState(false);
   const [refusalReason, setRefusalReason] = useState<string>("");
-
+  useEffect(() => {
+    setEventStatus(event._id, {
+      going: currentStatus.going,
+      favourite: currentStatus.favourite,
+      refused: currentStatus.refused,
+    });
+  }, [
+    event,
+    currentStatus.going,
+    currentStatus.favourite,
+    currentStatus.refused,
+    setEventStatus,
+  ]);
   // Handle Going status
+
   const handleGoing = async () => {
     if (!token) {
       setIsAuthModalOpen(true);
@@ -61,14 +80,14 @@ const PrivateEventActionIcons: React.FC<EventActionIconsProps> = ({
           throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        if (maybeStatus) {
-          handleMaybe();
-          setMaybeStatus(false);
-        } else if (refusedStatus) {
-          handleRefused();
-          setRefusedStatus(false);
+        if (!eventStatuses[event._id].going) {
+          toast({
+            title: "You marked this event as going",
+            className: "bg-evento-gradient text-white",
+            duration: 1000,
+          });
         }
-        setGoingStatus(!goingStatus);
+        toggleGoing(event._id);
       } catch (error) {
         console.error("Error marking event as going:", error);
         alert("Failed to mark as going. Please try again.");
@@ -98,14 +117,16 @@ const PrivateEventActionIcons: React.FC<EventActionIconsProps> = ({
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      if (goingStatus) {
-        handleGoing();
-        setGoingStatus(false);
-      } else if (refusedStatus) {
-        handleRefused();
-        setRefusedStatus(false);
+      if (!eventStatuses[event._id]?.favourite) {
+        toast({
+          title: eventStatuses[event._id]?.favourite
+            ? "You unfavoured this event"
+            : "You favoured this event",
+          className: "bg-evento-gradient text-white",
+          duration: 1000,
+        });
       }
-      setMaybeStatus(!maybeStatus);
+      toggleFavourite(event._id);
     } catch (error) {
       console.error("Error marking event as maybe:", error);
       alert("Failed to mark as maybe. Please try again.");
@@ -137,15 +158,16 @@ const PrivateEventActionIcons: React.FC<EventActionIconsProps> = ({
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      if (goingStatus) {
-        handleGoing();
-        setGoingStatus(false);
-      } else if (maybeStatus) {
-        handleMaybe();
-        setMaybeStatus(false);
+      toggleRefused(event._id);
+      if (!eventStatuses[event._id]?.refused) {
+        toast({
+          title: eventStatuses[event._id]?.refused
+            ? "You refused this event"
+            : "You refused to participate to this event",
+          className: "bg-evento-gradient text-white",
+          duration: 1000,
+        });
       }
-
-      setRefusedStatus(!refusedStatus);
       setRefusalReason("");
     } catch (error) {
       console.error("Error marking event as refused:", error);
@@ -177,11 +199,13 @@ const PrivateEventActionIcons: React.FC<EventActionIconsProps> = ({
       <button
         onClick={(e) => {
           handleGoing();
+          currentStatus.favourite && handleMaybe();
+          currentStatus.refused && handleRefused();
           e.stopPropagation();
         }}
         className="relative flex items-center justify-center w-10 h-10"
       >
-        {event && !goingStatus ? (
+        {!currentStatus.going ? (
           <CircleCheck
             strokeWidth={1.5}
             className={cn("text-eventoPurpleLight w-full h-full")}
@@ -198,11 +222,13 @@ const PrivateEventActionIcons: React.FC<EventActionIconsProps> = ({
       <button
         onClick={(e) => {
           handleMaybe();
+          currentStatus.going && handleGoing();
+          currentStatus.refused && handleRefused();
           e.stopPropagation();
         }}
         className="relative flex items-center justify-center w-10 h-10"
       >
-        {event && maybeStatus ? (
+        {currentStatus.favourite ? (
           <BookmarkCheck className="z-10 text-white" />
         ) : (
           <Bookmark className="text-eventoPurpleLight" />
@@ -212,19 +238,21 @@ const PrivateEventActionIcons: React.FC<EventActionIconsProps> = ({
           className={cn(
             "absolute inset-0 text-eventoPurpleLight rounded-full w-full h-full",
             {
-              "bg-eventoPurpleLight text-white": event && maybeStatus,
+              "bg-eventoPurpleLight text-white": currentStatus.favourite,
             },
           )}
         />
       </button>
       <button
         onClick={(e) => {
-          refusedStatus ? handleRefused() : setIsRefusalModalOpen(true);
+          currentStatus.refused ? handleRefused() : setIsRefusalModalOpen(true);
+          currentStatus.going && handleGoing();
+          currentStatus.favourite && handleMaybe();
           e.stopPropagation();
         }}
         className="relative flex items-center justify-center w-10 h-10"
       >
-        {event && refusedStatus ? (
+        {currentStatus.refused ? (
           <X className="z-10 text-white" />
         ) : (
           <X className="text-eventoPurpleLight" />
@@ -234,7 +262,7 @@ const PrivateEventActionIcons: React.FC<EventActionIconsProps> = ({
           className={cn(
             "absolute inset-0 text-eventoPurpleLight rounded-full w-full h-full",
             {
-              "bg-eventoPurpleLight text-white": event && refusedStatus,
+              "bg-eventoPurpleLight text-white": currentStatus.refused,
             },
           )}
         />

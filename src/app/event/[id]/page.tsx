@@ -227,7 +227,6 @@ const EventPage = () => {
               </Button>
               <p className="text-sm">{event?.details?.description}</p>
             </>
-
             {event.eventType === "public" && <EventActionIcons event={event} />}
             {event.eventType === "private" && (
               <PrivateEventActionIcons event={event} />
