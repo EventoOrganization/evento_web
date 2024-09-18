@@ -406,6 +406,20 @@ const CreateEventPage = () => {
                 </select>
               </div>
             )}
+            <ul className="flex gap-2 flex-wrap">
+              {eventStore.interests &&
+                eventStore.interests.map((interest: any, index: number) => (
+                  <li
+                    key={index}
+                    onClick={() =>
+                      handleRemoveInterest && handleRemoveInterest(interest._id)
+                    }
+                    className="bg-eventoPurpleLight/30 w-fit px-2 py-1 rounded-lg text-sm cursor-pointer"
+                  >
+                    {interest.name}
+                  </li>
+                ))}
+            </ul>
             <div className="md:hidden">
               <Input
                 type="file"
