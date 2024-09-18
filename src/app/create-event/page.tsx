@@ -16,7 +16,6 @@ import EventQuestionsForm from "@/features/event/components/EventQuestionsForm";
 import EventURL from "@/features/event/components/EventURL";
 import { handleFieldChange } from "@/features/event/eventActions";
 import { useToast } from "@/hooks/use-toast";
-import { useAuthStore } from "@/store/useAuthStore";
 import { useEventStore } from "@/store/useEventStore";
 import { EventType, InterestType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
@@ -36,7 +35,7 @@ const CreateEventPage = () => {
     eventStore.interests || [],
   );
   const [location, setLocation] = useState({ lat: 0, lng: 0 });
-  const { user } = useAuthStore((state) => state);
+  const { user } = useSession();
   useEffect(() => {
     setFormValues({
       title: eventStore.title || "",
@@ -455,6 +454,13 @@ const CreateEventPage = () => {
         </Section>
         <Section className="hidden md:block">
           <CreateEventPreview handleRemoveInterest={handleRemoveInterest} />
+          <Button
+            variant={"outline"}
+            className="mt-4 shadow w-full"
+            onClick={() => eventStore.clearEventForm()}
+          >
+            Reset from
+          </Button>
         </Section>
       </div>
       <CreateEventModal
