@@ -95,7 +95,7 @@ const Event = ({ className, event }: { className?: string; event?: any }) => {
             <h3>{event && event?.title}</h3>
             <ul className="flex gap-2 flex-wrap">
               {event &&
-                event?.interest?.map((interest: any) => (
+                event?.interests?.map((interest: any) => (
                   <li
                     key={interest._id || interest.name}
                     className="bg-eventoPurpleLight/30 w-fit px-2 py-1 rounded-lg text-sm"

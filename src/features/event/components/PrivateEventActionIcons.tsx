@@ -203,7 +203,7 @@ const PrivateEventActionIcons: React.FC<EventActionIconsProps> = ({
           currentStatus.refused && handleRefused();
           e.stopPropagation();
         }}
-        className="relative flex items-center justify-center w-10 h-10"
+        className="relative flex items-center justify-center w-10 h-10 hover:opacity-80"
       >
         {!currentStatus.going ? (
           <CircleCheck
@@ -226,7 +226,7 @@ const PrivateEventActionIcons: React.FC<EventActionIconsProps> = ({
           currentStatus.refused && handleRefused();
           e.stopPropagation();
         }}
-        className="relative flex items-center justify-center w-10 h-10"
+        className="relative flex items-center justify-center w-10 h-10 hover:opacity-80"
       >
         {currentStatus.favourite ? (
           <BookmarkCheck className="z-10 text-white" />
@@ -250,7 +250,7 @@ const PrivateEventActionIcons: React.FC<EventActionIconsProps> = ({
           currentStatus.favourite && handleMaybe();
           e.stopPropagation();
         }}
-        className="relative flex items-center justify-center w-10 h-10"
+        className="relative flex items-center justify-center w-10 h-10 hover:opacity-80"
       >
         {currentStatus.refused ? (
           <X className="z-10 text-white" />
@@ -272,7 +272,7 @@ const PrivateEventActionIcons: React.FC<EventActionIconsProps> = ({
           handleSend();
           e.stopPropagation();
         }}
-        className="relative flex items-center justify-center w-10 h-10"
+        className="relative flex items-center justify-center w-10 h-10 hover:opacity-80"
       >
         <Send
           strokeWidth={2}

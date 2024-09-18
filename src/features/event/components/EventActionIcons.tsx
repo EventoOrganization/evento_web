@@ -147,7 +147,7 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
           currentStatus.favourite && handleFavourite();
           e.stopPropagation();
         }}
-        className="relative flex items-center justify-center w-10 h-10"
+        className="relative flex items-center justify-center w-10 h-10 hover:opacity-80"
       >
         {!currentStatus.going ? (
           <CircleCheck
@@ -169,7 +169,7 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
           currentStatus.going && handleGoing();
           e.stopPropagation();
         }}
-        className="relative flex items-center justify-center w-10 h-10"
+        className="relative flex items-center justify-center w-10 h-10 hover:opacity-80"
       >
         {currentStatus.favourite ? (
           <BookmarkCheck className="z-10 text-white" />
@@ -191,7 +191,7 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
           handleSend();
           e.stopPropagation();
         }}
-        className="relative flex items-center justify-center w-10 h-10"
+        className="relative flex items-center justify-center w-10 h-10 hover:opacity-80"
       >
         <Send
           strokeWidth={2}

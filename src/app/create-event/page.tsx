@@ -106,52 +106,52 @@ const CreateEventPage = () => {
     } finally {
     }
   };
-  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const fileInput = e.target as HTMLInputElement;
+  // const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const fileInput = e.target as HTMLInputElement;
 
-    if (fileInput.files && fileInput.files.length > 0) {
-      const files = Array.from(fileInput.files);
-      for (const file of files) {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
+  //   if (fileInput.files && fileInput.files.length > 0) {
+  //     const files = Array.from(fileInput.files);
+  //     for (const file of files) {
+  //       const reader = new FileReader();
+  //       reader.readAsDataURL(file);
 
-        reader.onloadend = async () => {
-          const base64data = reader.result as string;
+  //       reader.onloadend = async () => {
+  //         const base64data = reader.result as string;
 
-          try {
-            const response = await fetch("/api/uploadTempFile", {
-              method: "POST",
-              body: JSON.stringify({
-                base64data,
-                fileName: file.name,
-              }),
-              headers: {
-                "Content-Type": "application/json",
-              },
-            });
+  //         try {
+  //           const response = await fetch("/api/uploadTempFile", {
+  //             method: "POST",
+  //             body: JSON.stringify({
+  //               base64data,
+  //               fileName: file.name,
+  //             }),
+  //             headers: {
+  //               "Content-Type": "application/json",
+  //             },
+  //           });
 
-            if (response.ok) {
-              const result = await response.json();
-              const fileUrl = result.filePath;
-              const mediaType = file.type.startsWith("video/")
-                ? "video"
-                : "image";
-              handleFieldChange("mediaPreviews", [
-                { url: fileUrl, type: mediaType },
-              ]);
-            } else {
-              const result = await response.json();
-              console.error("Failed to upload file:", result.message);
-            }
-          } catch (error) {
-            console.error("Error uploading file:", error);
-          }
-        };
-      }
+  //           if (response.ok) {
+  //             const result = await response.json();
+  //             const fileUrl = result.filePath;
+  //             const mediaType = file.type.startsWith("video/")
+  //               ? "video"
+  //               : "image";
+  //             handleFieldChange("mediaPreviews", [
+  //               { url: fileUrl, type: mediaType },
+  //             ]);
+  //           } else {
+  //             const result = await response.json();
+  //             console.error("Failed to upload file:", result.message);
+  //           }
+  //         } catch (error) {
+  //           console.error("Error uploading file:", error);
+  //         }
+  //       };
+  //     }
 
-      fileInput.value = "";
-    }
-  };
+  //     fileInput.value = "";
+  //   }
+  // };
   const getUsers = async () => {
     try {
       const usersRes = await fetchData<any>("/users/allUserListing");
@@ -420,14 +420,14 @@ const CreateEventPage = () => {
                   </li>
                 ))}
             </ul>
-            <div className="md:hidden">
+            {/* <div className="md:hidden">
               <Input
                 type="file"
                 accept="image/*,video/*"
                 multiple
                 onChange={handleUpload}
               />
-            </div>
+            </div> */}
             {eventStore.mode !== "virtual" && (
               <MyGoogleMapComponent
                 location={location}

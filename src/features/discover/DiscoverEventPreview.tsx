@@ -79,7 +79,7 @@ const DiscoverEventPreview = ({
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
               )}
-              <h4 className="ml-2">{(event && event?.details.name) || ""}</h4>
+              <h4 className="ml-2">{(event && event?.user.username) || ""}</h4>
             </div>
             <span className="text-sm">{renderDate()}</span>
           </div>
@@ -92,7 +92,7 @@ const DiscoverEventPreview = ({
             <h3>{event && event?.title}</h3>
             <ul className="flex gap-2 flex-wrap">
               {event &&
-                event?.interest?.map((interest: any) => (
+                event?.interests?.map((interest: any) => (
                   <li
                     key={interest._id || interest.name}
                     className="bg-eventoPurpleLight/30 w-fit px-2 py-1 rounded-lg text-sm"
