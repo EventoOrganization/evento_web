@@ -46,10 +46,6 @@ const DiscoverEventPreview = ({
     }
   };
 
-  const isValidUrl = (url: string) => {
-    return url.startsWith("http://") || url.startsWith("https://");
-  };
-
   return (
     <>
       <div
@@ -61,8 +57,7 @@ const DiscoverEventPreview = ({
         <div className=" ">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
-              {event?.user?.profileImage &&
-              isValidUrl(event.user.profileImage) ? (
+              {event?.user?.profileImage ? (
                 <Image
                   src={event?.user.profileImage}
                   alt="user image"
