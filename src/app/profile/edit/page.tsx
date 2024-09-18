@@ -8,6 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useProfileStore } from "@/store/useProfileStore";
 import { InterestType } from "@/types/EventType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
+import { cn } from "@nextui-org/theme";
 import { useJsApiLoader } from "@react-google-maps/api";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -125,28 +126,16 @@ const EditProfilePage = () => {
   };
 
   // Handle interest selection change
-  const handleInterestsChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedInterestId = e.target.value;
-    const selectedInterest = interests.find(
-      (i) => i._id === selectedInterestId,
+  const handleInterestsChange = (selectedInterest: InterestType) => {
+    const isSelected = formData.interests.some(
+      (i) => i._id === selectedInterest._id,
     );
-    if (
-      selectedInterest &&
-      !formData.interests.some((i) => i._id === selectedInterestId)
-    ) {
-      setFormData({
-        ...formData,
-        interests: [...formData.interests, selectedInterest],
-      });
-    }
-  };
-
-  // Remove an interest from the form
-  const removeInterest = (interestId: string) => {
-    const updatedInterests = formData.interests.filter(
-      (interests) => interests._id !== interestId,
-    );
-    setFormData({ ...formData, interests: updatedInterests });
+    setFormData({
+      ...formData,
+      interests: isSelected
+        ? formData.interests.filter((i) => i._id !== selectedInterest._id)
+        : [...formData.interests, selectedInterest],
+    });
   };
 
   // Handle form submission
@@ -294,29 +283,27 @@ const EditProfilePage = () => {
 
         {/* Interests */}
         <div>
-          <Label htmlFor="interests">Interests</Label>
-          <select
-            onChange={handleInterestsChange}
-            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            <option value="">Choose interest...</option>
+          <label htmlFor="interests">Interests</label>
+          <ul className="flex flex-wrap gap-4 justify-between">
             {interests.map((interest) => (
-              <option key={interest._id} value={interest._id}>
-                {interest.name}
-              </option>
+              <li key={interest._id} className="list-none">
+                <Button
+                  type="button"
+                  className={cn(
+                    "cursor-pointer bg-gray-200 text-black hover:bg-eventoPurpleLight/60",
+                    {
+                      "bg-evento-gradient text-white": formData.interests.some(
+                        (i) => i._id === interest._id,
+                      ),
+                    },
+                  )}
+                  onClick={() => handleInterestsChange(interest)}
+                >
+                  {interest.name}
+                </Button>
+              </li>
             ))}
-          </select>
-          <div className="flex gap-2 py-2">
-            {formData.interests.map((interest) => (
-              <Button
-                key={interest._id}
-                className="bg-evento-gradient hover:opacity-80"
-                onClick={() => removeInterest(interest._id as string)}
-              >
-                {interest.name} (remove)
-              </Button>
-            ))}
-          </div>
+          </ul>
         </div>
 
         {/* URL */}
