@@ -152,13 +152,13 @@ const EventPage = () => {
     })) || []),
   ];
   return (
-    <div className="md:grid-cols-2 grid grid-cols-1 w-full h-full">
+    <div className="md:grid-cols-2 grid grid-cols-1 w-full h-screen ">
       {/* <EventInvitation
         event={event}
         user={user}
         eventLink={`http://localhost:3000/event/${event._id}`}
       /> */}
-      <div className="p-10 pl-0">
+      <div className="md:p-10 md:pl-0 p-4 h-full ">
         <div className="flex items-center w-full justify-between mb-4">
           <Link
             className="flex items-center gap-2 "
@@ -189,11 +189,11 @@ const EventPage = () => {
         </div>
         <RenderMedia event={event} />
       </div>
-      <Section className=" justify-start py-10 pr-0 w-full">
+      <Section className="justify-start py-10 md:pr-0 w-full h-full">
         <TabSelector
           onChange={setSelectedTab}
           tabs={["Description", "Attendees"]}
-          className=""
+          className="mb-4"
         />
         {selectedTab === "Description" && (
           <div className="space-y-4 pb-20 w-full">
@@ -232,7 +232,9 @@ const EventPage = () => {
                   {event && event?.details?.location}
                 </span>
               </Button>
-              <p className="text-sm">{event?.details?.description}</p>
+              <p className="text-sm whitespace-pre">
+                {event?.details?.description}
+              </p>
             </>
             {event.eventType === "public" && <EventActionIcons event={event} />}
             {event.eventType === "private" && (
@@ -241,7 +243,7 @@ const EventPage = () => {
           </div>
         )}
         {selectedTab === "Attendees" && (
-          <div className="space-y-4 pb-20 w-full">
+          <div className="space-y-4 pb-20 w-full h-full ">
             <div className="flex items-center justify-between">
               <h1 className="text-xl font-bold">{event?.title}</h1>
               {(event.guestsAllowFriend || event.isAdmin || event.isHosted) && (

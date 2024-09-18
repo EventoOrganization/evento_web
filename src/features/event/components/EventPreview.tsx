@@ -77,7 +77,7 @@ const EventPreview = ({
               <CircleCheckBig
                 strokeWidth={1.5}
                 className={cn(
-                  "text-white bg-eventoPurpleLight rounded-full w-full h-full",
+                  "text-white bg-evento-gradient rounded-full w-full h-full",
                 )}
               />
             )}
@@ -86,7 +86,7 @@ const EventPreview = ({
                 <Circle
                   strokeWidth={1.5}
                   className={cn(
-                    "absolute inset-0  text-white bg-eventoPurpleLight rounded-full w-full h-full",
+                    "absolute inset-0  text-white bg-evento-gradient rounded-full w-full h-full",
                   )}
                 />
                 <BookmarkCheck className="absolute inset-0 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white" />

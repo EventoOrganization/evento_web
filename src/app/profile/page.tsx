@@ -12,13 +12,8 @@ export default function CurrentUserProfilePage() {
   const { token } = session;
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
-  const {
-    userInfo,
-    upcomingEvents,
-    pastEvents,
-    filteredUpcomingEventsAttened,
-    setProfileData,
-  } = useProfileStore();
+  const { userInfo, upcomingEvents, pastEvents, hostedEvents, setProfileData } =
+    useProfileStore();
   useEffect(() => {
     setIsMounted(true);
     if (token) getProfileData(token);
@@ -51,7 +46,7 @@ export default function CurrentUserProfilePage() {
       {isMounted && session.isAuthenticated ? (
         <UserProfile
           profile={userInfo}
-          upcomingEvents={filteredUpcomingEventsAttened}
+          upcomingEvents={hostedEvents}
           pastEvents={pastEvents}
           hostingEvents={upcomingEvents}
         />
