@@ -46,9 +46,9 @@ export default function CurrentUserProfilePage() {
       {isMounted && session.isAuthenticated ? (
         <UserProfile
           profile={userInfo}
-          upcomingEvents={hostedEvents}
+          upcomingEvents={upcomingEvents}
           pastEvents={pastEvents}
-          hostingEvents={upcomingEvents}
+          hostingEvents={hostedEvents}
         />
       ) : (
         <StaticProfilePage
