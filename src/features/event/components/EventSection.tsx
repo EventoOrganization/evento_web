@@ -2,6 +2,7 @@ import Section from "@/components/layout/Section";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import EventPreview from "./EventPreview";
 const EventSection = ({
   title,
@@ -14,6 +15,7 @@ const EventSection = ({
   sectionStyle?: string;
   noEventsMessage?: string;
 }) => {
+  const pathname = usePathname();
   return (
     <Section className={sectionStyle}>
       <h3 className="font-bold text-lg">
@@ -32,13 +34,12 @@ const EventSection = ({
           events.map((event: any, index: number) => (
             <EventPreview key={index} event={event} />
           ))
-        ) : (
+        ) : !pathname.startsWith("/profile/") ? (
           <Button className="w-fit" variant="outline" asChild>
-            <Link href="/create-event">
-              Create your first event!{" "}
-              <span className="sr-only">{noEventsMessage}</span>
-            </Link>
+            <Link href="/create-event">Create your first event! </Link>
           </Button>
+        ) : (
+          <p>{noEventsMessage}</p>
         )}
       </div>
     </Section>

@@ -135,13 +135,21 @@ const UserProfile = ({
         title="Upcoming Events"
         events={upcomingEvents}
         sectionStyle="flex flex-col items-start gap-4 p-0 lg: max-w-7xl"
-        noEventsMessage="There are no events at the moment. Explore Evento and create or host an event easily."
+        noEventsMessage={
+          pathname.startsWith("/profile/")
+            ? "This user isn't going to upcoming events at the moment."
+            : "There are no events at the moment. Explore Evento and create or host an event easily."
+        }
       />
       <EventSection
         title="Events Hosting"
         events={hostingEvents}
         sectionStyle="flex flex-col items-start gap-4 p-0 lg: max-w-7xl"
-        noEventsMessage="There are no events at the moment. Explore Evento and create or host an event easily."
+        noEventsMessage={
+          pathname.startsWith("/profile/")
+            ? "This user isn't hosting events at the moment."
+            : "There are no events at the moment. Explore Evento and create or host an event easily."
+        }
       />
       {pastEvents && pastEvents?.length > 0 && (
         <EventSection
