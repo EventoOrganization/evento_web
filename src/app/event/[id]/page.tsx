@@ -4,6 +4,7 @@ import MapPinIcon2 from "@/components/icons/MappPinIcon2";
 import Section from "@/components/layout/Section";
 import RenderMedia from "@/components/RenderMedia";
 import { Button } from "@/components/ui/button";
+import Loader from "@/components/ui/Loader";
 import { useSession } from "@/contexts/SessionProvider";
 import TabSelector from "@/features/discover/TabSelector";
 import EventActionIcons from "@/features/event/components/EventActionIcons";
@@ -11,6 +12,7 @@ import EventGuestModal from "@/features/event/components/EventGuestModal";
 import EventTimeSlots from "@/features/event/components/EventTimeSlots";
 import PrivateEventActionIcons from "@/features/event/components/PrivateEventActionIcons";
 import { useToast } from "@/hooks/use-toast";
+import { useEventStatusStore } from "@/store/useEventStatusStore";
 import { EventType, InterestType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
@@ -19,7 +21,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-
 const EventPage = () => {
   const { id } = useParams();
   const eventId = Array.isArray(id) ? id[0] : id;
@@ -27,10 +28,11 @@ const EventPage = () => {
   const [users, setUsers] = useState<UserType[]>([]);
   const [selectedTab, setSelectedTab] = useState("Description");
   const [isGuestAllowed, setIsGuestAllowed] = useState<boolean | null>(null);
+  const { eventStatuses } = useEventStatusStore();
   const { user, token } = useSession();
   const { toast } = useToast();
   useEffect(() => {
-    if (eventId && !event) {
+    if (eventId) {
       fetchEventData(eventId);
     }
     if (user && token) {
@@ -38,7 +40,8 @@ const EventPage = () => {
     } else {
       loadusers();
     }
-  }, [eventId]);
+    console.log("eventStatuses", eventStatuses[eventId]);
+  }, [eventId, eventStatuses[eventId], user, token]);
 
   const fetchEventData = async (eventId: string) => {
     try {
@@ -74,7 +77,11 @@ const EventPage = () => {
     }
   };
   if (!event) {
-    return <div>Loading...</div>;
+    return (
+      <div className="w-full h-full absolute top-0 left-0 flex items-center justify-center">
+        <Loader />
+      </div>
+    );
   }
   const formatDate = (dateString: string | undefined) => {
     if (!dateString) return "";
@@ -145,13 +152,13 @@ const EventPage = () => {
     })) || []),
   ];
   return (
-    <div className="md:grid-cols-2 grid grid-cols-1 w-screen h-screen">
+    <div className="md:grid-cols-2 grid grid-cols-1 w-full h-full">
       {/* <EventInvitation
         event={event}
         user={user}
         eventLink={`http://localhost:3000/event/${event._id}`}
       /> */}
-      <div className="p-10">
+      <div className="p-10 pl-0">
         <div className="flex items-center w-full justify-between mb-4">
           <Link
             className="flex items-center gap-2 "
@@ -182,7 +189,7 @@ const EventPage = () => {
         </div>
         <RenderMedia event={event} />
       </div>
-      <Section className=" justify-start p-10 w-full">
+      <Section className=" justify-start py-10 pr-0 w-full">
         <TabSelector
           onChange={setSelectedTab}
           tabs={["Description", "Attendees"]}
@@ -237,11 +244,9 @@ const EventPage = () => {
           <div className="space-y-4 pb-20 w-full">
             <div className="flex items-center justify-between">
               <h1 className="text-xl font-bold">{event?.title}</h1>
-              {event.guestsAllowFriend ||
-                event.isAdmin ||
-                (event.isHosted && (
-                  <EventGuestModal allUsers={users} event={event} />
-                ))}
+              {(event.guestsAllowFriend || event.isAdmin || event.isHosted) && (
+                <EventGuestModal allUsers={users} event={event} />
+              )}
             </div>
             {event.isHosted && (
               <div className="flex items-center gap-2">
