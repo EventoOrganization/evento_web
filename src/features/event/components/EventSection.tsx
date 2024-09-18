@@ -35,8 +35,18 @@ const EventSection = ({
             <EventPreview key={index} event={event} />
           ))
         ) : !pathname.startsWith("/profile/") ? (
-          <Button className="w-fit" variant="outline" asChild>
-            <Link href="/create-event">Create your first event! </Link>
+          <Button
+            className="w-fit bg-evento-gradient text-white"
+            variant="outline"
+            asChild
+          >
+            <Link
+              href={title === "Events Hosting" ? "/create-event" : "/discover"}
+            >
+              {title === "Events Hosting"
+                ? "Create your first event !"
+                : "Find events you’ll love !"}
+            </Link>
           </Button>
         ) : (
           <p>{noEventsMessage}</p>
