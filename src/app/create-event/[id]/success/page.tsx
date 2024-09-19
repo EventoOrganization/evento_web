@@ -13,6 +13,7 @@ import { EventType } from "@/types/EventType";
 import { TempUserType, UserType } from "@/types/UserType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 import Image from "next/image";
+import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -327,6 +328,13 @@ const EventSuccessPage = () => {
           <div className="space-y-4 pb-20 w-full">
             <div className="flex items-center justify-between">
               <h1 className="text-xl font-bold">{event?.title}</h1>
+              <Link
+                href={"/event/" + event?._id}
+                className="underline text-blue-500"
+              >
+                {" "}
+                See your event!
+              </Link>
             </div>
             {event.isHosted && (
               <div className="flex items-center gap-2">
