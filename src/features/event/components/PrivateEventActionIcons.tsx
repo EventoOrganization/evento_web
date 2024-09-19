@@ -47,9 +47,9 @@ const PrivateEventActionIcons: React.FC<EventActionIconsProps> = ({
   const [refusalReason, setRefusalReason] = useState<string>("");
   useEffect(() => {
     setEventStatus(event._id, {
-      going: event.isGoing || false,
-      favourite: event.isFavourite || false,
-      refused: event.isRefused || false,
+      going: currentStatus.going || false,
+      favourite: currentStatus.favourite || false,
+      refused: currentStatus.refused || false,
     });
     const requiredQuestions = event.questions?.filter((q) => q.required) || [];
     if (requiredQuestions.length > 0) {

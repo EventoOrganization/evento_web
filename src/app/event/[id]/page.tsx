@@ -232,7 +232,7 @@ const EventPage = () => {
                   {event && event?.details?.location}
                 </span>
               </Button>
-              <p className="text-sm whitespace-pre">
+              <p className="text-sm whitespace-pre-wrap break-words max-w-full">
                 {event?.details?.description}
               </p>
             </>
