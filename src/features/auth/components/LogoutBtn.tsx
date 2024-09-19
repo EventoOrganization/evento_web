@@ -38,8 +38,8 @@ const LogoutBtn = () => {
     }
   };
   return (
-    <Button className="bg-muted text-muted-foreground" onClick={handleclick}>
-      logoutBtn
+    <Button className="" onClick={handleclick}>
+      Logout
     </Button>
   );
 };
