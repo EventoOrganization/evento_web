@@ -1,5 +1,4 @@
 "use client";
-import BackButton from "@/components/BackButton";
 import {
   Dialog,
   DialogContent,
@@ -155,7 +154,6 @@ const AuthModal = ({
         onClick={(e) => e.stopPropagation()}
       >
         <DialogHeader className="flex-row items-center gap-4 ">
-          <BackButton />
           <div className="space-y-1">
             <DialogTitle>
               {currentForm === "signup"

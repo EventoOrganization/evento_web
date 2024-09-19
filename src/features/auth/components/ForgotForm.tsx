@@ -36,13 +36,16 @@ const ForgotForm = ({
 
   const onSubmit: SubmitHandler<z.infer<typeof emailSchema>> = async (data) => {
     setIsFetching(true);
-    console.log(isFetching);
+    const formattedData = {
+      ...data,
+      email: data.email.toLowerCase(),
+    };
 
     try {
       const result = await fetchData(
         "/auth/forgot-password",
         HttpMethod.POST,
-        data,
+        formattedData,
       );
       if (!result.ok) {
         toast({
@@ -109,6 +112,7 @@ const ForgotForm = ({
               <button
                 className="text-muted-foreground text-xs hover:underline w-full text-end cursor-pointer"
                 onClick={onBackToSignIn} // Use onBackToSignIn when clicked
+                disabled={isFetching}
               >
                 Back to Sign In
               </button>

@@ -21,10 +21,10 @@ import { useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 
-// Update the response type to allow null or undefined
 interface VerifyOTPResponse {
   token?: string;
-  error?: string | null; // Adjusted to match the response from fetchData
+  error?: string | null;
+  data?: any;
 }
 
 const OTPVerifyForm = ({
@@ -70,19 +70,19 @@ const OTPVerifyForm = ({
           duration: 3000,
         });
       } else {
-        const token = verifyRes?.token || ""; // Use token if available
-
         toast({
           description: "OTP verified successfully",
           className: "bg-evento-gradient-button text-white",
           duration: 3000,
         });
 
-        // Call onAuthSuccess based on flowType
         if (flowType === "forgot-password") {
-          onAuthSuccess(token); // Pass the token for password reset
+          const token = verifyRes?.data.token || "";
+          console.log("response", verifyRes);
+          onAuthSuccess(token);
         } else if (flowType === "signup") {
-          onAuthSuccess(); // No token needed for signup flow
+          console.log("verify otp");
+          onAuthSuccess();
         }
       }
     } catch (err) {

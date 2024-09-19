@@ -64,7 +64,7 @@ const LoginForm = ({
         "/auth/login",
         HttpMethod.POST,
         {
-          email: data.email,
+          email: data.email.toLowerCase(),
           password: data.password,
         },
       );
