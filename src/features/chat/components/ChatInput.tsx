@@ -1,58 +1,37 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@radix-ui/react-label";
-import { Paperclip } from "lucide-react";
+// features/chat/components/ChatInput.tsx
+"use client";
+
 import { useState } from "react";
+
 interface ChatInputProps {
-  onSendMessage: (message: string, file: File | null) => void;
+  onSendMessage: (message: string) => void;
 }
+
 const ChatInput = ({ onSendMessage }: ChatInputProps) => {
   const [message, setMessage] = useState("");
-  const [file, setFile] = useState<File | null>(null);
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files ? event.target.files[0] : null;
-    if (file) {
-      setFile(file);
+  const handleSendMessage = () => {
+    if (message.trim()) {
+      onSendMessage(message);
+      setMessage("");
     }
-  };
-
-  const handleSubmit = () => {
-    if (!message && !file) {
-      alert("Vous ne pouvez pas envoyer un message vide.");
-      return;
-    }
-    const textMessage = message || (file ? "Fichier joint" : "");
-    console.log(textMessage, file);
-    onSendMessage(textMessage, file);
-    setMessage("");
-    setFile(null);
   };
 
   return (
-    <div className="chat-input-container flex items-center w-full gap-6">
-      <Label htmlFor="file-upload" className="cursor-pointer absolute ml-3 ">
-        <Paperclip name="attachment" className="w-5 h-5 text-gray-500" />
-      </Label>
-      <Input
+    <div className="p-5 border-t flex gap-6 items-center bg-evento-gradient">
+      <input
         type="text"
+        className="flex-grow border rounded p-2"
         value={message}
         onChange={(e) => setMessage(e.target.value)}
         placeholder="Type a message..."
-        className="pl-12 pr-20"
       />
-      <Input
-        type="file"
-        onChange={handleFileChange}
-        style={{ display: "none" }}
-        id="file-upload"
-      />
-      <Button
-        onClick={handleSubmit}
-        className="absolute right-5 rounded-l-none"
+      <button
+        onClick={handleSendMessage}
+        className="bg-blue-500 text-white px-4 py-2 rounded"
       >
         Send
-      </Button>
+      </button>
     </div>
   );
 };

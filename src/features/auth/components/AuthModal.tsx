@@ -64,6 +64,7 @@ const AuthModal = ({
     }
     setUser(loginRes.data);
     startSession(loginRes.data, loginRes.data.token);
+    switchForm("verify");
   };
 
   const switchForm = (
@@ -93,7 +94,6 @@ const AuthModal = ({
         return (
           <SignUpForm
             onAuthSuccess={(email, password) => {
-              switchForm("verify");
               handleOnSignUpSuccess(email, password);
             }}
             onSignInClick={() => switchForm("login")}

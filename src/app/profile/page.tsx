@@ -1,5 +1,4 @@
 "use client";
-import Loader from "@/components/ui/Loader";
 import { useSession } from "@/contexts/SessionProvider";
 import AuthModal from "@/features/auth/components/AuthModal";
 import StaticProfilePage from "@/features/profile/StaticProfilePage";
@@ -12,7 +11,6 @@ export default function CurrentUserProfilePage() {
   const session = useSession();
   const { token } = session;
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const [isPending, setIsPending] = useState(true);
   const [isMounted, setIsMounted] = useState(false);
   const { userInfo, upcomingEvents, pastEvents, hostedEvents, setProfileData } =
     useProfileStore();
@@ -20,13 +18,10 @@ export default function CurrentUserProfilePage() {
     setIsMounted(true);
     if (token) {
       getProfileData(token);
-    } else {
-      setIsPending(false);
     }
   }, [token]);
   const getProfileData = async (token: string) => {
     try {
-      setIsPending(true);
       const profileRes = await fetchData<any>(
         `/profile/getLoggedUserProfile`,
         HttpMethod.GET,
@@ -44,38 +39,31 @@ export default function CurrentUserProfilePage() {
         error,
       );
     } finally {
-      setIsPending(false);
       console.log("Fin de la récupération des données de profil");
     }
   };
-  if (isPending) {
-    return (
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full">
-        <Loader />
-      </div>
-    );
-  } else {
-    return (
-      <>
-        {isMounted && session.isAuthenticated ? (
-          <UserProfile
-            profile={userInfo}
-            upcomingEvents={upcomingEvents}
-            pastEvents={pastEvents}
-            hostingEvents={hostedEvents}
-          />
-        ) : (
-          <StaticProfilePage
-            setIsAuthModalOpen={() => setIsAuthModalOpen(true)}
-          />
-        )}
-        {isAuthModalOpen && (
-          <AuthModal
-            onAuthSuccess={(token: string) => getProfileData(token)}
-            onClose={() => setIsAuthModalOpen(false)}
-          />
-        )}
-      </>
-    );
-  }
+  return (
+    <>
+      {isMounted && session.isAuthenticated ? (
+        <UserProfile
+          profile={userInfo}
+          upcomingEvents={upcomingEvents}
+          pastEvents={pastEvents}
+          hostingEvents={hostedEvents}
+        />
+      ) : (
+        <StaticProfilePage
+          setIsAuthModalOpen={() => setIsAuthModalOpen(true)}
+        />
+      )}
+      {isAuthModalOpen && (
+        <AuthModal
+          onAuthSuccess={(token: string) => {
+            getProfileData(token);
+          }}
+          onClose={() => setIsAuthModalOpen(false)}
+        />
+      )}
+    </>
+  );
 }

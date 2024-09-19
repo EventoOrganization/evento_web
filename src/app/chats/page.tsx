@@ -1,16 +1,15 @@
+// app/chats/page.tsx
 "use client";
 
-import Burger from "@/components/Burger";
-import { Input } from "@/components/ui/input";
 import { useSession } from "@/contexts/SessionProvider";
 import ChatInput from "@/features/chat/components/ChatInput";
-import { cn } from "@/lib/utils";
+import MessageList from "@/features/chat/components/MessageList";
 import { useAuthStore } from "@/store/useAuthStore";
-import { EventType } from "@/types/EventType";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { useEffect, useRef, useState } from "react";
 import { Socket } from "socket.io-client";
+
+// Define the MessageType structure
 type MessageType = {
   _id: string;
   senderId: string;
@@ -18,182 +17,40 @@ type MessageType = {
   receiverId: string;
   timestamp: string;
   message_type: number;
-  lastmessage?: { message: string; timestamp: string };
 };
 
-const ChatPage = () => {
-  const router = useRouter();
-  const [conversations, setConversations] = useState<
-    (EventType | MessageType)[]
-  >([]);
-  const [filteredConversations, setFilteredConversations] = useState<
-    (EventType | MessageType)[]
-  >([]);
-  const [messages, setMessages] = useState<MessageType[]>([]);
-  const [selectedEvent, setSelectedEvent] = useState<EventType | null>(null);
-  const [selectedReceiverId, setSelectedReceiverId] = useState<
-    string | undefined
-  >(undefined);
+export default function ChatPage() {
   const { token } = useSession();
-  const [isOpen, setIsOpen] = useState(false);
   const socketRef = useRef<Socket | null>(null);
-  const [file, setFile] = useState<File | null>(null);
-  const [messageType, setMessageType] = useState(1);
+  const [messages, setMessages] = useState<any[]>([]); // Type messages as an array of MessageType
   const user = useAuthStore((state) => state.user);
 
   useEffect(() => {
-    const fetchConversations = async () => {
-      try {
-        const privateResponse = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/chats/privateConversations`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          },
-        );
-        const privateData = await privateResponse.json();
-
-        const eventResponse = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/chats/myEventsWithChat`,
-          {
-            credentials: "include",
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          },
-        );
-        const eventData = await eventResponse.json();
-
-        if (privateData.status && eventData.status) {
-          // Fusionner les conversations privées et les événements
-          const mergedConversations = [
-            ...privateData.conversations,
-            ...eventData.events,
-          ];
-
-          // Trier par last message, sinon par titre alphabétique
-          const sortedConversations = mergedConversations.sort((a, b) => {
-            const aLastMessage =
-              a?.lastmessage?.timestamp || a?.details?.title || "";
-            const bLastMessage =
-              b?.lastmessage?.timestamp || b?.details?.title || "";
-
-            // If both have timestamps, compare them
-            if (aLastMessage && bLastMessage) {
-              return (
-                new Date(bLastMessage).getTime() -
-                new Date(aLastMessage).getTime()
-              );
-            }
-
-            // If timestamps are not available or the same, compare titles or usernames
-            return (a?.details?.title || a?.username || "").localeCompare(
-              b?.details?.title || b?.username || "",
-            );
-          });
-
-          setConversations(sortedConversations);
-          setFilteredConversations(sortedConversations);
-        }
-      } catch (error) {
-        console.error("Error fetching conversations:", error);
+    // Fetch initial messages when the page loads
+    const fetchMessages = async () => {
+      const result = await fetchData<MessageType[]>(
+        "/chats/messages",
+        HttpMethod.GET,
+        null,
+        token,
+      );
+      if (result.ok && result.data) {
+        setMessages(result.data); // Messages will now be of the correct type
       }
     };
 
-    fetchConversations();
-  }, [token]);
+    fetchMessages();
 
-  // Function to handle selecting a conversation
-
-  const sendMessage = async () => {
-    console.log("Send message clicked");
-    if (!socketRef.current) {
-      console.log("Socket is not initialized");
-      return;
-    }
-    console.log("Socket is initialized");
-    const formData = new FormData();
-    formData.append("senderId", user?._id ?? "");
-    if (selectedEvent) {
-      console.log("Selected event:", selectedEvent._id);
-      formData.append("groupId", selectedEvent._id ?? "");
-    } else if (selectedReceiverId) {
-      console.log("Selected receiverId:", selectedReceiverId);
-      formData.append("receiverId", selectedReceiverId ?? "");
-    }
-    formData.append("message_type", String(messageType));
-
-    if (file) {
-      formData.append("file", file);
-    }
-
-    try {
-      console.log("Sending message...");
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/chats/saveMessage`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          body: formData,
+    if (socketRef.current) {
+      socketRef.current.on(
+        "send_message_emit",
+        (newMessage: MessageType | null) => {
+          if (newMessage) {
+            // TypeScript still allows null, so we add an explicit check to only allow valid MessageType
+            setMessages((prevMessages) => [...prevMessages, newMessage]);
+          }
         },
       );
-      const data = await response.json();
-      if (response.ok) {
-        setMessages((prev) => [...prev, data.message]);
-        setFile(null);
-        setMessageType(1);
-
-        // Envoyer le message dans la room via Socket.io
-        socketRef.current.emit("send_message", {
-          message: data.message,
-          groupId: selectedEvent?._id ?? null,
-          receiverId: selectedReceiverId ?? null,
-        });
-      } else {
-        console.error("Failed to send message:", response.statusText);
-      }
-    } catch (error) {
-      console.error("Error sending message:", error);
-    }
-  };
-
-  const handleSelectConversation = (conversation: EventType | MessageType) => {
-    if ("_id" in conversation) {
-      if (conversation.hasOwnProperty("title")) {
-        setSelectedEvent(conversation as EventType);
-        socketRef.current?.emit("joinRoom", conversation._id);
-        setSelectedReceiverId(undefined);
-        router.push(`/chats?roomId=${conversation._id}`);
-      } else {
-        setSelectedReceiverId((conversation as MessageType)?.receiverId || "");
-        setSelectedEvent(null);
-        socketRef.current?.emit("joinRoom", conversation._id);
-        router.push(`/chats?roomId=${conversation._id}`);
-      }
-      setMessages([]);
-    }
-  };
-
-  const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const searchTerm = e.target.value.toLowerCase();
-    setFilteredConversations(
-      conversations.filter((conversation) => {
-        const title =
-          (conversation as EventType)?.title ||
-          (conversation as MessageType)?.lastmessage?.message;
-        return title?.toLowerCase().includes(searchTerm);
-      }),
-    );
-  };
-
-  useEffect(() => {
-    if (socketRef.current) {
-      socketRef.current.on("send_message_emit", (newMessage) => {
-        setMessages((prevMessages) => [...prevMessages, newMessage]);
-      });
     }
 
     return () => {
@@ -201,128 +58,26 @@ const ChatPage = () => {
         socketRef.current.off("send_message_emit");
       }
     };
-  }, [socketRef.current]);
+  }, [token]);
+
+  const sendMessage = async (message: string) => {
+    const body = { message, senderId: user?._id };
+    const result = await fetchData<MessageType>(
+      "/chats/sendMessage",
+      HttpMethod.POST,
+      body,
+      token,
+    );
+
+    if (result.ok && result.data) {
+      setMessages((prev) => [...prev, result.data]); // Add the new message to the state
+    }
+  };
 
   return (
-    <div className="h-screen w-screen fixed inset-0 pb-11 md:pb-0">
-      <div className="flex w-full h-full ">
-        <div
-          className={cn(
-            "md:flex transition-all md:opacity-100 md:translate-x-0 duration-300 md:w-1/4 md:min-w-60 border-r h-full  flex-col",
-            {
-              "translate-x-[-100%] w-0 opacity-0": !isOpen,
-              "translate-x-0 w-full opacity-100": isOpen || !selectedEvent,
-            },
-          )}
-        >
-          <div className="p-4 border-b">
-            <Input
-              type="text"
-              placeholder="Search or start new chat"
-              onChange={handleFilterChange}
-            />
-          </div>
-          <div className="flex-1 overflow-y-auto">
-            {filteredConversations.length === 0 ? (
-              <p className="text-gray-600 p-4">
-                No events or conversations available.
-              </p>
-            ) : (
-              <ul className="p-2 space-y-2">
-                {filteredConversations.map((conversation, index) => (
-                  <li
-                    key={index}
-                    className="flex items-center w-full bg-white p-4 rounded-lg shadow cursor-pointer hover:bg-gray-50"
-                    onClick={() => {
-                      handleSelectConversation(conversation);
-                      setIsOpen(false);
-                    }}
-                  >
-                    <div className="relative min-w-12 h-12 mr-4">
-                      <Image
-                        src={
-                          (conversation as EventType).initialMedia?.length > 0
-                            ? (conversation as EventType)?.initialMedia[0]?.url
-                            : "/defaultImage.png"
-                        }
-                        alt={
-                          (conversation as EventType).title || "Conversation"
-                        }
-                        className="rounded-full"
-                        fill
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                      />
-                    </div>
-                    <div className="flex-grow min-w-0">
-                      <h3 className="font-semibold text-lg truncate">
-                        {(conversation as EventType).title ||
-                          (conversation as MessageType).lastmessage?.message}
-                      </h3>
-                      <p className="text-sm text-gray-500 truncate"></p>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-        </div>
-
-        <div
-          className={cn(
-            "md:w-3/4 w-full transition-all duration-300 flex flex-col h-full",
-            {
-              "w-0 opacity-0": isOpen,
-              hidden: !selectedEvent,
-            },
-          )}
-        >
-          {selectedEvent ? (
-            <>
-              <div className="p-4 bg-evento-gradient flex justify-between text-white border-b">
-                <h2 className="text-xl font-semibold py-1.5 truncate">
-                  {selectedEvent.title}
-                </h2>
-                <Burger
-                  setIsOpen={setIsOpen}
-                  isOpen={isOpen}
-                  className="flex md:hidden"
-                />
-              </div>
-              <div className="flex-1 overflow-y-auto p-4 bg-white">
-                {messages.map((msg, index) => (
-                  <div
-                    key={index}
-                    className={`mb-2 p-2 max-w-xs ${msg.senderId === user?._id ? "bg-green-200 ml-auto text-right" : "bg-gray-200 mr-auto text-left"} rounded-lg`}
-                  >
-                    {msg.message_type === 1 ? (
-                      <p>{msg.message}</p>
-                    ) : msg.message_type === 2 ? (
-                      <Image
-                        src={msg.message}
-                        alt="Image"
-                        width={200}
-                        height={200}
-                      />
-                    ) : msg.message_type === 3 ? (
-                      <video src={msg.message} controls width="300" />
-                    ) : null}
-                    <span className="block text-xs text-gray-500"></span>
-                  </div>
-                ))}
-              </div>
-              <div className="p-5 border-t flex gap-6 items-center">
-                <ChatInput onSendMessage={sendMessage} />
-              </div>
-            </>
-          ) : (
-            <div className="flex-1 p-6 bg-white flex items-center justify-center">
-              <p className="text-gray-600">Select a chat to start messaging</p>
-            </div>
-          )}
-        </div>
-      </div>
+    <div className="flex flex-col h-full bg-background">
+      <MessageList messages={messages} />
+      <ChatInput onSendMessage={sendMessage} />
     </div>
   );
-};
-
-export default ChatPage;
+}

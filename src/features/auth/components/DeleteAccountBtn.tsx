@@ -12,7 +12,7 @@ const DeleteAccountBtn = () => {
   const router = useRouter();
   const [isDeleting, setIsDeleting] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
-  const { token } = useSession();
+  const session = useSession();
   const handleDeleteAccount = async () => {
     setIsDeleting(true);
     try {
@@ -20,7 +20,7 @@ const DeleteAccountBtn = () => {
         "/auth/delete-account",
         HttpMethod.DELETE,
         undefined,
-        token,
+        session.token,
       );
       if (response.ok) {
         toast({
@@ -39,6 +39,7 @@ const DeleteAccountBtn = () => {
         variant: "destructive",
       });
     } finally {
+      session.endSession();
       setIsDeleting(false);
       setShowConfirmation(false);
       router.push("/");

@@ -85,7 +85,6 @@ const LoginForm = ({
         profileImage: loginResult.profileImage,
         token: token,
       };
-      console.log("loginUserData", loginUserData);
       // Set user data in the store
       setUser(loginUserData);
       startSession(loginUserData, token);
@@ -95,7 +94,6 @@ const LoginForm = ({
         className: "bg-evento-gradient-button text-white",
         duration: 3000,
       });
-
       onAuthSuccess(token);
     } catch (err) {
       if (err instanceof Error) {
