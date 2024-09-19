@@ -39,8 +39,8 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
 
   useEffect(() => {
     setEventStatus(event._id, {
-      going: currentStatus.going,
-      favourite: currentStatus.favourite,
+      going: event.isGoing || false,
+      favourite: event.isFavourite || false,
       refused: event.isRefused || false,
     });
     const requiredQuestions = event.questions?.filter((q) => q.required) || [];
@@ -123,14 +123,12 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-
-      toast({
-        title: eventStatuses[event._id]?.favourite
-          ? "You unfavoured this event"
-          : "You favoured this event",
-        className: "bg-evento-gradient text-white",
-        duration: 1000,
-      });
+      if (!eventStatuses[event._id]?.favourite)
+        toast({
+          title: "You favoured this event",
+          className: "bg-evento-gradient text-white",
+          duration: 1000,
+        });
 
       toggleFavourite(event._id);
     } catch (error) {

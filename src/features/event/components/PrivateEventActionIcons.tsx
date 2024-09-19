@@ -14,6 +14,7 @@ import {
   X,
 } from "lucide-react";
 import React, { useEffect, useState } from "react";
+import QuestionModal from "./QuestionModal";
 import RefusalModal from "./RefusalModal";
 
 type EventActionIconsProps = {
@@ -39,15 +40,21 @@ const PrivateEventActionIcons: React.FC<EventActionIconsProps> = ({
     favourite: event.isFavourite || false,
     refused: event.isRefused || false,
   };
+  const [showQuestionModal, setShowQuestionModal] = useState<boolean>(false);
+  const [mandatoryQuestions, setMandatoryQuestions] = useState<any[]>([]);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
   const [isRefusalModalOpen, setIsRefusalModalOpen] = useState(false);
   const [refusalReason, setRefusalReason] = useState<string>("");
   useEffect(() => {
     setEventStatus(event._id, {
-      going: currentStatus.going,
-      favourite: currentStatus.favourite,
-      refused: currentStatus.refused,
+      going: event.isGoing || false,
+      favourite: event.isFavourite || false,
+      refused: event.isRefused || false,
     });
+    const requiredQuestions = event.questions?.filter((q) => q.required) || [];
+    if (requiredQuestions.length > 0) {
+      setMandatoryQuestions(requiredQuestions);
+    }
   }, [
     event,
     currentStatus.going,
@@ -57,41 +64,55 @@ const PrivateEventActionIcons: React.FC<EventActionIconsProps> = ({
   ]);
   // Handle Going status
 
-  const handleGoing = async () => {
+  const handleGoing = async (submittedAnswers: any) => {
     if (!token) {
       setIsAuthModalOpen(true);
       return;
-    } else if (!event) {
-      return;
-    } else {
-      try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/events/attendEventStatus`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({ eventId: event?._id, userId: user?._id }),
-          },
-        );
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
+    }
 
-        if (!eventStatuses[event._id].going) {
-          toast({
-            title: "You marked this event as going",
-            className: "bg-evento-gradient text-white",
-            duration: 1000,
-          });
-        }
-        toggleGoing(event._id);
-      } catch (error) {
-        console.error("Error marking event as going:", error);
-        alert("Failed to mark as going. Please try again.");
+    if (currentStatus.going) {
+      console.log("unGoing");
+    } else {
+      if (submittedAnswers.length < mandatoryQuestions.length) {
+        setShowQuestionModal(true);
+        return;
       }
+    }
+
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/events/attendEventStatus`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            eventId: event._id,
+            userId: user?._id,
+            attendStatus: eventStatuses[event._id]?.going,
+            rsvpAnswers: submittedAnswers, // Use the answers passed from the modal
+          }),
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      if (!eventStatuses[event._id].going) {
+        toast({
+          title: "You marked this event as going",
+          className: "bg-evento-gradient text-white",
+          duration: 1000,
+        });
+      }
+
+      toggleGoing(event._id);
+    } catch (error) {
+      console.error("Error marking event as going:", error);
+      alert("Failed to mark as going. Please try again.");
     }
   };
 
@@ -193,12 +214,15 @@ const PrivateEventActionIcons: React.FC<EventActionIconsProps> = ({
       console.log("Web Share API is not supported in this browser.");
     }
   };
-
+  const handleSubmitQuestions = (answers: any) => {
+    setShowQuestionModal(false);
+    handleGoing(answers); // Pass the answers directly to handleGoing
+  };
   return (
     <div className={`flex gap-2 ${className}`}>
       <button
         onClick={(e) => {
-          handleGoing();
+          handleGoing([]);
           currentStatus.favourite && handleMaybe();
           currentStatus.refused && handleRefused();
           e.stopPropagation();
@@ -222,7 +246,7 @@ const PrivateEventActionIcons: React.FC<EventActionIconsProps> = ({
       <button
         onClick={(e) => {
           handleMaybe();
-          currentStatus.going && handleGoing();
+          currentStatus.going && handleGoing([]);
           currentStatus.refused && handleRefused();
           e.stopPropagation();
         }}
@@ -246,7 +270,7 @@ const PrivateEventActionIcons: React.FC<EventActionIconsProps> = ({
       <button
         onClick={(e) => {
           currentStatus.refused ? handleRefused() : setIsRefusalModalOpen(true);
-          currentStatus.going && handleGoing();
+          currentStatus.going && handleGoing([]);
           currentStatus.favourite && handleMaybe();
           e.stopPropagation();
         }}
@@ -291,7 +315,14 @@ const PrivateEventActionIcons: React.FC<EventActionIconsProps> = ({
             setIsAuthModalOpen(false);
           }}
         />
-      )}{" "}
+      )}
+      {showQuestionModal && (
+        <QuestionModal
+          questions={mandatoryQuestions}
+          onSubmit={handleSubmitQuestions}
+          onClose={() => setShowQuestionModal(false)}
+        />
+      )}
       <RefusalModal
         isOpen={isRefusalModalOpen}
         onClose={() => setIsRefusalModalOpen(false)}
