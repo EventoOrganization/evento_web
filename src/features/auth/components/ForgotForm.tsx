@@ -45,7 +45,12 @@ const ForgotForm = ({
         data,
       );
       if (!result.ok) {
-        console.log(result);
+        toast({
+          description: result.error || "An error occurred. Please try again.",
+          variant: "destructive",
+          duration: 3000,
+        });
+        return;
       } else {
         setIsFetching(false);
         toast({
@@ -53,12 +58,12 @@ const ForgotForm = ({
           className: "bg-evento-gradient-button text-white",
           duration: 3000,
         });
+        onResetPasswordClick();
       }
     } catch (err) {
       setError("An error occurred. Please try again.");
     } finally {
       setIsFetching(false);
-      onResetPasswordClick();
     }
   };
 
