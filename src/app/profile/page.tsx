@@ -18,7 +18,11 @@ export default function CurrentUserProfilePage() {
     useProfileStore();
   useEffect(() => {
     setIsMounted(true);
-    if (token) getProfileData(token);
+    if (token) {
+      getProfileData(token);
+    } else {
+      setIsPending(false);
+    }
   }, [token]);
   const getProfileData = async (token: string) => {
     try {
