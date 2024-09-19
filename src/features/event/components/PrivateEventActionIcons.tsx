@@ -158,6 +158,8 @@ const PrivateEventActionIcons: React.FC<EventActionIconsProps> = ({
     if (!token) {
       setIsAuthModalOpen(true);
       return;
+    } else if (!refusalReason) {
+      setIsRefusalModalOpen(true);
     }
     try {
       const response = await fetch(
@@ -269,7 +271,7 @@ const PrivateEventActionIcons: React.FC<EventActionIconsProps> = ({
       </button>
       <button
         onClick={(e) => {
-          currentStatus.refused ? handleRefused() : setIsRefusalModalOpen(true);
+          handleRefused();
           currentStatus.going && handleGoing([]);
           currentStatus.favourite && handleMaybe();
           e.stopPropagation();
