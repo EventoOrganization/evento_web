@@ -38,8 +38,13 @@ const EventGuestModal = ({
   const { toast } = useToast();
   const { user, token } = useSession();
   const [filter, setFilter] = useState<string>("");
-  const attendeeIds = event?.attendees?.map((a) => a._id) || [];
-  const favouriteIds = event?.favouritees?.map((f) => f._id) || [];
+  const attendeeIds = event?.attendees
+    ? event?.attendees?.map((a) => a?._id) || ""
+    : [];
+  const favouriteIds = event?.favouritees
+    ? event.favouritees.map((f) => f?._id || "")
+    : [];
+
   const excludedUserIds = [...attendeeIds, ...favouriteIds];
   useEffect(() => {
     if (user) {
@@ -74,14 +79,14 @@ const EventGuestModal = ({
       .filter((user) => !!user._id)
       .map((user) => ({
         id: user._id,
-        email: user.email,
+        email: user.email.toLowerCase(),
         username: user.username,
       }));
 
     const tempGuests = currentSelectedUsers
       .filter((user) => !user._id)
       .map((tempGuest) => ({
-        email: tempGuest.email,
+        email: tempGuest.email.toLowerCase(),
         username: tempGuest.username,
       }));
     const updateData = {

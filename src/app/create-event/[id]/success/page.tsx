@@ -32,8 +32,13 @@ const EventSuccessPage = () => {
   >([]);
   const [filter, setFilter] = useState<string>("");
 
-  const attendeeIds = event?.attendees?.map((a) => a._id) || [];
-  const favouriteIds = event?.favouritees?.map((f) => f._id) || [];
+  const attendeeIds = event?.attendees
+    ? event?.attendees?.map((a) => a?._id) || ""
+    : [];
+  const favouriteIds = event?.favouritees
+    ? event.favouritees.map((f) => f?._id || "")
+    : [];
+
   const excludedUserIds = [...attendeeIds, ...favouriteIds];
 
   // Fetch event data and user data on component mount

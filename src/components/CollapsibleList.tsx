@@ -14,6 +14,14 @@ const CollapsibleList = ({
   users: (UserType | TempUserType)[];
 }) => {
   const [isOpen, setIsOpen] = useState(title === "Going" ? true : false);
+  const [usersList, setUsersList] = useState<UserType[] | TempUserType[]>(
+    users,
+  );
+  const removeUserLocally = (userId: string) => {
+    setUsersList((prevUsers) =>
+      prevUsers.filter((user) => user._id !== userId),
+    );
+  };
   return (
     <div className="mb-4 w-full  ease-in-out">
       <button
@@ -32,9 +40,15 @@ const CollapsibleList = ({
       </button>
       {isOpen && (
         <div className="mt-2 space-y-2">
-          {users.map((user) => (
-            <UsersList key={user._id} user={user} />
-          ))}
+          {usersList
+            .filter((user) => user && user._id)
+            .map((user) => (
+              <UsersList
+                key={user._id}
+                user={user}
+                removeUserLocally={removeUserLocally}
+              />
+            ))}
         </div>
       )}
     </div>

@@ -4,17 +4,23 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useSession } from "@/contexts/SessionProvider";
 import AuthModal from "@/features/auth/components/AuthModal";
 import { useToast } from "@/hooks/use-toast";
+import { fetchData, HttpMethod } from "@/utils/fetchData";
+import { XIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 const UsersList = ({
   user,
   fetchUsers,
+  removeUserLocally,
 }: {
   user?: any;
   fetchUsers?: () => void;
+  removeUserLocally?: (userId: string) => void;
 }) => {
+  const { id: eventId } = useParams();
   const { token } = useSession();
   const { toast } = useToast();
   const [loading, setLoading] = useState<boolean>(false);
@@ -72,6 +78,42 @@ const UsersList = ({
       setLoading(false);
     }
   };
+  const handleUnGuest = async () => {
+    if (!token) {
+      setIsAuthModalOpen(true);
+      return;
+    }
+    setLoading(true);
+    const body = {
+      userId: user?._id,
+      eventId: eventId,
+    };
+    try {
+      const response = await fetchData(
+        `/events/unGuestUser`,
+        HttpMethod.POST,
+        body,
+        token,
+      );
+
+      if (response.ok) {
+        toast({
+          title: "Success",
+          description: `User is no longer a guest.`,
+          duration: 2000,
+          className: "bg-evento-gradient text-white",
+        });
+        if (removeUserLocally) removeUserLocally(user._id);
+        if (fetchUsers) fetchUsers();
+      } else {
+        console.error("Error:", response.error);
+      }
+    } catch (error) {
+      console.error("An error occurred:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <div className="flex justify-between w-full items-center">
       <Link href={`/profile/${user?._id}`} className="flex items-center gap-4">
@@ -103,30 +145,37 @@ const UsersList = ({
           </li>
         </ul>
       </Link>
-      {!isLoggedUser && user.status !== "tempGuest" && (
-        <Button
-          variant={"ghost"}
-          className={`
+      <div className="flex gap-2">
+        {!isLoggedUser && user.status !== "tempGuest" && (
+          <Button
+            variant={"ghost"}
+            className={`
           px-5 py-2 rounded-lg font-semibold text-white transition-all hover:scale-105 duration-300 hover:text-white
           ${isIFollowingHim && !isFollowingMe ? "bg-gray-400 hover:bg-gray-500 " : ""}
           ${isFollowingMe && !isIFollowingHim ? "bg-eventoBlue hover:bg-eventoBlue/80 " : ""}
           ${isFollowingMe && isIFollowingHim ? " bg-evento-gradient " : ""}
           ${!isFollowingMe && !isIFollowingHim ? "bg-eventoPurpleLight hover:bg-gray-300 " : ""}
-        `}
-          onClick={handleFollow}
-          disabled={loading}
-        >
-          {loading
-            ? "Processing..."
-            : isFollowingMe && !isIFollowingHim
-              ? "Follow Back"
-              : isFollowingMe && isIFollowingHim
-                ? "Friends"
-                : !isFollowingMe && isIFollowingHim
-                  ? "Unfollow"
-                  : "Follow"}
-        </Button>
-      )}
+          `}
+            onClick={handleFollow}
+            disabled={loading}
+          >
+            {loading
+              ? "Processing..."
+              : isFollowingMe && !isIFollowingHim
+                ? "Follow Back"
+                : isFollowingMe && isIFollowingHim
+                  ? "Friends"
+                  : !isFollowingMe && isIFollowingHim
+                    ? "Unfollow"
+                    : "Follow"}
+          </Button>
+        )}{" "}
+        {(user.status === "tempGuest" || user.status === "guest") && (
+          <Button variant="outline" onClick={handleUnGuest} disabled={loading}>
+            {loading ? "Processing..." : <XIcon />}
+          </Button>
+        )}
+      </div>
       {isAuthModalOpen && (
         <AuthModal
           onAuthSuccess={() => {
