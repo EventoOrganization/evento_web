@@ -19,10 +19,10 @@ const customStorage = {
     return item ? JSON.parse(item) : null;
   },
   setItem: (name: string, value: any) => {
-    localStorage.setItem(name, JSON.stringify(value));
+    sessionStorage.setItem(name, JSON.stringify(value));
   },
   removeItem: (name: string) => {
-    localStorage.removeItem(name);
+    sessionStorage.removeItem(name);
   },
 };
 

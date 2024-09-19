@@ -1,4 +1,4 @@
-import create from "zustand";
+import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 interface EventStatus {
@@ -61,8 +61,8 @@ export const useEventStatusStore = create<EventStatusState>()(
         })),
     }),
     {
-      name: "event-status-store", // Nom du store persistant dans le localStorage
-      getStorage: () => localStorage, // Utilisation de localStorage
+      name: "event-status-store",
+      getStorage: () => sessionStorage,
     },
   ),
 );
