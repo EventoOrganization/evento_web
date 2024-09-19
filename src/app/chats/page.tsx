@@ -107,24 +107,29 @@ const ChatPage = () => {
   // Function to handle selecting a conversation
 
   const sendMessage = async () => {
-    if (!socketRef.current) return;
-
+    console.log("Send message clicked");
+    if (!socketRef.current) {
+      console.log("Socket is not initialized");
+      return;
+    }
+    console.log("Socket is initialized");
     const formData = new FormData();
     formData.append("senderId", user?._id ?? "");
     if (selectedEvent) {
-      // Si c'est un événement, envoyer dans la room du groupe
+      console.log("Selected event:", selectedEvent._id);
       formData.append("groupId", selectedEvent._id ?? "");
     } else if (selectedReceiverId) {
-      // Si c'est une conversation privée
+      console.log("Selected receiverId:", selectedReceiverId);
       formData.append("receiverId", selectedReceiverId ?? "");
     }
-    formData.append("message_type", String(messageType)); // Convertir le numéro en chaîne
+    formData.append("message_type", String(messageType));
 
     if (file) {
       formData.append("file", file);
     }
 
     try {
+      console.log("Sending message...");
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/chats/saveMessage`,
         {
@@ -161,15 +166,11 @@ const ChatPage = () => {
         setSelectedEvent(conversation as EventType);
         socketRef.current?.emit("joinRoom", conversation._id);
         setSelectedReceiverId(undefined);
-
-        // Mettre à jour l'URL avec l'ID de l'événement
         router.push(`/chats?roomId=${conversation._id}`);
       } else {
         setSelectedReceiverId((conversation as MessageType)?.receiverId || "");
         setSelectedEvent(null);
         socketRef.current?.emit("joinRoom", conversation._id);
-
-        // Mettre à jour l'URL avec l'ID de la conversation privée
         router.push(`/chats?roomId=${conversation._id}`);
       }
       setMessages([]);

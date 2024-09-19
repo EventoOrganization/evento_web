@@ -45,6 +45,7 @@ export type EventType = {
   mode: "virtual" | "in-person" | "both";
   date: string;
   endDate?: string;
+  event: EventType;
   startTime: string;
   endTime: string;
   description: string;

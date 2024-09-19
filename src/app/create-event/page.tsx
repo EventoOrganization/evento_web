@@ -205,24 +205,30 @@ const CreateEventPage = () => {
       setIsAuthModalOpen(!isAuthModalOpen);
       return;
     }
-
-    if (
-      !formValues.title ||
-      !formValues.username ||
-      !formValues.eventType ||
-      !formValues.mode ||
-      !formValues.location ||
-      !formValues.latitude ||
-      !formValues.longitude ||
-      !formValues.date ||
-      !formValues.endDate ||
-      !formValues.startTime ||
-      !formValues.endTime ||
-      !formValues.description
-    ) {
+    const missingFields: string[] = [];
+    const fields = [
+      { name: "Title", value: formValues.title },
+      { name: "Username", value: formValues.username },
+      { name: "Event Type", value: formValues.eventType },
+      { name: "Mode", value: formValues.mode },
+      { name: "Location", value: formValues.location },
+      { name: "Latitude", value: formValues.latitude },
+      { name: "Longitude", value: formValues.longitude },
+      { name: "Date", value: formValues.date },
+      { name: "End Date", value: formValues.endDate },
+      { name: "Start Time", value: formValues.startTime },
+      { name: "End Time", value: formValues.endTime },
+      { name: "Description", value: formValues.description },
+    ];
+    fields.forEach((field) => {
+      if (!field.value) {
+        missingFields.push(field.name);
+      }
+    });
+    if (missingFields.length > 0) {
       toast({
         title: "Error",
-        description: "Please fill in all  fields.",
+        description: `Please fill in the following fields: ${missingFields.join(", ")}`,
         className: "bg-red-500 text-white",
         duration: 3000,
       });
@@ -296,7 +302,9 @@ const CreateEventPage = () => {
         className: "bg-evento-gradient-button text-white",
         duration: 3000,
       });
-      router.push(`/create-event/${response.data?._id}/success`);
+      if (response.data?.event._id) {
+        router.push(`/create-event/${response.data?.event?._id}/success`);
+      }
     }
   };
 

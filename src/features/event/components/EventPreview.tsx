@@ -96,7 +96,7 @@ const EventPreview = ({
           <CardDescription></CardDescription>
         </CardHeader>
         <CardContent>
-          {event?.initialMedia[0].url && (
+          {event?.initialMedia && event?.initialMedia[0]?.url ? (
             <Image
               src={event?.initialMedia[0].url}
               alt="Event Image"
@@ -104,6 +104,8 @@ const EventPreview = ({
               height={245}
               className="w-full inset-0 h-full absolute object-cover"
             />
+          ) : (
+            <span></span>
           )}
         </CardContent>
         <CardFooter className="p-0 h-32  bg-black/60 font-bold text-white z-10">

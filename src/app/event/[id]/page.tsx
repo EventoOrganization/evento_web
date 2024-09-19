@@ -41,7 +41,7 @@ const EventPage = () => {
       loadusers();
     }
     console.log("eventStatuses", eventStatuses[eventId]);
-  }, [eventId, eventStatuses[eventId], user, token]);
+  }, [eventId, user, token]);
 
   const fetchEventData = async (eventId: string) => {
     try {

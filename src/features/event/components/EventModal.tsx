@@ -28,13 +28,19 @@ const EventModal = ({
     e.stopPropagation();
   };
   const handleDelete = async () => {
-    await fetchData(
-      `/events/deleteEvent/${event._id}`,
-      HttpMethod.DELETE,
-      undefined,
-      token,
-    );
-    router.refresh();
+    try {
+      await fetchData(
+        `/events/deleteEvent/${event._id}`,
+        HttpMethod.DELETE,
+        undefined,
+        token,
+      );
+    } catch (err) {
+      console.log(err);
+    } finally {
+      router.push("/profile");
+      onClose();
+    }
   };
   if (!event) return null;
   return (
