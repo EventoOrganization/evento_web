@@ -278,6 +278,7 @@ const EventPage = () => {
                 title={`Guests`}
                 count={combinedGuests.length}
                 users={combinedGuests}
+                event={event}
               />
             )}
           </div>

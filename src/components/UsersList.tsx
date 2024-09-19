@@ -4,6 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useSession } from "@/contexts/SessionProvider";
 import AuthModal from "@/features/auth/components/AuthModal";
 import { useToast } from "@/hooks/use-toast";
+import { EventType } from "@/types/EventType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { XIcon } from "lucide-react";
 import Image from "next/image";
@@ -15,10 +16,12 @@ const UsersList = ({
   user,
   fetchUsers,
   removeUserLocally,
+  event,
 }: {
   user?: any;
   fetchUsers?: () => void;
   removeUserLocally?: (userId: string) => void;
+  event?: EventType;
 }) => {
   const { id: eventId } = useParams();
   const { token } = useSession();
@@ -170,11 +173,16 @@ const UsersList = ({
                     : "Follow"}
           </Button>
         )}{" "}
-        {(user.status === "tempGuest" || user.status === "guest") && (
-          <Button variant="outline" onClick={handleUnGuest} disabled={loading}>
-            {loading ? "Processing..." : <XIcon />}
-          </Button>
-        )}
+        {event?.user._id === session?.user?._id &&
+          (user.status === "tempGuest" || user.status === "guest") && (
+            <Button
+              variant="outline"
+              onClick={handleUnGuest}
+              disabled={loading}
+            >
+              {loading ? "Processing..." : <XIcon />}
+            </Button>
+          )}
       </div>
       {isAuthModalOpen && (
         <AuthModal

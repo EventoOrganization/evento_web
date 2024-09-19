@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { EventType } from "@/types/EventType";
 import { TempUserType, UserType } from "@/types/UserType";
 import { ChevronDownIcon } from "lucide-react";
 import { useState } from "react";
@@ -8,10 +9,12 @@ const CollapsibleList = ({
   title,
   count,
   users,
+  event,
 }: {
   title: string;
   count: number;
   users: (UserType | TempUserType)[];
+  event?: EventType;
 }) => {
   const [isOpen, setIsOpen] = useState(title === "Going" ? true : false);
   const [usersList, setUsersList] = useState<UserType[] | TempUserType[]>(
@@ -47,6 +50,7 @@ const CollapsibleList = ({
                 key={user._id}
                 user={user}
                 removeUserLocally={removeUserLocally}
+                event={event}
               />
             ))}
         </div>
