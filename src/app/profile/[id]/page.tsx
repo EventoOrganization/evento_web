@@ -46,6 +46,7 @@ export default function UserProfilePage({
           profile={profileData.userInfo}
           upcomingEvents={profileData?.upcomingEvents || []}
           pastEvents={profileData?.pastEvents || []}
+          hostingEvents={profileData?.hostedEvents || []}
         />
       </>
     );
