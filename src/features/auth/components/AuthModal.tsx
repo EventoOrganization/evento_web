@@ -15,7 +15,7 @@ import { useState } from "react";
 import ForgotForm from "./ForgotForm";
 import LoginForm from "./LoginForm";
 import OTPVerifyForm from "./OTPVerifyForm";
-import ResetPasswordForm from "./resest-password-form";
+import ResetPasswordForm from "./ResetPasswordForm";
 import SignUpForm from "./SignupForm";
 import UserInfoForm from "./UserInfoForm";
 
@@ -27,8 +27,14 @@ const AuthModal = ({
   onClose?: () => void;
 }) => {
   const { toast } = useToast();
+  const [flowType, setFlowType] = useState<"signup" | "forgot-password">(
+    "signup",
+  );
   const { startSession } = useSession();
   const { setUser } = useAuthStore();
+  const [resetPasswordToken, setResetPasswordToken] = useState<string | null>(
+    null,
+  );
   const [isModalOpen, setIsModalOpen] = useState(true);
   const [currentForm, setCurrentForm] = useState<
     | "login"
@@ -70,7 +76,16 @@ const AuthModal = ({
       | "reset-password"
       | "verify"
       | "user-info",
+    token?: string,
   ) => {
+    if (form === "signup") {
+      setFlowType("signup");
+    } else if (form === "forgot-password") {
+      setFlowType("forgot-password");
+    }
+    if (token) {
+      setResetPasswordToken(token); // Store the token in state
+    }
     setCurrentForm(form);
   };
 
@@ -98,14 +113,28 @@ const AuthModal = ({
       case "forgot-password":
         return (
           <ForgotForm
-            onResetPasswordClick={() => switchForm("reset-password")}
+            onResetPasswordClick={() => switchForm("verify")}
             onBackToSignIn={() => switchForm("login")}
           />
         );
       case "reset-password":
-        return <ResetPasswordForm onBackToSignIn={() => switchForm("login")} />;
+        return (
+          <ResetPasswordForm
+            onBackToSignIn={() => switchForm("login")}
+            token={resetPasswordToken || ""}
+          />
+        );
       case "verify":
-        return <OTPVerifyForm onAuthSuccess={() => switchForm("user-info")} />;
+        return (
+          <OTPVerifyForm
+            onAuthSuccess={(token) =>
+              flowType === "signup"
+                ? switchForm("user-info")
+                : switchForm("reset-password", token)
+            }
+            flowType={flowType}
+          />
+        );
       case "user-info":
         return <UserInfoForm onAuthSuccess={() => setIsModalOpen(false)} />;
       default:

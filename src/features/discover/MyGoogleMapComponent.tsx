@@ -147,11 +147,9 @@ const MyGoogleMapComponent = ({
             <Input
               type="text"
               placeholder={
-                pathname === "/create-event"
-                  ? eventStore.location
-                  : address
-                    ? address
-                    : "Enter a location"
+                pathname === "/discover" && "Enter a location"
+                  ? address
+                  : "Enter a location"
               }
             />
           </StandaloneSearchBox>

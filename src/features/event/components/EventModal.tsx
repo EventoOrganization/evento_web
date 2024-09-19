@@ -23,7 +23,7 @@ const EventModal = ({
   onClose: () => void;
 }) => {
   const router = useRouter();
-  const { token } = useSession();
+  const { token, user } = useSession();
   const handleClickInsideModal = (e: React.MouseEvent) => {
     e.stopPropagation();
   };
@@ -59,7 +59,7 @@ const EventModal = ({
       >
         <ScrollArea className="rounded h-full">
           <DiscoverEventPreview event={event} className="max-w-[90vw]" />
-          {event.isHosted && (
+          {event.user._id === user?._id && (
             <Button onClick={handleDelete}>Delete Event</Button>
           )}
         </ScrollArea>

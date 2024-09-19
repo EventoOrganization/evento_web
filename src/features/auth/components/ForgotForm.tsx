@@ -8,7 +8,9 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useToast } from "@/hooks/use-toast";
 import { emailSchema } from "@/lib/zod";
+import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { cn } from "@nextui-org/theme";
 import { useState } from "react";
@@ -19,9 +21,10 @@ const ForgotForm = ({
   onResetPasswordClick,
   onBackToSignIn,
 }: {
-  onResetPasswordClick?: () => void; // You passed this in AuthModal
+  onResetPasswordClick: () => void; // You passed this in AuthModal
   onBackToSignIn?: () => void; // You passed this in AuthModal
 }) => {
+  const { toast } = useToast();
   const [error, setError] = useState<string | null>(null);
   const [isFetching, setIsFetching] = useState(false);
   const form = useForm<z.infer<typeof emailSchema>>({
@@ -36,27 +39,26 @@ const ForgotForm = ({
     console.log(isFetching);
 
     try {
-      const result = await fetch("/api/auth/forgot", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-      const resultData = await result.json();
-
+      const result = await fetchData(
+        "/auth/forgot-password",
+        HttpMethod.POST,
+        data,
+      );
       if (!result.ok) {
-        setError(resultData.error || "An unknown error occurred");
+        console.log(result);
       } else {
         setIsFetching(false);
-        if (onResetPasswordClick) {
-          onResetPasswordClick(); // Call this when the reset password process is successful
-        }
+        toast({
+          description: "Please check your email for reset code",
+          className: "bg-evento-gradient-button text-white",
+          duration: 3000,
+        });
       }
     } catch (err) {
       setError("An error occurred. Please try again.");
     } finally {
       setIsFetching(false);
+      onResetPasswordClick();
     }
   };
 

@@ -24,6 +24,7 @@ export const otpVerificationSchema = z.object({
     .string()
     .length(6, "OTP should be exactly 6 digits.")
     .regex(/^\d+$/, "OTP should only contain numbers."),
+  token: z.string().optional(),
 });
 // Schema for validating the name field
 export const nameSchema = z.object({

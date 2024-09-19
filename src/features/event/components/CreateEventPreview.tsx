@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useSession } from "@/contexts/SessionProvider";
 import { cn } from "@/lib/utils";
 import { useEventStore } from "@/store/useEventStore";
+import { useProfileStore } from "@/store/useProfileStore";
 import Image from "next/image";
 import CreateEventCarousel from "./CreateEventCarousel";
 const CreateEventPreview = ({
@@ -19,6 +20,7 @@ const CreateEventPreview = ({
 }) => {
   const eventStore = useEventStore();
   const { user } = useSession();
+  const { userInfo } = useProfileStore();
   // console.log(user);
 
   const renderDate = () => {
@@ -110,9 +112,9 @@ const CreateEventPreview = ({
           <div className="flex flex-col w-full">
             <div className="flex justify-between items-center mb-4">
               <div className="flex gap-2 items-center">
-                {user?.profileImage ? (
+                {user?.profileImage || userInfo?.profileImage ? (
                   <Image
-                    src={user.profileImage}
+                    src={user?.profileImage || userInfo?.profileImage || ""}
                     alt="user image"
                     width={30}
                     height={30}

@@ -17,6 +17,7 @@ import EventURL from "@/features/event/components/EventURL";
 import { handleFieldChange } from "@/features/event/eventActions";
 import { useToast } from "@/hooks/use-toast";
 import { useEventStore } from "@/store/useEventStore";
+import { useProfileStore } from "@/store/useProfileStore";
 import { EventType, InterestType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
@@ -36,11 +37,13 @@ const CreateEventPage = () => {
   );
   const [location, setLocation] = useState({ lat: 0, lng: 0 });
   const { user } = useSession();
+  const { userInfo } = useProfileStore();
+  console.log(user);
   useEffect(() => {
     setFormValues({
       title: eventStore.title || "",
       eventType: eventStore.eventType || "public",
-      username: user?.username || "",
+      username: user?.username || userInfo?.username || "",
       date: eventStore.date || "",
       endDate: eventStore.endDate || eventStore.date || "",
       startTime: eventStore.startTime || "",
@@ -65,7 +68,7 @@ const CreateEventPage = () => {
   const [formValues, setFormValues] = useState({
     title: eventStore.title || "",
     eventType: eventStore.eventType || "public",
-    username: user?.username || "",
+    username: user?.username || userInfo?.username || "",
     date: eventStore.date || "",
     endDate: eventStore.endDate || eventStore.date || "",
     startTime: eventStore.startTime || "",
@@ -352,6 +355,7 @@ const CreateEventPage = () => {
                   name="username"
                   value={eventStore.username}
                   onChange={handleChange}
+                  className="hidden"
                   placeholder="Organizer name"
                 />
               </div>

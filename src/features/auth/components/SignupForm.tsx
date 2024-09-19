@@ -24,7 +24,6 @@ const SignUpForm = ({
 }) => {
   const { toast } = useToast();
   const [isFetching, setIsFetching] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const form = useForm<z.infer<typeof signUpSchema>>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
@@ -45,9 +44,8 @@ const SignUpForm = ({
       });
 
       if (signUpRes.error) {
-        setError(signUpRes.error);
         toast({
-          description: error,
+          description: signUpRes.error,
           variant: "destructive",
           duration: 3000,
         });

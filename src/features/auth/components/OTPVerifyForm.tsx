@@ -21,16 +21,30 @@ import { useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 
-const OTPVerifyForm = ({ onAuthSuccess }: { onAuthSuccess: () => void }) => {
+// Update the response type to allow null or undefined
+interface VerifyOTPResponse {
+  token?: string;
+  error?: string | null; // Adjusted to match the response from fetchData
+}
+
+const OTPVerifyForm = ({
+  onAuthSuccess,
+  flowType,
+}: {
+  onAuthSuccess: (token?: string) => void;
+  flowType: "signup" | "forgot-password";
+}) => {
   const [error, setError] = useState<string | null>(null);
   const [isFetching, setIsFetching] = useState(false);
   const { toast } = useToast();
-  console.log(isFetching);
+  const defaultValues: { otpCode: string; token?: string } = { otpCode: "" };
+  if (flowType === "forgot-password") {
+    defaultValues.token = ""; // For forgot-password, token will be initialized
+  }
+
   const form = useForm<z.infer<typeof otpVerificationSchema>>({
     resolver: zodResolver(otpVerificationSchema),
-    defaultValues: {
-      otpCode: "",
-    },
+    defaultValues,
   });
 
   const onSubmit: SubmitHandler<z.infer<typeof otpVerificationSchema>> = async (
@@ -38,23 +52,38 @@ const OTPVerifyForm = ({ onAuthSuccess }: { onAuthSuccess: () => void }) => {
   ) => {
     setIsFetching(true);
     try {
-      const verifyRes = await fetchData("/auth/verify-otp", HttpMethod.POST, {
-        otpCode: data.otpCode,
-      });
+      // Explicitly define the expected structure of the response
+      const verifyRes: VerifyOTPResponse = await fetchData(
+        "/auth/verify-otp",
+        HttpMethod.POST,
+        {
+          otpCode: data.otpCode,
+          flowType,
+        },
+      );
+
       if (verifyRes.error) {
         setError(verifyRes.error);
         toast({
-          description: error,
+          description: verifyRes.error,
           variant: "destructive",
           duration: 3000,
         });
       } else {
+        const token = verifyRes?.token || ""; // Use token if available
+
         toast({
           description: "OTP verified successfully",
           className: "bg-evento-gradient-button text-white",
           duration: 3000,
         });
-        onAuthSuccess();
+
+        // Call onAuthSuccess based on flowType
+        if (flowType === "forgot-password") {
+          onAuthSuccess(token); // Pass the token for password reset
+        } else if (flowType === "signup") {
+          onAuthSuccess(); // No token needed for signup flow
+        }
       }
     } catch (err) {
       toast({
@@ -81,7 +110,7 @@ const OTPVerifyForm = ({ onAuthSuccess }: { onAuthSuccess: () => void }) => {
         >
           <FormField
             control={form.control}
-            name="otpCode" // Changed from resetCode to otpCode
+            name="otpCode"
             render={({ field }) => (
               <FormItem className="flex flex-col items-center justify-center w-full">
                 <FormLabel className="sr-only">Code</FormLabel>
@@ -111,6 +140,7 @@ const OTPVerifyForm = ({ onAuthSuccess }: { onAuthSuccess: () => void }) => {
           <Button
             type="submit"
             className={cn("bg-evento-gradient-button rounded-full w-fit px-6")}
+            disabled={isFetching}
           >
             Verify
           </Button>
