@@ -45,7 +45,6 @@ const AuthModal = ({
   >("signup");
 
   const handleLoginSuccess = (token: string) => {
-    // Correction ici
     if (token) onAuthSuccess(token);
     setIsModalOpen(false);
   };
@@ -104,7 +103,6 @@ const AuthModal = ({
         return (
           <LoginForm
             onAuthSuccess={(token) => handleLoginSuccess(token)}
-            shouldRedirect={false}
             onSignUpClick={() => switchForm("signup")}
             onForgotPasswordClick={() => switchForm("forgot-password")}
           />

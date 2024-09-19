@@ -16,7 +16,6 @@ import { signInSchema } from "@/lib/zod";
 import { useAuthStore } from "@/store/useAuthStore";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
@@ -26,13 +25,11 @@ const extendedSignInSchema = signInSchema.extend({
 
 const LoginForm = ({
   onAuthSuccess = () => {},
-  shouldRedirect = true,
   className,
   onSignUpClick,
   onForgotPasswordClick,
 }: {
   onAuthSuccess?: (token: string) => void;
-  shouldRedirect?: boolean;
   className?: string;
   onSignUpClick?: () => void;
   onForgotPasswordClick?: () => void;
@@ -47,7 +44,6 @@ const LoginForm = ({
       rememberMe: false,
     },
   });
-  const router = useRouter();
   const { setUser, user, rememberMe } = useAuthStore((state) => state);
   const { startSession } = useSession();
   const { toast } = useToast();
@@ -101,10 +97,6 @@ const LoginForm = ({
       });
 
       onAuthSuccess(token);
-
-      if (shouldRedirect) {
-        router.push("/");
-      }
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);
