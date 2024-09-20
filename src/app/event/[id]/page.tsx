@@ -148,6 +148,21 @@ const EventPage = () => {
       status: "tempGuest",
     })) || []),
   ];
+
+  // Create a Set to track unique guest identifiers (e.g., by email or id)
+  const uniqueGuests = new Set();
+
+  // Filter out duplicates based on the unique identifier (e.g., `_id` or `email`)
+  const filteredGuests = combinedGuests.filter((guest) => {
+    const identifier = guest._id || guest.email; // Choose a unique identifier
+    if (uniqueGuests.has(identifier)) {
+      return false; // Duplicate found, filter it out
+    } else {
+      uniqueGuests.add(identifier);
+      return true; // Unique guest, keep it
+    }
+  });
+
   return (
     <div className="md:grid-cols-2 grid grid-cols-1 w-full h-screen ">
       {/* <EventInvitation
@@ -243,23 +258,25 @@ const EventPage = () => {
           <div className="space-y-4 pb-20 w-full h-full ">
             <div className="flex items-center justify-between">
               <h1 className="text-xl font-bold">{event?.title}</h1>
+            </div>
+            <div className="flex items-center justify-between">
+              {event.isHosted && (
+                <div className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    id="guestsAllowFriend"
+                    onChange={handleGuestsAllowFriendChange}
+                    checked={isGuestAllowed ?? false}
+                  />
+                  <label htmlFor="guestsAllowFriend">
+                    Allow guests to bring friends
+                  </label>
+                </div>
+              )}
               {(event.guestsAllowFriend || event.isAdmin || event.isHosted) && (
                 <EventGuestModal allUsers={users} event={event} />
               )}
             </div>
-            {event.isHosted && (
-              <div className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  id="guestsAllowFriend"
-                  onChange={handleGuestsAllowFriendChange}
-                  checked={isGuestAllowed ?? false}
-                />
-                <label htmlFor="guestsAllowFriend">
-                  Allow guests to bring friends
-                </label>
-              </div>
-            )}
             <CollapsibleList
               title={`Going`}
               count={event?.attendees?.length || 0}
@@ -273,8 +290,8 @@ const EventPage = () => {
             {combinedGuests.length > 0 && (
               <CollapsibleList
                 title={`Guests`}
-                count={combinedGuests.length}
-                users={combinedGuests}
+                count={filteredGuests.length}
+                users={filteredGuests}
                 event={event}
               />
             )}
