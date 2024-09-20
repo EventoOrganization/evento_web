@@ -23,11 +23,7 @@ const EventSection = ({
       </h3>
       <div
         className={cn(
-          "flex flex-col gap-4  md:overflow-x-auto w-full overflow-y-auto",
-          {
-            "md:grid md:grid-cols-2 lg:grid-cols-3":
-              events && events.length > 0,
-          },
+          "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 w-full ",
         )}
       >
         {events && events.length > 0 ? (

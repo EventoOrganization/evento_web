@@ -92,28 +92,54 @@ const UserProfile = ({
             </ul>
           </div>
         </div>
-        <div className="mt-2 flex gap-10 justify-between">
-          {profile?.socialLinks && profile?.socialLinks?.length > 0 && (
-            <div className="flex flex-col items-start gap-4">
-              <h4 className="hidden md:block">Social Links</h4>
-              {profile?.socialLinks?.length > 0 && (
-                <ul className="flex md:flex-col gap-4">
-                  {profile.socialLinks.map((link, index) => (
-                    <li key={index} className="">
-                      <Link
-                        className=""
-                        href={link.url}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        {platformIcons[link.platform.toLowerCase()]}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
+        <div>
+          {pathname == "/profile" && (
+            <ul className="flex justify-evenly items-center gap-4 my-4">
+              <li>
+                <Button
+                  className={
+                    "bg-gray-200 text-black rounded-full px-8 hover:bg-gray-200/50 "
+                  }
+                  onClick={() => router.push("/profile/edit")}
+                >
+                  Edit Profile
+                </Button>
+              </li>
+              <li>
+                <Link
+                  href={"/profile/settings"}
+                  className={
+                    "inline-flex items-center justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-gray-200/50 h-10 py-2 bg-gray-200 text-black rounded-full px-8"
+                  }
+                >
+                  Settings
+                </Link>
+              </li>
+            </ul>
           )}
+          <div className="mt-2 flex gap-10 justify-between">
+            {profile?.socialLinks && profile?.socialLinks?.length > 0 && (
+              <div className="flex flex-col items-start gap-4">
+                <h4 className="hidden md:block">Social Links</h4>
+                {profile?.socialLinks?.length > 0 && (
+                  <ul className="flex md:flex-col gap-4">
+                    {profile.socialLinks.map((link, index) => (
+                      <li key={index} className="">
+                        <Link
+                          className=""
+                          href={link.url}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          {platformIcons[link.platform.toLowerCase()]}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            )}
+          </div>
           {profile?.interest && profile?.interest?.length > 0 && (
             <div className="md:flex flex-col items-start hidden gap-4">
               <h4 className="hidden md:block">Interests</h4>
@@ -166,30 +192,6 @@ const UserProfile = ({
           sectionStyle="flex flex-col items-start gap-4 p-0  lg: max-w-7xl"
           noEventsMessage="There are no events at the moment. Explore Evento and create or host an event easily."
         />
-      )}
-      {pathname == "/profile" && (
-        <ul className="flex justify-evenly items-center gap-4">
-          <li>
-            <Button
-              className={
-                "bg-gray-200 text-black rounded-full px-8 hover:bg-gray-200/50 "
-              }
-              onClick={() => router.push("/profile/edit")}
-            >
-              Edit Profile
-            </Button>
-          </li>
-          <li>
-            <Link
-              href={"/profile/settings"}
-              className={
-                "inline-flex items-center justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-gray-200/50 h-10 py-2 bg-gray-200 text-black rounded-full px-8"
-              }
-            >
-              Settings
-            </Link>
-          </li>
-        </ul>
       )}
     </Section>
   );

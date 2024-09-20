@@ -1,6 +1,7 @@
 "use client";
 
 import Burger from "@/components/Burger";
+import ComingSoon from "@/components/ComingSoon";
 import { Input } from "@/components/ui/input";
 import ConversationList from "@/features/chat/components/ConversationList";
 import { cn } from "@/lib/utils";
@@ -12,7 +13,8 @@ export default function ChatLayout({
   children: React.ReactNode;
 }) {
   const [isOpen, setIsOpen] = useState(false);
-
+  const dev = true;
+  if (dev) return <ComingSoon message="This page is under development" />;
   return (
     <>
       <Burger isOpen={isOpen} setIsOpen={setIsOpen} />

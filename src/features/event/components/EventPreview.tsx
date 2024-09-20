@@ -25,9 +25,7 @@ const EventPreview = ({
   event?: EventType;
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-
   const { eventStatuses, setEventStatus } = useEventStatusStore();
-
   const currentStatus = (event && eventStatuses[event?._id]) || {
     going: event?.isGoing || false,
     favourite: event?.isFavourite || false,
@@ -44,12 +42,14 @@ const EventPreview = ({
     }
   }, [event, currentStatus.going, currentStatus.favourite, setEventStatus]);
 
-  const formatDate = (dateString: string) => {
+  // Adjusted function for correct DateTimeFormatOptions types
+  const formatDateResponsive = (dateString: string | undefined) => {
+    if (!dateString) return "Invalid Date";
     const date = new Date(dateString);
     const options: Intl.DateTimeFormatOptions = {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
+      day: "2-digit",
+      month: "2-digit",
+      year: "2-digit",
     };
     return date.toLocaleDateString("en-US", options);
   };
@@ -71,8 +71,8 @@ const EventPreview = ({
         )}
         onClick={handleCardClick}
       >
-        <CardHeader>
-          <CardTitle className="z-10 w-10 h-10 self-end space-y-2">
+        <CardHeader className="p-0">
+          <CardTitle className="z-10 w-10 h-10 self-end space-y-2 absolute right-2 top-2">
             {currentStatus.going && (
               <CircleCheckBig
                 strokeWidth={1.5}
@@ -82,7 +82,7 @@ const EventPreview = ({
               />
             )}
             {currentStatus.favourite && (
-              <div className=" w-10 h-10 relative">
+              <div className="w-10 h-10 relative">
                 <Circle
                   strokeWidth={1.5}
                   className={cn(
@@ -102,21 +102,21 @@ const EventPreview = ({
               alt="Event Image"
               width={245}
               height={245}
-              className="w-full inset-0 h-full absolute object-cover"
+              className="w-full inset-0 h-full absolute object-cover aspect-square"
             />
           ) : (
             <span></span>
           )}
         </CardContent>
-        <CardFooter className="p-0 h-32  bg-black/60 font-bold text-white z-10">
-          <ul className=" p-5 flex flex-col justify-center w-full h-full">
-            <li className="flex gap-5 items-center">
-              <CalendarIcon strokeWidth={3} className="w-6" />
-              {formatDate(event?.details?.date?.toString() || "")}
+        <CardFooter className="p-0 text-sm bg-black/60 font-bold text-white z-10">
+          <ul className="p-2 md:p-5 flex flex-col justify-center w-full h-full">
+            <li className="flex gap-5 items-center ">
+              <CalendarIcon strokeWidth={3} className="w-5" />
+              {formatDateResponsive(event?.details?.date)}
             </li>
             <li className="flex gap-5 items-center">
-              <MapPinIcon strokeWidth={1.5} className="min-w-6 w-6" />
-              {event?.details?.location}
+              <MapPinIcon strokeWidth={1.5} className="min-w-5 w-5" />
+              <p className="truncate">{event?.details?.location}</p>
             </li>
           </ul>
         </CardFooter>

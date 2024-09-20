@@ -55,7 +55,7 @@ const DiscoverEventPreview = ({
         )}
       >
         <div className=" ">
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between  mb-4">
             <div className="flex items-center gap-2">
               {event?.user?.profileImage ? (
                 <Image
@@ -76,7 +76,7 @@ const DiscoverEventPreview = ({
               )}
               <h4 className="ml-2">{(event && event?.user.username) || ""}</h4>
             </div>
-            <span className="text-sm">{renderDate()}</span>
+            <span className="text-sm text-right">{renderDate()}</span>
           </div>
           <div>
             <RenderMedia event={event} />
