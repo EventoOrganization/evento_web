@@ -33,23 +33,19 @@ const ResetPasswordModal = ({
       confirmPassword: "",
     },
   });
-  console.log("token", token);
   const handlePasswordSubmit: SubmitHandler<
     z.infer<typeof newPasswordSchema>
   > = async (data) => {
-    console.log("data", data);
     setIsFetching(true);
     const body = {
       password: data.password,
       token,
     };
-    console.log("body", body);
     const result = await fetchData(
       "/auth/reset-password",
       HttpMethod.POST,
       body,
     );
-    console.log("result", result);
     if (!result?.ok) {
       setError(result?.error || "An error occurred. Please try again.");
       setIsFetching(false);

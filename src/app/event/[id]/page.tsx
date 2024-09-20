@@ -12,7 +12,6 @@ import EventGuestModal from "@/features/event/components/EventGuestModal";
 import EventTimeSlots from "@/features/event/components/EventTimeSlots";
 import PrivateEventActionIcons from "@/features/event/components/PrivateEventActionIcons";
 import { useToast } from "@/hooks/use-toast";
-import { useEventStatusStore } from "@/store/useEventStatusStore";
 import { EventType, InterestType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
@@ -28,7 +27,6 @@ const EventPage = () => {
   const [users, setUsers] = useState<UserType[]>([]);
   const [selectedTab, setSelectedTab] = useState("Description");
   const [isGuestAllowed, setIsGuestAllowed] = useState<boolean | null>(null);
-  const { eventStatuses } = useEventStatusStore();
   const { user, token } = useSession();
   const { toast } = useToast();
   useEffect(() => {
@@ -40,7 +38,6 @@ const EventPage = () => {
     } else {
       loadusers();
     }
-    console.log("eventStatuses", eventStatuses[eventId]);
   }, [eventId, user, token]);
 
   const fetchEventData = async (eventId: string) => {

@@ -7,7 +7,6 @@ const Dropdown = ({ title, users }: { title: string; users: UserType[] }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleDropdown = () => setIsOpen(!isOpen);
-  console.log(users);
   return (
     <div className="relative">
       <button

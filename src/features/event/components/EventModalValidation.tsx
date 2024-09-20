@@ -16,32 +16,25 @@ const EventModalValidation = ({ onSubmit }: { onSubmit: () => void }) => {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const { user } = useSession();
   const openModal = () => {
-    console.log("Opening validation modal");
     setIsModalOpen(true);
   };
 
   const closeModal = () => {
-    console.log("Closing validation modal");
     setIsModalOpen(false);
   };
 
   const handleFinalSubmit = () => {
-    console.log("Handle final submit clicked");
     if (user) {
-      console.log("User is logged in");
       handleAuthSuccess();
     } else {
-      console.log("User is not logged in, opening auth modal");
-      setShowAuthModal(true); // Afficher AuthModal si l'utilisateur n'est pas connecté
+      setShowAuthModal(true);
     }
   };
 
   const handleAuthSuccess = () => {
-    console.log("Auth successful, closing auth modal");
-    setShowAuthModal(false); // Fermez AuthModal après une connexion/inscription réussie
-    console.log("Submitting event and closing validation modal");
-    onSubmit(); // Continuez avec la soumission de l'événement après une connexion réussie
-    closeModal(); // Fermez la modal de validation de l'événement
+    setShowAuthModal(false);
+    onSubmit();
+    closeModal();
   };
 
   return (

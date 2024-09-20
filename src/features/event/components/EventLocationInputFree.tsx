@@ -32,8 +32,6 @@ const EventLocationInputFree = () => {
         eventStore.setEventField("location", address);
         eventStore.setEventField("latitude", lat.toString());
         eventStore.setEventField("longitude", lng.toString());
-
-        console.log(`Latitude: ${lat}, Longitude: ${lng}`);
       } else {
         console.error("No results found for the given address.");
       }

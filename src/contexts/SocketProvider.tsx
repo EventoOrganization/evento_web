@@ -5,12 +5,17 @@ import io, { Socket } from "socket.io-client";
 
 interface SocketContextType {
   socket: Socket | null;
-  sendMessage: (message: string, receiverId: string) => void;
 }
 
 const SocketContext = createContext<SocketContextType | null>(null);
 
-export const useSocket = () => useContext(SocketContext);
+export const useSocket = () => {
+  const context = useContext(SocketContext);
+  if (!context) {
+    throw new Error("useSocket must be used within a SocketProvider");
+  }
+  return context;
+};
 
 export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
   const [socket, setSocket] = useState<Socket | null>(null);
@@ -48,22 +53,9 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
       setSocket(null);
     };
   }, [token, user]);
-  const sendMessage = (
-    message: string,
-    receiverId?: string,
-    groupId?: string,
-  ) => {
-    if (socket) {
-      socket.emit("send_message", {
-        groupId: groupId ?? null,
-        senderId: user?._id,
-        receiverId: receiverId ?? null,
-        message,
-      });
-    }
-  };
+
   return (
-    <SocketContext.Provider value={{ socket, sendMessage }}>
+    <SocketContext.Provider value={{ socket }}>
       {children}
     </SocketContext.Provider>
   );

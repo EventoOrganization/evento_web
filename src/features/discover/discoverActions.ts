@@ -32,15 +32,6 @@ export const filterEvents = (
   startDate: Date | null,
   endDate: Date | null,
 ) => {
-  console.log("*Filtering events*:", {
-    events,
-    selectedInterests,
-    searchText,
-    selectedTab,
-    location,
-    startDate,
-    endDate,
-  });
   const searchLower = searchText.toLowerCase();
   return events.filter((event) => {
     const matchesInterest =

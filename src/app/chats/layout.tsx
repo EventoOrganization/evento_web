@@ -1,17 +1,16 @@
-// app/chats/layout.tsx
 "use client";
 
 import Burger from "@/components/Burger";
 import { Input } from "@/components/ui/input";
 import ConversationList from "@/features/chat/components/ConversationList";
 import { cn } from "@/lib/utils";
-import { ReactNode, useState } from "react";
+import { useState } from "react";
 
-interface ChatLayoutProps {
-  children: ReactNode; // Render the page content dynamically
-}
-
-export default function ChatLayout({ children }: ChatLayoutProps) {
+export default function ChatLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -31,11 +30,7 @@ export default function ChatLayout({ children }: ChatLayoutProps) {
           >
             {/* Search bar and conversations */}
             <div className="p-4 border-b">
-              <Input
-                type="text"
-                placeholder="Search or start new chat"
-                // handle filtering conversations here
-              />
+              <Input type="text" placeholder="Search or start new chat" />
             </div>
             <ConversationList />
           </div>

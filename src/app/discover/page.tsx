@@ -118,7 +118,6 @@ const DiscoverPage = () => {
         startDate,
         endDate,
       );
-      console.log("Filtered events:", filteredEvents);
       setFilteredEvents(filteredEvents);
     }
   }, [

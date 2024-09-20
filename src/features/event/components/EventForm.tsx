@@ -28,7 +28,6 @@ const useSyncFormWithStore = () => {
 
   useEffect(() => {
     const currentValues = getValues();
-    console.log("currentValues before reset", currentValues);
     reset({
       title: eventStore.title || "",
       eventType: eventStore.eventType || "public",
@@ -53,7 +52,6 @@ const useSyncFormWithStore = () => {
       video: currentValues.video,
       media: currentValues.media,
     });
-    console.log("currentValues after reset", getValues());
   }, [eventStore, reset, user]);
 };
 
@@ -86,8 +84,6 @@ const EventForm = ({
       type: file.type.startsWith("image/") ? "image" : "video",
     }));
 
-    console.log("Selected Media:", mediaUrls);
-
     eventStore.setEventField("mediaPreviews", mediaUrls);
   };
 
@@ -107,11 +103,6 @@ const EventForm = ({
         formData.append(`media[${index}]`, file);
       });
 
-      console.log(
-        "Form Data before submission:",
-        Array.from(formData.entries()),
-      );
-
       const result = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/users/createEventAndRSVPform`,
         {
@@ -125,7 +116,6 @@ const EventForm = ({
       );
 
       const resultData = await result.json();
-      console.log("resultData", resultData);
       eventStore.clearEventForm();
       router.push(`/events/${resultData.body._id}`);
     } catch (error) {

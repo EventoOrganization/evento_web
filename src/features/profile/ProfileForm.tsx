@@ -74,8 +74,6 @@ const ProfileForm = () => {
   // Handle form submission
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission (e.g., send formValues to server)
-    console.log("Updated profile values:", formValues);
   };
 
   // Sync userInfo with formValues when userInfo updates (if fetched later)

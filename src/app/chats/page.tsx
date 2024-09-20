@@ -1,82 +1,87 @@
-// app/chats/page.tsx
 "use client";
 
 import { useSession } from "@/contexts/SessionProvider";
+import { useSocket } from "@/contexts/SocketProvider";
 import ChatInput from "@/features/chat/components/ChatInput";
 import MessageList from "@/features/chat/components/MessageList";
-import { useAuthStore } from "@/store/useAuthStore";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
-import { useEffect, useRef, useState } from "react";
-import { Socket } from "socket.io-client";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
-// Define the MessageType structure
+// Define the MessageType structure that matches MessageList's expectations
 type MessageType = {
   _id: string;
-  senderId: string;
+  senderId: {
+    _id: string;
+    username: string;
+    profileImage: string;
+  };
   message: string;
   receiverId: string;
   timestamp: string;
-  message_type: number;
+  message_type: string;
 };
 
 export default function ChatPage() {
   const { token } = useSession();
-  const socketRef = useRef<Socket | null>(null);
-  const [messages, setMessages] = useState<any[]>([]); // Type messages as an array of MessageType
-  const user = useAuthStore((state) => state.user);
-
+  const searchParams = useSearchParams();
+  const conversationId = searchParams.get("conversationId");
+  const [messages, setMessages] = useState<any[]>([]);
+  const { user } = useSession();
+  const { socket } = useSocket();
   useEffect(() => {
-    // Fetch initial messages when the page loads
+    if (!socket) return;
     const fetchMessages = async () => {
+      if (!conversationId) return;
+
       const result = await fetchData<MessageType[]>(
-        "/chats/messages",
+        `/chats/fetchMessages/${conversationId}`,
         HttpMethod.GET,
         null,
         token,
       );
       if (result.ok && result.data) {
-        setMessages(result.data); // Messages will now be of the correct type
+        setMessages(result.data);
       }
     };
 
     fetchMessages();
 
-    if (socketRef.current) {
-      socketRef.current.on(
-        "send_message_emit",
-        (newMessage: MessageType | null) => {
-          if (newMessage) {
-            // TypeScript still allows null, so we add an explicit check to only allow valid MessageType
-            setMessages((prevMessages) => [...prevMessages, newMessage]);
-          }
-        },
-      );
-    }
+    socket.on("send_message_emit", (newMessage: MessageType | null) => {
+      if (newMessage) {
+        setMessages((prevMessages) => [...prevMessages, newMessage]);
+      }
+    });
 
     return () => {
-      if (socketRef.current) {
-        socketRef.current.off("send_message_emit");
-      }
+      socket.off("send_message_emit");
     };
-  }, [token]);
+  }, [token, conversationId, socket]);
 
   const sendMessage = async (message: string) => {
-    const body = { message, senderId: user?._id };
+    if (!conversationId) return;
+
+    const body = {
+      message,
+      senderId: user?._id,
+      conversationId,
+      messageType: "text",
+    };
     const result = await fetchData<MessageType>(
-      "/chats/sendMessage",
+      `/chats/sendMessage`,
       HttpMethod.POST,
       body,
       token,
     );
 
     if (result.ok && result.data) {
-      setMessages((prev) => [...prev, result.data]); // Add the new message to the state
+      setMessages((prev) => [...prev, result.data]);
     }
   };
 
   return (
     <div className="flex flex-col h-full bg-background">
-      <MessageList messages={messages} />
+      <MessageList messages={messages} currentUserId={user?._id ?? ""} />
       <ChatInput onSendMessage={sendMessage} />
     </div>
   );

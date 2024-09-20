@@ -21,7 +21,6 @@ const AttendeesList = ({
   const [isFollowing, setIsFollowing] = useState<boolean | null>(
     user?.status === "following" ? true : false,
   );
-  console.log("User:", user);
   const handleFollow = async () => {
     if (!token) {
       setIsAuthModalOpen(true);
@@ -42,9 +41,7 @@ const AttendeesList = ({
 
       if (response.ok) {
         setIsFollowing((prevIsFollowing) => !prevIsFollowing);
-        const data = await response.json();
         setIsFollowing(!isFollowing);
-        console.log(data.message, data);
         // Refresh the user list after following/unfollowing
         if (fetchUsers) fetchUsers();
       } else {

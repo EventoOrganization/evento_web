@@ -56,7 +56,6 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
     }
 
     if (currentStatus.going) {
-      console.log("unGoing");
     } else {
       if (submittedAnswers.length < mandatoryQuestions.length) {
         setShowQuestionModal(true);

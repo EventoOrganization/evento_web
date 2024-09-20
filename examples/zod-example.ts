@@ -18,7 +18,6 @@ const userData = {
 try {
   // Validate data
   userSchema.parse(userData);
-  console.log("User data is valid");
 } catch (e) {
   if (e instanceof ZodError) {
     console.error("Validation failed:", e.errors);

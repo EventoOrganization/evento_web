@@ -5,16 +5,21 @@ import Image from "next/image";
 
 interface Message {
   _id: string;
-  senderId: string;
+  senderId: {
+    _id: string;
+    username: string;
+    profileImage: string;
+  };
   message: string;
-  message_type: number;
+  message_type: string;
 }
 
 interface MessageListProps {
   messages: Message[];
+  currentUserId: string;
 }
 
-const MessageList = ({ messages }: MessageListProps) => {
+const MessageList = ({ messages, currentUserId }: MessageListProps) => {
   return (
     <div className="flex-1 overflow-y-auto p-4">
       {messages.length === 0 ? (
@@ -24,18 +29,26 @@ const MessageList = ({ messages }: MessageListProps) => {
           <div
             key={msg._id}
             className={`mb-2 p-2 max-w-xs ${
-              msg.senderId === "currentUserId"
+              msg.senderId._id === currentUserId
                 ? "bg-green-200 ml-auto"
                 : "bg-gray-200"
             } rounded-lg`}
           >
-            {msg.message_type === 1 ? (
-              <p>{msg.message}</p>
-            ) : msg.message_type === 2 ? (
+            {/* Handle different message types */}
+            {msg.message_type === "text" && <p>{msg.message}</p>}
+
+            {msg.message_type === "image" && (
               <Image src={msg.message} alt="Image" width={200} height={200} />
-            ) : msg.message_type === 3 ? (
+            )}
+
+            {msg.message_type === "video" && (
               <video src={msg.message} controls width="300" />
-            ) : null}
+            )}
+
+            {/* Sender Information */}
+            <div className="mt-1 text-xs text-gray-500">
+              <p>{msg.senderId.username}</p>
+            </div>
           </div>
         ))
       )}

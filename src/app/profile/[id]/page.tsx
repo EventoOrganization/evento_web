@@ -15,7 +15,6 @@ export default function UserProfilePage({
   const getProfileData = async () => {
     if (profileData) return;
     try {
-      console.log("userId", userId);
       const profileRes = await fetchData<any>(
         `/profile/userProfile/${userId}`,
         HttpMethod.GET,

@@ -18,7 +18,7 @@ export const getSessionSSR = () => {
   const token = getTokenSSR();
   const decodedToken = token ? decodeToken(token) : null;
   const user = decodedToken ? mapJwtPayloadToUser(decodedToken) : null;
-  console.log("User from token:", user);
+  // console.log("User from token:", user);
 
   return {
     token,
@@ -29,7 +29,7 @@ export const getSessionSSR = () => {
 
 export const getTokenSSR = () => {
   const token = cookies().get("token");
-  console.log("Cookie token:", token?.value);
+  // console.log("Cookie token:", token?.value);
   if (!token?.value) {
     console.log("Token not found in cookies");
     return null;

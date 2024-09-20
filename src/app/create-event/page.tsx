@@ -38,7 +38,6 @@ const CreateEventPage = () => {
   const [location, setLocation] = useState({ lat: 0, lng: 0 });
   const { user } = useSession();
   const { userInfo } = useProfileStore();
-  console.log(user);
   useEffect(() => {
     setFormValues({
       title: eventStore.title || "",
@@ -103,7 +102,6 @@ const CreateEventPage = () => {
       const interestRes = await fetchData<any>("/users/getInterestsListing");
       if (!interestRes.error) {
         setInterests(interestRes.data);
-        console.log("Interests:", interestRes.data);
       }
     } catch (error) {
     } finally {
@@ -289,7 +287,6 @@ const CreateEventPage = () => {
       uploadedMedia: [...initialMedia],
       predefinedMedia: [...predefinedMedia],
     };
-    console.log("Form Data on Submit:", formData);
     const response = await fetchData<EventType>(
       "/events/createEvent",
       HttpMethod.POST,

@@ -18,14 +18,10 @@ const EventImageUpload = () => {
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
-    console.log("Selected Images:", files);
 
     const imageUrls = files.map((file) => URL.createObjectURL(file));
     setImagePreviews(imageUrls);
     eventStore.setEventField("imagePreviews", imageUrls);
-
-    // Log the files here, ensuring they're handled correctly
-    console.log("Images in Form State:", files);
   };
 
   useEffect(() => {

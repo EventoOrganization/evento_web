@@ -78,10 +78,8 @@ const OTPVerifyForm = ({
 
         if (flowType === "forgot-password") {
           const token = verifyRes?.data.token || "";
-          console.log("response", verifyRes);
           onAuthSuccess(token);
         } else if (flowType === "signup") {
-          console.log("verify otp");
           onAuthSuccess();
         }
       }

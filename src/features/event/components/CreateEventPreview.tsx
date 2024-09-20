@@ -21,7 +21,6 @@ const CreateEventPreview = ({
   const eventStore = useEventStore();
   const { user } = useSession();
   const { userInfo } = useProfileStore();
-  // console.log(user);
 
   const renderDate = () => {
     const startDate = eventStore.date;
