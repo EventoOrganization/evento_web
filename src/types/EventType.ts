@@ -67,6 +67,7 @@ export type EventType = {
   videoPreview?: string;
   attendees?: UserType[];
   favouritees?: UserType[];
+  refused?: UserType[];
   questions?: QuestionType[];
   guestsAllowFriend: boolean;
   additionalField?: any;

@@ -12,6 +12,7 @@ import EventEdit from "@/features/event/components/EventEdit";
 import EventGuestModal from "@/features/event/components/EventGuestModal";
 import EventTimeSlots from "@/features/event/components/EventTimeSlots";
 import PrivateEventActionIcons from "@/features/event/components/PrivateEventActionIcons";
+import RefusedUsersList from "@/features/event/components/RefusedUsersList";
 import RSVPSubmissionsList from "@/features/event/components/RSVPSubmissionsList";
 import { useToast } from "@/hooks/use-toast";
 import { EventType, InterestType } from "@/types/EventType";
@@ -353,6 +354,13 @@ const EventPage = () => {
               count={event?.favouritees?.length || 0}
               users={event?.favouritees || []}
             />
+            {event.eventType === "private" && (
+              <CollapsibleList
+                title={`Refused`}
+                count={event?.refused?.length || 0}
+                users={event?.refused || []}
+              />
+            )}
             {combinedGuests.length > 0 && (
               <CollapsibleList
                 title={`Invited`}
@@ -367,6 +375,10 @@ const EventPage = () => {
                 attendees={event?.attendees || []}
               />
             )}
+            <RefusedUsersList
+              title="Refused Users"
+              users={event?.refused || []}
+            />
           </div>
         )}
         {selectedTab === "Settings" && (

@@ -41,7 +41,9 @@ export type UserType = {
   countTotalEventIAttended?: number;
   countFollowing?: number;
   rsvpSubmission?: RSVPSubmissionType;
+  refusedReason?: string;
 };
+
 export type TempUserType = {
   _id?: string;
   username: string;
