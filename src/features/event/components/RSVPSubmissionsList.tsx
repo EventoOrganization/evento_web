@@ -1,8 +1,8 @@
 import { cn } from "@/lib/utils";
 import { UserType } from "@/types/UserType";
 import { ChevronDownIcon } from "lucide-react";
+import Image from "next/image";
 import { useState } from "react";
-
 const RSVPSubmissionsList = ({
   title,
   attendees,
@@ -10,9 +10,7 @@ const RSVPSubmissionsList = ({
   title: string;
   attendees: (UserType | null)[];
 }) => {
-  const [isOpen, setIsOpen] = useState(
-    title === "RSVP Submissions" ? true : false,
-  );
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <div className="mb-4 w-full ease-in-out">
@@ -38,9 +36,11 @@ const RSVPSubmissionsList = ({
             .map((attendee) => (
               <div key={attendee!._id} className="p-4 border rounded-md">
                 <div className="flex items-center mb-4">
-                  <img
-                    src={attendee!.profileImage}
+                  <Image
+                    src={attendee!.profileImage || ""}
                     alt={attendee!.username}
+                    width={30}
+                    height={30}
                     className="w-10 h-10 rounded-full mr-4"
                   />
                   <h3 className="font-bold">{attendee!.username}</h3>

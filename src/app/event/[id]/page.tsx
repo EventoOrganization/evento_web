@@ -361,10 +361,12 @@ const EventPage = () => {
                 event={event}
               />
             )}
-            <RSVPSubmissionsList
-              title="RSVP Submissions"
-              attendees={event?.attendees || []}
-            />
+            {event?.details?.createRSVP && (
+              <RSVPSubmissionsList
+                title="RSVP Submissions"
+                attendees={event?.attendees || []}
+              />
+            )}
           </div>
         )}
         {selectedTab === "Settings" && (
