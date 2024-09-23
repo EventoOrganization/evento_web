@@ -123,7 +123,7 @@ const DiscoverEventPreview = ({
                 {event?.details?.startTime} - {event?.details?.endTime}
               </p>
             </div>
-            <TruncatedText text={event?.details?.description} />
+            <TruncatedText text={event?.details?.description} expand={true} />
           </div>
           <div className="flex justify-between items-center">
             <div>{/* <AvatarStack eventId={event?._id} /> */}</div>

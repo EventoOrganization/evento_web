@@ -5,11 +5,13 @@ import { useEffect, useRef, useState } from "react";
 const TruncatedText = ({
   text = "",
   className,
+  expand = false,
 }: {
   text: string;
+  expand?: boolean;
   className?: string;
 }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(expand);
   const [isOverflowing, setIsOverflowing] = useState(false);
   const textRef = useRef<HTMLParagraphElement | null>(null);
 
