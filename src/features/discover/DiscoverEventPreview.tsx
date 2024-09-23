@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { Loader } from "lucide-react";
 import Image from "next/image";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
+import PrivateEventActionIcons from "../event/components/PrivateEventActionIcons";
 
 const DiscoverEventPreview = ({
   className,
@@ -126,7 +127,10 @@ const DiscoverEventPreview = ({
           </div>
           <div className="flex justify-between items-center">
             <div>{/* <AvatarStack eventId={event?._id} /> */}</div>
-            <EventActionIcons event={event} />
+            {event.eventType === "public" && <EventActionIcons event={event} />}
+            {event.eventType === "private" && (
+              <PrivateEventActionIcons event={event} />
+            )}
           </div>
         </div>
       </div>

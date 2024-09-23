@@ -12,6 +12,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import EventActionIcons from "./EventActionIcons";
+import PrivateEventActionIcons from "./PrivateEventActionIcons";
 
 const Event = ({ className, event }: { className?: string; event?: any }) => {
   const pathname = usePathname();
@@ -134,7 +135,10 @@ const Event = ({ className, event }: { className?: string; event?: any }) => {
           </div>
           <div className="flex justify-between items-center">
             <div>{/* <AvatarStack eventId={event?._id} /> */}</div>
-            <EventActionIcons event={event} />
+            {event.eventType === "public" && <EventActionIcons event={event} />}
+            {event.eventType === "private" && (
+              <PrivateEventActionIcons event={event} />
+            )}
           </div>
         </div>
       </div>

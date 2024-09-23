@@ -30,12 +30,14 @@ export async function uploadFileToS3(file: File, folder: string) {
   try {
     await s3.send(new PutObjectCommand(params));
     const url = `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${key}`;
+
     return { success: true, key, url };
   } catch (error) {
     console.error("Error uploading to S3:", error);
     throw new Error("Upload failed");
   }
 }
+
 export async function deleteFileFromS3(fileKey: string) {
   const params = {
     Bucket: process.env.S3_BUCKET_NAME,

@@ -61,7 +61,6 @@ const CreateEventPreview = ({
       }
     }
   };
-  // const renderAverageTimes = () => {
   //   if (eventStore.timeSlots.length === 0) return "No times available";
 
   //   let totalStartMinutes = 0,

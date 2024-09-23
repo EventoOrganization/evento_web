@@ -24,6 +24,7 @@ type EventFormState = {
   timeSlots: TimeSlotType[];
   privateEventLink?: string;
   mediaPreviews?: string[];
+  tempMediaPreview?: string[];
   questions: QuestionType[];
   uploadedMedia: { images: File[]; videos: File[] };
   predefinedMedia: { images: string[]; videos: string[] };
@@ -43,7 +44,11 @@ type EventFormState = {
     value: string,
   ) => void;
   removeOption: (questionIndex: number, optionIndex: number) => void;
-  addUploadedMedia: (file: File, type: "image" | "video") => void;
+  addUploadedMedia: (
+    file: File,
+    type: "image" | "video",
+    thumbnail: string,
+  ) => void;
   addPredefinedMedia: (url: string, type: "image" | "video") => void;
 };
 
@@ -67,6 +72,7 @@ export const useEventStore = create<EventFormState>()(
       location: undefined,
       URL: undefined,
       mediaPreviews: [],
+      tempMediaPreview: [],
       timeSlots: [],
       isTimeSlotsEnabled: false,
       coHosts: [],

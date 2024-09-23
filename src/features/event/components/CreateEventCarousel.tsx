@@ -42,21 +42,29 @@ const CreateEventCarousel = () => {
   };
   const deleteMedia = async (index: number, mediaItem: MediaItem) => {
     // Retirer le média de mediaPreviews dans le store local
+    console.log("Media URL:", mediaItem.url);
+
     useEventStore.setState((state) => ({
       mediaPreviews: state?.mediaPreviews?.filter((_, i) => i !== index),
     }));
 
     // Extraire la clé du fichier S3
-    const fileKey = mediaItem.url.replace(
-      `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/`,
-      "",
-    );
+    // const fileKey = mediaItem.url.replace(
+    //   `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/`,
+    //   "",
+    // );
+    const fileKey = new URL(mediaItem.url).pathname.substring(1);
+    console.log("Extracted S3 Key:", fileKey);
 
-    // Appeler l'action côté serveur pour supprimer le fichier si nécessaire
-    const success = await handleDeleteMedia(fileKey);
-    if (success) {
-    } else {
-      console.error(`Failed to delete file: ${fileKey}`);
+    try {
+      const success = await handleDeleteMedia(fileKey);
+      if (!success) {
+        console.error(`Failed to delete file: ${fileKey}`);
+      } else {
+        console.log(`Successfully deleted file: ${fileKey}`);
+      }
+    } catch (error) {
+      console.error("Error deleting media:", error);
     }
   };
   const handleTouchEnd = () => {
