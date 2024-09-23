@@ -8,6 +8,7 @@ import Loader from "@/components/ui/Loader";
 import { useSession } from "@/contexts/SessionProvider";
 import TabSelector from "@/features/discover/TabSelector";
 import EventActionIcons from "@/features/event/components/EventActionIcons";
+import EventEdit from "@/features/event/components/EventEdit";
 import EventGuestModal from "@/features/event/components/EventGuestModal";
 import EventTimeSlots from "@/features/event/components/EventTimeSlots";
 import PrivateEventActionIcons from "@/features/event/components/PrivateEventActionIcons";
@@ -20,6 +21,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
+
 const EventPage = () => {
   const { id } = useParams();
   const eventId = Array.isArray(id) ? id[0] : id;
@@ -29,6 +31,7 @@ const EventPage = () => {
   const [isGuestAllowed, setIsGuestAllowed] = useState<boolean | null>(null);
   const { user, token } = useSession();
   const { toast } = useToast();
+
   useEffect(() => {
     if (eventId) {
       fetchEventData(eventId);
@@ -36,7 +39,7 @@ const EventPage = () => {
     if (user && token) {
       loadUsersPlus(user._id, token);
     } else {
-      loadusers();
+      loadUsers();
     }
   }, [eventId, user, token]);
 
@@ -47,39 +50,92 @@ const EventPage = () => {
         `/events/getEvent/${eventId}${userIdQuery}`,
       );
       setEvent(eventRes.data);
-      setIsGuestAllowed(eventRes.data && eventRes.data.guestsAllowFriend);
+      setIsGuestAllowed(eventRes.data?.guestsAllowFriend || null);
     } catch (error) {
       console.error("Error fetching event:", error);
     }
   };
-  const loadusers = async () => {
+
+  const loadUsers = async () => {
     try {
       const usersRes = await fetchData<UserType[]>(
         `/users/userListWithFollowingStatus`,
       );
-      setUsers(usersRes.data as UserType[]);
-    } catch (error) {}
+      setUsers(usersRes.data || []);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
   };
+
   const loadUsersPlus = async (userId: string, token: string) => {
     try {
-      const usersRes = await fetchData(
+      const usersRes = await fetchData<UserType[]>(
         `/users/followStatusForUsersYouFollow/${userId}`,
         HttpMethod.GET,
         null,
         token,
       );
-      setUsers(usersRes.data as UserType[]);
+      setUsers(usersRes.data || []);
     } catch (error) {
       console.error("Error fetching users:", error);
     }
   };
-  if (!event) {
-    return (
-      <div className="w-full h-full absolute top-0 left-0 flex items-center justify-center">
-        <Loader />
-      </div>
-    );
-  }
+
+  const handleUpdateField = (field: string, value: any) => {
+    if (event) {
+      const updatedEvent = {
+        ...event,
+        details: { ...event.details, mode: event.details?.mode || "virtual" },
+      };
+
+      switch (field) {
+        case "title":
+          updatedEvent.title = value;
+          break;
+        case "locationData":
+          updatedEvent.details.location = value.location;
+          break;
+        case "description":
+          updatedEvent.details.description = value;
+          break;
+        case "interests":
+          if (Array.isArray(value)) {
+            updatedEvent.interests = value;
+          }
+          break;
+        case "type":
+          if (value === "public" || value === "private") {
+            updatedEvent.eventType = value;
+          }
+          break;
+        case "mode":
+          if (["virtual", "in-person", "both"].includes(value)) {
+            updatedEvent.details.mode = value;
+          }
+          break;
+        case "url":
+          updatedEvent.details.URLlink = value || "";
+          break;
+        case "createRSVP":
+          updatedEvent.details.createRSVP = value;
+          break;
+        case "questions":
+          updatedEvent.questions = value.map((question: any) => ({
+            id: question.id || new Date().getTime().toString(),
+            question: question.question || "",
+            type: question.type || "text",
+            options: question.options || [],
+            required: question.required || false,
+          }));
+          break;
+        default:
+          console.warn("Unknown field", field);
+      }
+
+      setEvent(updatedEvent);
+    }
+  };
+
   const formatDate = (dateString: string | undefined) => {
     if (!dateString) return "";
     const date = new Date(dateString);
@@ -90,10 +146,11 @@ const EventPage = () => {
     };
     return date.toLocaleDateString("en-US", options);
   };
+
   const handleGuestsAllowFriendChange = async () => {
     try {
       const response = await fetchData(
-        `/events/${event._id}/updateGuestsAllowFriend`,
+        `/events/${event?._id}/updateGuestsAllowFriend`,
         HttpMethod.PUT,
         { guestsAllowFriend: !isGuestAllowed },
         token,
@@ -106,7 +163,6 @@ const EventPage = () => {
           duration: 3000,
         });
       } else {
-        console.error("Error updating guestsAllowFriend:", response.error);
         toast({
           description: "Error updating guestsAllowFriend",
           variant: "destructive",
@@ -114,7 +170,6 @@ const EventPage = () => {
         });
       }
     } catch (error) {
-      console.error("Error updating guestsAllowFriend:", error);
       toast({
         description: "Error updating guestsAllowFriend",
         variant: "destructive",
@@ -141,6 +196,7 @@ const EventPage = () => {
       return `From ${startDay} to ${endDay} ${monthYear}`;
     }
   };
+
   const combinedGuests = [
     ...(event?.guests?.map((guest) => ({ ...guest, status: "guest" })) || []),
     ...(event?.tempGuests?.map((tempGuest) => ({
@@ -149,31 +205,31 @@ const EventPage = () => {
     })) || []),
   ];
 
-  // Create a Set to track unique guest identifiers (e.g., by email or id)
   const uniqueGuests = new Set();
-
-  // Filter out duplicates based on the unique identifier (e.g., `_id` or `email`)
   const filteredGuests = combinedGuests.filter((guest) => {
-    const identifier = guest._id || guest.email; // Choose a unique identifier
+    const identifier = guest._id || guest.email;
     if (uniqueGuests.has(identifier)) {
-      return false; // Duplicate found, filter it out
+      return false;
     } else {
       uniqueGuests.add(identifier);
-      return true; // Unique guest, keep it
+      return true;
     }
   });
 
+  if (!event) {
+    return (
+      <div className="w-full h-full absolute top-0 left-0 flex items-center justify-center">
+        <Loader />
+      </div>
+    );
+  }
+
   return (
     <div className="md:grid-cols-2 grid grid-cols-1 w-full h-screen ">
-      {/* <EventInvitation
-        event={event}
-        user={user}
-        eventLink={`http://localhost:3000/event/${event._id}`}
-      /> */}
       <div className="md:p-10 md:pl-0 p-4 h-full ">
         <div className="flex items-center w-full justify-between mb-4">
           <Link
-            className="flex items-center gap-2 "
+            className="flex items-center gap-2"
             href={`/profile/${event?.user?._id}`}
           >
             {event?.user?.profileImage ? (
@@ -188,14 +244,12 @@ const EventPage = () => {
               <Avatar>
                 <AvatarImage
                   src={"https://github.com/shadcn.png"}
-                  className="rounded-full w-10 h-10 "
+                  className="rounded-full w-10 h-10"
                 />
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>
             )}
-            <h4 className="ml-2">
-              {(event.details && event?.user?.username) || ""}
-            </h4>
+            <h4 className="ml-2">{event?.user?.username || ""}</h4>
           </Link>
           <span className="text-sm">{renderDate()}</span>
         </div>
@@ -204,13 +258,24 @@ const EventPage = () => {
       <Section className="justify-start py-10 md:pr-0 w-full h-full">
         <TabSelector
           onChange={setSelectedTab}
-          tabs={["Description", "Attendees"]}
+          tabs={
+            event.isAdmin || event.isHosted
+              ? ["Description", "Attendees", "Settings"]
+              : ["Description", "Attendees"]
+          }
           className="mb-4"
         />
         {selectedTab === "Description" && (
           <div className="space-y-4 pb-20 w-full">
             <>
               <h1 className="text-xl font-bold">{event?.title}</h1>
+              <Link
+                href={event.details?.URLlink || ""}
+                className="text-blue-500 underline"
+                target="_blank"
+              >
+                {event.details?.URLlink}
+              </Link>
               {event?.interests && (
                 <ul className="flex gap-2 flex-wrap">
                   {event?.interests?.map((interest: InterestType) => (
@@ -296,6 +361,9 @@ const EventPage = () => {
               />
             )}
           </div>
+        )}
+        {selectedTab === "Settings" && (
+          <EventEdit event={event} onUpdateField={handleUpdateField} />
         )}
       </Section>
     </div>

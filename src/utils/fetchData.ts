@@ -41,13 +41,13 @@ export const fetchData = async <T, B = any>(
   }
 
   try {
-    console.log(
-      "fetching",
-      method,
-      process.env.NEXT_PUBLIC_API_URL + endpoint,
-      fetchOptions.body,
-      !!token,
-    );
+    // console.log(
+    //   "fetching",
+    //   method,
+    //   process.env.NEXT_PUBLIC_API_URL + endpoint,
+    //   fetchOptions.body,
+    //   !!token,
+    // );
     const response = await fetch(
       process.env.NEXT_PUBLIC_API_URL + endpoint,
       fetchOptions,
@@ -83,7 +83,7 @@ export const fetchData = async <T, B = any>(
         await response.json();
 
       if (data?.body) {
-        console.log(`response from ${endpoint} with data.body:`, data.body);
+        // console.log(`response from ${endpoint} with data.body:`, data.body);
         return {
           data: data.body as T,
           error: null,
@@ -91,7 +91,7 @@ export const fetchData = async <T, B = any>(
           ok: true,
         };
       } else if (data?.data) {
-        console.log(`response from ${endpoint} with data.data:`, data.data);
+        // console.log(`response from ${endpoint} with data.data:`, data.data);
         return {
           data: data.data as T,
           error: null,
@@ -99,10 +99,10 @@ export const fetchData = async <T, B = any>(
           ok: true,
         };
       } else if (data?.message) {
-        console.log(
-          `response from ${endpoint} with data.message:`,
-          data.message,
-        );
+        // console.log(
+        //   `response from ${endpoint} with data.message:`,
+        //   data.message,
+        // );
         if (response.status >= 200 && response.status < 300) {
           return {
             data: data as T,

@@ -33,7 +33,7 @@ const Event = ({ className, event }: { className?: string; event?: any }) => {
       !endDate ||
       new Date(endDate).getTime() === new Date(startDate).getTime()
     ) {
-      return `In ${formatDate(startDate)}`;
+      return `${formatDate(startDate)}`;
     } else {
       const startDay = new Date(startDate).getDate();
       const endDay = new Date(endDate).getDate();

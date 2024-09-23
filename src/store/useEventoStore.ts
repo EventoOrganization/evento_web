@@ -26,14 +26,14 @@ interface EventoStoreState {
 }
 const customStorage = {
   getItem: (name: string) => {
-    const item = localStorage.getItem(name);
+    const item = sessionStorage.getItem(name);
     return item ? JSON.parse(item) : null;
   },
   setItem: (name: string, value: any) => {
-    localStorage.setItem(name, JSON.stringify(value));
+    sessionStorage.setItem(name, JSON.stringify(value));
   },
   removeItem: (name: string) => {
-    localStorage.removeItem(name);
+    sessionStorage.removeItem(name);
   },
 };
 const useEventoStore = create<EventoStoreState>()(
