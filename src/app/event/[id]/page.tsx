@@ -12,6 +12,7 @@ import EventEdit from "@/features/event/components/EventEdit";
 import EventGuestModal from "@/features/event/components/EventGuestModal";
 import EventTimeSlots from "@/features/event/components/EventTimeSlots";
 import PrivateEventActionIcons from "@/features/event/components/PrivateEventActionIcons";
+import RSVPSubmissionsList from "@/features/event/components/RSVPSubmissionsList";
 import { useToast } from "@/hooks/use-toast";
 import { EventType, InterestType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
@@ -354,12 +355,16 @@ const EventPage = () => {
             />
             {combinedGuests.length > 0 && (
               <CollapsibleList
-                title={`Guests`}
+                title={`Invited`}
                 count={filteredGuests.length}
                 users={filteredGuests}
                 event={event}
               />
             )}
+            <RSVPSubmissionsList
+              title="RSVP Submissions"
+              attendees={event?.attendees || []}
+            />
           </div>
         )}
         {selectedTab === "Settings" && (

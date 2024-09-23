@@ -40,6 +40,7 @@ export type UserType = {
   is_otp_verify?: number;
   countTotalEventIAttended?: number;
   countFollowing?: number;
+  rsvpSubmission?: RSVPSubmissionType;
 };
 export type TempUserType = {
   _id?: string;
@@ -82,3 +83,28 @@ export type TempUserType = {
   countTotalEventIAttended?: number;
   countFollowing?: number;
 };
+interface RSVPAnswerType {
+  _id: string;
+  answer: string[];
+}
+
+interface AdditionalFieldAnswerType {
+  name?: string;
+  value?: string;
+}
+
+interface RSVPSubmissionType {
+  _id: string;
+  eventId: string;
+  userId: {
+    _id: string;
+    username: string;
+    firstName: string;
+    lastName: string;
+    profileImage: string;
+  };
+  rsvpAnswers: RSVPAnswerType[];
+  additionalFieldAnswers: AdditionalFieldAnswerType[];
+  createdAt: string;
+  updatedAt: string;
+}
