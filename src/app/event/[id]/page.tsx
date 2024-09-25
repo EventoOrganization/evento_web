@@ -229,7 +229,7 @@ const EventPage = () => {
       </div>
     );
   }
-
+  console.log("users", users);
   return (
     <>
       <div className="md:grid-cols-2 grid grid-cols-1 w-full h-screen ">
@@ -344,7 +344,7 @@ const EventPage = () => {
                       checked={isGuestAllowed ?? false}
                     />
                     <label htmlFor="guestsAllowFriend">
-                      Allow guests to bring friends
+                      Allow guests to invite friends
                     </label>
                   </div>
                 )}
@@ -392,7 +392,11 @@ const EventPage = () => {
             </div>
           )}
           {selectedTab === "Settings" && (
-            <EventEdit event={event} onUpdateField={handleUpdateField} />
+            <EventEdit
+              event={event}
+              allUsers={users}
+              onUpdateField={handleUpdateField}
+            />
           )}
         </Section>
         {eventEndDate && eventEndDate < currentDate && (

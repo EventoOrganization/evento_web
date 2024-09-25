@@ -2,8 +2,10 @@
 import { useSession } from "@/contexts/SessionProvider";
 import { useInterestStore } from "@/store/useInterestStore";
 import { EventType, InterestType, QuestionType } from "@/types/EventType";
+import { UserType } from "@/types/UserType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { useEffect, useState } from "react";
+import CoHostManagementModal from "./CoHostManagementModal";
 import EditableInputText from "./EditableInputText";
 import EditableLocation from "./EditableLocation";
 import EditableMultiSelect from "./EditableMultiSelect";
@@ -14,9 +16,11 @@ import EditableURLInput from "./EditableURLInput";
 
 const EventEdit = ({
   event,
+  allUsers = [],
   onUpdateField,
 }: {
   event: EventType;
+  allUsers: UserType[];
   onUpdateField: (field: string, value: any) => void;
 }) => {
   const [title, setTitle] = useState(event?.title || "");
@@ -61,7 +65,7 @@ const EventEdit = ({
   useEffect(() => {
     loadInterests();
   }, [loadInterests]);
-
+  console.log(event.coHosts, allUsers);
   const handleUpdate = async (field: string, value: any) => {
     console.log("field", field, "value", value);
     setIsUpdating(true);
@@ -335,6 +339,13 @@ const EventEdit = ({
         editMode={editMode.url}
         toggleEditMode={() => toggleEditMode("url")}
       />
+      {event.isHosted && (
+        <CoHostManagementModal
+          event={event}
+          allUsers={allUsers}
+          onUpdateField={handleUpdate}
+        />
+      )}
       {/* RSVP Questions */}
       <EditableQuestionsForm
         questions={questions}

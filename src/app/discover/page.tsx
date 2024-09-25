@@ -163,6 +163,7 @@ const DiscoverPage = () => {
     setEndDate(date || null);
     setShowReset(true);
   };
+  console.log(events);
   return (
     <>
       <div className="relative flex justify-center items-center mt-10 text-eventoPurpleLight gap-2">
