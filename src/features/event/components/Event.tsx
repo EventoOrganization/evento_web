@@ -16,7 +16,13 @@ import PrivateEventActionIcons from "./PrivateEventActionIcons";
 
 const Event = ({ className, event }: { className?: string; event?: any }) => {
   const pathname = usePathname();
-
+  const adminCoHosts = event.coHosts.filter(
+    (coHost: { status: string }) => coHost.status === "admin",
+  );
+  const readOnlyCoHosts = event.coHosts.filter(
+    (coHost: { status: string }) => coHost.status === "read-only",
+  );
+  console.log(event.coHosts, adminCoHosts, readOnlyCoHosts);
   const renderDate = () => {
     if (!event || !event.details) return <Loader />;
     const startDate = event?.details?.date;
@@ -80,6 +86,15 @@ const Event = ({ className, event }: { className?: string; event?: any }) => {
                 </Avatar>
               )}
               <h4 className="ml-2">{(event && event?.user.username) || ""}</h4>
+              {event.coHosts.length === 1 &&
+                event.coHosts.map((coHost: any) => (
+                  <h4 key={coHost.user_Id._id}>
+                    & {coHost?.user_id?.username}
+                  </h4>
+                ))}
+              {event.coHosts.length > 1 && (
+                <h4>& {event.coHosts?.length} more</h4>
+              )}
             </Link>
             <span className="text-sm text-right">{renderDate()}</span>
           </div>
