@@ -1,13 +1,16 @@
 "use server";
 import { deleteFileFromS3, uploadFileToS3 } from "@/lib/s3";
-export async function handleUpload(formData: FormData): Promise<string[]> {
+export async function handleUpload(
+  formData: FormData,
+  folderPath: string = "events/initialMedia",
+): Promise<string[]> {
   // Assurez-vous de retourner un tableau de chaînes (URLs)
   const files = formData.getAll("file") as File[];
   const urls: string[] = [];
 
   try {
     for (const file of files) {
-      const { url } = await uploadFileToS3(file, "events/initialMedia");
+      const { url } = await uploadFileToS3(file, folderPath);
       urls.push(url); // Ajouter l'URL au tableau
     }
     console.log("All uploads successful");

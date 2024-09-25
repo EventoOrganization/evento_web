@@ -41,35 +41,20 @@ export const fetchData = async <T, B = any>(
   }
 
   try {
-    // console.log(
-    //   "fetching",
-    //   method,
-    //   process.env.NEXT_PUBLIC_API_URL + endpoint,
-    //   fetchOptions.body,
-    //   !!token,
-    // );
     const response = await fetch(
       process.env.NEXT_PUBLIC_API_URL + endpoint,
       fetchOptions,
     );
-
     const contentType = response.headers.get("content-type");
-    const isSuccess = response.status >= 200 && response.status < 300;
 
-    if (!isSuccess) {
+    if (!response.ok) {
       let errorMessage = `HTTP error! status: ${response.status}`;
-
       if (contentType && contentType.includes("application/json")) {
         const errorData = await response.json();
-
-        if (errorData.message) {
-          errorMessage = errorData.message;
-        }
+        errorMessage = errorData.message || JSON.stringify(errorData);
       } else {
-        const errorText = await response.text();
-        errorMessage = `HTTP error! status: ${response.status}, message: ${errorText}`;
+        errorMessage = await response.text();
       }
-
       return {
         data: null,
         error: errorMessage,
@@ -79,65 +64,23 @@ export const fetchData = async <T, B = any>(
     }
 
     if (contentType && contentType.includes("application/json")) {
-      const data: { success: boolean; body?: T; data?: T; message?: string } =
-        await response.json();
-
-      if (data?.body) {
-        // console.log(`response from ${endpoint} with data.body:`, data.body);
-        return {
-          data: data.body as T,
-          error: null,
-          status: response.status,
-          ok: true,
-        };
-      } else if (data?.data) {
-        // console.log(`response from ${endpoint} with data.data:`, data.data);
-        return {
-          data: data.data as T,
-          error: null,
-          status: response.status,
-          ok: true,
-        };
-      } else if (data?.message) {
-        // console.log(
-        //   `response from ${endpoint} with data.message:`,
-        //   data.message,
-        // );
-        if (response.status >= 200 && response.status < 300) {
-          return {
-            data: data as T,
-            error: null,
-            status: response.status,
-            ok: true,
-          };
-        } else {
-          return {
-            data: null,
-            error: data.message,
-            status: response.status,
-            ok: false,
-          };
-        }
-      }
-    } else {
-      throw new Error("La réponse n'est pas au format JSON.");
+      const json = await response.json();
+      return {
+        data: json.data || json.body || json,
+        error: null,
+        status: response.status,
+        ok: true,
+      };
     }
+
+    // If no content-type is JSON or response is not specified as JSON but is OK
+    return { data: null, error: null, status: response.status, ok: true };
   } catch (error) {
     return {
       data: null,
-      error: `Failed to fetch data from ${endpoint}: ${
-        error instanceof Error ? error.message : "Unknown error"
-      }`,
+      error: `Failed to fetch data from ${endpoint}: ${error instanceof Error ? error.message : "Unknown error"}`,
       status: 500,
       ok: false,
     };
   }
-
-  // Ajoutez un return par défaut ici pour satisfaire TypeScript
-  return {
-    data: null,
-    error: "Unexpected error occurred",
-    status: 500,
-    ok: false,
-  };
 };

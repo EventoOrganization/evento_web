@@ -11,6 +11,7 @@ import EventActionIcons from "@/features/event/components/EventActionIcons";
 import EventEdit from "@/features/event/components/EventEdit";
 import EventGuestModal from "@/features/event/components/EventGuestModal";
 import EventTimeSlots from "@/features/event/components/EventTimeSlots";
+import PastEventGallery from "@/features/event/components/PastEventGallery";
 import PrivateEventActionIcons from "@/features/event/components/PrivateEventActionIcons";
 import RefusedUsersList from "@/features/event/components/RefusedUsersList";
 import RSVPSubmissionsList from "@/features/event/components/RSVPSubmissionsList";
@@ -33,7 +34,10 @@ const EventPage = () => {
   const [isGuestAllowed, setIsGuestAllowed] = useState<boolean | null>(null);
   const { user, token } = useSession();
   const { toast } = useToast();
-
+  const currentDate = new Date();
+  const eventEndDate = event?.details?.endDate
+    ? new Date(event.details.endDate)
+    : null;
   useEffect(() => {
     if (eventId) {
       fetchEventData(eventId);
@@ -227,165 +231,175 @@ const EventPage = () => {
   }
 
   return (
-    <div className="md:grid-cols-2 grid grid-cols-1 w-full h-screen ">
-      <div className="md:p-10 md:pl-0 p-4 h-full ">
-        <div className="flex items-center w-full justify-between mb-4">
-          <Link
-            className="flex items-center gap-2"
-            href={`/profile/${event?.user?._id}`}
-          >
-            {event?.user?.profileImage ? (
-              <Image
-                src={event?.user.profileImage}
-                alt="user image"
-                width={30}
-                height={30}
-                className="w-10 h-10 rounded-full"
-              />
-            ) : (
-              <Avatar>
-                <AvatarImage
-                  src={"https://github.com/shadcn.png"}
-                  className="rounded-full w-10 h-10"
+    <>
+      <div className="md:grid-cols-2 grid grid-cols-1 w-full h-screen ">
+        <div className="md:p-10 md:pl-0 p-4 h-full ">
+          <div className="flex items-center w-full justify-between mb-4">
+            <Link
+              className="flex items-center gap-2"
+              href={`/profile/${event?.user?._id}`}
+            >
+              {event?.user?.profileImage ? (
+                <Image
+                  src={event?.user.profileImage}
+                  alt="user image"
+                  width={30}
+                  height={30}
+                  className="w-10 h-10 rounded-full"
                 />
-                <AvatarFallback>CN</AvatarFallback>
-              </Avatar>
-            )}
-            <h4 className="ml-2">{event?.user?.username || ""}</h4>
-          </Link>
-          <span className="text-sm">{renderDate()}</span>
-        </div>
-        <RenderMedia event={event} />
-      </div>
-      <Section className="justify-start py-10 md:pr-0 w-full h-full">
-        <TabSelector
-          onChange={setSelectedTab}
-          tabs={
-            event.isAdmin || event.isHosted
-              ? ["Description", "Attendees", "Settings"]
-              : ["Description", "Attendees"]
-          }
-          className="mb-4"
-        />
-        {selectedTab === "Description" && (
-          <div className="space-y-4 pb-20 w-full">
-            <>
-              <h1 className="text-xl font-bold">{event?.title}</h1>
-              <Link
-                href={event.details?.URLlink || ""}
-                className="text-blue-500 underline"
-                target="_blank"
-              >
-                {event.details?.URLlink}
-              </Link>
-              {event?.interests && (
-                <ul className="flex gap-2 flex-wrap">
-                  {event?.interests?.map((interest: InterestType) => (
-                    <li
-                      key={interest._id}
-                      className="text-sm bg-evento-gradient rounded w-fit text-white px-3 py-2"
-                    >
-                      {interest.name}
-                    </li>
-                  ))}
-                </ul>
-              )}
-
-              <EventTimeSlots event={event} />
-              <Button
-                variant={"default"}
-                className="flex gap-2 truncate max-w-full bg-evento-gradient text-white"
-                onClick={() => {
-                  const address = event && event?.details?.location;
-                  if (address) {
-                    const encodedAddress = encodeURIComponent(address);
-                    const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`;
-                    window.open(googleMapsUrl, "_blank");
-                  } else {
-                    alert("Address is not available.");
-                  }
-                }}
-              >
-                <MapPinIcon2 fill="#fff" className="text-muted w-5 h-5" />
-                <span className="truncate">
-                  {event && event?.details?.location}
-                </span>
-              </Button>
-              <p className="text-sm whitespace-pre-wrap break-words max-w-full">
-                {event?.details?.description}
-              </p>
-            </>
-            {event.eventType === "public" && <EventActionIcons event={event} />}
-            {event.eventType === "private" && (
-              <PrivateEventActionIcons event={event} />
-            )}
-          </div>
-        )}
-        {selectedTab === "Attendees" && (
-          <div className="space-y-4 pb-20 w-full h-full ">
-            <div className="flex items-center justify-between">
-              <h1 className="text-xl font-bold">{event?.title}</h1>
-            </div>
-            <div className="flex items-center justify-between">
-              {event.isHosted && (
-                <div className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    id="guestsAllowFriend"
-                    onChange={handleGuestsAllowFriendChange}
-                    checked={isGuestAllowed ?? false}
+              ) : (
+                <Avatar>
+                  <AvatarImage
+                    src={"https://github.com/shadcn.png"}
+                    className="rounded-full w-10 h-10"
                   />
-                  <label htmlFor="guestsAllowFriend">
-                    Allow guests to bring friends
-                  </label>
-                </div>
+                  <AvatarFallback>CN</AvatarFallback>
+                </Avatar>
               )}
-              {(event.guestsAllowFriend || event.isAdmin || event.isHosted) && (
-                <EventGuestModal allUsers={users} event={event} />
-              )}
+              <h4 className="ml-2">{event?.user?.username || ""}</h4>
+            </Link>
+            <span className="text-sm">{renderDate()}</span>
+          </div>
+          <RenderMedia event={event} />
+        </div>
+        <Section className="justify-start py-10 md:pr-0 w-full h-full">
+          <TabSelector
+            onChange={setSelectedTab}
+            tabs={
+              event.isAdmin || event.isHosted
+                ? ["Description", "Attendees", "Settings"]
+                : ["Description", "Attendees"]
+            }
+            className="mb-4"
+          />
+          {selectedTab === "Description" && (
+            <div className="space-y-4 pb-20 w-full">
+              <>
+                <h1 className="text-xl font-bold">{event?.title}</h1>
+                <Link
+                  href={event.details?.URLlink || ""}
+                  className="text-blue-500 underline"
+                  target="_blank"
+                >
+                  {event.details?.URLlink}
+                </Link>
+                {event?.interests && (
+                  <ul className="flex gap-2 flex-wrap">
+                    {event?.interests?.map((interest: InterestType) => (
+                      <li
+                        key={interest._id}
+                        className="text-sm bg-evento-gradient rounded w-fit text-white px-3 py-2"
+                      >
+                        {interest.name}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+
+                <EventTimeSlots event={event} />
+                <Button
+                  variant={"default"}
+                  className="flex gap-2 truncate max-w-full bg-evento-gradient text-white"
+                  onClick={() => {
+                    const address = event && event?.details?.location;
+                    if (address) {
+                      const encodedAddress = encodeURIComponent(address);
+                      const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`;
+                      window.open(googleMapsUrl, "_blank");
+                    } else {
+                      alert("Address is not available.");
+                    }
+                  }}
+                >
+                  <MapPinIcon2 fill="#fff" className="text-muted w-5 h-5" />
+                  <span className="truncate">
+                    {event && event?.details?.location}
+                  </span>
+                </Button>
+                <p className="text-sm whitespace-pre-wrap break-words max-w-full">
+                  {event?.details?.description}
+                </p>
+              </>
+              {eventEndDate &&
+                eventEndDate > currentDate &&
+                (event.eventType === "public" ? (
+                  <EventActionIcons event={event} />
+                ) : (
+                  <PrivateEventActionIcons event={event} />
+                ))}
             </div>
-            <CollapsibleList
-              title={`Going`}
-              count={event?.attendees?.length || 0}
-              users={event?.attendees || []}
-            />
-            <CollapsibleList
-              title={`Saved`}
-              count={event?.favouritees?.length || 0}
-              users={event?.favouritees || []}
-            />
-            {event.eventType === "private" && (
+          )}
+          {selectedTab === "Attendees" && (
+            <div className="space-y-4 pb-20 w-full h-full ">
+              <div className="flex items-center justify-between">
+                <h1 className="text-xl font-bold">{event?.title}</h1>
+              </div>
+              <div className="flex items-center justify-between">
+                {event.isHosted && (
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      id="guestsAllowFriend"
+                      onChange={handleGuestsAllowFriendChange}
+                      checked={isGuestAllowed ?? false}
+                    />
+                    <label htmlFor="guestsAllowFriend">
+                      Allow guests to bring friends
+                    </label>
+                  </div>
+                )}
+                {(event.guestsAllowFriend ||
+                  event.isAdmin ||
+                  event.isHosted) && (
+                  <EventGuestModal allUsers={users} event={event} />
+                )}
+              </div>
               <CollapsibleList
-                title={`Refused`}
-                count={event?.refused?.length || 0}
+                title={`Going`}
+                count={event?.attendees?.length || 0}
+                users={event?.attendees || []}
+              />
+              <CollapsibleList
+                title={`Saved`}
+                count={event?.favouritees?.length || 0}
+                users={event?.favouritees || []}
+              />
+              {event.eventType === "private" && (
+                <CollapsibleList
+                  title={`Refused`}
+                  count={event?.refused?.length || 0}
+                  users={event?.refused || []}
+                />
+              )}
+              {combinedGuests.length > 0 && (
+                <CollapsibleList
+                  title={`Invited`}
+                  count={filteredGuests.length}
+                  users={filteredGuests}
+                  event={event}
+                />
+              )}
+              {event?.details?.createRSVP && (
+                <RSVPSubmissionsList
+                  title="RSVP Submissions"
+                  attendees={event?.attendees || []}
+                />
+              )}
+              <RefusedUsersList
+                title="Refused Users"
                 users={event?.refused || []}
               />
-            )}
-            {combinedGuests.length > 0 && (
-              <CollapsibleList
-                title={`Invited`}
-                count={filteredGuests.length}
-                users={filteredGuests}
-                event={event}
-              />
-            )}
-            {event?.details?.createRSVP && (
-              <RSVPSubmissionsList
-                title="RSVP Submissions"
-                attendees={event?.attendees || []}
-              />
-            )}
-            <RefusedUsersList
-              title="Refused Users"
-              users={event?.refused || []}
-            />
-          </div>
+            </div>
+          )}
+          {selectedTab === "Settings" && (
+            <EventEdit event={event} onUpdateField={handleUpdateField} />
+          )}
+        </Section>
+        {eventEndDate && eventEndDate < currentDate && (
+          <PastEventGallery event={event} />
         )}
-        {selectedTab === "Settings" && (
-          <EventEdit event={event} onUpdateField={handleUpdateField} />
-        )}
-      </Section>
-    </div>
+      </div>
+    </>
   );
 };
 

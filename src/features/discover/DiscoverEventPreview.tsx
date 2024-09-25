@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { Loader } from "lucide-react";
 import Image from "next/image";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
+import PastEventGallery from "../event/components/PastEventGallery";
 import PrivateEventActionIcons from "../event/components/PrivateEventActionIcons";
 
 const DiscoverEventPreview = ({
@@ -18,6 +19,10 @@ const DiscoverEventPreview = ({
   className?: string;
   event?: any;
 }) => {
+  const currentDate = new Date();
+  const eventEndDate = event.details?.endDate
+    ? new Date(event.details.endDate)
+    : null;
   const renderDate = () => {
     if (!event || !event.details) return <Loader />;
     const startDate = event?.details?.date;
@@ -127,9 +132,15 @@ const DiscoverEventPreview = ({
           </div>
           <div className="flex justify-between items-center">
             <div>{/* <AvatarStack eventId={event?._id} /> */}</div>
-            {event.eventType === "public" && <EventActionIcons event={event} />}
-            {event.eventType === "private" && (
-              <PrivateEventActionIcons event={event} />
+            {eventEndDate &&
+              eventEndDate > currentDate &&
+              (event.eventType === "public" ? (
+                <EventActionIcons event={event} />
+              ) : (
+                <PrivateEventActionIcons event={event} />
+              ))}
+            {eventEndDate && eventEndDate < currentDate && (
+              <PastEventGallery event={event} />
             )}
           </div>
         </div>

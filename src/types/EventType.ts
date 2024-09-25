@@ -36,8 +36,15 @@ export type EventType = {
       type: string;
     },
   ];
+  allUploadPhotoVideo?: boolean;
   username?: string;
   _id: string;
+  postEventMedia?: [
+    {
+      url: string;
+      type: string;
+    },
+  ];
   title: string;
   user: UserType;
   eventType: "public" | "private";
