@@ -24,7 +24,7 @@ const AvatarStack = ({ event }: { event: EventType }) => {
   return (
     <div className="flex items-center space-x-2">
       <div className="flex -space-x-3 overflow-hidden">
-        {friends.map((friend, index) => (
+        {friends.slice(0, 3).map((friend, index) => (
           <Image
             key={index}
             src={friend.profileImage || "/default-avatar.jpg"}
