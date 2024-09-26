@@ -1,4 +1,5 @@
 "use client";
+import AvatarStack from "@/components/AvatarStack";
 import MapPinIcon2 from "@/components/icons/MappPinIcon2";
 import RenderMedia from "@/components/RenderMedia";
 import TruncatedText from "@/components/TruncatedText";
@@ -16,13 +17,6 @@ import PrivateEventActionIcons from "./PrivateEventActionIcons";
 
 const Event = ({ className, event }: { className?: string; event?: any }) => {
   const pathname = usePathname();
-  const adminCoHosts = event.coHosts.filter(
-    (coHost: { status: string }) => coHost.status === "admin",
-  );
-  const readOnlyCoHosts = event.coHosts.filter(
-    (coHost: { status: string }) => coHost.status === "read-only",
-  );
-  console.log(event.coHosts, adminCoHosts, readOnlyCoHosts);
   const renderDate = () => {
     if (!event || !event.details) return <Loader />;
     const startDate = event?.details?.date;
@@ -149,7 +143,9 @@ const Event = ({ className, event }: { className?: string; event?: any }) => {
             <TruncatedText text={event?.details?.description} />
           </div>
           <div className="flex justify-between items-center">
-            <div>{/* <AvatarStack eventId={event?._id} /> */}</div>
+            <div>
+              <AvatarStack event={event} />
+            </div>
             {event.eventType === "public" && <EventActionIcons event={event} />}
             {event.eventType === "private" && (
               <PrivateEventActionIcons event={event} />

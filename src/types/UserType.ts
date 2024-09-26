@@ -15,6 +15,8 @@ export type UserType = {
   profileImage?: string;
   eventsAttended?: number;
   following?: number;
+  isFollowingMe?: boolean;
+  isIFollowingHim?: boolean;
   upcomingEvents?: EventType[];
   filteredUpcomingEventsAttened?: EventType[];
   filteredPastEventsAttended?: EventType[];

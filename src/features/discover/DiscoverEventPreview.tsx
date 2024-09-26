@@ -1,4 +1,5 @@
 "use client";
+import AvatarStack from "@/components/AvatarStack";
 import MapPinIcon2 from "@/components/icons/MappPinIcon2";
 import RenderMedia from "@/components/RenderMedia";
 import TruncatedText from "@/components/TruncatedText";
@@ -131,13 +132,18 @@ const DiscoverEventPreview = ({
             <TruncatedText text={event?.details?.description} expand={true} />
           </div>
           <div className="flex justify-between items-center">
-            <div>{/* <AvatarStack eventId={event?._id} /> */}</div>
             {eventEndDate &&
               eventEndDate > currentDate &&
               (event.eventType === "public" ? (
-                <EventActionIcons event={event} />
+                <>
+                  <AvatarStack event={event} />
+                  <EventActionIcons event={event} />
+                </>
               ) : (
-                <PrivateEventActionIcons event={event} />
+                <>
+                  <AvatarStack event={event} />
+                  <PrivateEventActionIcons event={event} />
+                </>
               ))}
             {eventEndDate && eventEndDate < currentDate && (
               <PastEventGallery event={event} />

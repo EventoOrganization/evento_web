@@ -1,63 +1,41 @@
 "use client";
-import { useSession } from "@/contexts/SessionProvider";
+import { useEventoStore } from "@/store/useEventoStore";
+import { EventType } from "@/types/EventType";
+import { UserType } from "@/types/UserType";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-interface Friend {
-  user: {
-    profileImage: string;
-    name: string;
-  };
-  status: string;
-}
-const AvatarStack = ({ eventId }: { eventId: string }) => {
-  const [friends, setFriends] = useState<Friend[]>([]);
-  const { token } = useSession();
-  const pathname = usePathname();
+const AvatarStack = ({ event }: { event: EventType }) => {
+  const [friends, setFriends] = useState<UserType[]>([]);
+  const { users } = useEventoStore((state) => ({
+    users: state.users as UserType[],
+  }));
+
   useEffect(() => {
-    if (pathname === "/create-event") return;
-    const fetchFriends = async () => {
-      try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/users/followStatusForAttendedUsers`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({ eventId }),
-          },
-        );
-        const result = await response.json();
+    const filteredFriends =
+      event?.attendees
+        ?.filter((attendee: UserType | null) => attendee && attendee._id) // Check for null and _id
+        .filter((attendee: UserType) => {
+          const user = users.find((user) => user._id === attendee._id);
+          return user?.isIFollowingHim && user?.isFollowingMe;
+        }) || [];
 
-        // Access the array within the 'body' key
-        const friendList = result.body.filter(
-          (friend: Friend) => friend.status === "follow-each-other",
-        );
-
-        setFriends(friendList);
-      } catch (error) {
-        console.error("Error fetching friends:", error);
-      }
-    };
-
-    fetchFriends();
-  }, [eventId, token]);
-
+    setFriends(filteredFriends);
+  }, []);
   return (
-    <div className="flex -space-x-2 overflow-hidden">
-      {friends.map((friend, index) => (
-        <Image
-          key={index}
-          src={friend.user.profileImage || "/default-avatar.jpg"}
-          alt={friend.user.name}
-          width={32}
-          height={32}
-          className="inline-block h-8 w-8 rounded-full ring-2 ring-white"
-        />
-      ))}
-      <span className="ml-2 text-sm">{friends.length} friends going</span>
+    <div className="flex items-center space-x-2">
+      <div className="flex -space-x-3 overflow-hidden">
+        {friends.map((friend, index) => (
+          <Image
+            key={index}
+            src={friend.profileImage || "/default-avatar.jpg"}
+            alt={friend.username}
+            width={32}
+            height={32}
+            className="inline-block h-8 w-8 rounded-full ring-2 ring-white"
+          />
+        ))}
+      </div>
+      <span className="text-sm">{friends.length} friends going</span>
     </div>
   );
 };

@@ -1,4 +1,5 @@
 "use client";
+import AvatarStack from "@/components/AvatarStack";
 import CollapsibleList from "@/components/CollapsibleList";
 import MapPinIcon2 from "@/components/icons/MappPinIcon2";
 import Section from "@/components/layout/Section";
@@ -229,7 +230,7 @@ const EventPage = () => {
       </div>
     );
   }
-  console.log("users", users);
+  console.log("users", event);
   return (
     <>
       <div className="md:grid-cols-2 grid grid-cols-1 w-full h-screen ">
@@ -320,13 +321,24 @@ const EventPage = () => {
                   {event?.details?.description}
                 </p>
               </>
-              {eventEndDate &&
-                eventEndDate > currentDate &&
-                (event.eventType === "public" ? (
-                  <EventActionIcons event={event} />
-                ) : (
-                  <PrivateEventActionIcons event={event} />
-                ))}
+              <div className="flex justify-between items-center">
+                {eventEndDate &&
+                  eventEndDate > currentDate &&
+                  (event.eventType === "public" ? (
+                    <>
+                      <AvatarStack event={event} />
+                      <EventActionIcons event={event} />
+                    </>
+                  ) : (
+                    <>
+                      <AvatarStack event={event} />
+                      <PrivateEventActionIcons event={event} />
+                    </>
+                  ))}
+                {eventEndDate && eventEndDate < currentDate && (
+                  <PastEventGallery event={event} />
+                )}
+              </div>
             </div>
           )}
           {selectedTab === "Attendees" && (
@@ -399,9 +411,6 @@ const EventPage = () => {
             />
           )}
         </Section>
-        {eventEndDate && eventEndDate < currentDate && (
-          <PastEventGallery event={event} />
-        )}
       </div>
     </>
   );
