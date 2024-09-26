@@ -28,7 +28,6 @@ const PastEventGallery: React.FC<PastEventGalleryProps> = ({ event }) => {
   const [selectedMediaIndex, setSelectedMediaIndex] = useState<number | null>(
     null,
   );
-  console.log(event);
   const [isUploading, setIsUploading] = useState(false);
   const [files, setFiles] = useState<File[] | null>(null);
   const { toast } = useToast();
@@ -90,7 +89,9 @@ const PastEventGallery: React.FC<PastEventGalleryProps> = ({ event }) => {
       setIsUploading(false);
     }
   };
-
+  const handleMediaDelete = (index: number) => {
+    setMediaItems((prevItems) => prevItems.filter((_, i) => i !== index)); // Remove the deleted media from state
+  };
   const openModal = (index: number) => {
     setSelectedMediaIndex(index);
   };
@@ -163,6 +164,8 @@ const PastEventGallery: React.FC<PastEventGalleryProps> = ({ event }) => {
           mediaItems={mediaItems}
           selectedMediaIndex={selectedMediaIndex}
           onClose={closeModal}
+          eventId={event._id}
+          onMediaDelete={handleMediaDelete} // Pass the callback to the modal
         />
       )}
     </div>

@@ -1,4 +1,8 @@
+import { handleDeleteMedia } from "@/app/create-event/action";
 import { Button } from "@/components/ui/button";
+import { useSession } from "@/contexts/SessionProvider";
+import { useToast } from "@/hooks/use-toast";
+import { fetchData, HttpMethod } from "@/utils/fetchData";
 import Image from "next/image";
 import { useState } from "react";
 import { Carousel } from "react-responsive-carousel";
@@ -8,14 +12,58 @@ const PastEventModal = ({
   mediaItems,
   selectedMediaIndex,
   onClose,
+  eventId,
+  onMediaDelete,
 }: {
   mediaItems: { url: string; type: "image" | "video" }[];
   selectedMediaIndex: number;
   onClose: () => void;
+  eventId: string;
+  onMediaDelete: (index: number) => void; // Callback to notify parent about the deletion
 }) => {
-  console.log(mediaItems, selectedMediaIndex);
+  const { toast } = useToast();
   const [currentMediaIndex, setCurrentMediaIndex] =
     useState(selectedMediaIndex);
+  const { token } = useSession();
+
+  const handleDelete = async () => {
+    const mediaItem = mediaItems[currentMediaIndex];
+    const fileKey = new URL(mediaItem.url).pathname.substring(1); // Removes the leading slash
+
+    try {
+      const success = await handleDeleteMedia(fileKey); // Delete from S3
+      if (success) {
+        const body = {
+          currentMediaIndex,
+        };
+        const deleteFromDb = await fetchData(
+          `/events/deletePostEventMedia/${eventId}`,
+          HttpMethod.DELETE,
+          body,
+          token,
+        );
+        if (deleteFromDb.ok) {
+          toast({
+            title: "Media deleted successfully",
+            description: "The media has been deleted successfully.",
+            duration: 3000,
+            className: "bg-evento-gradient text-white",
+          });
+          onMediaDelete(currentMediaIndex); // Notify parent component about the deletion
+          onClose(); // Close the modal
+        } else {
+          toast({
+            title: "Error deleting media",
+            description: "An error occurred while deleting the media.",
+            variant: "destructive",
+            duration: 3000,
+          });
+        }
+      }
+    } catch (error) {
+      console.error("Error deleting media:", error);
+    }
+  };
 
   const handleDownload = async () => {
     const mediaUrl = mediaItems[currentMediaIndex].url;
@@ -33,6 +81,7 @@ const PastEventModal = ({
     document.body.removeChild(a);
     window.URL.revokeObjectURL(downloadUrl); // Clean up the URL object
   };
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center p-4 z-50">
       <Button
@@ -42,7 +91,7 @@ const PastEventModal = ({
       >
         Close
       </Button>
-      <div className="w-full h-full ">
+      <div className="w-full h-full">
         <Carousel
           selectedItem={selectedMediaIndex}
           onChange={(index) => setCurrentMediaIndex(index)}
@@ -81,6 +130,13 @@ const PastEventModal = ({
         >
           Download
         </button>
+        <Button
+          variant={"destructive"}
+          onClick={handleDelete}
+          className="absolute top-4 left-1/2 -translate-x-1/2"
+        >
+          Delete Media
+        </Button>
       </div>
     </div>
   );

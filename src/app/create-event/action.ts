@@ -21,16 +21,19 @@ export async function handleUpload(
   }
 }
 export async function handleDeleteMedia(fileKey: string): Promise<boolean> {
-  if (fileKey.startsWith("events/initialMedia")) {
-    // Supprimer le fichier de S3 si le fichier est dans le dossier "events/"
+  if (
+    fileKey.startsWith("events/initialMedia") ||
+    fileKey.startsWith("events/postEvent")
+  ) {
     try {
       const response = await deleteFileFromS3(fileKey);
+
       console.log("File deleted successfully:", response);
       return response.success;
     } catch (error) {
-      console.error("Error deleting file from S3:", error);
+      console.error("Error deleting file from S3 or DB:", error);
       return false;
     }
   }
-  return true; // Si le fichier est prédéfini, ne pas le supprimer de S3
+  return true;
 }
