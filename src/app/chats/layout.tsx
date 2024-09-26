@@ -1,7 +1,6 @@
 "use client";
 
 import Burger from "@/components/Burger";
-import { Input } from "@/components/ui/input";
 import ConversationList from "@/features/chat/components/ConversationList";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
@@ -16,7 +15,11 @@ export default function ChatLayout({
   // if (dev) return <ComingSoon message="This page is under development" />;
   return (
     <>
-      <Burger isOpen={isOpen} setIsOpen={setIsOpen} />
+      <Burger
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        className="z-10 absolute top-5 right-5"
+      />
       <div className="h-screen w-screen fixed inset-0 pb-11 md:pb-0">
         <div className="flex w-full h-full">
           {/* Sidebar for Conversations */}
@@ -29,11 +32,7 @@ export default function ChatLayout({
               },
             )}
           >
-            {/* Search bar and conversations */}
-            <div className="p-4 border-b">
-              <Input type="text" placeholder="Search or start new chat" />
-            </div>
-            <ConversationList />
+            <ConversationList setIsOpen={setIsOpen} />
           </div>
 
           {/* Chat content (messages) */}
