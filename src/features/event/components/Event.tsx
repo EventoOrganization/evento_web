@@ -82,7 +82,7 @@ const Event = ({ className, event }: { className?: string; event?: any }) => {
               <h4 className="ml-2">{(event && event?.user.username) || ""}</h4>
               {event.coHosts.length === 1 &&
                 event.coHosts.map((coHost: any) => (
-                  <h4 key={coHost.user_Id._id}>
+                  <h4 key={coHost.user_id._id}>
                     & {coHost?.user_id?.username}
                   </h4>
                 ))}

@@ -37,7 +37,7 @@ const ConversationList = () => {
   const handleSelectConversation = (conversationId: string) => {
     router.push(`/chats?conversationId=${conversationId}`);
   };
-
+  console.log(conversations);
   return (
     <div className="flex-1 overflow-y-auto p-4">
       {conversations.length === 0 ? (
