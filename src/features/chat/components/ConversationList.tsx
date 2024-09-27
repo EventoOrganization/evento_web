@@ -46,7 +46,6 @@ const ConversationList = ({
         token,
       );
       if (result.ok && result.data) {
-        console.log("Conversations:", result);
         const structuredConversations = result.data.map((conversation) => {
           // Determine if the logged-in user is the sender or receiver, then set accordingly
           const isSender = conversation.senderId._id === user?._id;
@@ -129,7 +128,6 @@ const ConversationList = ({
       (c) => c._id === conversationId,
     );
     if (selectedConversation) {
-      console.log(selectedConversation);
       router.push(`/chats?conversationId=${conversationId}`);
       setIsOpen(false);
       onSelectConversation(
