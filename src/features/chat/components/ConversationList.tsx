@@ -22,8 +22,10 @@ interface StartConversationResponse {
 }
 const ConversationList = ({
   setIsOpen,
+  onSelectConversation,
 }: {
   setIsOpen: (isOpen: boolean) => void;
+  onSelectConversation: (title: string, profileImageUrl: string) => void;
 }) => {
   const { token, user } = useSession();
   const [conversations, setConversations] = useState<Conversation[]>([]);
@@ -123,8 +125,18 @@ const ConversationList = ({
     }
   };
   const handleSelectConversation = (conversationId: string) => {
-    router.push(`/chats?conversationId=${conversationId}`);
-    setIsOpen(false);
+    const selectedConversation = conversations.find(
+      (c) => c._id === conversationId,
+    );
+    if (selectedConversation) {
+      console.log(selectedConversation);
+      router.push(`/chats?conversationId=${conversationId}`);
+      setIsOpen(false);
+      onSelectConversation(
+        selectedConversation.title,
+        selectedConversation.initialMedia[0].url,
+      );
+    }
   };
   const filteredConversations = conversations.filter((conversation) => {
     return (

@@ -1,7 +1,7 @@
 // features/chat/components/ChatInput.tsx
 "use client";
 
-import { useState } from "react";
+import { KeyboardEvent, useState } from "react";
 
 interface ChatInputProps {
   onSendMessage: (message: string) => void;
@@ -17,6 +17,13 @@ const ChatInput = ({ onSendMessage }: ChatInputProps) => {
     }
   };
 
+  const handleKeyPress = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault(); // Prevent the default action to avoid line breaks for example
+      handleSendMessage();
+    }
+  };
+
   return (
     <div className="p-5 border-t flex gap-6 items-center bg-evento-gradient">
       <input
@@ -24,6 +31,7 @@ const ChatInput = ({ onSendMessage }: ChatInputProps) => {
         className="flex-grow border rounded p-2"
         value={message}
         onChange={(e) => setMessage(e.target.value)}
+        onKeyPress={handleKeyPress}
         placeholder="Type a message..."
       />
       <button

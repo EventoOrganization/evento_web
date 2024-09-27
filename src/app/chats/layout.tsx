@@ -1,6 +1,7 @@
 "use client";
 
 import Burger from "@/components/Burger";
+import ChatHeader from "@/features/chat/components/ChatHeader";
 import ConversationList from "@/features/chat/components/ConversationList";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
@@ -11,14 +12,22 @@ export default function ChatLayout({
   children: React.ReactNode;
 }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [activeConversation, setActiveConversation] = useState<{
+    title: string;
+    profileImageUrl: string;
+  } | null>(null);
   // const dev = true;
   // if (dev) return <ComingSoon message="This page is under development" />;
+  const handleSelectConversation = (title: string, profileImageUrl: string) => {
+    setActiveConversation({ title, profileImageUrl });
+    setIsOpen(false); // Close the sidebar on selection
+  };
   return (
     <>
       <Burger
         isOpen={isOpen}
         setIsOpen={setIsOpen}
-        className="z-10 absolute top-5 right-5"
+        className="z-10 absolute top-5 right-5 md:hidden"
       />
       <div className="h-screen w-screen fixed inset-0 pb-11 md:pb-0">
         <div className="flex w-full h-full">
@@ -32,7 +41,10 @@ export default function ChatLayout({
               },
             )}
           >
-            <ConversationList setIsOpen={setIsOpen} />
+            <ConversationList
+              setIsOpen={setIsOpen}
+              onSelectConversation={handleSelectConversation}
+            />
           </div>
 
           {/* Chat content (messages) */}
@@ -44,6 +56,12 @@ export default function ChatLayout({
               },
             )}
           >
+            {activeConversation && (
+              <ChatHeader
+                title={activeConversation.title}
+                profileImageUrl={activeConversation.profileImageUrl}
+              />
+            )}
             {children}
           </div>
         </div>

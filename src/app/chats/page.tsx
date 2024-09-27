@@ -60,7 +60,7 @@ export default function ChatPage() {
 
   const sendMessage = async (message: string) => {
     if (!conversationId) return;
-
+    console.log(message);
     const body = {
       message,
       senderId: user?._id,
