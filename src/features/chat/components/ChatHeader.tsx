@@ -1,14 +1,19 @@
 // features/chat/components/ChatHeader.tsx
 "use client";
 
+import { useSession } from "@/contexts/SessionProvider";
+import { useSocket } from "@/contexts/SocketProvider";
 import Image from "next/image";
+import { getConversationDetails } from "./action";
 
-interface ChatHeaderProps {
-  title: string;
-  profileImageUrl: string;
-}
-
-const ChatHeader = ({ title, profileImageUrl }: ChatHeaderProps) => {
+const ChatHeader = () => {
+  const { activeConversation } = useSocket();
+  const { user } = useSession();
+  console.log(activeConversation);
+  const { title, profileImageUrl } = getConversationDetails(
+    activeConversation,
+    user,
+  );
   return (
     <div className="fixed w-full flex items-center p-4 bg-gray-200 border-b">
       <div className="relative w-10 h-10 mr-3">

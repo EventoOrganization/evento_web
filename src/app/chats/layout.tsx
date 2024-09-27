@@ -1,6 +1,7 @@
 "use client";
 
 import Burger from "@/components/Burger";
+import { useSocket } from "@/contexts/SocketProvider";
 import ChatHeader from "@/features/chat/components/ChatHeader";
 import ConversationList from "@/features/chat/components/ConversationList";
 import { cn } from "@/lib/utils";
@@ -12,16 +13,8 @@ export default function ChatLayout({
   children: React.ReactNode;
 }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [activeConversation, setActiveConversation] = useState<{
-    title: string;
-    profileImageUrl: string;
-  } | null>(null);
-  // const dev = true;
-  // if (dev) return <ComingSoon message="This page is under development" />;
-  const handleSelectConversation = (title: string, profileImageUrl: string) => {
-    setActiveConversation({ title, profileImageUrl });
-    setIsOpen(false); // Close the sidebar on selection
-  };
+  const { activeConversation } = useSocket();
+
   return (
     <>
       <Burger
@@ -41,10 +34,7 @@ export default function ChatLayout({
               },
             )}
           >
-            <ConversationList
-              setIsOpen={setIsOpen}
-              onSelectConversation={handleSelectConversation}
-            />
+            <ConversationList setIsOpen={setIsOpen} />
           </div>
 
           {/* Chat content (messages) */}
@@ -56,12 +46,7 @@ export default function ChatLayout({
               },
             )}
           >
-            {activeConversation && (
-              <ChatHeader
-                title={activeConversation.title}
-                profileImageUrl={activeConversation.profileImageUrl}
-              />
-            )}
+            {activeConversation && <ChatHeader />}
             {children}
           </div>
         </div>

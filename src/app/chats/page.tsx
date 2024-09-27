@@ -1,12 +1,9 @@
 "use client";
 
 import { useSession } from "@/contexts/SessionProvider";
-import { useSocket } from "@/contexts/SocketProvider";
 import ChatInput from "@/features/chat/components/ChatInput";
-import MessageList from "@/features/chat/components/MessageList";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { useSearchParams } from "next/navigation";
-import { useEffect } from "react";
 
 // Define the MessageType structure that matches MessageList's expectations
 type MessageType = {
@@ -27,24 +24,6 @@ export default function ChatPage() {
   const searchParams = useSearchParams();
   const conversationId = searchParams.get("conversationId");
   const { user } = useSession();
-  const { messages, setMessages } = useSocket();
-  useEffect(() => {
-    const fetchMessages = async () => {
-      if (!conversationId) return;
-
-      const result = await fetchData<MessageType[]>(
-        `/chats/fetchMessages/${conversationId}`,
-        HttpMethod.GET,
-        null,
-        token,
-      );
-      if (result.ok && result.data) {
-        setMessages(result.data);
-      }
-    };
-
-    fetchMessages();
-  }, [token, conversationId, setMessages]);
 
   const sendMessage = async (message: string) => {
     if (!conversationId) return;
@@ -72,11 +51,11 @@ export default function ChatPage() {
     <div className="flex flex-col h-full ">
       {conversationId ? (
         <>
-          <MessageList
+          {/* <MessageList
             messages={messages}
             currentUserId={user?._id ?? ""}
             setMessages={setMessages}
-          />
+          /> */}
           <ChatInput onSendMessage={sendMessage} />
         </>
       ) : (
