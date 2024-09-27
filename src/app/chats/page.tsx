@@ -6,7 +6,7 @@ import ChatInput from "@/features/chat/components/ChatInput";
 import MessageList from "@/features/chat/components/MessageList";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 // Define the MessageType structure that matches MessageList's expectations
 type MessageType = {
@@ -26,11 +26,9 @@ export default function ChatPage() {
   const { token } = useSession();
   const searchParams = useSearchParams();
   const conversationId = searchParams.get("conversationId");
-  const [messages, setMessages] = useState<any[]>([]);
   const { user } = useSession();
-  const { socket } = useSocket();
+  const { messages, setMessages } = useSocket();
   useEffect(() => {
-    if (!socket) return;
     const fetchMessages = async () => {
       if (!conversationId) return;
 
@@ -46,17 +44,7 @@ export default function ChatPage() {
     };
 
     fetchMessages();
-
-    socket.on("send_message_emit", (newMessage: MessageType | null) => {
-      if (newMessage) {
-        setMessages((prevMessages) => [...prevMessages, newMessage]);
-      }
-    });
-
-    return () => {
-      socket.off("send_message_emit");
-    };
-  }, [token, conversationId, socket]);
+  }, [token, conversationId, setMessages]);
 
   const sendMessage = async (message: string) => {
     if (!conversationId) return;
@@ -75,14 +63,27 @@ export default function ChatPage() {
     );
 
     if (result.ok && result.data) {
-      setMessages((prev) => [...prev, result.data]);
+      console.log("Message sent:", result.data);
+      // setMessages((prev) => [...prev, result.data]);
     }
   };
 
   return (
-    <div className="flex flex-col h-full bg-background">
-      <MessageList messages={messages} currentUserId={user?._id ?? ""} />
-      <ChatInput onSendMessage={sendMessage} />
+    <div className="flex flex-col h-full ">
+      {conversationId ? (
+        <>
+          <MessageList
+            messages={messages}
+            currentUserId={user?._id ?? ""}
+            setMessages={setMessages}
+          />
+          <ChatInput onSendMessage={sendMessage} />
+        </>
+      ) : (
+        <div className="flex h-full justify-center items-center bg-background">
+          <p>No conversation selected</p>
+        </div>
+      )}
     </div>
   );
 }

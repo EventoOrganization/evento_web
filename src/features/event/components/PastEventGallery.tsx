@@ -144,9 +144,11 @@ const PastEventGallery: React.FC<PastEventGalleryProps> = ({ event }) => {
           <>
             <div className="flex justify-between">
               <h4>This Event is past. Add media!</h4>
-              <Button onClick={handleAllUploadPhotoVideo}>
-                {allUploadPhotoVideo ? "unAllow" : "Allow"}
-              </Button>
+              {event.isHosted && (
+                <Button onClick={handleAllUploadPhotoVideo}>
+                  {allUploadPhotoVideo ? "unAllow" : "Allow"}
+                </Button>
+              )}
             </div>
             <div className="flex justify-between gap-2">
               <Input

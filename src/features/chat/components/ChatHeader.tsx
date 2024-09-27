@@ -10,7 +10,7 @@ interface ChatHeaderProps {
 
 const ChatHeader = ({ title, profileImageUrl }: ChatHeaderProps) => {
   return (
-    <div className="flex items-center p-4 bg-gray-100 border-b">
+    <div className="fixed w-full flex items-center p-4 bg-gray-200 border-b">
       <div className="relative w-10 h-10 mr-3">
         <Image
           src={profileImageUrl || "/defaultImage.png"}
