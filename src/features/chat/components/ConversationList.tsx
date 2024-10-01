@@ -1,5 +1,6 @@
 "use client";
 
+import BackButton from "@/components/BackButton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { useSession } from "@/contexts/SessionProvider";
@@ -207,15 +208,17 @@ const ConversationList = ({
     }
   };
   return (
-    <div className="flex-1 overflow-y-auto p-4">
-      <Input
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        className="mb-2"
-        type="text"
-        placeholder="Search or start new chat"
-      />
-
+    <div className="flex-1 overflow-y-auto p-4 bg-gray-300 h-full">
+      <div className="flex items-center gap-2 mb-2">
+        <BackButton className="" />
+        <Input
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className=""
+          type="text"
+          placeholder="Search or start new chat"
+        />
+      </div>
       {filteredConversations.length === 0 ? (
         <p>No conversations found.</p>
       ) : (

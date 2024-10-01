@@ -9,7 +9,7 @@ const ChatHeader = () => {
   console.log("Active conversation:", activeConversation);
   if (!activeConversation) return null;
   return (
-    <div className="fixed w-full flex items-center p-4 bg-gray-200 border-b">
+    <div className="fixed w-full flex items-center p-4 bg-evento-gradient text-white border-b">
       <div className="relative w-10 h-10 mr-3">
         {activeConversation?.initialMedia[0]?.url ? (
           <Image

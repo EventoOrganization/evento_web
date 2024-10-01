@@ -13,10 +13,9 @@ export default function NavbarApp() {
   return (
     <nav
       className={cn(
-        "fixed w-full md:w-1/4 bottom-0 bg-background z-20 h-11 md:h-20 flex border justify-evenly  md:min-w-72 md:py-4 items-center",
+        "fixed w-full  bg-background z-20 h-11 md:h-20 flex border justify-evenly  md:min-w-72 md:py-4 items-center left-1/2 bottom-6 -translate-x-1/2 rounded-lg shadow max-w-80 md:w-full md:max-w-2xl",
         {
-          "left-1/2 bottom-6 -translate-x-1/2 rounded-lg shadow max-w-80 md:w-full md:max-w-2xl":
-            pathname !== "/chats",
+          hidden: pathname.startsWith("/chats"),
         },
       )}
     >

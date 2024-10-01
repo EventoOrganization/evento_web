@@ -1,6 +1,8 @@
 // features/chat/components/ChatInput.tsx
 "use client";
 
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { KeyboardEvent, useState } from "react";
 
 interface ChatInputProps {
@@ -25,21 +27,18 @@ const ChatInput = ({ onSendMessage }: ChatInputProps) => {
   };
 
   return (
-    <div className="p-5 border-t flex gap-6 items-center bg-evento-gradient">
-      <input
+    <div className="p-2 border-t flex gap-2 items-center bg-evento-gradient">
+      <Input
         type="text"
-        className="flex-grow border rounded p-2"
+        className=""
         value={message}
         onChange={(e) => setMessage(e.target.value)}
         onKeyPress={handleKeyPress}
         placeholder="Type a message..."
       />
-      <button
-        onClick={handleSendMessage}
-        className="bg-blue-500 text-white px-4 py-2 rounded"
-      >
+      <Button variant={"outline"} onClick={handleSendMessage} className="">
         Send
-      </button>
+      </Button>
     </div>
   );
 };

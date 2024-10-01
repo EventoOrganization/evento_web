@@ -1,5 +1,4 @@
-"use client";
-
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useSession } from "@/contexts/SessionProvider";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 import Image from "next/image";
@@ -57,56 +56,75 @@ const MessageList = ({
   };
 
   return (
-    <div className="flex-1 overflow-y-auto p-4 pt-20 ">
+    <div className="flex-1 overflow-y-auto p-2 pt-20">
       {messages.length === 0 ? (
         <p>No messages found.</p>
       ) : (
         messages.map((msg: Message) => (
           <div
             key={msg._id}
-            className={`flex items-center mb-2 p-2 w-fit ${
-              msg.senderId._id === currentUserId && "bg-green-200 ml-auto"
-            }  rounded-lg`}
+            className={`flex items-center mb-2 ${
+              msg.senderId._id === currentUserId ? "justify-end" : ""
+            }`}
           >
             {msg.senderId._id !== currentUserId && (
-              <div className="mr-2 w-8 h-8">
-                <Image
-                  src={msg.senderId.profileImage || "/default-profile.png"}
-                  alt="Profile Image"
-                  width={40}
-                  height={40}
-                  className="rounded-full w-8 h-8"
-                />
+              <div className="w-8 h-8 mr-2">
+                {msg.senderId.profileImage ? (
+                  <Image
+                    src={msg.senderId.profileImage}
+                    alt="Profile Image"
+                    width={32}
+                    height={32}
+                    className="rounded-full w-8 h-8"
+                  />
+                ) : (
+                  <Avatar className="w-8 h-8 rounded-full">
+                    <AvatarImage
+                      className="w-8 h-8 rounded-full"
+                      src="https://github.com/shadcn.png"
+                    />
+                    <AvatarFallback>CN</AvatarFallback>
+                  </Avatar>
+                )}
               </div>
             )}
             <div
-              className={`flex-grow  ${
+              className={`flex flex-col max-w-[85%] p-2 rounded-lg ${
                 msg.senderId._id === currentUserId
-                  ? "bg-green-200 ml-auto"
-                  : "bg-gray-200 p-2 rounded-lg"
+                  ? "bg-green-200"
+                  : "bg-background"
               }`}
             >
-              {msg.message_type === "text" && <p>{msg.message}</p>}
-
-              {msg.message_type === "image" && (
-                <Image src={msg.message} alt="Image" width={200} height={200} />
-              )}
-
-              {msg.message_type === "video" && (
-                <video src={msg.message} controls width="300" />
-              )}
-
-              {/* <div className="mt-1 text-xs text-gray-500">
-                <p>{msg.senderId.username}</p>
-              </div> */}
+              <p className="break-words whitespace-pre-wrap">{msg.message}</p>
             </div>
             {msg.senderId._id === currentUserId && (
               <button
                 onClick={() => deleteMessage(msg._id)}
-                className="ml-2 text-red-500 text-sm sr-only"
+                className="hidden ml-2 text-red-500 text-sm"
               >
-                Supprimer
+                Delete
               </button>
+            )}
+            {msg.senderId._id === currentUserId && (
+              <div className="w-8 h-8 ml-2">
+                {msg.senderId.profileImage ? (
+                  <Image
+                    src={msg.senderId.profileImage}
+                    alt="Profile Image"
+                    width={32}
+                    height={32}
+                    className="rounded-full w-8 h-8"
+                  />
+                ) : (
+                  <Avatar className="w-8 h-8 rounded-full">
+                    <AvatarImage
+                      className="w-8 h-8 rounded-full"
+                      src="https://github.com/shadcn.png"
+                    />
+                    <AvatarFallback>CN</AvatarFallback>
+                  </Avatar>
+                )}
+              </div>
             )}
           </div>
         ))

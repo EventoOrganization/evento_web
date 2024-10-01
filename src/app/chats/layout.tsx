@@ -1,6 +1,7 @@
 "use client";
 
 import Burger from "@/components/Burger";
+import { useSocket } from "@/contexts/SocketProvider";
 import ChatHeader from "@/features/chat/components/ChatHeader";
 import ConversationList from "@/features/chat/components/ConversationList";
 import { cn } from "@/lib/utils";
@@ -12,14 +13,10 @@ export default function ChatLayout({
   children: React.ReactNode;
 }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [activeConversation, setActiveConversation] = useState<{
-    title: string;
-    profileImageUrl: string;
-  } | null>(null);
+  const { activeConversation } = useSocket();
   // const dev = true;
   // if (dev) return <ComingSoon message="This page is under development" />;
-  const handleSelectConversation = (title: string, profileImageUrl: string) => {
-    setActiveConversation({ title, profileImageUrl });
+  const handleSelectConversation = () => {
     setIsOpen(false); // Close the sidebar on selection
   };
   return (
@@ -29,12 +26,12 @@ export default function ChatLayout({
         setIsOpen={setIsOpen}
         className="z-10 absolute top-5 right-5 md:hidden"
       />
-      <div className="h-screen w-screen fixed inset-0 pb-11 md:pb-0">
+      <div className="h-screen w-screen fixed inset-0 md:pb-0">
         <div className="flex w-full h-full">
           {/* Sidebar for Conversations */}
           <div
             className={cn(
-              "md:flex transition-all md:opacity-100 md:translate-x-0 duration-300 md:w-1/4  md:min-w-72 border-r h-full flex-col",
+              "md:flex transition-all md:opacity-100 md:translate-x-0 duration-300 md:w-1/4  md:min-w-72 h-full flex-col",
               {
                 "translate-x-[-100%] w-0 opacity-0": !isOpen,
                 "translate-x-0 w-full opacity-100": isOpen,
