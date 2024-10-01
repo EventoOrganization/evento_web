@@ -23,11 +23,10 @@ type MessageType = {
 
 export default function ChatPage() {
   const { token } = useSession();
-  const { socket, messages, setMessages, activeConversation } = useSocket();
+  const { socket, messages, setMessages } = useSocket();
   const searchParams = useSearchParams();
   const conversationId = searchParams.get("conversationId");
   const { user } = useSession();
-  console.log(activeConversation);
   useEffect(() => {
     const fetchMessages = async () => {
       if (!conversationId) return;
@@ -46,10 +45,8 @@ export default function ChatPage() {
     fetchMessages();
   }, [token, conversationId, setMessages]);
 
-  // Join the conversation room when the conversationId is available
   useEffect(() => {
     if (socket && conversationId) {
-      console.log(`Joining conversation room with ID: ${conversationId}`);
       socket.emit("join_conversations", {
         conversationIds: [conversationId],
       });
@@ -65,11 +62,7 @@ export default function ChatPage() {
       conversationId,
       messageType: "text",
     };
-
-    // Emit the message via the socket
     socket?.emit("send_message", messageData);
-
-    console.log("Message sent via socket:", messageData);
   };
 
   return (

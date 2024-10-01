@@ -6,7 +6,6 @@ import { useSocket } from "@/contexts/SocketProvider";
 import Image from "next/image";
 const ChatHeader = () => {
   const { activeConversation } = useSocket();
-  console.log("Active conversation:", activeConversation);
   if (!activeConversation) return null;
   return (
     <div className="fixed w-full flex items-center p-4 bg-evento-gradient text-white border-b">
