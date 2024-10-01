@@ -17,6 +17,7 @@ import PrivateEventActionIcons from "./PrivateEventActionIcons";
 
 const Event = ({ className, event }: { className?: string; event?: any }) => {
   const pathname = usePathname();
+
   const renderDate = () => {
     if (!event || !event.details) return <Loader />;
     const startDate = event?.details?.date;
@@ -28,7 +29,7 @@ const Event = ({ className, event }: { className?: string; event?: any }) => {
         month: "long",
         day: "numeric",
       };
-      return date.toLocaleDateString("fr-FR", options);
+      return date.toLocaleDateString("en-UK", options);
     };
     if (
       !endDate ||
@@ -38,7 +39,7 @@ const Event = ({ className, event }: { className?: string; event?: any }) => {
     } else {
       const startDay = new Date(startDate).getDate();
       const endDay = new Date(endDate).getDate();
-      const monthYear = new Date(startDate).toLocaleDateString("fr-FR", {
+      const monthYear = new Date(startDate).toLocaleDateString("en-UK", {
         month: "long",
         year: "numeric",
       });

@@ -23,7 +23,7 @@ export function formatDate(dateString: string) {
     month: "long",
     day: "numeric",
   };
-  return date.toLocaleDateString("en-US", options);
+  return date.toLocaleDateString("en-UK", options);
 }
 
 // ADDS DELAY TO SIMULATE SLOW API REMOVE FOR PRODUCTION

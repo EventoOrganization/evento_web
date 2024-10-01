@@ -20,7 +20,11 @@ export default function NavbarApp() {
         },
       )}
     >
-      <Link href="/" className="relative group">
+      <Link
+        href="https://join-evento-waitlist.squarespace.com/"
+        target="_blank"
+        className="relative group"
+      >
         <HomeIcon2 pathname={pathname === "/"} className="w-8 h-8" />
         {/* <span className="absolute left-1/2 border shadow -translate-x-1/2 bottom-full mb-2 px-2 py-1 bg-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200">
             Back to home

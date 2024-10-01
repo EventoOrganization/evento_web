@@ -151,7 +151,7 @@ const EventPage = () => {
       month: "long",
       day: "numeric",
     };
-    return date.toLocaleDateString("en-US", options);
+    return date.toLocaleDateString("en-UK", options);
   };
 
   const handleGuestsAllowFriendChange = async () => {
@@ -196,7 +196,7 @@ const EventPage = () => {
     } else {
       const startDay = new Date(startDate || "").getDate();
       const endDay = new Date(endDate).getDate();
-      const monthYear = new Date(startDate || "").toLocaleDateString("fr-FR", {
+      const monthYear = new Date(startDate || "").toLocaleDateString("en-UK", {
         month: "long",
         year: "numeric",
       });

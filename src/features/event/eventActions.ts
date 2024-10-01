@@ -32,5 +32,5 @@ export const formatDateToEuropean = (date: string): string => {
     month: "2-digit",
     year: "numeric",
   };
-  return new Date(date).toLocaleDateString("fr-FR", options); // "fr-FR" est pour le format européen
+  return new Date(date).toLocaleDateString("en-UK", options); // "fr-FR" est pour le format européen
 };

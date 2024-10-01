@@ -32,9 +32,9 @@ const EventTimeSlots: React.FC<Props> = ({ event }) => {
       hour12: true,
     };
 
-    const formattedDate = date.toLocaleDateString("en-US", dateOptions);
-    const startTime = startDate.toLocaleTimeString("en-US", timeOptions);
-    const endTime = endDate.toLocaleTimeString("en-US", timeOptions);
+    const formattedDate = date.toLocaleDateString("en-UK", dateOptions);
+    const startTime = startDate.toLocaleTimeString("en-UK", timeOptions);
+    const endTime = endDate.toLocaleTimeString("en-UK", timeOptions);
 
     return `${formattedDate}\n${startTime} - ${endTime}`;
   };

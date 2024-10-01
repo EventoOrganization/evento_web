@@ -32,20 +32,20 @@ const CreateEventPreview = ({
         month: "long",
         day: "numeric",
       };
-      return date.toLocaleDateString("en-US", options);
+      return date.toLocaleDateString("en-UK", options);
     };
     if (
       !endDate ||
       new Date(endDate).getTime() === new Date(startDate).getTime()
     ) {
-      return `le ${formatDate(startDate)}`;
+      return `${formatDate(startDate)}`;
     } else {
       const startDay = new Date(startDate).getDate();
       const endDay = new Date(endDate).getDate();
       const startDateObj = new Date(startDate);
       const endDateObj = new Date(endDate);
 
-      const monthYear = startDateObj.toLocaleDateString("fr-FR", {
+      const monthYear = startDateObj.toLocaleDateString("en-UK", {
         month: "long",
         year: "numeric",
       });
@@ -55,9 +55,9 @@ const CreateEventPreview = ({
         endDateObj.getMinutes() === 0 &&
         endDateObj.getSeconds() === 0
       ) {
-        return `du ${startDay} au ${endDay - 1} ${monthYear}`;
+        return `from ${startDay} to ${endDay - 1} ${monthYear}`;
       } else {
-        return `du ${startDay} au ${endDay} ${monthYear}`;
+        return `from ${startDay} to ${endDay} ${monthYear}`;
       }
     }
   };

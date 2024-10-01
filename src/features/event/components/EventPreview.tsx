@@ -51,7 +51,7 @@ const EventPreview = ({
       month: "2-digit",
       year: "2-digit",
     };
-    return date.toLocaleDateString("en-US", options);
+    return date.toLocaleDateString("en-UK", options);
   };
 
   const handleCardClick = () => {
