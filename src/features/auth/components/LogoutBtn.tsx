@@ -40,7 +40,7 @@ const LogoutBtn = () => {
   };
   const clearStorageAndCookies = () => {
     // Clear localStorage and sessionStorage
-    localStorage.clear();
+    // localStorage.clear();
     sessionStorage.clear();
 
     // Clear all cookies

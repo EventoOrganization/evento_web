@@ -31,7 +31,6 @@ const EventPreview = ({
     favourite: event?.isFavourite || false,
     refused: event?.isRefused || false,
   };
-
   useEffect(() => {
     if (event) {
       setEventStatus(event._id, {

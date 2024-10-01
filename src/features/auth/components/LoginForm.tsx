@@ -44,7 +44,9 @@ const LoginForm = ({
       rememberMe: false,
     },
   });
-  const { setUser, user, rememberMe } = useAuthStore((state) => state);
+  const { setUser, user, rememberMe, toggleRememberMe } = useAuthStore(
+    (state) => state,
+  );
   const { startSession } = useSession();
   const { toast } = useToast();
   const formStyle =
@@ -162,9 +164,10 @@ const LoginForm = ({
                   <FormItem>
                     <span className="flex gap-2 items-center">
                       <Checkbox
-                        checked={field.value}
+                        checked={rememberMe}
                         onCheckedChange={(checked: boolean | string | null) => {
                           field.onChange(!!checked);
+                          toggleRememberMe(!!checked);
                         }}
                       />
                       <p>Remember me</p>
