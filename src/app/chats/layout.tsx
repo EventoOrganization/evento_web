@@ -56,12 +56,7 @@ export default function ChatLayout({
               },
             )}
           >
-            {activeConversation && (
-              <ChatHeader
-                title={activeConversation.title}
-                profileImageUrl={activeConversation.profileImageUrl}
-              />
-            )}
+            {activeConversation && <ChatHeader />}
             {children}
           </div>
         </div>

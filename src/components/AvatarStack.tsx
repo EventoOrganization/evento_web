@@ -1,4 +1,5 @@
 "use client";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useEventoStore } from "@/store/useEventoStore";
 import { EventType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
@@ -25,14 +26,26 @@ const AvatarStack = ({ event }: { event: EventType }) => {
     <div className="flex items-center space-x-2">
       <div className="flex -space-x-3 overflow-hidden">
         {friends.slice(0, 3).map((friend, index) => (
-          <Image
-            key={index}
-            src={friend.profileImage || "/default-avatar.jpg"}
-            alt={friend.username}
-            width={32}
-            height={32}
-            className="inline-block h-8 w-8 rounded-full ring-2 ring-white"
-          />
+          <>
+            {friend.profileImage ? (
+              <Image
+                key={index}
+                src={friend.profileImage || ""}
+                alt={friend.username}
+                width={32}
+                height={32}
+                className="inline-block h-8 w-8 rounded-full ring-2 ring-white"
+              />
+            ) : (
+              <Avatar className="w-12 h-12 rounded-full">
+                <AvatarImage
+                  className="w-12 h-12 rounded-full"
+                  src="https://github.com/shadcn.png"
+                />
+                <AvatarFallback>CN</AvatarFallback>
+              </Avatar>
+            )}
+          </>
         ))}
       </div>
       <span className="text-sm">{friends.length} friends going</span>

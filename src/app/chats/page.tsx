@@ -1,5 +1,4 @@
 "use client";
-
 import { useSession } from "@/contexts/SessionProvider";
 import { useSocket } from "@/contexts/SocketProvider";
 import ChatInput from "@/features/chat/components/ChatInput";
@@ -24,10 +23,11 @@ type MessageType = {
 
 export default function ChatPage() {
   const { token } = useSession();
+  const { socket, messages, setMessages } = useSocket();
   const searchParams = useSearchParams();
   const conversationId = searchParams.get("conversationId");
   const { user } = useSession();
-  const { messages, setMessages } = useSocket();
+
   useEffect(() => {
     const fetchMessages = async () => {
       if (!conversationId) return;
@@ -46,26 +46,30 @@ export default function ChatPage() {
     fetchMessages();
   }, [token, conversationId, setMessages]);
 
-  const sendMessage = async (message: string) => {
-    if (!conversationId) return;
-    console.log(message);
-    const body = {
+  // Join the conversation room when the conversationId is available
+  useEffect(() => {
+    if (socket && conversationId) {
+      console.log(`Joining conversation room with ID: ${conversationId}`);
+      socket.emit("join_conversations", {
+        conversationIds: [conversationId],
+      });
+    }
+  }, [socket, conversationId]);
+
+  const sendMessage = (message: string) => {
+    if (!conversationId || !user?._id) return;
+
+    const messageData = {
       message,
-      senderId: user?._id,
+      senderId: user._id,
       conversationId,
       messageType: "text",
     };
-    const result = await fetchData<MessageType>(
-      `/chats/sendMessage`,
-      HttpMethod.POST,
-      body,
-      token,
-    );
 
-    if (result.ok && result.data) {
-      console.log("Message sent:", result.data);
-      // setMessages((prev) => [...prev, result.data]);
-    }
+    // Emit the message via the socket
+    socket?.emit("send_message", messageData);
+
+    console.log("Message sent via socket:", messageData);
   };
 
   return (

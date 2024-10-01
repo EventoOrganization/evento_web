@@ -70,13 +70,13 @@ const MessageList = ({
                 : "bg-gray-200"
             } rounded-lg`}
           >
-            <div className="mr-2">
+            <div className="mr-2 w-10 h-10">
               <Image
                 src={msg.senderId.profileImage || "/default-profile.png"}
                 alt="Profile Image"
                 width={40}
                 height={40}
-                className="rounded-full"
+                className="rounded-full w-10 h-10"
               />
             </div>
             <div className="flex-grow">

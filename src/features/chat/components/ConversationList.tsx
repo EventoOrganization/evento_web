@@ -1,23 +1,23 @@
 "use client";
 
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { useSession } from "@/contexts/SessionProvider";
+import { useSocket } from "@/contexts/SocketProvider";
 import { toast } from "@/hooks/use-toast";
 import { useEventoStore } from "@/store/useEventoStore";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-
-interface Conversation {
-  _id: string;
-  title: string;
-  lastMessage: string;
-  initialMedia: { url: string }[];
-}
 interface StartConversationResponse {
   conversation: {
     _id: string;
+    reciverId?: {
+      _id: string;
+      username: string;
+      profileImage: string;
+    };
   };
 }
 const ConversationList = ({
@@ -28,11 +28,12 @@ const ConversationList = ({
   onSelectConversation: (title: string, profileImageUrl: string) => void;
 }) => {
   const { token, user } = useSession();
-  const [conversations, setConversations] = useState<Conversation[]>([]);
+  const { conversations, updateConversations, setActiveConversation } =
+    useSocket();
+  const [suggestedUsers, setSuggestedUsers] = useState<any[]>([]);
   const [privateConversationUserIds, setPrivateConversationUserIds] = useState<
     string[]
   >([]);
-  const [suggestedUsers, setSuggestedUsers] = useState<any[]>([]);
   const router = useRouter();
   const { users } = useEventoStore((state) => state);
   const [searchTerm, setSearchTerm] = useState("");
@@ -60,7 +61,12 @@ const ConversationList = ({
             lastMessage: conversation.lastmessage?.message || "No messages yet",
             initialMedia: conversation.groupId
               ? conversation.groupId.eventId?.initialMedia || []
-              : [{ url: otherUser.profileImage || "/defaultImage.png" }],
+              : [
+                  {
+                    url:
+                      otherUser.profileImage || "https://github.com/shadcn.png",
+                  },
+                ],
           };
 
           // Adjust based on conversation type
@@ -80,7 +86,7 @@ const ConversationList = ({
           return conversationData;
         });
 
-        setConversations(structuredConversations);
+        updateConversations(() => structuredConversations);
         const privateUserIds = result.data
           .filter(
             (conversation) =>
@@ -116,18 +122,44 @@ const ConversationList = ({
         token,
       );
       if (result.ok && result.data) {
+        console.log("Private chat started:", result.data);
+        const conversation = result.data.conversation;
+        const newConversation = {
+          _id: conversation._id,
+          title: `${conversation.reciverId?.username}`,
+          lastMessage: "No messages yet",
+          initialMedia: [
+            {
+              url:
+                conversation.reciverId?.profileImage ||
+                "https://github.com/shadcn.png",
+            },
+          ],
+        };
+
+        // Add the new conversation to the conversations list
+        updateConversations((prev) => [...prev, newConversation]);
+
+        // Set the new conversation as the active conversation
+        setActiveConversation(newConversation);
+
+        // Navigate to the new conversation
         router.push(`/chats?conversationId=${result.data.conversation._id}`);
+
+        // Reset search term
         setSearchTerm("");
       }
     } catch (err) {
       console.error("Error starting private chat:", err);
     }
   };
+
   const handleSelectConversation = (conversationId: string) => {
     const selectedConversation = conversations.find(
       (c) => c._id === conversationId,
     );
     if (selectedConversation) {
+      setActiveConversation(selectedConversation);
       router.push(`/chats?conversationId=${conversationId}`);
       setIsOpen(false);
       onSelectConversation(
@@ -160,7 +192,9 @@ const ConversationList = ({
           className: "bg-evento-gradient text-white",
           duration: 3000,
         });
-        setConversations((prev) =>
+        router.push("/chats");
+        setActiveConversation(null);
+        updateConversations((prev) =>
           prev.filter((c) => c._id !== conversationId),
         );
       }
@@ -193,15 +227,24 @@ const ConversationList = ({
               onClick={() => handleSelectConversation(conversation._id)}
             >
               <div className="flex items-center space-x-4">
-                <div className="relative w-12 h-12">
-                  <Image
-                    src={
-                      conversation.initialMedia?.[0]?.url || "/defaultImage.png"
-                    }
-                    alt={conversation.title}
-                    fill
-                    className="rounded-full"
-                  />
+                <div className="relative w-10 h-10">
+                  {conversation.initialMedia?.[0]?.url ? (
+                    <Image
+                      src={conversation.initialMedia?.[0]?.url || ""}
+                      alt={conversation.title}
+                      width={40}
+                      height={40}
+                      className="rounded-full w-10 h-10"
+                    />
+                  ) : (
+                    <Avatar className="w-10 h-10 rounded-full">
+                      <AvatarImage
+                        className="w-10 h-10 rounded-full"
+                        src="https://github.com/shadcn.png"
+                      />
+                      <AvatarFallback>CN</AvatarFallback>
+                    </Avatar>
+                  )}
                 </div>
                 <div>
                   <h3 className="font-bold truncate">{conversation.title}</h3>
@@ -226,12 +269,22 @@ const ConversationList = ({
               onClick={() => startPrivateChat(user._id)}
             >
               <div className="relative w-12 h-12 mr-4">
-                <Image
-                  src={user.profileImage || "/defaultImage.png"}
-                  alt={user.username}
-                  fill
-                  className="rounded-full"
-                />
+                {user.profileImage ? (
+                  <Image
+                    src={user.profileImage || "https://github.com/shadcn.png"}
+                    alt={user.username}
+                    fill
+                    className="rounded-full"
+                  />
+                ) : (
+                  <Avatar className="w-10 h-10 rounded-full">
+                    <AvatarImage
+                      className="w-10 h-10 rounded-full"
+                      src="https://github.com/shadcn.png"
+                    />
+                    <AvatarFallback>CN</AvatarFallback>
+                  </Avatar>
+                )}
               </div>
               <div>
                 <h3 className="font-bold">{user.username}</h3>
