@@ -31,11 +31,23 @@ const LogoutBtn = () => {
         duration: 3000,
       });
       session.endSession();
+      clearStorageAndCookies();
     } catch (error) {
       console.error(error);
     } finally {
       router.push("/");
     }
+  };
+  const clearStorageAndCookies = () => {
+    // Clear localStorage and sessionStorage
+    localStorage.clear();
+    sessionStorage.clear();
+
+    // Clear all cookies
+    document.cookie.split(";").forEach((cookie) => {
+      const cookieName = cookie.split("=")[0].trim();
+      document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`;
+    });
   };
   return (
     <Button className="" onClick={handleclick}>
