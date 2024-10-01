@@ -253,7 +253,10 @@ const ConversationList = ({
                   </p>
                 </div>
               </div>
-              <button onClick={() => deleteConversation(conversation._id)}>
+              <button
+                className="sr-only"
+                onClick={() => deleteConversation(conversation._id)}
+              >
                 delete
               </button>
             </li>

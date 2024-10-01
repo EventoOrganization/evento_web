@@ -57,29 +57,35 @@ const MessageList = ({
   };
 
   return (
-    <div className="flex-1 overflow-y-auto p-4 pt-20">
+    <div className="flex-1 overflow-y-auto p-4 pt-20 ">
       {messages.length === 0 ? (
         <p>No messages found.</p>
       ) : (
         messages.map((msg: Message) => (
           <div
             key={msg._id}
-            className={`flex items-center mb-2 p-2 max-w-xs ${
-              msg.senderId._id === currentUserId
-                ? "bg-green-200 ml-auto"
-                : "bg-gray-200"
-            } rounded-lg`}
+            className={`flex items-center mb-2 p-2 w-fit ${
+              msg.senderId._id === currentUserId && "bg-green-200 ml-auto"
+            }  rounded-lg`}
           >
-            <div className="mr-2 w-10 h-10">
-              <Image
-                src={msg.senderId.profileImage || "/default-profile.png"}
-                alt="Profile Image"
-                width={40}
-                height={40}
-                className="rounded-full w-10 h-10"
-              />
-            </div>
-            <div className="flex-grow">
+            {msg.senderId._id !== currentUserId && (
+              <div className="mr-2 w-8 h-8">
+                <Image
+                  src={msg.senderId.profileImage || "/default-profile.png"}
+                  alt="Profile Image"
+                  width={40}
+                  height={40}
+                  className="rounded-full w-8 h-8"
+                />
+              </div>
+            )}
+            <div
+              className={`flex-grow  ${
+                msg.senderId._id === currentUserId
+                  ? "bg-green-200 ml-auto"
+                  : "bg-gray-200 p-2 rounded-lg"
+              }`}
+            >
               {msg.message_type === "text" && <p>{msg.message}</p>}
 
               {msg.message_type === "image" && (
@@ -90,14 +96,14 @@ const MessageList = ({
                 <video src={msg.message} controls width="300" />
               )}
 
-              <div className="mt-1 text-xs text-gray-500">
+              {/* <div className="mt-1 text-xs text-gray-500">
                 <p>{msg.senderId.username}</p>
-              </div>
+              </div> */}
             </div>
             {msg.senderId._id === currentUserId && (
               <button
                 onClick={() => deleteMessage(msg._id)}
-                className="ml-2 text-red-500 text-sm"
+                className="ml-2 text-red-500 text-sm sr-only"
               >
                 Supprimer
               </button>

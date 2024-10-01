@@ -23,11 +23,11 @@ type MessageType = {
 
 export default function ChatPage() {
   const { token } = useSession();
-  const { socket, messages, setMessages } = useSocket();
+  const { socket, messages, setMessages, activeConversation } = useSocket();
   const searchParams = useSearchParams();
   const conversationId = searchParams.get("conversationId");
   const { user } = useSession();
-
+  console.log(activeConversation);
   useEffect(() => {
     const fetchMessages = async () => {
       if (!conversationId) return;
