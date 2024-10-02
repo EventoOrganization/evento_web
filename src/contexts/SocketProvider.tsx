@@ -1,6 +1,6 @@
 "use client";
 import { useSession } from "@/contexts/SessionProvider";
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import io, { Socket } from "socket.io-client";
 
 interface SocketContextType {
@@ -30,7 +30,12 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
   const [activeConversation, setActiveConversation] = useState<any | null>(
     null,
   );
+  const activeConversationRef = useRef<any>(null); // useRef to hold current active conversation
   const { token, user } = useSession();
+
+  useEffect(() => {
+    activeConversationRef.current = activeConversation; // Update the ref when activeConversation changes
+  }, [activeConversation]);
 
   useEffect(() => {
     if (!token || !user) {
@@ -50,23 +55,50 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
       console.log("Socket connected:", newSocket.id);
       setSocket(newSocket);
 
-      // User connects to their specific socket
       newSocket.emit("connect_user", { userId: user._id });
     });
 
-    // Listen for new messages from the server
     newSocket.on("send_message_emit", (newMessage) => {
-      console.log("New message received via Socket.IO:", newMessage);
-      setMessages((prevMessages) => [...prevMessages, newMessage]);
+      console.log("New message received:", newMessage);
+      if (!newMessage || !newMessage.constantId || !newMessage.message) {
+        console.error("Invalid message structure received:", newMessage);
+        return;
+      }
+
+      const currentActiveConversation = activeConversationRef.current;
+
+      updateConversations((prevConversations) => {
+        const updatedConversations = prevConversations.map((conv) => {
+          if (conv._id === newMessage.constantId) {
+            const isMessageDuplicate = conv.messages.some(
+              (msg: any) => msg._id === newMessage._id,
+            );
+
+            // If the message is not a duplicate, add it
+            if (!isMessageDuplicate) {
+              const updatedConv = {
+                ...conv,
+                lastMessage: newMessage.message,
+                messages: [newMessage, ...(conv.messages || [])],
+              };
+
+              // Update activeConversation if it's the same conversation
+              if (
+                currentActiveConversation &&
+                currentActiveConversation._id === conv._id
+              ) {
+                setActiveConversation(updatedConv);
+              }
+
+              return updatedConv;
+            }
+          }
+          return conv;
+        });
+        return updatedConversations;
+      });
     });
 
-    newSocket.on("conversation_update", (updatedConversation) => {
-      setConversations((prevConversations) =>
-        prevConversations.map((conv) =>
-          conv._id === updatedConversation._id ? updatedConversation : conv,
-        ),
-      );
-    });
     newSocket.on("disconnect", () => {
       console.log("Socket disconnected");
     });
@@ -83,8 +115,10 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
   }, [token, user]);
 
   const updateConversations = (func: (prevConversations: any[]) => any[]) => {
-    console.log("Updating conversations:", func);
-    setConversations(func);
+    setConversations((prevConversations) => {
+      const updatedConversations = func(prevConversations);
+      return updatedConversations;
+    });
   };
 
   return (

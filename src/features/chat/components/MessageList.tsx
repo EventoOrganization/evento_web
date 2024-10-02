@@ -19,16 +19,9 @@ interface Message {
 interface MessageListProps {
   messages: Message[];
   currentUserId: string;
-  setMessages: (
-    messages: ((prevMessages: Message[]) => Message[]) | Message[],
-  ) => void;
 }
 
-const MessageList = ({
-  messages,
-  currentUserId,
-  setMessages,
-}: MessageListProps) => {
+const MessageList = ({ messages, currentUserId }: MessageListProps) => {
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
   const { token } = useSession();
   const { activeConversation } = useSocket();
@@ -48,9 +41,6 @@ const MessageList = ({
       token,
     );
     if (result.ok) {
-      setMessages((prevMessages: Message[]) =>
-        prevMessages.filter((msg: Message) => msg._id !== messageId),
-      );
     } else {
       console.error("Failed to delete message");
     }
@@ -62,11 +52,11 @@ const MessageList = ({
       </div>
     );
   return (
-    <div className="flex-1 overflow-y-auto p-2 pt-20">
+    <div className="flex-1 overflow-y-auto p-2 pt-20 pb-14">
       {messages.length === 0 ? (
         <p>No messages found. Start the conversation by sending a message.</p>
       ) : (
-        messages.map((msg: Message) => (
+        [...messages].reverse().map((msg: Message) => (
           <div
             key={msg._id}
             className={`flex items-center mb-2 ${

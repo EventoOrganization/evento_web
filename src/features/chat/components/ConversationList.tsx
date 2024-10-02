@@ -59,7 +59,9 @@ const ConversationList = ({
           const conversationData = {
             _id: conversation._id,
             title: "",
-            lastMessage: conversation.lastmessage?.message || "No messages yet",
+            messages: conversation.recentMessages || [],
+            lastMessage:
+              conversation.recentMessages[0]?.message || "No messages yet",
             initialMedia: conversation.groupId
               ? conversation.groupId.eventId?.initialMedia || []
               : [
