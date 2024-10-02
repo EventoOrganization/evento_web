@@ -11,16 +11,8 @@ import { fetchData, HttpMethod } from "@/utils/fetchData";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-interface StartConversationResponse {
-  conversation: {
-    _id: string;
-    reciverId?: {
-      _id: string;
-      username: string;
-      profileImage: string;
-    };
-  };
-}
+import { startPrivateChat } from "./chatsActions";
+
 const ConversationList = ({
   setIsOpen,
   onSelectConversation,
@@ -28,7 +20,7 @@ const ConversationList = ({
   setIsOpen: (isOpen: boolean) => void;
   onSelectConversation: (title: string, profileImageUrl: string) => void;
 }) => {
-  const { token, user } = useSession();
+  const { token } = useSession();
   const { conversations, updateConversations, setActiveConversation } =
     useSocket();
   const [suggestedUsers, setSuggestedUsers] = useState<any[]>([]);
@@ -36,61 +28,6 @@ const ConversationList = ({
   const { users } = useEventoStore((state) => state);
   const [searchTerm, setSearchTerm] = useState("");
   // const { toast } = useToast();
-  useEffect(() => {
-    const fetchConversations = async () => {
-      const result = await fetchData<any[]>(
-        "/chats/fetchConversations",
-        HttpMethod.GET,
-        null,
-        token,
-      );
-      if (result.ok && result.data) {
-        const structuredConversations = result.data.map((conversation) => {
-          // Determine if the logged-in user is the sender or receiver, then set accordingly
-          const isSender = conversation.senderId._id === user?._id;
-          const otherUser = isSender
-            ? conversation.reciverId
-            : conversation.senderId;
-
-          // Standard fields
-          const conversationData = {
-            _id: conversation._id,
-            title: "",
-            messages: conversation.recentMessages || [],
-            lastMessage:
-              conversation.recentMessages[0]?.message || "No messages yet",
-            initialMedia: conversation.groupId
-              ? conversation.groupId.eventId?.initialMedia || []
-              : [
-                  {
-                    url:
-                      otherUser.profileImage || "https://github.com/shadcn.png",
-                  },
-                ],
-          };
-
-          // Adjust based on conversation type
-          if (conversation.groupId) {
-            // Group conversation logic remains unchanged
-            conversationData.title =
-              conversation.groupId.groupName || "Group Chat";
-            conversationData.initialMedia =
-              conversation.groupId.eventId?.initialMedia || [];
-          } else {
-            // Private conversation uses other user's data
-            conversationData.title = otherUser.username || "Private Chat";
-            conversationData.initialMedia =
-              [{ url: otherUser.profileImage }] || [];
-          }
-
-          return conversationData;
-        });
-
-        updateConversations(() => structuredConversations);
-      }
-    };
-    fetchConversations();
-  }, [user]);
 
   useEffect(() => {
     if (searchTerm.trim() === "") {
@@ -111,46 +48,46 @@ const ConversationList = ({
     }
   }, [searchTerm, users, conversations]); // Ajout de `conversations` dans les dépendances pour garantir le rechargement.
 
-  const startPrivateChat = async (userId: string) => {
-    try {
-      const result = await fetchData<StartConversationResponse>(
-        "/chats/startPrivateConversation",
-        HttpMethod.POST,
-        { userId },
-        token,
-      );
-      if (result.ok && result.data) {
-        console.log("Private chat started:", result.data);
-        const conversation = result.data.conversation;
-        const newConversation = {
-          _id: conversation._id,
-          title: `${conversation.reciverId?.username}`,
-          lastMessage: "No messages yet",
-          initialMedia: [
-            {
-              url:
-                conversation.reciverId?.profileImage ||
-                "https://github.com/shadcn.png",
-            },
-          ],
-        };
+  // const startPrivateChat = async (userId: string) => {
+  //   try {
+  //     const result = await fetchData<StartConversationResponse>(
+  //       "/chats/startPrivateConversation",
+  //       HttpMethod.POST,
+  //       { userId },
+  //       token,
+  //     );
+  //     if (result.ok && result.data) {
+  //       console.log("Private chat started:", result.data);
+  //       const conversation = result.data.conversation;
+  //       const newConversation = {
+  //         _id: conversation._id,
+  //         title: `${conversation.reciverId?.username}`,
+  //         lastMessage: "No messages yet",
+  //         initialMedia: [
+  //           {
+  //             url:
+  //               conversation.reciverId?.profileImage ||
+  //               "https://github.com/shadcn.png",
+  //           },
+  //         ],
+  //       };
 
-        // Add the new conversation to the conversations list
-        updateConversations((prev) => [...prev, newConversation]);
+  //       // Add the new conversation to the conversations list
+  //       updateConversations((prev) => [...prev, newConversation]);
 
-        // Set the new conversation as the active conversation
-        setActiveConversation(newConversation);
+  //       // Set the new conversation as the active conversation
+  //       setActiveConversation(newConversation);
 
-        // Navigate to the new conversation
-        router.push(`/chats?conversationId=${result.data.conversation._id}`);
+  //       // Navigate to the new conversation
+  //       router.push(`/chats?conversationId=${result.data.conversation._id}`);
 
-        // Reset search term
-        setSearchTerm("");
-      }
-    } catch (err) {
-      console.error("Error starting private chat:", err);
-    }
-  };
+  //       // Reset search term
+  //       setSearchTerm("");
+  //     }
+  //   } catch (err) {
+  //     console.error("Error starting private chat:", err);
+  //   }
+  // };
 
   const handleSelectConversation = (conversationId: string) => {
     const selectedConversation = conversations.find(
@@ -271,7 +208,16 @@ const ConversationList = ({
             <li
               key={user._id}
               className="flex items-center p-2 bg-white rounded-lg shadow cursor-pointer"
-              onClick={() => startPrivateChat(user._id)}
+              onClick={() =>
+                startPrivateChat(
+                  user._id,
+                  token,
+                  updateConversations,
+                  setActiveConversation,
+                  router,
+                  setSearchTerm,
+                )
+              }
             >
               <div className="relative w-12 h-12 mr-4">
                 {user.profileImage ? (

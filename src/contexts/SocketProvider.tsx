@@ -1,5 +1,6 @@
 "use client";
 import { useSession } from "@/contexts/SessionProvider";
+import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import io, { Socket } from "socket.io-client";
 
@@ -36,6 +37,68 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     activeConversationRef.current = activeConversation; // Update the ref when activeConversation changes
   }, [activeConversation]);
+
+  useEffect(() => {
+    if (socket && conversations.length > 0) {
+      const conversationIds = conversations.map((conv) => conv._id);
+      socket.emit("join_conversations", { conversationIds });
+    }
+  }, [socket, conversations]);
+  useEffect(() => {
+    const fetchConversations = async () => {
+      const result = await fetchData<any[]>(
+        "/chats/fetchConversations",
+        HttpMethod.GET,
+        null,
+        token,
+      );
+      if (result.ok && result.data) {
+        const structuredConversations = result.data.map((conversation) => {
+          // Determine if the logged-in user is the sender or receiver, then set accordingly
+          const isSender = conversation.senderId._id === user?._id;
+          const otherUser = isSender
+            ? conversation.reciverId
+            : conversation.senderId;
+
+          // Standard fields
+          const conversationData = {
+            _id: conversation._id,
+            title: "",
+            messages: conversation.recentMessages || [],
+            lastMessage:
+              conversation.recentMessages[0]?.message || "No messages yet",
+            initialMedia: conversation.groupId
+              ? conversation.groupId.eventId?.initialMedia || []
+              : [
+                  {
+                    url:
+                      otherUser.profileImage || "https://github.com/shadcn.png",
+                  },
+                ],
+          };
+
+          // Adjust based on conversation type
+          if (conversation.groupId) {
+            // Group conversation logic remains unchanged
+            conversationData.title =
+              conversation.groupId.groupName || "Group Chat";
+            conversationData.initialMedia =
+              conversation.groupId.eventId?.initialMedia || [];
+          } else {
+            // Private conversation uses other user's data
+            conversationData.title = otherUser.username || "Private Chat";
+            conversationData.initialMedia =
+              [{ url: otherUser.profileImage }] || [];
+          }
+
+          return conversationData;
+        });
+
+        updateConversations(() => structuredConversations);
+      }
+    };
+    fetchConversations();
+  }, [user]);
 
   useEffect(() => {
     if (!token || !user) {

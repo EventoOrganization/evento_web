@@ -4,19 +4,12 @@ import { useSocket } from "@/contexts/SocketProvider";
 import ChatInput from "@/features/chat/components/ChatInput";
 import MessageList from "@/features/chat/components/MessageList";
 import { useSearchParams } from "next/navigation";
-import { useEffect } from "react";
 
 export default function ChatPage() {
-  const { socket, activeConversation, conversations } = useSocket();
+  const { socket, activeConversation } = useSocket();
   const searchParams = useSearchParams();
   const conversationId = searchParams.get("conversationId");
   const { user } = useSession();
-  useEffect(() => {
-    if (socket && conversations.length > 0) {
-      const conversationIds = conversations.map((conv) => conv._id);
-      socket.emit("join_conversations", { conversationIds });
-    }
-  }, [socket, conversations]);
 
   const sendMessage = (message: string) => {
     if (!conversationId || !user?._id) return;

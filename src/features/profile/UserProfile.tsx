@@ -1,11 +1,15 @@
 "use client";
 import InstagramIcon from "@/components/icons/InstagramIcon";
 import LinkedinIcon from "@/components/icons/LinkedinIcon";
+import MessageIcon from "@/components/icons/MessageIcon";
 import TiktokIcon from "@/components/icons/TiktokIcon";
 import Section from "@/components/layout/Section";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { useSession } from "@/contexts/SessionProvider";
+import { useSocket } from "@/contexts/SocketProvider";
 import EventSection from "@/features/event/components/EventSection";
+import { cn } from "@/lib/utils";
 import { EventType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
 import Image from "next/image";
@@ -26,11 +30,14 @@ const UserProfile = ({
 }) => {
   const router = useRouter();
   const pathname = usePathname();
+  const { conversations } = useSocket();
+  const { user } = useSession();
   const platformIcons: Record<string, JSX.Element> = {
     linkedin: <LinkedinIcon />,
     tiktok: <TiktokIcon />,
     instagram: <InstagramIcon />,
   };
+  console.log("profile", profile, conversations);
   return (
     <Section className="gap-6 md:pt-20 md:px-20">
       <div className=" w-full lg:grid lg:grid-cols-3">
@@ -73,8 +80,13 @@ const UserProfile = ({
           </div>
           <div className="flex flex-col items-start gap-4 ">
             <ul className=" pt-4 text-start">
-              <li className="font-semibold text-xl">
+              <li className="font-semibold text-xl flex gap-2">
                 {profile && profile.username && profile.username}
+                {user &&
+                  pathname.startsWith("/profile/") &&
+                  user._id !== profile?._id && (
+                    <MessageIcon className={cn("cursor-pointer")} />
+                  )}
               </li>
               <li>{profile && profile.bio && profile.bio}</li>
               {profile && profile.URL && (
@@ -140,22 +152,21 @@ const UserProfile = ({
               </div>
             )}
           </div>
-          {profile?.interest && profile?.interest?.length > 0 && (
-            <div className="md:flex flex-col items-start hidden gap-4">
-              <h4 className="hidden md:block">Interests</h4>
-              <ul className="flex lg:flex-col gap-4">
-                {profile.interest.map((interest, index) => (
-                  <li
-                    key={index}
-                    className="flex items-center gap-2 bg-evento-gradient text-white px-2 py-1 m-1 rounded h-10"
-                  >
-                    {interest.name}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
         </div>
+
+        {profile?.interests && profile?.interests?.length > 0 && (
+          <div className="md:flex mt-2 items-start hidden gap-2">
+            <ul className="flex gap-2">
+              {profile.interests.map((interest, index) => (
+                <li key={index}>
+                  <Button className="bg-evento-gradient text-white">
+                    {interest.name}
+                  </Button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
       <EventSection
         title="Upcoming Events"
