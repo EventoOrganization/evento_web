@@ -1,7 +1,7 @@
 "use client";
 
-import BackButton from "@/components/BackButton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useSession } from "@/contexts/SessionProvider";
 import { useSocket } from "@/contexts/SocketProvider";
@@ -211,7 +211,7 @@ const ConversationList = ({
   return (
     <div className="flex-1 overflow-y-auto p-4 bg-gray-300 h-full">
       <div className="flex items-center gap-2 mb-2">
-        <BackButton className="" />
+        <Button onClick={() => router.push("/profile")}>Profile</Button>
         <Input
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}

@@ -27,7 +27,7 @@ const ChatInput = ({ onSendMessage }: ChatInputProps) => {
   };
 
   return (
-    <div className="p-2 border-t flex gap-2 items-center bg-evento-gradient">
+    <div className="fixed w-full xl:w-3/4 bottom-0 right-0 p-2 border-t flex gap-2 items-center bg-evento-gradient">
       <Input
         type="text"
         className=""

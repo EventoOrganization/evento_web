@@ -1,5 +1,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useSession } from "@/contexts/SessionProvider";
+import { useSocket } from "@/contexts/SocketProvider";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 import Image from "next/image";
 import { useEffect, useRef } from "react";
@@ -30,7 +31,7 @@ const MessageList = ({
 }: MessageListProps) => {
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
   const { token } = useSession();
-
+  const { activeConversation } = useSocket();
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -54,11 +55,16 @@ const MessageList = ({
       console.error("Failed to delete message");
     }
   };
-
+  if (!activeConversation)
+    return (
+      <div className="flex h-full justify-center items-center bg-background">
+        <p>No conversation selected</p>
+      </div>
+    );
   return (
     <div className="flex-1 overflow-y-auto p-2 pt-20">
       {messages.length === 0 ? (
-        <p>No messages found.</p>
+        <p>No messages found. Start the conversation by sending a message.</p>
       ) : (
         messages.map((msg: Message) => (
           <div

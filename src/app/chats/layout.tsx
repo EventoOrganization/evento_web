@@ -1,7 +1,6 @@
 "use client";
 
 import Burger from "@/components/Burger";
-import { useSocket } from "@/contexts/SocketProvider";
 import ChatHeader from "@/features/chat/components/ChatHeader";
 import ConversationList from "@/features/chat/components/ConversationList";
 import { cn } from "@/lib/utils";
@@ -13,11 +12,8 @@ export default function ChatLayout({
   children: React.ReactNode;
 }) {
   const [isOpen, setIsOpen] = useState(false);
-  const { activeConversation } = useSocket();
-  // const dev = true;
-  // if (dev) return <ComingSoon message="This page is under development" />;
   const handleSelectConversation = () => {
-    setIsOpen(false); // Close the sidebar on selection
+    setIsOpen(false);
   };
   return (
     <>
@@ -53,7 +49,7 @@ export default function ChatLayout({
               },
             )}
           >
-            {activeConversation && <ChatHeader />}
+            <ChatHeader />
             {children}
           </div>
         </div>
