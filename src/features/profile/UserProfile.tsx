@@ -1,20 +1,21 @@
 "use client";
 import InstagramIcon from "@/components/icons/InstagramIcon";
 import LinkedinIcon from "@/components/icons/LinkedinIcon";
-import MessageIcon from "@/components/icons/MessageIcon";
 import TiktokIcon from "@/components/icons/TiktokIcon";
 import Section from "@/components/layout/Section";
+import TchatIcon from "@/components/TchatIcon";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { useSession } from "@/contexts/SessionProvider";
 import { useSocket } from "@/contexts/SocketProvider";
 import EventSection from "@/features/event/components/EventSection";
-import { cn } from "@/lib/utils";
 import { EventType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
+import { MessageCirclePlusIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { startPrivateChat } from "../chat/components/chatsActions";
 const UserProfile = ({
   profile,
   upcomingEvents,
@@ -30,14 +31,31 @@ const UserProfile = ({
 }) => {
   const router = useRouter();
   const pathname = usePathname();
-  const { conversations } = useSocket();
-  const { user } = useSession();
+  const { conversations, updateConversations, setActiveConversation } =
+    useSocket();
+  const { user, token } = useSession();
   const platformIcons: Record<string, JSX.Element> = {
     linkedin: <LinkedinIcon />,
     tiktok: <TiktokIcon />,
     instagram: <InstagramIcon />,
   };
-  console.log("profile", profile, conversations);
+  const conversationWithUser = conversations.find(
+    (conversation) => conversation.title === profile?.username,
+  );
+  const handleMessageIconClick = async () => {
+    if (conversationWithUser) {
+      setActiveConversation(conversationWithUser);
+      router.push(`/chats?conversationId=${conversationWithUser._id}`);
+    } else if (profile?._id && token) {
+      await startPrivateChat(
+        profile._id,
+        token,
+        updateConversations,
+        setActiveConversation,
+        router,
+      );
+    }
+  };
   return (
     <Section className="gap-6 md:pt-20 md:px-20">
       <div className=" w-full lg:grid lg:grid-cols-3">
@@ -85,7 +103,13 @@ const UserProfile = ({
                 {user &&
                   pathname.startsWith("/profile/") &&
                   user._id !== profile?._id && (
-                    <MessageIcon className={cn("cursor-pointer")} />
+                    <span onClick={handleMessageIconClick}>
+                      {!conversationWithUser ? (
+                        <MessageCirclePlusIcon />
+                      ) : (
+                        <TchatIcon className="cursor-pointer" pathname />
+                      )}
+                    </span>
                   )}
               </li>
               <li>{profile && profile.bio && profile.bio}</li>
