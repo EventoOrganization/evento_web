@@ -53,7 +53,7 @@ const MessageList = ({ messages, currentUserId }: MessageListProps) => {
     );
   return (
     <div className="flex-1 overflow-y-auto p-2 pt-20 pb-14">
-      {messages.length === 0 ? (
+      {!messages || messages.length === 0 ? (
         <p>No messages found. Start the conversation by sending a message.</p>
       ) : (
         [...messages].reverse().map((msg: Message) => (

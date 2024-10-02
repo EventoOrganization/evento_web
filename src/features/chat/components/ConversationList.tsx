@@ -32,9 +32,6 @@ const ConversationList = ({
   const { conversations, updateConversations, setActiveConversation } =
     useSocket();
   const [suggestedUsers, setSuggestedUsers] = useState<any[]>([]);
-  const [privateConversationUserIds, setPrivateConversationUserIds] = useState<
-    string[]
-  >([]);
   const router = useRouter();
   const { users } = useEventoStore((state) => state);
   const [searchTerm, setSearchTerm] = useState("");
@@ -90,32 +87,30 @@ const ConversationList = ({
         });
 
         updateConversations(() => structuredConversations);
-        const privateUserIds = result.data
-          .filter(
-            (conversation) =>
-              !conversation.groupId && conversation.senderId._id !== user?._id, // Exclure les conversations de groupe
-          )
-          .map((conversation) => conversation.senderId._id);
-        setPrivateConversationUserIds(privateUserIds);
       }
     };
     fetchConversations();
   }, [user]);
+
   useEffect(() => {
     if (searchTerm.trim() === "") {
       setSuggestedUsers([]);
     } else {
+      const searchTermLower = searchTerm.toLowerCase(); // Optimisation pour ne pas recalculer à chaque utilisateur.
       const filteredUsers = users.filter((user) => {
-        const fullName = `${user.firstName} ${user.lastName}`.toLowerCase();
-        return (
-          !privateConversationUserIds.includes(user._id) && // Exclure les utilisateurs avec qui il y a déjà une conversation privée
-          (user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            fullName.includes(searchTerm.toLowerCase()))
+        const userInConversations = conversations.some((conv) =>
+          conv.title.toLowerCase().includes(user.username.toLowerCase()),
         );
+        const userMatchesSearch =
+          user.username.toLowerCase().includes(searchTermLower) ||
+          (user.firstName ?? "").toLowerCase().includes(searchTermLower) ||
+          (user.lastName ?? "").toLowerCase().includes(searchTermLower);
+        return !userInConversations && userMatchesSearch; // Assure que l'utilisateur n'est pas déjà dans une conversation et correspond au terme de recherche.
       });
       setSuggestedUsers(filteredUsers);
     }
-  }, [searchTerm, users, privateConversationUserIds]);
+  }, [searchTerm, users, conversations]); // Ajout de `conversations` dans les dépendances pour garantir le rechargement.
+
   const startPrivateChat = async (userId: string) => {
     try {
       const result = await fetchData<StartConversationResponse>(
@@ -171,6 +166,7 @@ const ConversationList = ({
         selectedConversation.initialMedia[0].url,
       );
     }
+    setSearchTerm("");
   };
   const filteredConversations = conversations.filter((conversation) => {
     return (

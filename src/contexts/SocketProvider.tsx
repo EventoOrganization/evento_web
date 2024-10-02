@@ -70,9 +70,9 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
       updateConversations((prevConversations) => {
         const updatedConversations = prevConversations.map((conv) => {
           if (conv._id === newMessage.constantId) {
-            const isMessageDuplicate = conv.messages.some(
-              (msg: any) => msg._id === newMessage._id,
-            );
+            const isMessageDuplicate =
+              Array.isArray(conv.messages) &&
+              conv.messages.some((msg: any) => msg._id === newMessage._id);
 
             // If the message is not a duplicate, add it
             if (!isMessageDuplicate) {
