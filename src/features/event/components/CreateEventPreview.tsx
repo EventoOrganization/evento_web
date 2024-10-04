@@ -103,7 +103,7 @@ const CreateEventPreview = ({
         className={cn(
           "bg-white border shadow rounded p-4 w-full grid grid-cols-1 h-fit gap-4 hover:shadow-xl hover:bg-slate-50 cursor-pointer relative",
           className,
-          { "lg:grid-cols-2 items-start md:p-10 gap-10": inModal },
+          { "lg:grid-cols-2 items-start gap-10": inModal },
         )}
       >
         <div className="flex items-center justify-between ">

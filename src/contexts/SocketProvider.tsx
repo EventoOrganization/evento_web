@@ -72,7 +72,8 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
               : [
                   {
                     url:
-                      otherUser.profileImage || "https://github.com/shadcn.png",
+                      otherUser?.profileImage ||
+                      "https://github.com/shadcn.png",
                   },
                 ],
           };
@@ -86,9 +87,14 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
               conversation.groupId.eventId?.initialMedia || [];
           } else {
             // Private conversation uses other user's data
-            conversationData.title = otherUser.username || "Private Chat";
+            conversationData.title = otherUser?.username || "Private Chat";
             conversationData.initialMedia =
-              [{ url: otherUser.profileImage }] || [];
+              [
+                {
+                  url:
+                    otherUser?.profileImage || "https://github.com/shadcn.png",
+                },
+              ] || [];
           }
 
           return conversationData;
