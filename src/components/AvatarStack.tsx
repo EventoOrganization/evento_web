@@ -26,7 +26,7 @@ const AvatarStack = ({ event }: { event: EventType }) => {
     <div className="flex items-center space-x-2">
       <div className="flex -space-x-3 overflow-hidden">
         {friends.slice(0, 3).map((friend, index) => (
-          <>
+          <div key={index}>
             {friend.profileImage ? (
               <Image
                 key={index}
@@ -37,7 +37,7 @@ const AvatarStack = ({ event }: { event: EventType }) => {
                 className="inline-block h-8 w-8 rounded-full ring-2 ring-white"
               />
             ) : (
-              <Avatar className="w-12 h-12 rounded-full">
+              <Avatar key={index} className="w-12 h-12 rounded-full">
                 <AvatarImage
                   className="w-12 h-12 rounded-full"
                   src="https://github.com/shadcn.png"
@@ -45,7 +45,7 @@ const AvatarStack = ({ event }: { event: EventType }) => {
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>
             )}
-          </>
+          </div>
         ))}
       </div>
       <span className="text-sm">{friends.length} friends going</span>

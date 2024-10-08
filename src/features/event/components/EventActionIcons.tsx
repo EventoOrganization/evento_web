@@ -35,14 +35,12 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
     going: event.isGoing || false,
     favourite: event.isFavourite || false,
   };
-  console.log("currentStatus", currentStatus);
   useEffect(() => {
     setEventStatus(event._id, {
       going: currentStatus.going || false,
       favourite: currentStatus.favourite || false,
       refused: currentStatus.refused || false,
     });
-    console.log("status", currentStatus);
     const requiredQuestions = event.questions?.filter((q) => q.required) || [];
     if (requiredQuestions.length > 0) {
       setMandatoryQuestions(requiredQuestions);

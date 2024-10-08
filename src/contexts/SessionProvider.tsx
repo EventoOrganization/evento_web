@@ -1,5 +1,6 @@
 // src/contexts/SessionProvider.tsx
 "use client";
+import { useAuthStore } from "@/store/useAuthStore";
 import { UserType } from "@/types/UserType";
 import React, { createContext, useContext, useEffect, useState } from "react";
 
@@ -20,9 +21,13 @@ export const SessionProvider: React.FC<{
   initialUser?: UserType | null;
   initialToken?: string | null;
 }> = ({ children, initialUser = null, initialToken = null }) => {
-  const [user, setUser] = useState<UserType | null>(initialUser);
-  const [token, setToken] = useState<string | null>(initialToken);
-
+  const auth = useAuthStore();
+  const [user, setUser] = useState<UserType | null>(
+    initialUser || auth.user || null,
+  );
+  const [token, setToken] = useState<string | null>(
+    initialToken || auth?.user?.token || null,
+  );
   useEffect(() => {
     if (!initialUser && !initialToken) {
       const sessionData = document.cookie
@@ -34,9 +39,20 @@ export const SessionProvider: React.FC<{
         const session = JSON.parse(decodeURIComponent(sessionData));
         setUser(session.user);
         setToken(session.token);
+        // console.log("user set from cookie");
+      } else {
+        if (auth.user && auth.user.token) {
+          setUser(auth.user);
+          setToken(auth.user.token);
+          // console.log("user set from store");
+        } else {
+          setUser(null);
+          setToken(null);
+          // console.log("no user found");
+        }
       }
     }
-  }, [initialUser, initialToken]);
+  }, [initialUser, initialToken, auth.user]);
 
   const startSession = (user: UserType, token: string) => {
     setUser(user);
