@@ -46,6 +46,7 @@ const AuthModal = ({
 
   const handleLoginSuccess = (token: string) => {
     if (token) onAuthSuccess(token);
+
     setIsModalOpen(false);
   };
 

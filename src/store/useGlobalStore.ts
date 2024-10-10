@@ -121,12 +121,14 @@ export const useGlobalStore = create<GlobalStoreState>()(
       },
 
       loadEvents: async (user?: UserType) => {
+        if (get().events.length > 0) return;
         const userIdQuery = user && user._id ? `?userId=${user._id}` : "";
         try {
           const upcomingEventRes = await fetchData(
             `/events/getUpcomingEvents${userIdQuery}`,
           );
           if (upcomingEventRes && !upcomingEventRes.error) {
+            console.log("Upcoming Events !", upcomingEventRes.data);
             set({ events: upcomingEventRes.data as EventType[] });
           } else {
             console.error(
@@ -139,6 +141,7 @@ export const useGlobalStore = create<GlobalStoreState>()(
         }
       },
       loadUsers: async (userId: string, token: string) => {
+        if (get().users.length > 0) return;
         const endpoint =
           userId && token
             ? `/users/followStatusForUsersYouFollow/${userId}`
@@ -194,6 +197,7 @@ export const useGlobalStore = create<GlobalStoreState>()(
             if (
               JSON.stringify(currentInterests) !== JSON.stringify(newInterests)
             ) {
+              console.log("New Interests !", currentInterests, newInterests);
               set({ interests: newInterests });
             }
           }
@@ -215,6 +219,7 @@ export const useGlobalStore = create<GlobalStoreState>()(
 
             // Met à jour le store si de nouveaux événements sont trouvés
             if (JSON.stringify(currentEvents) !== JSON.stringify(newEvents)) {
+              console.log("New Events !", currentEvents, newEvents);
               set({ events: newEvents });
             }
           }
@@ -243,6 +248,7 @@ export const useGlobalStore = create<GlobalStoreState>()(
 
             // Met à jour le store si de nouveaux utilisateurs sont trouvés
             if (JSON.stringify(currentUsers) !== JSON.stringify(newUsers)) {
+              console.log("New Users !", currentUsers, newUsers);
               set({ users: newUsers });
             }
           }

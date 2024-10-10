@@ -27,7 +27,8 @@ const GlobalDataProvider: React.FC<{ children: React.ReactNode }> = ({
     loadInterests();
     loadEvents(user || undefined);
     if (user?._id && token) {
-      loadUsers(user._id, token);
+      refreshUsers(user._id, token);
+      refreshEvents(user);
       loadUser(token);
     } else {
       loadUsers("", "");
