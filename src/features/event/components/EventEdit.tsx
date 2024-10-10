@@ -1,10 +1,10 @@
 // src/features/event/components/EventEdit.tsx
 import { useSession } from "@/contexts/SessionProvider";
-import { useInterestStore } from "@/store/useInterestStore";
+import { useGlobalStore } from "@/store/useGlobalStore";
 import { EventType, InterestType, QuestionType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import CoHostManagementModal from "./CoHostManagementModal";
 import EditableInputText from "./EditableInputText";
 import EditableLocation from "./EditableLocation";
@@ -33,7 +33,7 @@ const EventEdit = ({
   const [createRSVP, setCreateRSVP] = useState(
     event?.details?.createRSVP || false,
   );
-  const { interests, loadInterests } = useInterestStore();
+  const { interests } = useGlobalStore();
   const [selectedInterests, setSelectedInterests] = useState<InterestType[]>(
     event?.interests || [],
   );
@@ -62,10 +62,6 @@ const EventEdit = ({
 
   const { token } = useSession();
 
-  useEffect(() => {
-    loadInterests();
-  }, [loadInterests]);
-  console.log(event.coHosts, allUsers);
   const handleUpdate = async (field: string, value: any) => {
     console.log("field", field, "value", value);
     setIsUpdating(true);

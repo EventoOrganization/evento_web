@@ -3,53 +3,32 @@ import { useSession } from "@/contexts/SessionProvider";
 import AuthModal from "@/features/auth/components/AuthModal";
 import StaticProfilePage from "@/features/profile/StaticProfilePage";
 import UserProfile from "@/features/profile/UserProfile";
-import { useProfileStore } from "@/store/useProfileStore";
-import { fetchData, HttpMethod } from "@/utils/fetchData";
+import { useGlobalStore } from "@/store/useGlobalStore";
 import { useEffect, useState } from "react";
 
 export default function CurrentUserProfilePage() {
   const session = useSession();
-  const { token } = session;
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
-  const { userInfo, upcomingEvents, pastEvents, hostedEvents, setProfileData } =
-    useProfileStore();
+  const globalStore = useGlobalStore();
+  const { userInfo, events } = useGlobalStore((state) => state);
   useEffect(() => {
     setIsMounted(true);
-    if (token) {
-      getProfileData(token);
-    }
-  }, [token]);
-  const getProfileData = async (token: string) => {
-    try {
-      const profileRes = await fetchData<any>(
-        `/profile/getLoggedUserProfile`,
-        HttpMethod.GET,
-        null,
-        token,
-      );
-      if (profileRes && profileRes.data) {
-        setProfileData(profileRes.data);
-      } else {
-        console.log("Échec de la récupération des données de profil");
-      }
-    } catch (error) {
-      console.error(
-        "Erreur lors de la récupération des données de profil :",
-        error,
-      );
-    } finally {
-      console.log("Fin de la récupération des données de profil");
-    }
-  };
+  }, []);
+  const upcomingFilteredEvents = events.filter(
+    (event) => event.isGoing || event.isFavourite,
+  );
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
   return (
     <>
       {isMounted && session.isAuthenticated ? (
         <UserProfile
           profile={userInfo}
-          upcomingEvents={upcomingEvents}
-          pastEvents={pastEvents}
-          hostingEvents={hostedEvents}
+          upcomingEvents={upcomingFilteredEvents}
+          pastEvents={userInfo?.pastEvents}
+          hostingEvents={userInfo?.hostedEvents}
         />
       ) : (
         <StaticProfilePage
@@ -59,7 +38,7 @@ export default function CurrentUserProfilePage() {
       {isAuthModalOpen && (
         <AuthModal
           onAuthSuccess={(token: string) => {
-            getProfileData(token);
+            globalStore.loadUser(token);
           }}
           onClose={() => setIsAuthModalOpen(false)}
         />

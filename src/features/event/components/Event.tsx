@@ -13,7 +13,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import EventActionIcons from "./EventActionIcons";
-import PrivateEventActionIcons from "./PrivateEventActionIcons";
 
 const Event = ({ className, event }: { className?: string; event?: any }) => {
   const pathname = usePathname();
@@ -147,10 +146,7 @@ const Event = ({ className, event }: { className?: string; event?: any }) => {
             <div>
               <AvatarStack event={event} />
             </div>
-            {event.eventType === "public" && <EventActionIcons event={event} />}
-            {event.eventType === "private" && (
-              <PrivateEventActionIcons event={event} />
-            )}
+            <EventActionIcons event={event} />
           </div>
         </div>
       </div>

@@ -1,6 +1,7 @@
 import Main from "@/components/layout/Main";
 import NavbarApp from "@/components/Navbar";
 import { Toaster } from "@/components/ui/toaster";
+import GlobalDataProvider from "@/contexts/GlobalDataProvider";
 import { SessionProvider } from "@/contexts/SessionProvider";
 import { SocketProvider } from "@/contexts/SocketProvider";
 import { cn } from "@/lib/utils";
@@ -30,12 +31,14 @@ export default function RootLayout({
           initialToken={session?.token}
         >
           <SocketProvider>
-            <Toaster />
-            {/* <Header /> */}
-            <Main className={cn("pb-28 px-0 lg:px-10 max-w-7xl mx-auto")}>
-              {children}
-            </Main>
-            <NavbarApp />
+            <GlobalDataProvider>
+              <Toaster />
+              {/* <Header /> */}
+              <Main className={cn("pb-28 px-0 lg:px-10 max-w-7xl mx-auto")}>
+                {children}
+              </Main>
+              <NavbarApp />
+            </GlobalDataProvider>
           </SocketProvider>
         </SessionProvider>
       </body>

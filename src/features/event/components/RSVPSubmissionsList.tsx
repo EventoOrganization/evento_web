@@ -1,16 +1,46 @@
+"use client";
 import { cn } from "@/lib/utils";
-import { UserType } from "@/types/UserType";
 import { ChevronDownIcon } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
+
 const RSVPSubmissionsList = ({
   title,
-  attendees,
+  rsvp,
 }: {
   title: string;
-  attendees: (UserType | null)[];
+  rsvp: any[];
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+
+  const exportToCSV = () => {
+    const headers = ["Username", "Profile Image", "Question", "Answer"];
+    const rows: string[][] = [];
+
+    rsvp.forEach((attendee) => {
+      attendee.rsvpAnswers.forEach((answer: any, index: number) => {
+        rows.push([
+          attendee.userId.username,
+          attendee.userId.profileImage,
+          `Q${index + 1}`,
+          answer.answer.join(", "),
+        ]);
+      });
+    });
+
+    const csvContent =
+      "data:text/csv;charset=utf-8," +
+      [headers.join(","), ...rows.map((row) => row.join(","))].join("\n");
+
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "rsvp_responses.csv");
+    document.body.appendChild(link);
+
+    link.click();
+    document.body.removeChild(link); // Clean up the link element
+  };
 
   return (
     <div className="mb-4 w-full ease-in-out">
@@ -18,7 +48,7 @@ const RSVPSubmissionsList = ({
         onClick={() => setIsOpen(!isOpen)}
         className="flex justify-between items-center text-eventoPurpleLight font-bold p-2 rounded-md w-fit"
       >
-        {title} ({attendees.filter((attendee) => attendee !== null).length})
+        {title} ({rsvp.length})
         <span>
           <ChevronDownIcon
             className={cn(
@@ -31,37 +61,42 @@ const RSVPSubmissionsList = ({
 
       {isOpen && (
         <div className="mt-2 space-y-4">
-          {attendees
-            .filter((attendee) => attendee !== null) // Filter out null attendees
-            .map((attendee) => (
-              <div key={attendee!._id} className="p-4 border rounded-md">
-                <div className="flex items-center mb-4">
-                  <Image
-                    src={attendee!.profileImage || ""}
-                    alt={attendee!.username}
-                    width={30}
-                    height={30}
-                    className="w-10 h-10 rounded-full mr-4"
-                  />
-                  <h3 className="font-bold">{attendee!.username}</h3>
-                </div>
+          <button
+            className="bg-blue-500 text-white py-2 px-4 rounded-md"
+            onClick={exportToCSV}
+          >
+            Export to CSV
+          </button>
 
-                {attendee!.rsvpSubmission ? (
-                  attendee!.rsvpSubmission.rsvpAnswers.map((answer, index) => (
-                    <div key={index} className="mb-2">
-                      <p className="font-medium">Question {index + 1}:</p>
-                      <p className="ml-4 text-gray-700">
-                        {answer.answer.length > 0
-                          ? answer.answer.join(", ")
-                          : "No answer provided"}
-                      </p>
-                    </div>
-                  ))
-                ) : (
-                  <p className="text-gray-700">No RSVP submission available</p>
-                )}
+          {rsvp.map((attendee) => (
+            <div key={attendee._id} className="p-4 border rounded-md">
+              <div className="flex items-center mb-4">
+                <Image
+                  src={attendee.userId.profileImage || ""}
+                  alt={attendee.userId.username}
+                  width={30}
+                  height={30}
+                  className="w-10 h-10 rounded-full mr-4"
+                />
+                <h3 className="font-bold">{attendee.userId.username}</h3>
               </div>
-            ))}
+
+              {attendee.rsvpAnswers.length > 0 ? (
+                <div className="text-gray-700">
+                  <p className="font-medium mb-2">RSVP Answers:</p>
+                  <ul className="list-disc list-inside ml-4">
+                    {attendee.rsvpAnswers.map((answer: any, index: number) => (
+                      <li key={index}>
+                        {`Q${index + 1}: ${answer.answer.join(", ")}`}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : (
+                <p className="text-gray-700">No RSVP submission available</p>
+              )}
+            </div>
+          ))}
         </div>
       )}
     </div>

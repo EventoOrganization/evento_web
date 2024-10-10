@@ -45,6 +45,10 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, [socket, conversations]);
   useEffect(() => {
+    if (!token || !user) {
+      console.log("No token or user, no fetch...");
+      return;
+    }
     const fetchConversations = async () => {
       const result = await fetchData<any[]>(
         "/chats/fetchConversations",

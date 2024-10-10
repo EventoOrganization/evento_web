@@ -1,6 +1,7 @@
 // src/app/profile/[id]/page.tsx
 "use client";
 import UserProfile from "@/features/profile/UserProfile";
+import { useGlobalStore } from "@/store/useGlobalStore";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { useEffect, useState } from "react";
 
@@ -11,7 +12,7 @@ export default function UserProfilePage({
 }) {
   const { id: userId } = params;
   const [profileData, setProfileData] = useState<any>(null);
-
+  const { events } = useGlobalStore((state) => state);
   const getProfileData = async () => {
     if (profileData) return;
     try {
@@ -23,6 +24,7 @@ export default function UserProfilePage({
       );
       if (profileRes && profileRes.data) {
         setProfileData(profileRes.data);
+        console.log("Fetched profile data:", profileRes.data);
       } else {
         console.log("Failed to fetch profile data");
       }
@@ -42,8 +44,10 @@ export default function UserProfilePage({
     return (
       <>
         <UserProfile
-          profile={profileData.userInfo}
-          upcomingEvents={profileData?.upcomingEvents || []}
+          profile={profileData}
+          upcomingEvents={
+            events.filter((event) => event.isGoing || event.isFavourite) || []
+          }
           pastEvents={profileData?.pastEvents || []}
           hostingEvents={profileData?.hostedEvents || []}
         />

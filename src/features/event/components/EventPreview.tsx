@@ -10,11 +10,10 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { useEventStatusStore } from "@/store/useEventStatusStore";
 import { EventType } from "@/types/EventType";
 import { BookmarkCheck, Circle, CircleCheckBig } from "lucide-react";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import EventModal from "./EventModal";
 
 const EventPreview = ({
@@ -25,21 +24,6 @@ const EventPreview = ({
   event?: EventType;
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { eventStatuses, setEventStatus } = useEventStatusStore();
-  const currentStatus = (event && eventStatuses[event?._id]) || {
-    going: event?.isGoing || false,
-    favourite: event?.isFavourite || false,
-    refused: event?.isRefused || false,
-  };
-  useEffect(() => {
-    if (event) {
-      setEventStatus(event._id, {
-        going: currentStatus.going,
-        favourite: currentStatus.favourite,
-        refused: currentStatus.refused,
-      });
-    }
-  }, [event, currentStatus.going, currentStatus.favourite, setEventStatus]);
 
   // Adjusted function for correct DateTimeFormatOptions types
   const formatDateResponsive = (dateString: string | undefined) => {
@@ -72,7 +56,7 @@ const EventPreview = ({
       >
         <CardHeader className="p-0">
           <CardTitle className="z-10 w-10 h-10 self-end space-y-2 absolute right-2 top-2">
-            {currentStatus.going && (
+            {event?.isGoing && (
               <CircleCheckBig
                 strokeWidth={1.5}
                 className={cn(
@@ -80,7 +64,7 @@ const EventPreview = ({
                 )}
               />
             )}
-            {currentStatus.favourite && (
+            {event?.isFavourite && (
               <div className="w-10 h-10 relative">
                 <Circle
                   strokeWidth={1.5}

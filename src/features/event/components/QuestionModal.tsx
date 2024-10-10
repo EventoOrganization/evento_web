@@ -11,55 +11,55 @@ const QuestionModal: React.FC<QuestionModalProps> = ({
   onSubmit,
   onClose,
 }) => {
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<
     { questionId: string; answer: string | string[] }[]
   >([]);
+
+  const currentQuestion = questions[currentQuestionIndex];
 
   const handleAnswerChange = (
     questionId: string,
     answer: string | string[],
   ) => {
     setAnswers((prev) => {
-      const existingAnswer = prev.find((ans) => ans.questionId === questionId);
-
-      // Initialize the updatedAnswer as an array
-      let updatedAnswer: string[] = [];
-
-      if (typeof answer === "string") {
-        // If answer is a string, handle it accordingly
-        updatedAnswer = [answer];
-      } else {
-        // If answer is an array, process it
-        if (existingAnswer && Array.isArray(existingAnswer.answer)) {
-          updatedAnswer = existingAnswer.answer.filter(
-            (val: string) => !answer.includes(val),
-          );
-        } else {
-          updatedAnswer = [...answer];
-        }
-      }
-
       const updatedAnswers = prev.filter(
         (ans) => ans.questionId !== questionId,
       );
-      return [...updatedAnswers, { questionId, answer: updatedAnswer }];
+      return [...updatedAnswers, { questionId, answer }];
     });
   };
 
-  const handleSubmit = () => {
-    const allRequiredAnswered = questions.every(
-      (question) =>
-        !question.required ||
-        (question.required &&
-          answers.some((ans) => ans.questionId === question.id && ans.answer)),
-    );
-
-    if (allRequiredAnswered) {
-      onSubmit(answers);
-      onClose(); // Ferme la modale après la soumission
-    } else {
-      alert("Please answer all required questions.");
+  const handleNext = () => {
+    if (currentQuestion.required) {
+      const answered = answers.some(
+        (ans) => ans.questionId === currentQuestion._id && ans.answer,
+      );
+      if (!answered) {
+        alert("This question is required. Please answer.");
+        return;
+      }
     }
+    if (currentQuestionIndex < questions.length - 1) {
+      setCurrentQuestionIndex(currentQuestionIndex + 1);
+    }
+  };
+
+  const handleSkip = () => {
+    if (currentQuestionIndex < questions.length - 1) {
+      setCurrentQuestionIndex(currentQuestionIndex + 1);
+    }
+  };
+
+  const handleBack = () => {
+    if (currentQuestionIndex > 0) {
+      setCurrentQuestionIndex(currentQuestionIndex - 1);
+    }
+  };
+
+  const handleSubmit = () => {
+    onSubmit(answers);
+    onClose(); // Ferme la modal après soumission
   };
 
   return (
@@ -68,82 +68,105 @@ const QuestionModal: React.FC<QuestionModalProps> = ({
       onClick={(e) => e.stopPropagation()}
     >
       <div className="bg-white p-8 rounded shadow-lg w-full max-w-lg">
-        <h2 className="text-2xl mb-4">Please answer the following questions</h2>
-        {questions.map((question) => (
-          <div key={question._id} className="mb-4">
-            <p>{question.question}</p>
-            {question.type === "text" && (
-              <input
-                type="text"
-                className="border rounded p-2 w-full"
-                onChange={(e) =>
-                  handleAnswerChange(question.id, e.target.value)
-                }
-              />
-            )}
-            {question.type === "multiple-choice" && (
-              <select
-                multiple
-                className="border rounded p-2 w-full"
-                onChange={(e) =>
-                  handleAnswerChange(
-                    question.id,
-                    Array.from(e.target.selectedOptions, (opt) => opt.value),
-                  )
-                }
-              >
-                {question.options.map((option: string, idx: number) => (
-                  <option key={idx} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </select>
-            )}
-            {question.type === "checkbox" && (
-              <div className="flex flex-wrap gap-2">
-                {question.type === "checkbox" && (
-                  <div className="flex flex-wrap gap-2">
-                    {question.options.map((option: string, idx: number) => (
-                      <label key={idx} className="flex items-center gap-2">
-                        <input
-                          type="checkbox"
-                          value={option}
-                          onChange={(e) => {
-                            const currentAnswers =
-                              answers.find(
-                                (ans) => ans.questionId === question.id,
-                              )?.answer || [];
+        <h2 className="text-2xl mb-4">Please answer the questions</h2>
 
-                            handleAnswerChange(
-                              question.id,
-                              e.target.checked
-                                ? Array.isArray(currentAnswers)
-                                  ? [...currentAnswers, e.target.value]
-                                  : [e.target.value]
-                                : Array.isArray(currentAnswers)
-                                  ? currentAnswers.filter(
-                                      (val: string) => val !== e.target.value,
-                                    )
-                                  : [],
-                            );
-                          }}
-                        />
-                        {option}
-                      </label>
-                    ))}
-                  </div>
-                )}
-              </div>
+        {/* Question Rendering */}
+        <div key={currentQuestion._id} className="mb-4">
+          <p>
+            {currentQuestion.question}{" "}
+            {!currentQuestion.required && (
+              <span className="text-gray-500">(Optional)</span>
             )}
-          </div>
-        ))}
-        <div className="flex justify-between">
-          <button className="btn" onClick={handleSubmit}>
-            Submit
-          </button>
-          <button className="btn" onClick={onClose}>
+          </p>
+
+          {currentQuestion.type === "text" && (
+            <input
+              type="text"
+              className="border rounded p-2 w-full"
+              onChange={(e) =>
+                handleAnswerChange(currentQuestion._id, e.target.value)
+              }
+            />
+          )}
+
+          {currentQuestion.type === "multiple-choice" && (
+            <select
+              multiple
+              className="border rounded p-2 w-full"
+              onChange={(e) =>
+                handleAnswerChange(
+                  currentQuestion._id,
+                  Array.from(e.target.selectedOptions, (opt) => opt.value),
+                )
+              }
+            >
+              {currentQuestion.options.map((option: string, idx: number) => (
+                <option key={idx} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
+          )}
+
+          {currentQuestion.type === "checkbox" && (
+            <div className="flex flex-wrap gap-2">
+              {currentQuestion.options.map((option: string, idx: number) => (
+                <label key={idx} className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    value={option}
+                    onChange={(e) => {
+                      const currentAnswers = answers.find(
+                        (ans) => ans.questionId === currentQuestion._id,
+                      )?.answer;
+
+                      handleAnswerChange(
+                        currentQuestion._id,
+                        e.target.checked
+                          ? Array.isArray(currentAnswers)
+                            ? [...currentAnswers, e.target.value]
+                            : [e.target.value]
+                          : Array.isArray(currentAnswers)
+                            ? currentAnswers.filter(
+                                (val: string) => val !== e.target.value,
+                              )
+                            : [],
+                      );
+                    }}
+                  />
+                  {option}
+                </label>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Navigation Buttons */}
+        <div className="flex justify-between mt-4">
+          <button
+            className="btn"
+            onClick={handleBack}
+            disabled={currentQuestionIndex === 0}
+          >
             Back
           </button>
+
+          {currentQuestionIndex < questions.length - 1 ? (
+            <>
+              {!currentQuestion.required && (
+                <button className="btn" onClick={handleSkip}>
+                  Skip
+                </button>
+              )}
+              <button className="btn" onClick={handleNext}>
+                Next
+              </button>
+            </>
+          ) : (
+            <button className="btn" onClick={handleSubmit}>
+              Submit
+            </button>
+          )}
         </div>
       </div>
     </div>

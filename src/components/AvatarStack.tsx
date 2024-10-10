@@ -1,13 +1,13 @@
 "use client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useEventoStore } from "@/store/useEventoStore";
+import { useGlobalStore } from "@/store/useGlobalStore";
 import { EventType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 const AvatarStack = ({ event }: { event: EventType }) => {
   const [friends, setFriends] = useState<UserType[]>([]);
-  const { users } = useEventoStore((state) => ({
+  const { users } = useGlobalStore((state) => ({
     users: state.users as UserType[],
   }));
 

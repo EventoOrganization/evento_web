@@ -19,10 +19,9 @@ import TabSelector from "@/features/discover/TabSelector";
 import Event from "@/features/event/components/Event";
 import EventModal from "@/features/event/components/EventModal";
 import { cn } from "@/lib/utils";
-import { useEventoStore } from "@/store/useEventoStore";
+import { useGlobalStore } from "@/store/useGlobalStore";
 import { EventType, InterestType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
-import { fetchData } from "@/utils/fetchData";
 import { format, startOfDay } from "date-fns";
 import { fr } from "date-fns/locale";
 import {
@@ -39,20 +38,12 @@ interface Location {
 }
 
 const DiscoverPage = () => {
-  const {
-    users,
-    // events,
-    interests,
-    loadInterests,
-    // loadUpcomingEvents,
-    loadUsersPlus,
-  } = useEventoStore();
   const [selectedInterests, setSelectedInterests] = useState<InterestType[]>(
     [],
   );
+  const { users, interests, events } = useGlobalStore();
   const [showReset, setShowReset] = useState(false);
   const today = startOfDay(new Date());
-  const [events, setEvents] = useState<EventType[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<EventType | null>();
   const [isEventModalOpen, setIsEventModalOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
@@ -65,38 +56,14 @@ const DiscoverPage = () => {
     events || [],
   );
   const [isPending, setIsPending] = useState(false);
-  // const [filterUsers, setFilterUsers] = useState<UserType[]>([]);
   const session = useSession();
   const [isHydrated, setIsHydrated] = useState(false);
   const [toggleSearch, setToggleSearch] = useState(false);
   // Wait until the client has fully hydrated to prevent SSR mismatches
   useEffect(() => {
     setIsHydrated(true);
+    setIsPending(false);
   }, []);
-  useEffect(() => {
-    loadInterests();
-    loadUpcomingEvents((session.user as UserType) || null);
-    if (session.user && session.token)
-      loadUsersPlus(session.user._id, session.token);
-  }, []);
-  const loadUpcomingEvents = async (user: UserType) => {
-    const userIdQuery = user && user._id ? `?userId=${user._id}` : "";
-    try {
-      setIsPending(true);
-      const upcomingEventRes = await fetchData(
-        `/events/getUpcomingEvents${userIdQuery}`,
-      );
-      if (upcomingEventRes && !upcomingEventRes.error) {
-        setEvents(upcomingEventRes.data as EventType[]);
-      } else {
-        console.error("Failed to fetch events:", upcomingEventRes?.error);
-      }
-    } catch (error) {
-      console.error("Error fetching events:", error);
-    } finally {
-      setIsPending(false);
-    }
-  };
   const handleInterestToggle = (interest: InterestType) => {
     setSelectedInterests((prev) =>
       prev.some((i) => i._id === interest._id)

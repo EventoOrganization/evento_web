@@ -13,80 +13,133 @@ import EventEdit from "@/features/event/components/EventEdit";
 import EventGuestModal from "@/features/event/components/EventGuestModal";
 import EventTimeSlots from "@/features/event/components/EventTimeSlots";
 import PastEventGallery from "@/features/event/components/PastEventGallery";
-import PrivateEventActionIcons from "@/features/event/components/PrivateEventActionIcons";
 import RefusedUsersList from "@/features/event/components/RefusedUsersList";
 import RSVPSubmissionsList from "@/features/event/components/RSVPSubmissionsList";
 import { useToast } from "@/hooks/use-toast";
+import { useGlobalStore } from "@/store/useGlobalStore";
 import { EventType, InterestType } from "@/types/EventType";
-import { UserType } from "@/types/UserType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+export interface RSVPAndRefusedResponse {
+  _id: string;
+  rsvpSubmissions: Array<{
+    userId: string;
+    rsvpAnswers: Array<{ questionId: string; answer: string[]; _id: string }>;
+  }>;
+  refusedStatuses: Array<{
+    userId: string;
+    reason: string;
+    _id: string;
+  }>;
+}
 
 const EventPage = () => {
   const { id } = useParams();
   const eventId = Array.isArray(id) ? id[0] : id;
   const [event, setEvent] = useState<EventType | null>(null);
-  const [users, setUsers] = useState<UserType[]>([]);
   const [selectedTab, setSelectedTab] = useState("Description");
+  const [filteredGuests, setFilteredGuests] = useState<any[]>([]);
+  const [rsvpSubmissions, setRSVPSubmissions] = useState<
+    RSVPAndRefusedResponse["rsvpSubmissions"]
+  >([]);
+  const [refusedStatuses, setRefusedStatuses] = useState<
+    RSVPAndRefusedResponse["refusedStatuses"]
+  >([]);
+  const { events, users } = useGlobalStore((state) => state);
   const [isGuestAllowed, setIsGuestAllowed] = useState<boolean | null>(null);
-  const { user, token } = useSession();
+  const { token } = useSession();
   const { toast } = useToast();
   const currentDate = new Date();
   const eventEndDate = event?.details?.endDate
     ? new Date(event.details.endDate)
     : null;
+  const [isMounted, setIsMounted] = useState(false);
+
   useEffect(() => {
-    if (eventId) {
-      fetchEventData(eventId);
+    // Fonction pour récupérer l'événement depuis l'API
+    const fetchEventById = async () => {
+      try {
+        const response = await fetchData(
+          `/events/getEvent/${eventId}`,
+          HttpMethod.GET,
+          null,
+          token,
+        );
+        if (response.ok) {
+          setEvent(response.data as EventType);
+          if (event?.details?.guestsAllowFriend !== undefined) {
+            setIsGuestAllowed(event.details.guestsAllowFriend);
+          }
+        } else {
+          toast({
+            description: "Event not found",
+            variant: "destructive",
+            duration: 3000,
+          });
+        }
+      } catch (error) {
+        toast({
+          description: "Error fetching event",
+          variant: "destructive",
+          duration: 3000,
+        });
+      }
+    };
+
+    // Fonction pour récupérer les soumissions RSVP et les refus
+    const fetchRSVPAndRefusedInfo = async () => {
+      try {
+        const response = await fetchData<RSVPAndRefusedResponse>(
+          `/events/getRSVPAndReasons/${eventId}`,
+          HttpMethod.GET,
+          null,
+          token,
+        );
+        if (response.ok) {
+          const data = response.data as RSVPAndRefusedResponse; // Assurez-vous que c'est bien typé
+          setRSVPSubmissions(data.rsvpSubmissions || []); // Vérifiez la nullité
+          setRefusedStatuses(data.refusedStatuses || []);
+        } else {
+          toast({
+            description: "RSVP or refused info not found",
+            variant: "destructive",
+            duration: 3000,
+          });
+        }
+      } catch (error) {
+        toast({
+          description: "Error fetching RSVP and refused info",
+          variant: "destructive",
+          duration: 3000,
+        });
+      }
+    };
+    if (!isMounted) {
+      return;
     }
-    if (user && token) {
-      loadUsersPlus(user._id, token);
+    // Essayer de trouver l'événement dans le store
+    const storedEvent = events.find((ev) => ev._id === eventId);
+    if (!storedEvent) {
+      console.log("Stored event not found => fetching event");
+
+      fetchEventById(); // Fetch si l'événement n'est pas dans le store
     } else {
-      loadUsers();
+      setEvent(storedEvent);
+      console.log(storedEvent);
+      setIsGuestAllowed(storedEvent.guestsAllowFriend || null);
     }
-  }, [eventId, user, token]);
 
-  const fetchEventData = async (eventId: string) => {
-    try {
-      const userIdQuery = user && user._id ? `?userId=${user._id}` : "";
-      const eventRes = await fetchData<EventType>(
-        `/events/getEvent/${eventId}${userIdQuery}`,
-      );
-      setEvent(eventRes.data);
-      setIsGuestAllowed(eventRes.data?.guestsAllowFriend || null);
-    } catch (error) {
-      console.error("Error fetching event:", error);
-    }
-  };
+    // Toujours récupérer les infos RSVP et refusées
+    fetchRSVPAndRefusedInfo();
+  }, [eventId, events, token, toast, isMounted]);
 
-  const loadUsers = async () => {
-    try {
-      const usersRes = await fetchData<UserType[]>(
-        `/users/userListWithFollowingStatus`,
-      );
-      setUsers(usersRes.data || []);
-    } catch (error) {
-      console.error("Error fetching users:", error);
-    }
-  };
-
-  const loadUsersPlus = async (userId: string, token: string) => {
-    try {
-      const usersRes = await fetchData<UserType[]>(
-        `/users/followStatusForUsersYouFollow/${userId}`,
-        HttpMethod.GET,
-        null,
-        token,
-      );
-      setUsers(usersRes.data || []);
-    } catch (error) {
-      console.error("Error fetching users:", error);
-    }
-  };
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const handleUpdateField = (field: string, value: any) => {
     if (event) {
@@ -94,7 +147,6 @@ const EventPage = () => {
         ...event,
         details: { ...event.details, mode: event.details?.mode || "virtual" },
       };
-
       switch (field) {
         case "title":
           updatedEvent.title = value;
@@ -204,24 +256,107 @@ const EventPage = () => {
     }
   };
 
-  const combinedGuests = [
-    ...(event?.guests?.map((guest) => ({ ...guest, status: "guest" })) || []),
-    ...(event?.tempGuests?.map((tempGuest) => ({
-      ...tempGuest,
-      status: "tempGuest",
-    })) || []),
-  ];
+  const combinedGuests = useMemo(
+    () => [
+      ...(event?.guests?.map((guest) => ({ ...guest, status: "guest" })) || []),
+      ...(event?.tempGuests?.map((tempGuest) => ({
+        ...tempGuest,
+        status: "tempGuest",
+      })) || []),
+    ],
+    [event?.guests, event?.tempGuests],
+  );
 
-  const uniqueGuests = new Set();
-  const filteredGuests = combinedGuests.filter((guest) => {
-    const identifier = guest._id || guest.email;
-    if (uniqueGuests.has(identifier)) {
-      return false;
-    } else {
-      uniqueGuests.add(identifier);
-      return true;
-    }
-  });
+  const enrichUsersWithStoreData = (
+    usersList: Array<any>,
+    users: Array<any>,
+    extraData: Record<string, any> = {},
+  ) => {
+    return usersList.map((user: any) => {
+      const userFromStore = users.find(
+        (storeUser: any) => storeUser._id === user._id,
+      );
+      if (userFromStore) {
+        return {
+          ...user,
+          isIFollowingHim: userFromStore.isIFollowingHim,
+          isFollowingMe: userFromStore.isFollowingMe,
+          matchingInterests: userFromStore.matchingInterests,
+          ...extraData[user._id],
+        };
+      }
+      return user;
+    });
+  };
+
+  const enrichedAttendees = enrichUsersWithStoreData(
+    event?.attendees || [],
+    users,
+    rsvpSubmissions.reduce(
+      (acc, submission) => {
+        acc[submission.userId] = { rsvpAnswers: submission.rsvpAnswers }; // Utilisation de l'indexation sur acc
+        return acc;
+      },
+      {} as Record<string, any>,
+    ), // Ajout du type Record<string, any> ici
+  );
+
+  const enrichedRefused = enrichUsersWithStoreData(
+    event?.refused || [],
+    users,
+    refusedStatuses.reduce(
+      (acc, refused) => {
+        acc[refused.userId] = { refusedReason: refused.reason }; // Utilisation de l'indexation sur acc
+        return acc;
+      },
+      {} as Record<string, any>,
+    ), // Ajout du type Record<string, any> ici
+  );
+  const enrichedFavourites = enrichUsersWithStoreData(
+    event?.favouritees || [],
+    users,
+  );
+  useEffect(() => {
+    const enrichedAttendeesIds = new Set(
+      enrichedAttendees.map((user: any) => user._id),
+    );
+    const enrichedRefusedIds = new Set(
+      enrichedRefused.map((user: any) => user._id),
+    );
+    const enrichedFavouritesIds = new Set(
+      enrichedFavourites.map((user: any) => user._id),
+    );
+    const uniqueGuests = new Set();
+
+    const newFilteredGuests = combinedGuests.filter((guest) => {
+      const identifier = guest._id || guest.email;
+
+      // Exclure l'utilisateur s'il est dans attendees, refused ou favourites
+      if (
+        enrichedAttendeesIds.has(identifier) ||
+        enrichedRefusedIds.has(identifier) ||
+        enrichedFavouritesIds.has(identifier)
+      ) {
+        return false;
+      }
+
+      // Exclure les doublons
+      if (uniqueGuests.has(identifier)) {
+        return false;
+      } else {
+        uniqueGuests.add(identifier);
+        return true; // Ajouter cet utilisateur aux invités filtrés
+      }
+    });
+
+    // Comparer si la liste des invités filtrés a changé avant de mettre à jour l'état
+    setFilteredGuests((prevGuests) => {
+      if (JSON.stringify(prevGuests) !== JSON.stringify(newFilteredGuests)) {
+        return newFilteredGuests;
+      }
+      return prevGuests;
+    });
+  }, [combinedGuests, enrichedAttendees, enrichedRefused, enrichedFavourites]);
 
   if (!event) {
     return (
@@ -230,7 +365,9 @@ const EventPage = () => {
       </div>
     );
   }
-  console.log("users", event);
+
+  // Après cette vérification, toutes les références à `event` seront sûres.
+  console.log("rsvp", rsvpSubmissions, "refused", refusedStatuses);
   return (
     <>
       <div className="md:grid-cols-2 grid grid-cols-1 w-full h-screen ">
@@ -263,7 +400,7 @@ const EventPage = () => {
           </div>
           <RenderMedia event={event} />
         </div>
-        <Section className="justify-start py-10 md:pr-0 w-full h-full">
+        <Section className="justify-start py-10  w-full h-full">
           <TabSelector
             onChange={setSelectedTab}
             tabs={
@@ -322,19 +459,12 @@ const EventPage = () => {
                 </p>
               </>
               <div className="flex justify-between items-center">
-                {eventEndDate &&
-                  eventEndDate > currentDate &&
-                  (event.eventType === "public" ? (
-                    <>
-                      <AvatarStack event={event} />
-                      <EventActionIcons event={event} />
-                    </>
-                  ) : (
-                    <>
-                      <AvatarStack event={event} />
-                      <PrivateEventActionIcons event={event} />
-                    </>
-                  ))}
+                {eventEndDate && eventEndDate > currentDate && (
+                  <>
+                    <AvatarStack event={event} />
+                    <EventActionIcons event={event} />
+                  </>
+                )}
                 {eventEndDate && eventEndDate < currentDate && (
                   <PastEventGallery event={event} />
                 )}
@@ -367,20 +497,20 @@ const EventPage = () => {
                 )}
               </div>
               <CollapsibleList
-                title={`Going`}
-                count={event?.attendees?.length || 0}
-                users={event?.attendees || []}
+                title="Going"
+                count={enrichedAttendees.length}
+                users={enrichedAttendees}
               />
               <CollapsibleList
-                title={`Saved`}
-                count={event?.favouritees?.length || 0}
-                users={event?.favouritees || []}
+                title="Saved"
+                count={enrichedFavourites.length}
+                users={enrichedFavourites}
               />
-              {event.eventType === "private" && (
+              {event && event.eventType === "private" && (
                 <CollapsibleList
-                  title={`Refused`}
-                  count={event?.refused?.length || 0}
-                  users={event?.refused || []}
+                  title="Refused"
+                  count={enrichedRefused.length}
+                  users={enrichedRefused}
                 />
               )}
               {combinedGuests.length > 0 && (
@@ -393,13 +523,13 @@ const EventPage = () => {
               )}
               {event?.details?.createRSVP && (
                 <RSVPSubmissionsList
-                  title="RSVP Submissions"
-                  attendees={event?.attendees || []}
+                  title="RSVP Responses"
+                  rsvp={rsvpSubmissions}
                 />
               )}
               <RefusedUsersList
                 title="Refused Users"
-                users={event?.refused || []}
+                refused={refusedStatuses || []}
               />
             </div>
           )}

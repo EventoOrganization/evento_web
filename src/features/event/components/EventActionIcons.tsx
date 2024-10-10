@@ -2,8 +2,10 @@ import { useSession } from "@/contexts/SessionProvider";
 import AuthModal from "@/features/auth/components/AuthModal";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
-import { useEventStatusStore } from "@/store/useEventStatusStore";
+import { useGlobalStore } from "@/store/useGlobalStore";
 import { EventType } from "@/types/EventType";
+import { UserType } from "@/types/UserType";
+import { fetchData, HttpMethod } from "@/utils/fetchData";
 import {
   Bookmark,
   BookmarkCheck,
@@ -11,14 +13,17 @@ import {
   CircleCheck,
   CircleCheckBig,
   Send,
+  X,
 } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import QuestionModal from "./QuestionModal";
+import RefusalModal from "./RefusalModal";
 
 type EventActionIconsProps = {
   event: EventType;
   className?: string;
 };
+type EventStatusKeys = "isGoing" | "isFavourite" | "isRefused";
 
 const EventActionIcons: React.FC<EventActionIconsProps> = ({
   event,
@@ -26,111 +31,100 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
 }) => {
   const { toast } = useToast();
   const { token, user } = useSession();
-  const { eventStatuses, toggleGoing, toggleFavourite, setEventStatus } =
-    useEventStatusStore();
+  const updateEventStatusInStore = useGlobalStore(
+    (state) => state.updateEventStatus,
+  );
+
   const [showQuestionModal, setShowQuestionModal] = useState<boolean>(false);
-  const [mandatoryQuestions, setMandatoryQuestions] = useState<any[]>([]);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
-  const currentStatus = eventStatuses[event._id] || {
-    going: event.isGoing || false,
-    favourite: event.isFavourite || false,
-  };
-  useEffect(() => {
-    setEventStatus(event._id, {
-      going: currentStatus.going || false,
-      favourite: currentStatus.favourite || false,
-      refused: currentStatus.refused || false,
-    });
-    const requiredQuestions = event.questions?.filter((q) => q.required) || [];
-    if (requiredQuestions.length > 0) {
-      setMandatoryQuestions(requiredQuestions);
-    }
-  }, [event, currentStatus.going, currentStatus.favourite, setEventStatus]);
+  const [isRefusalModalOpen, setIsRefusalModalOpen] = useState(false);
+  const [refusalReason, setRefusalReason] = useState<string>("");
 
-  const handleGoing = async (submittedAnswers: any) => {
+  const updateEventStatus = async (
+    status: EventStatusKeys,
+    rsvpAnswers?: any,
+    reason?: string,
+  ) => {
     if (!token) {
       setIsAuthModalOpen(true);
       return;
     }
 
-    if (currentStatus.going) {
-    } else {
-      if (submittedAnswers.length < mandatoryQuestions.length) {
-        setShowQuestionModal(true);
-        return;
-      }
-    }
+    const isCurrentlySet = event[status]; // Vérifie si le statut est actuellement défini
 
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/events/attendEventStatus`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            eventId: event._id,
-            userId: user?._id,
-            attendStatus: eventStatuses[event._id]?.going,
-            rsvpAnswers: submittedAnswers, // Use the answers passed from the modal
-          }),
-        },
+      const body = {
+        eventId: event._id,
+        userId: user?._id,
+        status: isCurrentlySet ? null : status, // Si le statut est déjà défini, le retirer (en envoyant null)
+        rsvpAnswers,
+        reason,
+      };
+      const response = await fetchData(
+        `/events/updateEventStatus`,
+        HttpMethod.POST,
+        body,
+        token,
       );
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      if (!eventStatuses[event._id].going) {
-        toast({
-          title: "You marked this event as going",
-          className: "bg-evento-gradient text-white",
-          duration: 1000,
-        });
-      }
+      const action = isCurrentlySet ? "removed from" : "marked as"; // Message dynamique pour l'action
+      toast({
+        title: `Event ${
+          status === "isGoing"
+            ? ` ${action} going`
+            : status === "isFavourite"
+              ? `${action} favourite`
+              : `${action} refused`
+        }`,
+        className: "bg-evento-gradient text-white",
+        duration: 1000,
+      });
 
-      toggleGoing(event._id);
+      // Met à jour le store avec le nouveau statut, ou le supprime
+      updateEventStatusInStore(
+        event._id,
+        { [status]: !isCurrentlySet },
+        user as UserType,
+      );
     } catch (error) {
-      console.error("Error marking event as going:", error);
-      alert("Failed to mark as going. Please try again.");
+      console.error(`Error updating event status (${status}):`, error);
+      alert(`Failed to update event status to ${status}. Please try again.`);
     }
   };
 
-  const handleFavourite = async () => {
+  const handleGoing = (submittedAnswers: any) => {
+    if (
+      !event.isGoing &&
+      event?.questions?.length !== undefined &&
+      event?.questions?.length > 0 &&
+      submittedAnswers.length < event.questions.length
+    ) {
+      setShowQuestionModal(true);
+      return;
+    }
+
+    updateEventStatus("isGoing", submittedAnswers);
+  };
+
+  const handleFavourite = () => {
+    updateEventStatus("isFavourite");
+  };
+
+  const handleRefused = async () => {
     if (!token) {
       setIsAuthModalOpen(true);
       return;
     }
-
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/events/favouriteEventStatus`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ eventId: event._id }),
-        },
-      );
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      if (!eventStatuses[event._id]?.favourite)
-        toast({
-          title: "You favoured this event",
-          className: "bg-evento-gradient text-white",
-          duration: 1000,
-        });
-
-      toggleFavourite(event._id);
+      await updateEventStatus("isRefused", [], refusalReason);
+      setRefusalReason("");
     } catch (error) {
-      console.error("Error marking event as favourite:", error);
-      alert("Failed to mark as favourite. Please try again.");
+      console.error("Error marking event as refused:", error);
+      alert("Failed to mark as refused. Please try again.");
     }
   };
 
@@ -140,7 +134,7 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
         .share({
           title: "Check out this event",
           text: "Check out this event I found!",
-          url: `${process.env.NEXT_PUBLIC_API_URL}/event/${event?._id}`,
+          url: `${process.env.NEXT_PUBLIC_FRONTEND_URL}/event/${event?._id}`,
         })
         .then(() => console.log("Successful share"))
         .catch((error) => console.log("Error sharing", error));
@@ -151,20 +145,20 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
 
   const handleSubmitQuestions = (answers: any) => {
     setShowQuestionModal(false);
-    handleGoing(answers); // Pass the answers directly to handleGoing
+    handleGoing(answers); // Passe directement les réponses à handleGoing
   };
 
   return (
     <div className={`flex gap-2 ${className}`}>
+      {/* Action to mark as Going */}
       <button
         onClick={(e) => {
           handleGoing([]);
-          currentStatus.favourite && handleFavourite();
           e.stopPropagation();
         }}
         className="relative flex items-center justify-center w-10 h-10 hover:opacity-80"
       >
-        {!currentStatus.going ? (
+        {!event.isGoing ? (
           <CircleCheck
             strokeWidth={1.5}
             className={cn("text-eventoPurpleLight w-full h-full")}
@@ -178,15 +172,16 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
           />
         )}
       </button>
+
+      {/* Action to mark as Favourite */}
       <button
         onClick={(e) => {
           handleFavourite();
-          currentStatus.going && handleGoing([]);
           e.stopPropagation();
         }}
         className="relative flex items-center justify-center w-10 h-10 hover:opacity-80"
       >
-        {currentStatus.favourite ? (
+        {event.isFavourite ? (
           <BookmarkCheck className="z-10 text-white" />
         ) : (
           <Bookmark className="text-eventoPurpleLight" />
@@ -196,11 +191,39 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
           className={cn(
             "absolute inset-0 text-eventoPurpleLight rounded-full w-full h-full",
             {
-              "bg-evento-gradient text-white": currentStatus.favourite,
+              "bg-evento-gradient text-white": event.isFavourite,
             },
           )}
         />
       </button>
+
+      {/* Action to mark as Refused (only for private events) */}
+      {event.eventType === "private" && (
+        <button
+          onClick={(e) => {
+            event.isRefused ? handleRefused() : setIsRefusalModalOpen(true);
+            e.stopPropagation();
+          }}
+          className="relative flex items-center justify-center w-10 h-10 hover:opacity-80"
+        >
+          {event.isRefused ? (
+            <X className="z-10 text-white" />
+          ) : (
+            <X className="text-eventoPurpleLight" />
+          )}
+          <Circle
+            strokeWidth={1.5}
+            className={cn(
+              "absolute inset-0 text-eventoPurpleLight rounded-full w-full h-full",
+              {
+                "bg-evento-gradient text-white": event.isRefused,
+              },
+            )}
+          />
+        </button>
+      )}
+
+      {/* Action to share the event */}
       <button
         onClick={(e) => {
           handleSend();
@@ -218,19 +241,30 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
           className="absolute inset-0 text-eventoPurpleLight w-full h-full"
         />
       </button>
+
+      {/* Modals for authentication, questions, and refusal */}
       {isAuthModalOpen && (
         <AuthModal
           onClose={() => setIsAuthModalOpen(false)}
-          onAuthSuccess={() => {
-            setIsAuthModalOpen(false);
-          }}
+          onAuthSuccess={() => setIsAuthModalOpen(false)}
         />
       )}
+
       {showQuestionModal && (
         <QuestionModal
-          questions={mandatoryQuestions}
+          questions={event?.questions || []}
           onSubmit={handleSubmitQuestions}
           onClose={() => setShowQuestionModal(false)}
+        />
+      )}
+
+      {isRefusalModalOpen && (
+        <RefusalModal
+          isOpen={isRefusalModalOpen}
+          onClose={() => setIsRefusalModalOpen(false)}
+          setRefusalReason={setRefusalReason}
+          onSubmit={handleRefused}
+          refusalReason={refusalReason}
         />
       )}
     </div>

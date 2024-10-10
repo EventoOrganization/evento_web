@@ -135,10 +135,11 @@ const EventGuestModal = ({
       !excludedUserIds.includes(user._id) &&
       !currentSelectedUsers.some((selected) => selected._id === user._id) &&
       !event?.guests?.some((guest) => guest._id === user._id) &&
-      (user.username.toLowerCase().includes(filter) ||
-        user.firstName?.toLowerCase().includes(filter) ||
-        user.lastName?.toLowerCase().includes(filter)),
+      ((user.username && user.username.toLowerCase().includes(filter)) ||
+        (user.firstName && user.firstName.toLowerCase().includes(filter)) ||
+        (user.lastName && user.lastName.toLowerCase().includes(filter))),
   );
+
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>

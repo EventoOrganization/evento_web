@@ -9,21 +9,20 @@ import { useSession } from "@/contexts/SessionProvider";
 import CSVImport from "@/features/event/components/CSVImport";
 import EventAddTempGuest from "@/features/event/components/EventAddTempGuest";
 import { useToast } from "@/hooks/use-toast";
-import { EventType } from "@/types/EventType";
+import { useGlobalStore } from "@/store/useGlobalStore";
 import { TempUserType, UserType } from "@/types/UserType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 type SelectedUser = UserType | TempUserType;
 
 const EventSuccessPage = () => {
   const { id } = useParams();
   const eventId = Array.isArray(id) ? id[0] : id;
-  const [event, setEvent] = useState<EventType | null>(null);
-  const [users, setUsers] = useState<UserType[]>([]);
+  const { userInfo, users } = useGlobalStore((state) => state);
   const [isGuestAllowed, setIsGuestAllowed] = useState<boolean | null>(null);
   const { user, token } = useSession();
   const { toast } = useToast();
@@ -31,7 +30,7 @@ const EventSuccessPage = () => {
     SelectedUser[]
   >([]);
   const [filter, setFilter] = useState<string>("");
-
+  const event = userInfo?.hostedEvents?.find((ev) => ev._id === id);
   const attendeeIds = event?.attendees
     ? event?.attendees?.map((a) => a?._id) || ""
     : [];
@@ -40,45 +39,6 @@ const EventSuccessPage = () => {
     : [];
 
   const excludedUserIds = [...attendeeIds, ...favouriteIds];
-
-  // Fetch event data and user data on component mount
-  useEffect(() => {
-    if (eventId) {
-      fetchEventData(eventId);
-    }
-    if (user && token) {
-      loadUsersPlus(user._id, token);
-    }
-  }, [eventId, user, token]);
-
-  // Fetch event data by eventId
-  const fetchEventData = async (eventId: string) => {
-    try {
-      const userIdQuery = user?._id ? `?userId=${user._id}` : "";
-      const eventRes = await fetchData<EventType>(
-        `/events/getEvent/${eventId}${userIdQuery}`,
-      );
-      setEvent(eventRes.data);
-      setIsGuestAllowed(eventRes.data?.guestsAllowFriend ?? false);
-    } catch (error) {
-      console.error("Error fetching event:", error);
-    }
-  };
-
-  // Fetch users who follow the logged-in user
-  const loadUsersPlus = async (userId: string, token: string) => {
-    try {
-      const usersRes = await fetchData<UserType[]>(
-        `/users/followStatusForUsersYouFollow/${userId}`,
-        HttpMethod.GET,
-        null,
-        token,
-      );
-      if (usersRes.data) setUsers(usersRes.data);
-    } catch (error) {
-      console.error("Error fetching users:", error);
-    }
-  };
 
   // Handle change for allowing guests to bring friends
   const handleGuestsAllowFriendChange = async () => {
@@ -173,8 +133,6 @@ const EventSuccessPage = () => {
           duration: 3000,
         });
         setCurrentSelectedUsers([]);
-        // Rafraîchit les données après la soumission
-        await fetchEventData(eventId);
       } else {
         console.error("Error updating guests and preference", response.error);
         toast({
@@ -334,7 +292,7 @@ const EventSuccessPage = () => {
             <div className="flex items-center justify-between">
               <h1 className="text-xl font-bold">{event?.title}</h1>
               <Link
-                href={"/event/" + event?._id}
+                href={`/event/${event?._id}`}
                 className="underline text-blue-500"
               >
                 {" "}

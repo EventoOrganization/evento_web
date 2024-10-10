@@ -17,20 +17,21 @@ import EventURL from "@/features/event/components/EventURL";
 import { handleFieldChange } from "@/features/event/eventActions";
 import { useToast } from "@/hooks/use-toast";
 import { useEventStore } from "@/store/useEventStore";
+import { useGlobalStore } from "@/store/useGlobalStore";
 import { useProfileStore } from "@/store/useProfileStore";
 import { EventType, InterestType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { normalizeEvent } from "./action";
 const CreateEventPage = () => {
   const eventStore = useEventStore();
-  const [users, setUsers] = useState<UserType[]>([]);
   const [isEventModalOpen, setIsEventModalOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const [interests, setInterests] = useState<InterestType[]>([]);
   const router = useRouter();
   const { toast } = useToast();
+  const { addEvent, users, interests } = useGlobalStore((state) => state);
   const { isAuthenticated, token } = useSession();
   const [selectedInterests, setSelectedInterests] = useState<InterestType[]>(
     eventStore.interests || [],
@@ -96,72 +97,6 @@ const CreateEventPage = () => {
     e.preventDefault();
     setIsEventModalOpen(!isEventModalOpen);
     handleSubmit(e);
-  };
-  const getInterests = async () => {
-    try {
-      const interestRes = await fetchData<any>("/users/getInterestsListing");
-      if (!interestRes.error) {
-        setInterests(interestRes.data);
-      }
-    } catch (error) {
-    } finally {
-    }
-  };
-  // const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const fileInput = e.target as HTMLInputElement;
-
-  //   if (fileInput.files && fileInput.files.length > 0) {
-  //     const files = Array.from(fileInput.files);
-  //     for (const file of files) {
-  //       const reader = new FileReader();
-  //       reader.readAsDataURL(file);
-
-  //       reader.onloadend = async () => {
-  //         const base64data = reader.result as string;
-
-  //         try {
-  //           const response = await fetch("/api/uploadTempFile", {
-  //             method: "POST",
-  //             body: JSON.stringify({
-  //               base64data,
-  //               fileName: file.name,
-  //             }),
-  //             headers: {
-  //               "Content-Type": "application/json",
-  //             },
-  //           });
-
-  //           if (response.ok) {
-  //             const result = await response.json();
-  //             const fileUrl = result.filePath;
-  //             const mediaType = file.type.startsWith("video/")
-  //               ? "video"
-  //               : "image";
-  //             handleFieldChange("mediaPreviews", [
-  //               { url: fileUrl, type: mediaType },
-  //             ]);
-  //           } else {
-  //             const result = await response.json();
-  //             console.error("Failed to upload file:", result.message);
-  //           }
-  //         } catch (error) {
-  //           console.error("Error uploading file:", error);
-  //         }
-  //       };
-  //     }
-
-  //     fileInput.value = "";
-  //   }
-  // };
-  const getUsers = async () => {
-    try {
-      const usersRes = await fetchData<any>("/users/allUserListing");
-      if (!usersRes.error) {
-        setUsers(usersRes.data);
-      }
-    } catch (error) {
-    } finally {
-    }
   };
   const handleChange = (
     e: React.ChangeEvent<
@@ -296,6 +231,7 @@ const CreateEventPage = () => {
     if (response.error) {
       console.error("Error creating event:", response.error);
     } else {
+      addEvent(await normalizeEvent(response.data?.event));
       eventStore.clearEventForm();
       toast({
         title: "Event created successfully",
@@ -304,14 +240,12 @@ const CreateEventPage = () => {
       });
       if (response.data?.event._id) {
         router.push(`/create-event/${response.data?.event?._id}/success`);
+      } else {
+        router.push(`/profile`);
       }
     }
   };
 
-  useEffect(() => {
-    getInterests();
-    getUsers();
-  }, []);
   return (
     <>
       {" "}

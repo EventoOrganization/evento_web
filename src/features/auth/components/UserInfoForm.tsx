@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useSession } from "@/contexts/SessionProvider";
-import { handleProfileFieldChange } from "@/features/profile/profileActions";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
@@ -69,8 +68,6 @@ const UserInfoForm = ({ onAuthSuccess }: { onAuthSuccess: () => void }) => {
           duration: 3000,
         });
       } else {
-        handleProfileFieldChange("username", updateRes?.data?.username);
-        handleProfileFieldChange("profileImage", updateRes?.data?.profileImage);
         toast({
           description: "User info updated successfully",
           className: "bg-evento-gradient-button text-white",

@@ -76,7 +76,7 @@ export type EventType = {
   favouritees?: UserType[];
   refused?: UserType[];
   questions?: QuestionType[];
-  guestsAllowFriend: boolean;
+  guestsAllowFriend?: boolean;
   additionalField?: any;
   details?: EventDetailsType;
   isGoing?: boolean;
@@ -114,6 +114,7 @@ export type EventDetailsType = {
   }[];
   description?: string;
   includeChat?: boolean;
+  guestsAllowFriend?: boolean;
   createRSVP?: boolean;
   tages?: string;
   URLlink?: string;

@@ -21,6 +21,7 @@ export type UserType = {
   filteredUpcomingEventsAttened?: EventType[];
   filteredPastEventsAttended?: EventType[];
   pastEvents?: EventType[];
+  hostedEvents?: EventType[];
   totalEventAttended?: number;
   interests?: InterestType[];
   interest?: InterestType[];

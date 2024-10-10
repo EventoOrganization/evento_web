@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useSession } from "@/contexts/SessionProvider";
 import { useToast } from "@/hooks/use-toast";
-import { useProfileStore } from "@/store/useProfileStore";
+import { useGlobalStore } from "@/store/useGlobalStore";
 import { InterestType } from "@/types/EventType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { cn } from "@nextui-org/theme";
@@ -21,7 +21,8 @@ const libraries: ("places" | "geometry" | "drawing" | "visualization")[] = [
 const EditProfilePage = () => {
   const session = useSession();
   const [interests, setInterests] = useState<InterestType[]>([]);
-  const { userInfo, setProfileData } = useProfileStore((state) => state);
+  const { setProfileData } = useGlobalStore((state) => state);
+  const userInfo = useGlobalStore((state) => state.userInfo);
   const { toast } = useToast();
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -102,7 +103,8 @@ const EditProfilePage = () => {
   const addSocialLink = () => {
     if (
       !formData.socialLinks.some(
-        (link) => link.platform === "" && link.url === "",
+        (link: { platform: string; url: string }) =>
+          link.platform === "" && link.url === "",
       )
     ) {
       setFormData({
@@ -114,7 +116,9 @@ const EditProfilePage = () => {
 
   // Remove a social link
   const removeSocialLink = (index: number) => {
-    const updatedLinks = formData.socialLinks.filter((_, i) => i !== index);
+    const updatedLinks = formData.socialLinks.filter(
+      (_: any, i: number) => i !== index,
+    );
     setFormData({ ...formData, socialLinks: updatedLinks });
   };
 
@@ -128,12 +132,14 @@ const EditProfilePage = () => {
   // Handle interest selection change
   const handleInterestsChange = (selectedInterest: InterestType) => {
     const isSelected = formData.interests.some(
-      (i) => i._id === selectedInterest._id,
+      (i: InterestType) => i._id === selectedInterest._id,
     );
     setFormData({
       ...formData,
       interests: isSelected
-        ? formData.interests.filter((i) => i._id !== selectedInterest._id)
+        ? formData.interests.filter(
+            (i: InterestType) => i._id !== selectedInterest._id,
+          )
         : [...formData.interests, selectedInterest],
     });
   };
@@ -157,7 +163,9 @@ const EditProfilePage = () => {
 
     // Add interests
     if (formData.interests.length > 0) {
-      const interestIds = formData.interests.map((interest) => interest._id);
+      const interestIds = formData.interests.map(
+        (interest: InterestType) => interest._id,
+      );
       dataToSend.append("interest", JSON.stringify(interestIds));
     }
 
@@ -293,7 +301,7 @@ const EditProfilePage = () => {
                     "cursor-pointer bg-gray-200 text-black hover:bg-eventoPurpleLight/60",
                     {
                       "bg-evento-gradient text-white": formData.interests.some(
-                        (i) => i._id === interest._id,
+                        (i: InterestType) => i._id === interest._id,
                       ),
                     },
                   )}
@@ -337,38 +345,40 @@ const EditProfilePage = () => {
         {/* Social Links */}
         <div className="flex flex-col gap-2">
           <Label htmlFor="socialLinks">Social Links</Label>
-          {formData.socialLinks.map((link, index) => (
-            <div key={index} className="flex gap-2">
-              <select
-                value={link.platform}
-                onChange={(e) =>
-                  handleSocialLinkChange(index, "platform", e.target.value)
-                }
-              >
-                <option value="">Select a platform</option>
-                {socialPlatforms.map((platform) => (
-                  <option key={platform} value={platform}>
-                    {platform.charAt(0).toUpperCase() + platform.slice(1)}
-                  </option>
-                ))}
-              </select>
-              <Input
-                type="url"
-                value={link.url}
-                onChange={(e) =>
-                  handleSocialLinkChange(index, "url", e.target.value)
-                }
-              />
-              <Button
-                type="button"
-                onClick={() => removeSocialLink(index)}
-                className="bg-gray-300 text-black hover:bg-gray-200"
-                variant={"ghost"}
-              >
-                Remove
-              </Button>
-            </div>
-          ))}
+          {formData.socialLinks.map(
+            (link: { platform: string; url: string }, index: number) => (
+              <div key={index} className="flex gap-2">
+                <select
+                  value={link.platform}
+                  onChange={(e) =>
+                    handleSocialLinkChange(index, "platform", e.target.value)
+                  }
+                >
+                  <option value="">Select a platform</option>
+                  {socialPlatforms.map((platform) => (
+                    <option key={platform} value={platform}>
+                      {platform.charAt(0).toUpperCase() + platform.slice(1)}
+                    </option>
+                  ))}
+                </select>
+                <Input
+                  type="url"
+                  value={link.url}
+                  onChange={(e) =>
+                    handleSocialLinkChange(index, "url", e.target.value)
+                  }
+                />
+                <Button
+                  type="button"
+                  onClick={() => removeSocialLink(index)}
+                  className="bg-gray-300 text-black hover:bg-gray-200"
+                  variant={"ghost"}
+                >
+                  Remove
+                </Button>
+              </div>
+            ),
+          )}
           <Button
             type="button"
             onClick={addSocialLink}

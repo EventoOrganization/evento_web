@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { useSession } from "@/contexts/SessionProvider";
 import { useSocket } from "@/contexts/SocketProvider";
 import { toast } from "@/hooks/use-toast";
-import { useEventoStore } from "@/store/useEventoStore";
+import { useGlobalStore } from "@/store/useGlobalStore";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -25,7 +25,7 @@ const ConversationList = ({
     useSocket();
   const [suggestedUsers, setSuggestedUsers] = useState<any[]>([]);
   const router = useRouter();
-  const { users } = useEventoStore((state) => state);
+  const { users } = useGlobalStore((state) => state);
   const [searchTerm, setSearchTerm] = useState("");
   // const { toast } = useToast();
 
