@@ -148,7 +148,7 @@ const DiscoverPage = () => {
           <li className="flex items-center sticky top-0 z-10 bg-muted py-4">
             <TabSelector
               onChange={setSelectedTab}
-              tabs={["All", "Near me", "Virtual"]}
+              tabs={["All events", "Near me", "Virtual"]}
             />
             <MenuIcon
               className="md:hidden"

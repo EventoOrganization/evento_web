@@ -9,26 +9,37 @@ interface TabSelectorProps {
 }
 
 const TabSelector = ({ onChange, tabs, className }: TabSelectorProps) => {
-  const [activeTab, setActiveTab] = useState("All");
+  const [activeTab, setActiveTab] = useState("All events");
   const handleTabClick = (tab: string) => {
     setActiveTab(tab);
     onChange(tab);
   };
 
   return (
-    <div className={cn(" flex justify-around w-full text-xl ", className)}>
+    <div
+      className={cn(
+        "relative flex justify-around w-full text-xl gap-4",
+        className,
+      )}
+    >
       {tabs &&
         tabs.map((tab) => (
           <div
             key={tab}
             className={cn(
-              "cursor-pointer font-medium transition-all duration-300",
+              "cursor-pointer font-medium px-4 py-2 transition-all duration-300 ease-in-out rounded-lg w-full text-center shadow",
               {
-                "text-eventoPurpleLight font-bold": activeTab === tab,
-                "text-gray-500": activeTab !== tab,
+                "text-white bg-evento-gradient font-bold shadow-lg":
+                  activeTab === tab,
+                "text-gray-500 bg-gray-200 hover:bg-gray-300":
+                  activeTab !== tab,
               },
             )}
             onClick={() => handleTabClick(tab)}
+            style={{
+              transition: "transform 0.3s ease",
+              transform: activeTab === tab ? "scale(1.05)" : "scale(1)",
+            }}
           >
             {tab}
           </div>
