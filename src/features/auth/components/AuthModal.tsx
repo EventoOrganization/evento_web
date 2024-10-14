@@ -42,7 +42,7 @@ const AuthModal = ({
     | "reset-password"
     | "verify"
     | "user-info"
-  >("signup");
+  >("login");
 
   const handleLoginSuccess = (token: string) => {
     if (token) onAuthSuccess(token);
@@ -170,7 +170,7 @@ const AuthModal = ({
             </DialogTitle>
             <DialogDescription>
               {currentForm === "signup"
-                ? "Hello, welcome to Evento. Create your account."
+                ? "Hello, welcome to Evento! Create your account now."
                 : currentForm === "forgot-password"
                   ? "Enter your email address and we will send you a code to reset your password."
                   : currentForm === "reset-password"
