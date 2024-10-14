@@ -179,7 +179,7 @@ const AuthModal = ({
                       ? "Enter the code that was sent to your email."
                       : currentForm === "user-info"
                         ? "Enter your username and profile image."
-                        : "Enter your email and password."}
+                        : "Welcome back! Please sign in to continue."}
             </DialogDescription>
           </div>
         </DialogHeader>

@@ -197,7 +197,7 @@ const LoginForm = ({
             )}
             <Button
               onClick={() => form.handleSubmit(onSubmit)()}
-              className="bg-evento-gradient-button rounded-full text-xs self-center px-8 mt-10  text-white"
+              className="bg-evento-gradient-button rounded-full  self-center px-8 py-2 mt-6 text-white hover:shadow-lg hover:scale-105 transition-all duration-300"
               disabled={isFetching} // Disable button while fetching
             >
               {isFetching ? "Signing in..." : "Sign in"}
