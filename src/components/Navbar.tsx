@@ -25,9 +25,9 @@ export default function NavbarApp() {
         className="relative group"
       >
         <HomeIcon2 pathname={pathname === "/"} className="w-8 h-8" />
-        {/* <span className="absolute left-1/2 border shadow -translate-x-1/2 bottom-full mb-2 px-2 py-1 bg-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-            Back to home
-          </span> */}
+        <span className="hidden md:block absolute left-1/2 border shadow -translate-x-1/2 bottom-full mb-2 px-2 py-1 bg-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap overflow-hidden text-ellipsis w-max">
+          Back to home
+        </span>
       </Link>
 
       <Link href="/discover" className="relative group">
@@ -36,9 +36,9 @@ export default function NavbarApp() {
           // fill="pink"
           className="w-8 h-8 "
         />
-        {/* <span className="absolute left-1/2 border shadow -translate-x-1/2 bottom-full mb-2 px-2 py-1 bg-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-            Discover more events
-          </span> */}
+        <p className="hidden md:block absolute left-1/2 border bg-white shadow -translate-x-1/2 bottom-full mb-2 px-2 py-1 text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap overflow-hidden text-ellipsis w-max">
+          Discover more events
+        </p>
       </Link>
 
       <Link href="/create-event" className="relative group">
@@ -46,23 +46,23 @@ export default function NavbarApp() {
           pathname={pathname === "/create-event"}
           className="w-8 h-8"
         />
-        {/* <span className="absolute left-1/2 border shadow -translate-x-1/2 bottom-full mb-2 px-2 py-1 bg-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-            Create an event
-          </span> */}
+        <span className="hidden md:block absolute left-1/2 border shadow -translate-x-1/2 bottom-full mb-2 px-2 py-1 bg-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap overflow-hidden text-ellipsis w-max">
+          Create an event
+        </span>
       </Link>
 
       <Link href="/profile" className="relative group">
         <ProfileIcon pathname={pathname === "/profile"} className="w-8 h-8" />
-        {/* <span className="absolute left-1/2 border shadow -translate-x-1/2 bottom-full mb-2 px-2 py-1 bg-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-            Your profile
-          </span> */}
+        <span className="hidden md:block absolute left-1/2 border shadow -translate-x-1/2 bottom-full mb-2 px-2 py-1 bg-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap overflow-hidden text-ellipsis w-max">
+          Your profile
+        </span>
       </Link>
 
       <Link href="/chats" className="relative group">
         <TchatIcon pathname={pathname === "/chats"} className="w-8 h-8" />
-        {/* <span className="absolute left-1/2 border shadow -translate-x-1/2 bottom-full mb-2 px-2 py-1 bg-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-            Messaging
-          </span> */}
+        <span className="hidden md:block absolute left-1/2 border shadow -translate-x-1/2 bottom-full mb-2 px-2 py-1 bg-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap overflow-hidden text-ellipsis w-max">
+          Chat
+        </span>
       </Link>
     </nav>
   );
