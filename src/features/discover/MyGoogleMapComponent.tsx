@@ -130,7 +130,7 @@ const MyGoogleMapComponent = ({
             : "Current Location"}
         </h4>
         <span className="flex items-center gap-2">
-          <p>Map</p>
+          <p>Show map</p>
           <ChevronDown
             className={cn("transition-transform duration-300", {
               "rotate-180": isMapVisible,
