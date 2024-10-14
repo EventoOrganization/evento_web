@@ -16,7 +16,10 @@ const EventAddTempGuest = ({ onAddTempGuest }: { onAddTempGuest: any }) => {
 
   return (
     <>
-      <h4>Add friends from outside!</h4>
+      <h4>
+        Add friends who are not yet on Evento by adding their name and email
+        address
+      </h4>
       <form onSubmit={handleAddGuest} className="flex gap-2">
         <div className="grid grid-cols-2 gap-2">
           <Input

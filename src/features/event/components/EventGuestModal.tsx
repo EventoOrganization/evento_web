@@ -163,7 +163,9 @@ const EventGuestModal = ({
         <div className="flex flex-col-reverse justify-between gap-4">
           <div>
             <h3 className="mb-2">
-              All Users {"( "} {filteredUsers.length} {" )"}
+              All Users {"("}
+              {filteredUsers.length}
+              {")"}
             </h3>
             <ScrollArea className="h-48 border rounded">
               {filteredUsers.length > 0 ? (
@@ -207,8 +209,9 @@ const EventGuestModal = ({
           </div>
           <div>
             <h3 className="mb-2">
-              Selected {"( "}
-              {currentSelectedUsers.length} {" )"}
+              Selected {"("}
+              {currentSelectedUsers.length}
+              {")"}
             </h3>
             <ScrollArea className="h-48 border rounded">
               {currentSelectedUsers.map((user) => (
