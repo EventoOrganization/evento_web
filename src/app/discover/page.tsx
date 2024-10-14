@@ -50,7 +50,7 @@ const DiscoverPage = () => {
   const [searchText, setSearchText] = useState("");
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
-  const [selectedTab, setSelectedTab] = useState("All");
+  const [selectedTab, setSelectedTab] = useState("All events");
   const [location, setLocation] = useState<Location | null>(null);
   const [filteredEvents, setFilteredEvents] = useState<EventType[]>(
     events || [],

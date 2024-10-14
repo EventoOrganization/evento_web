@@ -92,7 +92,7 @@ export const filterEvents = (
       event.details?.mode !== undefined &&
       (event.details.mode === "virtual" || event.details.mode === "both");
 
-    const matchesTab = selectedTab === "All" || isNearMe || isVirtual;
+    const matchesTab = selectedTab === "All events" || isNearMe || isVirtual;
 
     return matchesInterest && matchesSearchText && matchesDate && matchesTab;
   });
