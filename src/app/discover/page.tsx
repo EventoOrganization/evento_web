@@ -134,7 +134,7 @@ const DiscoverPage = () => {
     <>
       <div className="relative flex justify-center items-center mt-10 text-eventoPurpleLight gap-2">
         <h2 className="animate-slideInLeft font-black opacity-0">
-          <span>Discover Event</span>
+          <span>Discover Events</span>
         </h2>
         {/* <h2 className="event-text animate-slideInRight flex opacity-0 items-center bg-evento-gradient text-white rounded shadow">
           <span className=" flex justify-center items-center">
