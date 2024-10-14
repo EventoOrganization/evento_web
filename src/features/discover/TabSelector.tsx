@@ -27,7 +27,7 @@ const TabSelector = ({ onChange, tabs, className }: TabSelectorProps) => {
           <div
             key={tab}
             className={cn(
-              "cursor-pointer font-medium px-4 py-2 transition-all duration-300 ease-in-out rounded-lg w-full text-center shadow",
+              "cursor-pointer font-medium px-4 py-2 transition-all duration-300 ease-in-out rounded-lg w-full text-center shadow flex justify-center items-center",
               {
                 "text-white bg-evento-gradient font-bold shadow-lg":
                   activeTab === tab,

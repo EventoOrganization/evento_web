@@ -30,6 +30,7 @@ import {
   Search,
   XIcon,
 } from "lucide-react";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 interface Location {
@@ -143,17 +144,17 @@ const DiscoverPage = () => {
           <span className="-translate-x-1.5">vents</span>
         </h2> */}
       </div>
-      <Section className="flex flex-col-reverse md:grid md:grid-cols-2  md:gap-20 items-start justify-end">
+      <Section className="flex flex-col-reverse md:grid md:grid-cols-2  md:gap-20 items-start justify-end px-0">
         <ul className="w-full space-y-6">
-          <li className="flex items-center sticky top-0 z-10 bg-muted py-4">
+          <li className="flex items-center sticky top-0 z-10 bg-muted py-4 flex-col gap-4 px-4">
             <TabSelector
               onChange={setSelectedTab}
               tabs={["All events", "Near me", "Virtual"]}
             />
-            <MenuIcon
-              className="md:hidden"
-              onClick={() => setToggleSearch(!toggleSearch)}
-            />
+            <span className="flex gap-2 md:hidden">
+              Show filters
+              <MenuIcon onClick={() => setToggleSearch(!toggleSearch)} />
+            </span>
           </li>
           {isPending ? (
             <div className="w-full h-96 rounded">
@@ -161,19 +162,26 @@ const DiscoverPage = () => {
             </div>
           ) : filteredEvents.length > 0 ? (
             filteredEvents.map((event) => (
-              <li key={event._id} onClick={() => handleEventClick(event)}>
+              <li
+                key={event._id}
+                onClick={() => handleEventClick(event)}
+                className="px-4"
+              >
                 <Event event={event} />
               </li>
             ))
           ) : (
-            <li className="text-muted-foreground text-center">
+            <li className="text-muted-foreground text-center space-y-4">
               <p>No events found.</p>
+              <Button asChild className="bg-evento-gradient hover:opacity-80">
+                <Link href="/create-event">Creat one today !</Link>
+              </Button>
             </li>
           )}
         </ul>
         <div
           className={cn(
-            "flex flex-col gap-2 w-full transition-all duration-300 bg-muted md:translate-x-0 md:max-h-fit md:opacity-100 ",
+            "flex flex-col gap-2 w-full transition-all duration-300 bg-muted md:translate-x-0 md:max-h-fit md:opacity-100 px-4",
             {
               "translate-x-[-100%] h-0 opacity-0": !toggleSearch,
               "translate-x-0 max-h-fit sticky opacity-100 z-20 top-0 pt-5":
