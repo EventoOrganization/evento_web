@@ -142,19 +142,28 @@ const CreateEventPage = () => {
       return;
     }
     const missingFields: string[] = [];
+
     const fields = [
       { name: "Title", value: formValues.title },
       { name: "Username", value: formValues.username },
       { name: "Event Type", value: formValues.eventType },
       { name: "Mode", value: formValues.mode },
       { name: "Location", value: formValues.location },
-      { name: "Latitude", value: formValues.latitude },
-      { name: "Longitude", value: formValues.longitude },
+      // { name: "Latitude", value: formValues.latitude },
+      // { name: "Longitude", value: formValues.longitude },
       { name: "Date", value: formValues.date },
       { name: "End Date", value: formValues.endDate },
       { name: "Start Time", value: formValues.startTime },
       { name: "End Time", value: formValues.endTime },
       { name: "Description", value: formValues.description },
+      {
+        name: "Média (Pictures and/or Vidéos)",
+        value:
+          formValues.uploadedMedia.images.length > 0 ||
+          formValues.uploadedMedia.videos.length > 0 ||
+          formValues.predefinedMedia.images.length > 0 ||
+          formValues.predefinedMedia.videos.length > 0,
+      },
     ];
     fields.forEach((field) => {
       if (!field.value) {
