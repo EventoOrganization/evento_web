@@ -106,7 +106,9 @@ const DiscoverPage = () => {
     return null;
   }
   const handleEventClick = (event: EventType) => {
-    setSelectedEvent(event);
+    const storedEvent = events.find((ev) => ev._id === event._id);
+    setSelectedEvent(storedEvent);
+    console.log("Selected event:", event);
     setIsEventModalOpen(true);
   };
   const resetDate = () => {
