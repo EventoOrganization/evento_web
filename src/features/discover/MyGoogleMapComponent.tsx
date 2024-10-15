@@ -15,6 +15,7 @@ export interface Location {
 const libraries: ("places" | "geometry" | "drawing" | "visualization")[] = [
   "places",
 ];
+
 const MyGoogleMapComponent = ({
   location,
   setLocation,
@@ -37,24 +38,50 @@ const MyGoogleMapComponent = ({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
     libraries,
   });
-  const fetchAddress = async (lat: number, lng: number) => {
-    if (!isLoaded) {
-      console.error("Google Maps API is not loaded yet.");
-      return;
-    }
+
+  // Function to fetch address and timezone for the provided lat and lng
+  const fetchAddressAndTimeZone = async (lat: number, lng: number) => {
+    if (!isLoaded) return;
 
     const geocoder = new google.maps.Geocoder();
     const location = { lat, lng };
 
-    geocoder.geocode({ location }, (results, status) => {
+    // Geocode to get the formatted address
+    geocoder.geocode({ location }, async (results, status) => {
       if (status === "OK" && results && results[0]) {
         setAddress(results[0].formatted_address);
+
+        // Fetch timezone based on lat/lng
+        const timeZone = await fetchTimeZone(lat, lng);
+        if (timeZone) {
+          eventStore.setEventField("timeZone", timeZone);
+        }
       } else {
         console.error("Geocoder failed due to:", status);
       }
     });
   };
 
+  // Function to fetch timezone from Google Time Zone API
+  const fetchTimeZone = async (lat: number, lng: number) => {
+    const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+    const url = `https://maps.googleapis.com/maps/api/timezone/json?location=${lat},${lng}&timestamp=${Math.floor(
+      Date.now() / 1000,
+    )}&key=${apiKey}`;
+
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+      if (data.status === "OK") {
+        return data.timeZoneId; // E.g., 'America/Los_Angeles'
+      }
+      console.error("Failed to fetch timezone data:", data.status);
+    } catch (error) {
+      console.error("Error fetching timezone:", error);
+    }
+  };
+
+  // Fetch user's current location using Geolocation API
   useEffect(() => {
     const fetchCurrentLocation = () => {
       if (navigator.geolocation) {
@@ -66,7 +93,7 @@ const MyGoogleMapComponent = ({
             };
             setLocation(currentLocation);
             setMapCenter(currentLocation);
-            fetchAddress(currentLocation.lat, currentLocation.lng);
+            fetchAddressAndTimeZone(currentLocation.lat, currentLocation.lng);
           },
           (error) => {
             console.error("Error fetching the geolocation", error);
@@ -80,17 +107,19 @@ const MyGoogleMapComponent = ({
     fetchCurrentLocation();
   }, [isLoaded]);
 
+  // Handle the load event of the search box
   const onLoad = useCallback((ref: google.maps.places.SearchBox) => {
     searchBoxRef.current = ref;
   }, []);
 
-  const handleMapClick = (event: google.maps.MapMouseEvent) => {
+  // Handle map click to set the location and fetch address and timezone
+  const handleMapClick = async (event: google.maps.MapMouseEvent) => {
     if (event.latLng) {
       const lat = event.latLng.lat();
       const lng = event.latLng.lng();
       setLocation({ lat, lng });
       setMapCenter({ lat, lng });
-      fetchAddress(lat, lng);
+      await fetchAddressAndTimeZone(lat, lng);
       if (pathname === "/create-event") {
         eventStore.setEventField("latitude", lat.toString());
         eventStore.setEventField("longitude", lng.toString());
@@ -99,6 +128,7 @@ const MyGoogleMapComponent = ({
     }
   };
 
+  // Handle place selection from the search box
   const onPlacesChanged = useCallback(() => {
     if (searchBoxRef.current) {
       const places = searchBoxRef.current.getPlaces();
@@ -108,7 +138,7 @@ const MyGoogleMapComponent = ({
         const lng = place.geometry?.location?.lng() || 0;
         setLocation({ lat, lng });
         setMapCenter({ lat, lng });
-        fetchAddress(lat, lng);
+        fetchAddressAndTimeZone(lat, lng);
         if (pathname === "/create-event") {
           eventStore.setEventField("latitude", lat.toString());
           eventStore.setEventField("longitude", lng.toString());
@@ -166,7 +196,7 @@ const MyGoogleMapComponent = ({
           <GoogleMapsMap
             isLoaded={isLoaded}
             mapCenter={mapCenter}
-            location={location} // Un seul marqueur géré ici
+            location={location}
             handleMapClick={handleMapClick}
           />
         </div>
