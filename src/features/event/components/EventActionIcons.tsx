@@ -13,6 +13,7 @@ import {
   CircleCheck,
   CircleCheckBig,
   Send,
+  Loader2 as Spinner,
   X,
 } from "lucide-react";
 import React, { useState } from "react";
@@ -39,7 +40,7 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
   const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
   const [isRefusalModalOpen, setIsRefusalModalOpen] = useState(false);
   const [refusalReason, setRefusalReason] = useState<string>("");
-
+  const [loading, setLoading] = useState<string | null>(null);
   const updateEventStatus = async (
     status: EventStatusKeys,
     rsvpAnswers?: any,
@@ -53,6 +54,7 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
     const isCurrentlySet = event[status]; // Vérifie si le statut est actuellement défini
 
     try {
+      setLoading(status);
       const body = {
         eventId: event._id,
         userId: user?._id,
@@ -93,6 +95,8 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
     } catch (error) {
       console.error(`Error updating event status (${status}):`, error);
       alert(`Failed to update event status to ${status}. Please try again.`);
+    } finally {
+      setLoading(null);
     }
   };
 
@@ -145,7 +149,7 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
 
   const handleSubmitQuestions = (answers: any) => {
     setShowQuestionModal(false);
-    handleGoing(answers); // Passe directement les réponses à handleGoing
+    handleGoing(answers);
   };
 
   return (
@@ -158,7 +162,9 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
         }}
         className="relative flex items-center justify-center w-10 h-10 hover:opacity-80"
       >
-        {!event.isGoing ? (
+        {loading === "isGoing" ? (
+          <Spinner className="animate-spin text-eventoPurpleLight w-full h-full" />
+        ) : !event.isGoing ? (
           <CircleCheck
             strokeWidth={1.5}
             className={cn("text-eventoPurpleLight w-full h-full")}
@@ -181,7 +187,9 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
         }}
         className="relative flex items-center justify-center w-10 h-10 hover:opacity-80"
       >
-        {event.isFavourite ? (
+        {loading === "isFavourite" ? (
+          <Spinner className="animate-spin text-eventoPurpleLight w-full h-full" />
+        ) : event.isFavourite ? (
           <BookmarkCheck className="z-10 text-white" />
         ) : (
           <Bookmark className="text-eventoPurpleLight" />
@@ -206,7 +214,9 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
           }}
           className="relative flex items-center justify-center w-10 h-10 hover:opacity-80"
         >
-          {event.isRefused ? (
+          {loading === "isRefused" ? (
+            <Spinner className="animate-spin text-eventoPurpleLight w-full h-full" />
+          ) : event.isRefused ? (
             <X className="z-10 text-white" />
           ) : (
             <X className="text-eventoPurpleLight" />
@@ -222,7 +232,6 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
           />
         </button>
       )}
-
       {/* Action to share the event */}
       <button
         onClick={(e) => {
