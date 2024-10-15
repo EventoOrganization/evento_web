@@ -156,14 +156,14 @@ const CreateEventPage = () => {
       { name: "Start Time", value: formValues.startTime },
       { name: "End Time", value: formValues.endTime },
       { name: "Description", value: formValues.description },
-      {
-        name: "Média (Pictures and/or Vidéos)",
-        value:
-          formValues.uploadedMedia.images.length > 0 ||
-          formValues.uploadedMedia.videos.length > 0 ||
-          formValues.predefinedMedia.images.length > 0 ||
-          formValues.predefinedMedia.videos.length > 0,
-      },
+      // {
+      //   name: "Média (Pictures and/or Vidéos)",
+      //   value:
+      //     formValues.uploadedMedia.images.length > 0 ||
+      //     formValues.uploadedMedia.videos.length > 0 ||
+      //     formValues.predefinedMedia.images.length > 0 ||
+      //     formValues.predefinedMedia.videos.length > 0,
+      // },
     ];
     fields.forEach((field) => {
       if (!field.value) {
