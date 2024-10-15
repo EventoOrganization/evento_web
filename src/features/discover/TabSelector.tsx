@@ -1,5 +1,6 @@
 "use client";
 import { cn } from "@/lib/utils";
+import { EditIcon } from "lucide-react";
 import { useState } from "react";
 
 interface TabSelectorProps {
@@ -41,7 +42,7 @@ const TabSelector = ({ onChange, tabs, className }: TabSelectorProps) => {
               transform: activeTab === tab ? "scale(1.05)" : "scale(1)",
             }}
           >
-            {tab}
+            {tab === "Settings" ? <EditIcon /> : tab}
           </div>
         ))}
       <div

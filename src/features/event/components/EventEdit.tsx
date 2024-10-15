@@ -6,6 +6,7 @@ import { UserType } from "@/types/UserType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { useState } from "react";
 import CoHostManagementModal from "./CoHostManagementModal";
+import EditableEventDate from "./EditableEventDate";
 import EditableInputText from "./EditableInputText";
 import EditableLocation from "./EditableLocation";
 import EditableMultiSelect from "./EditableMultiSelect";
@@ -56,10 +57,17 @@ const EventEdit = ({
     interests: false,
     url: false,
     questions: false,
-    eventType: false, // Add this
+    eventType: false,
     mode: false,
+    date: false,
   });
-
+  const [startDate, setStartDate] = useState(event.details?.date || "");
+  const [endDate, setEndDate] = useState(event.details?.endDate || "");
+  const [startTime, setStartTime] = useState(
+    event.details?.startTime || "08:00",
+  );
+  const [endTime, setEndTime] = useState(event.details?.endTime || "18:00");
+  const [timeSlots, setTimeSlots] = useState(event.details?.timeSlots || []);
   const { token } = useSession();
 
   const handleUpdate = async (field: string, value: any) => {
@@ -196,6 +204,13 @@ const EventEdit = ({
       case "url":
         setUrl(event?.details?.URLlink || "");
         break;
+      case "date":
+        setStartDate(event.details?.date || "");
+        setEndDate(event.details?.endDate || "");
+        setStartTime(event.details?.startTime || "08:00");
+        setEndTime(event.details?.endTime || "18:00");
+        setTimeSlots(event.details?.timeSlots || []);
+        break;
       default:
         break;
     }
@@ -220,6 +235,13 @@ const EventEdit = ({
         break;
       case "url":
         setUrl("");
+        break;
+      case "date":
+        setStartDate("");
+        setEndDate("");
+        setStartTime("08:00");
+        setEndTime("18:00");
+        setTimeSlots([]);
         break;
       default:
         break;
@@ -313,6 +335,19 @@ const EventEdit = ({
         isUpdating={isUpdating}
         editMode={editMode.location}
         toggleEditMode={() => toggleEditMode("location")}
+      />
+      <EditableEventDate
+        startDate={startDate}
+        endDate={endDate}
+        startTime={startTime}
+        endTime={endTime}
+        timeSlots={timeSlots}
+        onUpdateField={handleUpdate}
+        handleCancel={() => handleCancel("date")}
+        handleReset={() => handleReset("date")}
+        isUpdating={isUpdating}
+        editMode={editMode.date}
+        toggleEditMode={() => toggleEditMode("date")}
       />
       <EditableTextArea
         value={description}

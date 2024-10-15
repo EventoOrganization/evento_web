@@ -367,7 +367,7 @@ const EventPage = () => {
   }
 
   // Après cette vérification, toutes les références à `event` seront sûres.
-  console.log("rsvp", rsvpSubmissions, "refused", refusedStatuses);
+  console.log(event);
   return (
     <>
       <div className="md:grid-cols-2 grid grid-cols-1 w-full h-screen ">
