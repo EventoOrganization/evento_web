@@ -97,10 +97,23 @@ export const useGlobalStore = create<GlobalStoreState>()(
           }),
         }));
       },
-      addEvent: (newEvent) => {
-        set((state) => ({
-          events: [...state.events, newEvent],
-        }));
+      addEvent: (newEvent: EventType) => {
+        set((state) => {
+          const updatedUserInfo = state.userInfo
+            ? {
+                ...state.userInfo,
+                hostedEvents: [
+                  ...(state.userInfo?.hostedEvents || []),
+                  newEvent,
+                ],
+              }
+            : null;
+
+          return {
+            userInfo: updatedUserInfo,
+            events: [...state.events, newEvent],
+          };
+        });
       },
       loadInterests: async () => {
         if (get().interests.length > 0) return;

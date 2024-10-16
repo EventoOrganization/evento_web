@@ -59,7 +59,6 @@ const CreateEventCarousel = () => {
       console.error("Error deleting media:", error);
     }
   };
-  console.log(carouselItems, mediaPreviews);
   return (
     <div className="relative w-full">
       {mediaPreviews?.length === 0 ? (

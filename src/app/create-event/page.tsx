@@ -24,7 +24,6 @@ import { UserType } from "@/types/UserType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { normalizeEvent } from "./action";
 const CreateEventPage = () => {
   const eventStore = useEventStore();
   const [isEventModalOpen, setIsEventModalOpen] = useState(false);
@@ -238,7 +237,13 @@ const CreateEventPage = () => {
     if (response.error) {
       console.error("Error creating event:", response.error);
     } else {
-      addEvent(await normalizeEvent(response.data?.event));
+      addEvent(response.data?.event as EventType);
+      console.log("Event added to global store:", response.data?.event);
+      // addEvent(await normalizeEvent(response.data?.event));
+      // console.log(
+      //   "Event created successfully and added to store ! before redirect:",
+      //   response.data?.event,
+      // );
       eventStore.clearEventForm();
       toast({
         title: "Event created successfully",
