@@ -3,10 +3,9 @@
 import MapPinIcon2 from "@/components/icons/MappPinIcon2";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { useSession } from "@/contexts/SessionProvider";
 import { cn } from "@/lib/utils";
+import { useAuthStore } from "@/store/useAuthStore";
 import { useEventStore } from "@/store/useEventStore";
-import { useProfileStore } from "@/store/useProfileStore";
 import Image from "next/image";
 import CreateEventCarousel from "./CreateEventCarousel";
 const CreateEventPreview = ({
@@ -19,8 +18,7 @@ const CreateEventPreview = ({
   handleRemoveInterest?: (interestId: string) => void;
 }) => {
   const eventStore = useEventStore();
-  const { user } = useSession();
-  const { userInfo } = useProfileStore();
+  const { user } = useAuthStore();
 
   const renderDate = () => {
     const startDate = eventStore.date;
@@ -110,9 +108,9 @@ const CreateEventPreview = ({
           <div className="flex flex-col w-full">
             <div className="flex justify-between items-center mb-4">
               <div className="flex gap-2 items-center">
-                {user?.profileImage || userInfo?.profileImage ? (
+                {user?.profileImage ? (
                   <Image
-                    src={user?.profileImage || userInfo?.profileImage || ""}
+                    src={user?.profileImage || ""}
                     alt="user image"
                     width={30}
                     height={30}

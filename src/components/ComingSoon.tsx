@@ -1,12 +1,19 @@
+import { cn } from "@/lib/utils";
 import React from "react";
 
 type ComingSoonProps = {
   message?: string;
+  className?: string;
 };
 
-const ComingSoon: React.FC<ComingSoonProps> = ({ message }) => {
+const ComingSoon: React.FC<ComingSoonProps> = ({ message, className }) => {
   return (
-    <div className="flex flex-col items-center justify-center h-full text-center p-8 text-muted-foreground">
+    <div
+      className={cn(
+        "flex flex-col items-center justify-center h-full text-center p-8 text-muted-foreground",
+        className,
+      )}
+    >
       <h2>Coming Soon</h2>
       <p className=" mt-2">
         {message || "This page is under construction. Please check back later!"}

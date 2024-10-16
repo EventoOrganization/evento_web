@@ -64,6 +64,7 @@ const AuthModal = ({
       return;
     }
     setUser(loginRes.data);
+    console.log("loginRes.data", loginRes.data);
     startSession(loginRes.data, loginRes.data.token);
     switchForm("verify");
   };

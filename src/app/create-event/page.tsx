@@ -55,6 +55,7 @@ const CreateEventPage = () => {
       longitude: eventStore.longitude || "",
       timeSlots: eventStore.timeSlots || [],
       coHosts: eventStore.coHosts || [],
+      medias: eventStore.mediaPreviews || [],
       createRSVP: eventStore.createRSVP || false,
       questions: eventStore.questions || [],
       additionalField: eventStore.additionalField || [],
@@ -77,6 +78,7 @@ const CreateEventPage = () => {
     mode: eventStore.mode || "in-person",
     location: eventStore.location || "",
     latitude: eventStore.latitude || "",
+    medias: eventStore.mediaPreviews || [],
     longitude: eventStore.longitude || "",
     timeSlots: eventStore.timeSlots || [],
     coHosts: eventStore.coHosts || [],
@@ -156,14 +158,10 @@ const CreateEventPage = () => {
       { name: "Start Time", value: formValues.startTime },
       { name: "End Time", value: formValues.endTime },
       { name: "Description", value: formValues.description },
-      // {
-      //   name: "Média (Pictures and/or Vidéos)",
-      //   value:
-      //     formValues.uploadedMedia.images.length > 0 ||
-      //     formValues.uploadedMedia.videos.length > 0 ||
-      //     formValues.predefinedMedia.images.length > 0 ||
-      //     formValues.predefinedMedia.videos.length > 0,
-      // },
+      {
+        name: "Média (Pictures and/or Vidéos)",
+        value: formValues.medias.length > 0,
+      },
     ];
     fields.forEach((field) => {
       if (!field.value) {

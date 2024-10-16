@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { useSession } from "@/contexts/SessionProvider";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import { useAuthStore } from "@/store/useAuthStore";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
@@ -26,6 +27,7 @@ const userInfoSchema = z.object({
 const UserInfoForm = ({ onAuthSuccess }: { onAuthSuccess: () => void }) => {
   const [isFetching, setIsFetching] = useState(false);
   const { toast } = useToast();
+  const { setUser } = useAuthStore();
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const session = useSession();
   const form = useForm<z.infer<typeof userInfoSchema>>({
@@ -73,6 +75,15 @@ const UserInfoForm = ({ onAuthSuccess }: { onAuthSuccess: () => void }) => {
           className: "bg-evento-gradient-button text-white",
           duration: 3000,
         });
+        const updatedUser = {
+          _id: updateRes.data._id, // S'assurer que vous récupérez l'ID
+          email: updateRes.data.email, // S'assurer que vous récupérez l'email
+          username: data.username,
+          profileImage: updateRes.data.profileImage || selectedImage,
+          // Ajouter toute autre propriété nécessaire
+        };
+
+        setUser(updatedUser); // Passer un objet complet conforme à UserType
         onAuthSuccess();
       }
     } catch (err) {
