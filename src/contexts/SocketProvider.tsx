@@ -92,13 +92,11 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
           } else {
             // Private conversation uses other user's data
             conversationData.title = otherUser?.username || "Private Chat";
-            conversationData.initialMedia =
-              [
-                {
-                  url:
-                    otherUser?.profileImage || "https://github.com/shadcn.png",
-                },
-              ] || [];
+            conversationData.initialMedia = [
+              {
+                url: otherUser?.profileImage || "https://github.com/shadcn.png",
+              },
+            ];
           }
 
           return conversationData;

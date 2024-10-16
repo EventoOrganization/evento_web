@@ -63,7 +63,7 @@ const DeleteAccountBtn = () => {
       </Button>
 
       <Dialog open={showConfirmation} onOpenChange={setShowConfirmation}>
-        <DialogContent className="max-w-[90%] rounded">
+        <DialogContent className="w-[90%] max-w-xl rounded">
           <DialogHeader>
             <DialogTitle>Confirm Account Deletion</DialogTitle>
           </DialogHeader>
