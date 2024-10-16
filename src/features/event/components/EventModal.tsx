@@ -9,9 +9,8 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useSession } from "@/contexts/SessionProvider";
 import DiscoverEventPreview from "@/features/discover/DiscoverEventPreview";
-import { fetchData, HttpMethod } from "@/utils/fetchData";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import DeleteEventButton from "./DeleteEventButton";
 
 const EventModal = ({
   event,
@@ -22,26 +21,11 @@ const EventModal = ({
   isOpen: boolean;
   onClose: () => void;
 }) => {
-  const router = useRouter();
-  const { token, user } = useSession();
+  const { user } = useSession();
   const handleClickInsideModal = (e: React.MouseEvent) => {
     e.stopPropagation();
   };
-  const handleDelete = async () => {
-    try {
-      await fetchData(
-        `/events/deleteEvent/${event._id}`,
-        HttpMethod.DELETE,
-        undefined,
-        token,
-      );
-    } catch (err) {
-      console.log(err);
-    } finally {
-      router.push("/profile");
-      onClose();
-    }
-  };
+
   if (!event) return null;
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -60,7 +44,8 @@ const EventModal = ({
         <ScrollArea className="rounded h-full">
           <DiscoverEventPreview event={event} className="max-w-[90vw]" />
           {event.user._id === user?._id && (
-            <Button onClick={handleDelete}>Delete Event</Button>
+            // <Button onClick={handleDelete}>Delete Event</Button>
+            <DeleteEventButton eventId={event._id} isHost={true} />
           )}
         </ScrollArea>
         <div className="grid grid-cols-2 gap-4 items-end">

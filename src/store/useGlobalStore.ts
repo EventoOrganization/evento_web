@@ -16,6 +16,7 @@ interface GlobalStoreState {
   setEvents: (events: EventType[]) => void;
   setUsers: (users: UserType[]) => void;
   addEvent: (newEvent: EventType) => void;
+  deleteEvent: (eventId: string) => void;
   updateEventStatus: (
     eventId: string,
     newStatus: {
@@ -115,6 +116,33 @@ export const useGlobalStore = create<GlobalStoreState>()(
           };
         });
       },
+      deleteEvent: (eventId: string) => {
+        console.log("deleteEvent called with eventId:", eventId);
+        set((state) => {
+          const updatedEvents = state.events.filter(
+            (event) => event._id !== eventId,
+          );
+
+          console.log("Updated events after delete:", updatedEvents);
+
+          const updatedUserInfo = state.userInfo
+            ? {
+                ...state.userInfo,
+                hostedEvents: state.userInfo?.hostedEvents?.filter(
+                  (event) => event._id !== eventId,
+                ),
+              }
+            : null;
+
+          console.log("Updated userInfo after delete:", updatedUserInfo);
+
+          return {
+            events: updatedEvents,
+            userInfo: updatedUserInfo,
+          };
+        });
+      },
+
       loadInterests: async () => {
         if (get().interests.length > 0) return;
 
