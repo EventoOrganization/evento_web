@@ -1,4 +1,3 @@
-// src/features/auth/components/logoutBtn.tsx
 "use client";
 import { Button } from "@/components/ui/button";
 import { useSession } from "@/contexts/SessionProvider";
@@ -10,6 +9,7 @@ const LogoutBtn = () => {
   const session = useSession();
   const router = useRouter();
   const { toast } = useToast();
+
   const handleclick = async () => {
     try {
       const logoutRes = await fetchData<any>(
@@ -38,10 +38,19 @@ const LogoutBtn = () => {
       router.push("/");
     }
   };
+
   const clearStorageAndCookies = () => {
-    // Clear localStorage and sessionStorage
-    localStorage.clear();
+    // Clear sessionStorage by default
     sessionStorage.clear();
+
+    // Check if rememberMe was true and clear localStorage if needed
+    const rememberMe = JSON.parse(
+      localStorage.getItem("rememberMe") || "false",
+    );
+
+    if (rememberMe) {
+      localStorage.clear();
+    }
 
     // Clear all cookies
     document.cookie.split(";").forEach((cookie) => {
@@ -49,6 +58,7 @@ const LogoutBtn = () => {
       document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`;
     });
   };
+
   return (
     <Button className="" onClick={handleclick}>
       Logout

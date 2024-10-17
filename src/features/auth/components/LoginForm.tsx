@@ -9,6 +9,7 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useSession } from "@/contexts/SessionProvider";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
@@ -155,36 +156,44 @@ const LoginForm = ({
               </FormItem>
             )}
           />
-          <div className="flex flex-col ">
-            <div className="flex justify-between">
+          <div className="flex flex-col">
+            <div className="flex justify-between items-center">
               <FormField
                 control={form.control}
                 name="rememberMe"
                 render={({ field }) => (
                   <FormItem>
-                    <span className="flex gap-2 items-center">
+                    <span className="flex gap-2 items-center text-lg font-semibold">
                       <Checkbox
+                        id="remember"
                         checked={rememberMe}
                         onCheckedChange={(checked: boolean | string | null) => {
                           field.onChange(!!checked);
                           toggleRememberMe(!!checked);
                         }}
+                        className="h-6 w-6"
                       />
-                      <p>Remember me</p>
+                      <Label
+                        htmlFor="remember"
+                        className="text-eventoPurple hover:text-eventoPurpleLight transition-colors duration-300 cursor-pointer"
+                      >
+                        Remember me
+                      </Label>
                     </span>
                   </FormItem>
                 )}
               />
-              <p className="text-sm text-muted-foreground flex justify-between gap-2 items-center mt-1 ">
+              <p className="text-sm text-muted-foreground mt-1">
                 <button
                   type="button"
-                  className="text-muted-foreground text-xs hover:underline w-full text-end cursor-pointer"
+                  className="text-muted-foreground text-xs hover:underline cursor-pointer"
                   onClick={onForgotPasswordClick}
                 >
                   Forgot Password?
                 </button>
               </p>
             </div>
+
             {error && (
               <div className="flex gap-1 items-center">
                 <span className="bg-destructive rounded-full p-1 text-destructive-foreground w-4 h-4 flex justify-center items-center text-xs">
