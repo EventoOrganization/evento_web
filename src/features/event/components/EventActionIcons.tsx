@@ -35,7 +35,6 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
   const updateEventStatusInStore = useGlobalStore(
     (state) => state.updateEventStatus,
   );
-
   const [showQuestionModal, setShowQuestionModal] = useState<boolean>(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
   const [isRefusalModalOpen, setIsRefusalModalOpen] = useState(false);
@@ -51,14 +50,14 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
       return;
     }
 
-    const isCurrentlySet = event[status]; // Vérifie si le statut est actuellement défini
+    const isCurrentlySet = event[status]; // Utiliser directement `event`
 
     try {
       setLoading(status);
       const body = {
         eventId: event._id,
         userId: user?._id,
-        status: isCurrentlySet ? null : status, // Si le statut est déjà défini, le retirer (en envoyant null)
+        status: isCurrentlySet ? null : status,
         rsvpAnswers,
         reason,
       };
@@ -73,11 +72,11 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      const action = isCurrentlySet ? "removed from" : "marked as"; // Message dynamique pour l'action
+      const action = isCurrentlySet ? "removed from" : "marked as";
       toast({
         title: `Event ${
           status === "isGoing"
-            ? ` ${action} going`
+            ? `${action} going`
             : status === "isFavourite"
               ? `${action} favourite`
               : `${action} refused`
@@ -86,7 +85,7 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
         duration: 1000,
       });
 
-      // Met à jour le store avec le nouveau statut, ou le supprime
+      // Mettre à jour le store
       updateEventStatusInStore(
         event._id,
         { [status]: !isCurrentlySet },
@@ -151,7 +150,6 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
     setShowQuestionModal(false);
     handleGoing(answers);
   };
-
   return (
     <div className={`flex gap-2 ${className}`}>
       {/* Action to mark as Going */}

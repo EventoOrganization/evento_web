@@ -74,8 +74,6 @@ const DiscoverPage = () => {
   };
 
   useEffect(() => {
-    // const formattedStartDate = startDate ? startDate.toISOString() : "";
-    // const formattedEndDate = endDate ? endDate.toISOString() : "";
     if (events && events.length > 0) {
       const filteredEvents = filterEvents(
         events,
@@ -91,6 +89,7 @@ const DiscoverPage = () => {
   }, [
     selectedInterests,
     searchText,
+    selectedEvent,
     selectedTab,
     events,
     location,

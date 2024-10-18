@@ -1,6 +1,7 @@
 "use client";
 import { cn } from "@/lib/utils";
 import { EditIcon } from "lucide-react";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 
 interface TabSelectorProps {
@@ -10,7 +11,11 @@ interface TabSelectorProps {
 }
 
 const TabSelector = ({ onChange, tabs, className }: TabSelectorProps) => {
-  const [activeTab, setActiveTab] = useState("All events");
+  const pathname = usePathname();
+  const [activeTab, setActiveTab] = useState(
+    pathname.startsWith("/discover") ? "All events" : "Description",
+  );
+
   const handleTabClick = (tab: string) => {
     setActiveTab(tab);
     onChange(tab);
@@ -19,7 +24,7 @@ const TabSelector = ({ onChange, tabs, className }: TabSelectorProps) => {
   return (
     <div
       className={cn(
-        "relative flex justify-around w-full text-xl gap-4",
+        "relative flex justify-around w-full md:text-xl gap-4",
         className,
       )}
     >
@@ -28,19 +33,16 @@ const TabSelector = ({ onChange, tabs, className }: TabSelectorProps) => {
           <div
             key={tab}
             className={cn(
-              "cursor-pointer font-medium px-4 py-2 transition-all duration-300 ease-in-out rounded-lg w-full text-center shadow flex justify-center items-center",
+              "cursor-pointer font-medium px-4 py-2 transition-all duration-300 ease-in-out rounded-lg text-center shadow-xl border-2 border-gray-300 flex justify-center items-center",
               {
-                "text-white bg-evento-gradient font-bold shadow-lg":
-                  activeTab === tab,
+                "text-white bg-evento-gradient font-bold": activeTab === tab,
                 "text-gray-500 bg-gray-200 hover:bg-gray-300":
                   activeTab !== tab,
+                "w-fit": tab === "Settings",
+                "w-full": tab !== "Settings",
               },
             )}
             onClick={() => handleTabClick(tab)}
-            style={{
-              transition: "transform 0.3s ease",
-              transform: activeTab === tab ? "scale(1.05)" : "scale(1)",
-            }}
           >
             {tab === "Settings" ? <EditIcon /> : tab}
           </div>
@@ -48,7 +50,7 @@ const TabSelector = ({ onChange, tabs, className }: TabSelectorProps) => {
       <div
         className="absolute bottom-0 left-0 h-[2px] bg-eventoPurple transition-all duration-300"
         style={{
-          width: `${100 / 3}%`,
+          width: `${100 / (tabs?.length || 1)}%`,
           transform: `translateX(${tabs && tabs.indexOf(activeTab) * 100}%)`,
         }}
       />
