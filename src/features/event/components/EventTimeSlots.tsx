@@ -3,9 +3,10 @@ import React from "react";
 
 type Props = {
   event?: EventType;
+  renderDate?: () => string;
 };
 
-const EventTimeSlots: React.FC<Props> = ({ event }) => {
+const EventTimeSlots: React.FC<Props> = ({ event, renderDate }) => {
   // Helper function to format date and time
   const formatTimeSlot = (slot: {
     date: string;
@@ -51,9 +52,7 @@ const EventTimeSlots: React.FC<Props> = ({ event }) => {
           ))}
         </ul>
       ) : (
-        <p>
-          {event?.details?.startTime} - {event?.details?.endTime}
-        </p>
+        <p>{renderDate && renderDate()}</p>
       )}
     </div>
   );

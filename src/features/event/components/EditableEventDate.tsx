@@ -42,11 +42,15 @@ const EditableEventDate = ({
   const today = startOfDay(new Date());
 
   // Local states for the form fields
-  const [localStartDate, setLocalStartDate] = useState<Date>(
-    initialStartDate ? new Date(initialStartDate) : today,
+  const [localStartDate, setLocalStartDate] = useState<string>(
+    initialStartDate
+      ? format(new Date(initialStartDate), "yyyy-MM-dd")
+      : format(today, "yyyy-MM-dd"),
   );
-  const [localEndDate, setLocalEndDate] = useState<Date>(
-    initialEndDate ? new Date(initialEndDate) : today,
+  const [localEndDate, setLocalEndDate] = useState<string>(
+    initialEndDate
+      ? format(new Date(initialEndDate), "yyyy-MM-dd")
+      : format(today, "yyyy-MM-dd"),
   );
   const [localStartTime, setLocalStartTime] = useState(initialStartTime);
   const [localEndTime, setLocalEndTime] = useState(initialEndTime);
@@ -66,9 +70,10 @@ const EditableEventDate = ({
 
   const handleStartDateChange = (date: Date | undefined) => {
     if (date) {
-      setLocalStartDate(date); // Assurez-vous de ne définir la date que si elle est définie
-      if (!localEndDate || date > localEndDate) {
-        setLocalEndDate(date);
+      const formattedDate = format(date, "yyyy-MM-dd");
+      setLocalStartDate(formattedDate);
+      if (!localEndDate || new Date(formattedDate) > new Date(localEndDate)) {
+        setLocalEndDate(formattedDate);
       }
       updateTimeslots();
     }
@@ -76,12 +81,13 @@ const EditableEventDate = ({
 
   const handleEndDateChange = (date: Date | undefined) => {
     if (date) {
-      setLocalEndDate(date);
+      const formattedDate = format(date, "yyyy-MM-dd");
+      setLocalEndDate(formattedDate); // Stocker la date en format local
       updateTimeslots();
     }
   };
 
-  const generateDateRange = (start: Date, end: Date) => {
+  const generateDateRange = (start: string, end: string) => {
     const dates = [];
     const currentDate = new Date(start);
     const endDate = new Date(end);
@@ -93,7 +99,6 @@ const EditableEventDate = ({
 
     return dates;
   };
-
   // Fonction de mise à jour des tranches horaires selon les nouvelles dates
   const updateTimeslots = () => {
     if (useMultipleTimes && localStartDate && localEndDate) {
@@ -118,8 +123,8 @@ const EditableEventDate = ({
   // Handle updating the fields when the "Update" button is clicked
   const onUpdateClick = () => {
     const updatedData = {
-      startDate: localStartDate?.toISOString(),
-      endDate: localEndDate?.toISOString(),
+      startDate: localStartDate, // Utiliser la chaîne formatée pour la date
+      endDate: localEndDate, // Utiliser la chaîne formatée pour la date
       startTime: localStartTime,
       endTime: localEndTime,
       timeSlots: localTimeSlots,
@@ -127,10 +132,9 @@ const EditableEventDate = ({
     handleUpdate("date", updatedData); // Call the parent function to handle the update
     toggleEditMode(); // Exit edit mode
   };
-  const isSameDay = (date1: Date, date2: Date) => {
-    const d1 = date1 instanceof Date ? format(date1, "yyyy-MM-dd") : date1;
-    const d2 = date2 instanceof Date ? format(date2, "yyyy-MM-dd") : date2;
-    return d1 === d2;
+
+  const isSameDay = (date1: string, date2: string) => {
+    return date1 === date2;
   };
   return (
     <div>
@@ -187,7 +191,7 @@ const EditableEventDate = ({
           <PopoverContent className="w-auto p-0">
             <Calendar
               mode="single"
-              selected={localStartDate}
+              selected={localStartDate ? new Date(localStartDate) : undefined}
               onSelect={handleStartDateChange}
               fromDate={today}
               initialFocus
@@ -213,10 +217,10 @@ const EditableEventDate = ({
           <PopoverContent className="w-auto p-0">
             <Calendar
               mode="single"
-              selected={localEndDate}
+              selected={localEndDate ? new Date(localEndDate) : undefined}
               onSelect={handleEndDateChange}
               initialFocus
-              fromDate={localStartDate || today}
+              fromDate={localStartDate ? new Date(localStartDate) : today}
               locale={fr}
             />
           </PopoverContent>

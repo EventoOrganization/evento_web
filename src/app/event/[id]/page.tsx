@@ -381,9 +381,6 @@ const EventPage = () => {
       </div>
     );
   }
-
-  // Après cette vérification, toutes les références à `event` seront sûres.
-  console.log(event);
   return (
     <>
       <div className="md:grid-cols-2 grid grid-cols-1 w-full h-screen ">
@@ -450,7 +447,7 @@ const EventPage = () => {
                   </ul>
                 )}
 
-                <EventTimeSlots event={event} />
+                <EventTimeSlots event={event} renderDate={renderDate} />
                 <Button
                   variant={"default"}
                   className="flex gap-2 truncate max-w-full bg-evento-gradient text-white"
