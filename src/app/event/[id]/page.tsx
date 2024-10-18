@@ -408,7 +408,7 @@ const EventPage = () => {
                 ? ["Description", "Attendees", "Settings"]
                 : ["Description", "Attendees"]
             }
-            className="mb-4"
+            className="mb-10"
           />
           {selectedTab === "Description" && (
             <div className="space-y-4 pb-20 w-full">
