@@ -14,6 +14,9 @@ export type UserType = {
   token?: string;
   profileImage?: string;
   eventsAttended?: number;
+  followingUserIds?: string[];
+
+  followerUserIds?: string[];
   following?: number;
   isFollowingMe?: boolean;
   isIFollowingHim?: boolean;

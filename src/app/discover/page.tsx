@@ -107,7 +107,6 @@ const DiscoverPage = () => {
   const handleEventClick = (event: EventType) => {
     const storedEvent = events.find((ev) => ev._id === event._id);
     setSelectedEvent(storedEvent);
-    console.log("Selected event:", event);
     setIsEventModalOpen(true);
   };
   const resetDate = () => {
@@ -145,8 +144,8 @@ const DiscoverPage = () => {
           <span className="-translate-x-1.5">vents</span>
         </h2> */}
       </div>
-      <Section className="flex flex-col-reverse md:grid md:grid-cols-3  md:gap-0 items-start justify-end px-0">
-        <ul className="w-full space-y-6 col-span-2">
+      <Section className="flex flex-col-reverse md:grid grid-cols-2 lg:grid-cols-3  md:gap-0 items-start justify-end px-0">
+        <ul className="w-full space-y-6 lg:col-span-2">
           <li className="flex items-center sticky top-0 z-10 bg-muted py-4 flex-col gap-4 px-4">
             <TabSelector
               onChange={setSelectedTab}

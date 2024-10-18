@@ -102,7 +102,6 @@ const ConversationList = ({
       setActiveConversation(selectedConversation);
       router.push(`/chats?conversationId=${conversationId}`);
       setIsOpen(false);
-      console.log("Selected conversation:", selectedConversation);
       onSelectConversation(
         selectedConversation.title,
         selectedConversation.initialMedia[0].url,

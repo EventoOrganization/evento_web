@@ -22,14 +22,11 @@ export default function UserProfilePage({
       );
       if (profileRes && profileRes.data) {
         setProfileData(profileRes.data);
-        console.log("Fetched profile data:", profileRes.data);
       } else {
         console.log("Failed to fetch profile data");
       }
     } catch (error) {
       console.error("Error fetching profile data:", error);
-    } finally {
-      console.log("Finished fetching profile data");
     }
   };
   useEffect(() => {

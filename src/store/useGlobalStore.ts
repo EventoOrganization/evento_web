@@ -12,9 +12,14 @@ interface GlobalStoreState {
 
   // Setters
   setProfileData: (data: Partial<GlobalStoreState>) => void;
+  updateFollowingUserIds: (
+    userId: string,
+    action: "follow" | "unfollow",
+  ) => void;
   setInterests: (interests: InterestType[]) => void;
   setEvents: (events: EventType[]) => void;
   setUsers: (users: UserType[]) => void;
+  updateUser: (updateUser: Partial<UserType>) => void;
   addEvent: (newEvent: EventType) => void;
   deleteEvent: (eventId: string) => void;
   updateEventStatus: (
@@ -60,9 +65,37 @@ export const useGlobalStore = create<GlobalStoreState>()(
       users: [],
 
       setProfileData: (data) => set(data),
+      updateFollowingUserIds: (userId, action) => {
+        set((state) => {
+          if (!state.userInfo) return state;
+
+          // Initialiser followingUserIds comme un tableau vide si undefined
+          const currentFollowingIds = state.userInfo.followingUserIds || [];
+
+          const updatedFollowingIds =
+            action === "follow"
+              ? [...currentFollowingIds, userId]
+              : currentFollowingIds.filter((id) => id !== userId);
+
+          return {
+            userInfo: {
+              ...state.userInfo,
+              followingUserIds: updatedFollowingIds,
+            },
+          };
+        });
+      },
+
       setInterests: (interests) => set({ interests }),
       setEvents: (events) => set({ events }),
       setUsers: (users) => set({ users }),
+      updateUser: (updatedUser: Partial<UserType>) => {
+        set((state) => ({
+          users: state.users.map((user) =>
+            user._id === updatedUser._id ? { ...user, ...updatedUser } : user,
+          ),
+        }));
+      },
       updateEventStatus: (eventId, newStatus, user) => {
         set((state) => ({
           events: state.events.map((event) => {

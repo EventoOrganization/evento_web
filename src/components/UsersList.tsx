@@ -4,6 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useSession } from "@/contexts/SessionProvider";
 import AuthModal from "@/features/auth/components/AuthModal";
 import { useToast } from "@/hooks/use-toast";
+import { useGlobalStore } from "@/store/useGlobalStore";
 import { EventType } from "@/types/EventType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { XIcon } from "lucide-react";
@@ -34,6 +35,10 @@ const UsersList = ({
   const [isLoggedUser, setIsLoggedUser] = useState<boolean>(false);
   const isFollowingMe = user?.isFollowingMe;
   const session = useSession();
+  const { updateUser } = useGlobalStore((state) => ({
+    updateUser: state.updateUser,
+    users: state.users,
+  }));
   useEffect(() => {
     if (session?.user && user) {
       if (session.user._id === user._id) {
@@ -100,6 +105,10 @@ const UsersList = ({
       );
 
       if (response.ok) {
+        updateUser({
+          _id: user._id,
+          isIFollowingHim: !isIFollowingHim, // Changement du statut localement
+        });
         toast({
           title: "Success",
           description: `User is no longer a guest.`,
@@ -107,7 +116,7 @@ const UsersList = ({
           className: "bg-evento-gradient text-white",
         });
         if (removeUserLocally) removeUserLocally(user._id);
-        if (fetchUsers) fetchUsers();
+        // if (fetchUsers) fetchUsers();
       } else {
         console.error("Error:", response.error);
       }
@@ -155,9 +164,9 @@ const UsersList = ({
             className={`
           px-5 py-2 rounded-lg font-semibold text-white transition-all hover:scale-105 duration-300 hover:text-white
           ${isIFollowingHim && !isFollowingMe ? "bg-gray-400 hover:bg-gray-500 " : ""}
-          ${isFollowingMe && !isIFollowingHim ? "bg-eventoBlue hover:bg-eventoBlue/80 " : ""}
+          ${isFollowingMe && !isIFollowingHim ? "bg-green-600 hover:bg-green-600/80 " : ""}
           ${isFollowingMe && isIFollowingHim ? " bg-evento-gradient " : ""}
-          ${!isFollowingMe && !isIFollowingHim ? "bg-eventoPurpleLight hover:bg-gray-300 " : ""}
+          ${!isFollowingMe && !isIFollowingHim ? "bg-eventoBlue hover:bg-eventoBlue/80 " : ""}
           `}
             onClick={handleFollow}
             disabled={loading}
@@ -172,7 +181,7 @@ const UsersList = ({
                     ? "Unfollow"
                     : "Follow"}
           </Button>
-        )}{" "}
+        )}
         {event?.user._id === session?.user?._id &&
           (user.status === "tempGuest" || user.status === "guest") && (
             <Button

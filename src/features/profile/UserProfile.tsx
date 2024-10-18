@@ -6,16 +6,24 @@ import Section from "@/components/layout/Section";
 import TchatIcon from "@/components/TchatIcon";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import UserListModal from "@/components/UserListModal";
 import { useSession } from "@/contexts/SessionProvider";
 import { useSocket } from "@/contexts/SocketProvider";
 import EventSection from "@/features/event/components/EventSection";
 import { EventType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
-import { MessageCirclePlusIcon } from "lucide-react";
+import { EditIcon, MessageCirclePlusIcon, SettingsIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { useState } from "react";
 import { startPrivateChat } from "../chat/components/chatsActions";
+
+enum ModalType {
+  FOLLOWERS = "followers",
+  FOLLOWING = "following",
+}
+
 const UserProfile = ({
   profile,
   upcomingEvents,
@@ -31,6 +39,7 @@ const UserProfile = ({
 }) => {
   const router = useRouter();
   const pathname = usePathname();
+  const [modalType, setModalType] = useState<ModalType | "">("");
   const { conversations, updateConversations, setActiveConversation } =
     useSocket();
   const { user, token } = useSession();
@@ -58,8 +67,8 @@ const UserProfile = ({
   };
   return (
     <Section className="gap-6 md:pt-20 md:px-20">
-      <div className=" w-full lg:grid lg:grid-cols-3">
-        <div className="col-span-2 self-start w-full max-w-lg">
+      <div className=" w-full lg:grid lg:grid-cols-4">
+        <div className="col-span-3 self-start w-full max-w-lg">
           <div className="flex items-center w-full justify-between ">
             {profile?.profileImage ? (
               <Image
@@ -78,22 +87,25 @@ const UserProfile = ({
               </div>
             )}
             <>
-              <div className="flex flex-col items-center">
+              <Button className="h-fit flex flex-col items-center bg-transparent text-black hover:bg-transparent cursor-default">
                 <span className="font-bold text-xl">
                   {profile && profile.totalEventAttended !== undefined
                     ? profile.totalEventAttended
                     : 0}
                 </span>
                 <p>Event Attended</p>
-              </div>
-              <div className="flex flex-col items-center">
+              </Button>
+              <Button
+                className="h-fit flex flex-col items-center bg-transparent text-black hover:bg-gray-200"
+                onClick={() => setModalType(ModalType.FOLLOWING)}
+              >
                 <span className="font-bold text-xl">
-                  {profile && profile.following !== undefined
-                    ? profile.following
+                  {profile && profile.followingUserIds !== undefined
+                    ? profile.followingUserIds.length
                     : 0}
                 </span>
                 <p>Following</p>
-              </div>
+              </Button>
             </>
           </div>
           <div className="flex flex-col items-start gap-4 ">
@@ -130,26 +142,38 @@ const UserProfile = ({
         </div>
         <div>
           {pathname == "/profile" && (
-            <ul className="flex justify-evenly items-center gap-4 my-4">
-              <li>
-                <Button
+            <ul className="grid grid-cols-3 lg:grid-cols-1 items-center gap-4 my-4">
+              <li className="w-full">
+                <Link
+                  href={"/profile/edit"}
                   className={
-                    "bg-gray-200 text-black rounded-full px-8 hover:bg-gray-200/50 "
+                    "w-full inline-flex items-center justify-center gap-4  whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-gray-200/50 h-10 py-2 bg-gray-200 text-black rounded-full px-8"
                   }
-                  onClick={() => router.push("/profile/edit")}
                 >
-                  Edit Profile
-                </Button>
+                  <span className="hidden sm:block">Edit Profile</span>
+                  <EditIcon className="sm:hidden" />
+                </Link>
               </li>
-              <li>
+              <li className="w-full">
                 <Link
                   href={"/profile/settings"}
                   className={
-                    "inline-flex items-center justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-gray-200/50 h-10 py-2 bg-gray-200 text-black rounded-full px-8"
+                    "w-full inline-flex items-center justify-center gap-4 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-gray-200/50 h-10 py-2 bg-gray-200 text-black rounded-full px-8"
                   }
                 >
-                  Settings
+                  <span className="hidden sm:block">Settings</span>
+                  <SettingsIcon className="sm:hidden" />
                 </Link>
+              </li>
+              <li className="w-full">
+                <Button
+                  className={
+                    "bg-gray-200 text-black rounded-full px-8 hover:bg-gray-200/50 w-full"
+                  }
+                  onClick={() => setModalType(ModalType.FOLLOWERS)}
+                >
+                  Followers
+                </Button>
               </li>
             </ul>
           )}
@@ -192,6 +216,7 @@ const UserProfile = ({
           </div>
         )}
       </div>
+
       <EventSection
         title="Upcoming Events"
         events={upcomingEvents}
@@ -228,6 +253,16 @@ const UserProfile = ({
           noEventsMessage="There are no events at the moment. Explore Evento and create or host an event easily."
         />
       )}
+      <UserListModal
+        isOpen={!!modalType}
+        closeModal={() => setModalType("")}
+        title={modalType === ModalType.FOLLOWING ? "Following" : "Followers"}
+        userIds={
+          modalType === ModalType.FOLLOWING
+            ? profile?.followingUserIds || []
+            : profile?.followerUserIds || []
+        }
+      />
     </Section>
   );
 };
