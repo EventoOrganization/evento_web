@@ -41,7 +41,7 @@ const EventTimeSlots: React.FC<Props> = ({ event }) => {
 
   return (
     <div>
-      {event?.details?.timeSlots && (
+      {event?.details?.timeSlots && event?.details?.timeSlots?.length > 0 ? (
         <ul className="flex flex-col gap-2">
           {event.details.timeSlots.map((slot, index) => (
             <React.Fragment key={index}>
@@ -50,6 +50,10 @@ const EventTimeSlots: React.FC<Props> = ({ event }) => {
             </React.Fragment>
           ))}
         </ul>
+      ) : (
+        <p>
+          {event?.details?.startTime} - {event?.details?.endTime}
+        </p>
       )}
     </div>
   );
