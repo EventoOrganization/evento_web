@@ -18,7 +18,7 @@ interface EditableEventDateProps {
   startTime: string;
   endTime: string;
   timeSlots: TimeSlotType[];
-  onUpdateField: (field: string, value: any) => void; // Function passed from EventEdit to handle update
+  handleUpdate: (field: string, value: any) => Promise<void>; // Function passed from EventEdit to handle update
   handleCancel: () => void; // Function passed from EventEdit to handle cancel
   handleReset: () => void; // Function passed from EventEdit to handle reset
   isUpdating: boolean;
@@ -32,7 +32,7 @@ const EditableEventDate = ({
   startTime: initialStartTime,
   endTime: initialEndTime,
   timeSlots: initialTimeSlots,
-  onUpdateField,
+  handleUpdate,
   handleCancel,
   handleReset,
   isUpdating,
@@ -40,70 +40,98 @@ const EditableEventDate = ({
   toggleEditMode,
 }: EditableEventDateProps) => {
   const today = startOfDay(new Date());
+
+  // Local states for the form fields
+  const [localStartDate, setLocalStartDate] = useState<Date>(
+    initialStartDate ? new Date(initialStartDate) : today,
+  );
+  const [localEndDate, setLocalEndDate] = useState<Date>(
+    initialEndDate ? new Date(initialEndDate) : today,
+  );
+  const [localStartTime, setLocalStartTime] = useState(initialStartTime);
+  const [localEndTime, setLocalEndTime] = useState(initialEndTime);
+  const [localTimeSlots, setLocalTimeSlots] =
+    useState<TimeSlotType[]>(initialTimeSlots);
+
   const [useMultipleTimes, setUseMultipleTimes] = useState(false);
-  const [startDate, setStartDate] = useState<Date | undefined>(
-    initialStartDate ? new Date(initialStartDate) : undefined,
-  );
-  const [endDate, setEndDate] = useState<Date | undefined>(
-    initialEndDate ? new Date(initialEndDate) : undefined,
-  );
-  const [startTime, setStartTime] = useState(initialStartTime);
-  const [endTime, setEndTime] = useState(initialEndTime);
-  const [timeSlots, setTimeSlots] = useState<TimeSlotType[]>(initialTimeSlots);
 
   useEffect(() => {
-    // If the component is initialized with multiple dates, show the checkbox
     setUseMultipleTimes(initialTimeSlots.length > 1);
   }, [initialTimeSlots]);
 
+  const handleCheckboxChange = () => {
+    setUseMultipleTimes(!useMultipleTimes);
+    updateTimeslots();
+  };
+
   const handleStartDateChange = (date: Date | undefined) => {
-    setStartDate(date);
-    if (date && (!endDate || date > endDate)) {
-      setEndDate(date);
+    if (date) {
+      setLocalStartDate(date); // Assurez-vous de ne définir la date que si elle est définie
+      if (!localEndDate || date > localEndDate) {
+        setLocalEndDate(date);
+      }
+      updateTimeslots();
     }
   };
 
   const handleEndDateChange = (date: Date | undefined) => {
-    setEndDate(date);
-  };
-
-  const handleCheckboxChange = () => {
-    setUseMultipleTimes(!useMultipleTimes);
-    if (!useMultipleTimes && startDate && endDate) {
-      const dateRange = generateDateRange(startDate, endDate);
-      const newSlots = dateRange.map((date) => ({
-        date: date,
-        startTime: startTime || "08:00",
-        endTime: endTime || "18:00",
-      }));
-      setTimeSlots(newSlots);
-      onUpdateField("timeSlots", newSlots);
-    } else {
-      const singleSlot = [
-        {
-          date: startDate?.toISOString().split("T")[0] || "",
-          startTime: startTime || "08:00",
-          endTime: endTime || "18:00",
-        },
-      ];
-      setTimeSlots(singleSlot);
-      onUpdateField("timeSlots", singleSlot);
+    if (date) {
+      setLocalEndDate(date);
+      updateTimeslots();
     }
   };
 
-  const generateDateRange = (start: Date, end: Date): string[] => {
+  const generateDateRange = (start: Date, end: Date) => {
     const dates = [];
     const currentDate = new Date(start);
-    const lastDate = new Date(end);
+    const endDate = new Date(end);
 
-    while (currentDate <= lastDate) {
-      dates.push(new Date(currentDate).toISOString().split("T")[0]);
+    while (currentDate <= endDate) {
+      dates.push(format(currentDate, "yyyy-MM-dd"));
       currentDate.setDate(currentDate.getDate() + 1);
     }
 
     return dates;
   };
 
+  // Fonction de mise à jour des tranches horaires selon les nouvelles dates
+  const updateTimeslots = () => {
+    if (useMultipleTimes && localStartDate && localEndDate) {
+      const dateRange = generateDateRange(localStartDate, localEndDate);
+      const newSlots = dateRange.map((date) => ({
+        date,
+        startTime: "08:00", // Définir l'heure de début par défaut
+        endTime: "18:00", // Définir l'heure de fin par défaut
+      }));
+      setLocalTimeSlots(newSlots);
+    } else {
+      setLocalTimeSlots([]); // Réinitialiser si non applicable
+    }
+  };
+
+  useEffect(() => {
+    if (localStartDate && localEndDate) {
+      updateTimeslots(); // Mettre à jour chaque fois que les dates changent
+    }
+  }, [useMultipleTimes, localStartDate, localEndDate]);
+
+  // Handle updating the fields when the "Update" button is clicked
+  const onUpdateClick = () => {
+    const updatedData = {
+      startDate: localStartDate?.toISOString(),
+      endDate: localEndDate?.toISOString(),
+      startTime: localStartTime,
+      endTime: localEndTime,
+      timeSlots: localTimeSlots,
+    };
+    handleUpdate("date", updatedData); // Call the parent function to handle the update
+    toggleEditMode(); // Exit edit mode
+  };
+  const isSameDay = (date1: Date, date2: Date) => {
+    const d1 = date1 instanceof Date ? format(date1, "yyyy-MM-dd") : date1;
+    const d2 = date2 instanceof Date ? format(date2, "yyyy-MM-dd") : date2;
+    return d1 === d2;
+  };
   return (
     <div>
       <div className="flex justify-between">
@@ -111,7 +139,7 @@ const EditableEventDate = ({
         {editMode ? (
           <div className="flex gap-2">
             <Button
-              onClick={() => onUpdateField("date", startDate)}
+              onClick={onUpdateClick}
               disabled={isUpdating}
               className="bg-evento-gradient text-white"
             >
@@ -141,61 +169,63 @@ const EditableEventDate = ({
         )}
       </div>
 
-      <>
-        <div className="grid grid-cols-2 gap-4 mt-4">
-          {/* Start Date */}
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                variant="outline"
-                className="w-full justify-start text-left font-normal"
-                disabled={!editMode}
-              >
-                <CalendarIcon className="mr-2 h-4 w-4" />
-                {startDate
-                  ? format(startDate, "dd/MM/yyyy")
-                  : "Select start date"}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0">
-              <Calendar
-                mode="single"
-                selected={startDate}
-                onSelect={handleStartDateChange}
-                fromDate={today}
-                initialFocus
-                locale={fr}
-              />
-            </PopoverContent>
-          </Popover>
+      <div className="grid grid-cols-2 gap-4 mt-4">
+        {/* Start Date */}
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              className="w-full justify-start text-left font-normal"
+              disabled={!editMode}
+            >
+              <CalendarIcon className="mr-2 h-4 w-4" />
+              {localStartDate
+                ? format(localStartDate, "dd/MM/yyyy")
+                : "Select start date"}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0">
+            <Calendar
+              mode="single"
+              selected={localStartDate}
+              onSelect={handleStartDateChange}
+              fromDate={today}
+              initialFocus
+              locale={fr}
+            />
+          </PopoverContent>
+        </Popover>
 
-          {/* End Date */}
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                variant="outline"
-                className="w-full justify-start text-left font-normal"
-                disabled={!editMode}
-              >
-                <CalendarIcon className="mr-2 h-4 w-4" />
-                {endDate ? format(endDate, "dd/MM/yyyy") : "Select end date"}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0">
-              <Calendar
-                mode="single"
-                selected={endDate}
-                onSelect={handleEndDateChange}
-                initialFocus
-                fromDate={startDate || today}
-                locale={fr}
-              />
-            </PopoverContent>
-          </Popover>
-        </div>
-        {editMode && (
-          <>
-            {/* Checkbox to handle multiple time slots */}
+        {/* End Date */}
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              className="w-full justify-start text-left font-normal"
+              disabled={!editMode}
+            >
+              <CalendarIcon className="mr-2 h-4 w-4" />
+              {localEndDate
+                ? format(localEndDate, "dd/MM/yyyy")
+                : "Select end date"}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0">
+            <Calendar
+              mode="single"
+              selected={localEndDate}
+              onSelect={handleEndDateChange}
+              initialFocus
+              fromDate={localStartDate || today}
+              locale={fr}
+            />
+          </PopoverContent>
+        </Popover>
+      </div>
+
+      {editMode && (
+        <>
+          {!isSameDay(localStartDate, localEndDate) && (
             <div className="flex items-center mt-2">
               <Input
                 type="checkbox"
@@ -208,74 +238,72 @@ const EditableEventDate = ({
                 Add multiple time slots for each date
               </label>
             </div>
+          )}
 
-            <div className="mt-4">
-              {!useMultipleTimes ? (
-                <div className="grid grid-cols-2 gap-4 items-center mb-2">
+          <div className="mt-4">
+            {!useMultipleTimes ? (
+              <div className="grid grid-cols-2 gap-4 items-center mb-2">
+                <Input
+                  type="time"
+                  value={localStartTime || "08:00"}
+                  placeholder="Start Time"
+                  className="input"
+                  required
+                  onChange={(e) => setLocalStartTime(e.target.value)}
+                />
+                <Input
+                  type="time"
+                  value={localEndTime || "18:00"}
+                  placeholder="End Time"
+                  className="input"
+                  required
+                  onChange={(e) => setLocalEndTime(e.target.value)}
+                />
+              </div>
+            ) : (
+              localTimeSlots.map((slot, index) => (
+                <div
+                  key={index}
+                  className="grid grid-cols-3 gap-4 items-center mb-2"
+                >
+                  <Input
+                    type="date"
+                    value={slot.date || ""}
+                    className="input"
+                    readOnly
+                  />
                   <Input
                     type="time"
-                    value={startTime || "08:00"}
+                    value={slot.startTime || "08:00"}
                     placeholder="Start Time"
                     className="input"
-                    required
-                    onChange={(e) => setStartTime(e.target.value)}
+                    onChange={(e) =>
+                      setLocalTimeSlots((prevSlots) =>
+                        prevSlots.map((s, i) =>
+                          i === index ? { ...s, startTime: e.target.value } : s,
+                        ),
+                      )
+                    }
                   />
                   <Input
                     type="time"
-                    value={endTime || "18:00"}
+                    value={slot.endTime || "18:00"}
                     placeholder="End Time"
                     className="input"
-                    required
-                    onChange={(e) => setEndTime(e.target.value)}
+                    onChange={(e) =>
+                      setLocalTimeSlots((prevSlots) =>
+                        prevSlots.map((s, i) =>
+                          i === index ? { ...s, endTime: e.target.value } : s,
+                        ),
+                      )
+                    }
                   />
                 </div>
-              ) : (
-                timeSlots.map((slot, index) => (
-                  <div
-                    key={index}
-                    className="grid grid-cols-3 gap-4 items-center mb-2"
-                  >
-                    <Input
-                      type="date"
-                      value={slot.date || ""}
-                      className="input"
-                      readOnly
-                    />
-                    <Input
-                      type="time"
-                      value={slot.startTime || "08:00"}
-                      placeholder="Start Time"
-                      className="input"
-                      onChange={(e) =>
-                        setTimeSlots((prevSlots) =>
-                          prevSlots.map((s, i) =>
-                            i === index
-                              ? { ...s, startTime: e.target.value }
-                              : s,
-                          ),
-                        )
-                      }
-                    />
-                    <Input
-                      type="time"
-                      value={slot.endTime || "18:00"}
-                      placeholder="End Time"
-                      className="input"
-                      onChange={(e) =>
-                        setTimeSlots((prevSlots) =>
-                          prevSlots.map((s, i) =>
-                            i === index ? { ...s, endTime: e.target.value } : s,
-                          ),
-                        )
-                      }
-                    />
-                  </div>
-                ))
-              )}
-            </div>
-          </>
-        )}
-      </>
+              ))
+            )}
+          </div>
+        </>
+      )}
     </div>
   );
 };

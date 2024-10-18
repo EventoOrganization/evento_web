@@ -187,6 +187,22 @@ const EventPage = () => {
             required: question.required || false,
           }));
           break;
+        case "date":
+          // Mise à jour des dates et des créneaux horaires
+          updatedEvent.details.date = value.startDate;
+          updatedEvent.details.endDate = value.endDate;
+          updatedEvent.details.startTime = value.startTime;
+          updatedEvent.details.endTime = value.endTime;
+          if (Array.isArray(value.timeSlots)) {
+            updatedEvent.details.timeSlots = value.timeSlots.map(
+              (slot: any) => ({
+                date: slot.date || "",
+                startTime: slot.startTime || "08:00",
+                endTime: slot.endTime || "18:00",
+              }),
+            );
+          }
+
         default:
           console.warn("Unknown field", field);
       }
@@ -521,14 +537,14 @@ const EventPage = () => {
                   event={event}
                 />
               )}
-              {event?.details?.createRSVP && (
+              {event?.questions && event?.questions?.length > 0 && (
                 <RSVPSubmissionsList
                   title="RSVP Responses"
                   rsvp={rsvpSubmissions}
                 />
               )}
               <RefusedUsersList
-                title="Refused Users"
+                title="Refused Reasons"
                 refused={refusedStatuses || []}
               />
             </div>

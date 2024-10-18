@@ -12,12 +12,12 @@ const EventTimeSlots: React.FC<Props> = ({ event }) => {
     startTime: string;
     endTime: string;
   }) => {
-    // Parse the date and time as UTC and then convert to local time for display
+    // Parse the date without applying the UTC conversion
     const date = new Date(slot.date);
-    const startDate = new Date(
-      `${slot.date.split("T")[0]}T${slot.startTime}:00Z`,
-    ); // Ensure proper formatting
-    const endDate = new Date(`${slot.date.split("T")[0]}T${slot.endTime}:00Z`); // Ensure proper formatting
+
+    // Combine the date and time manually, without converting to UTC
+    const startDate = new Date(`${slot.date}T${slot.startTime}`);
+    const endDate = new Date(`${slot.date}T${slot.endTime}`);
 
     // Format options for date and time
     const dateOptions: Intl.DateTimeFormatOptions = {
@@ -42,14 +42,14 @@ const EventTimeSlots: React.FC<Props> = ({ event }) => {
   return (
     <div>
       {event?.details?.timeSlots && (
-        <div>
+        <ul className="flex flex-col gap-2">
           {event.details.timeSlots.map((slot, index) => (
             <React.Fragment key={index}>
-              <div className="">{formatTimeSlot(slot)}</div>
-              {index < (event.details?.timeSlots?.length ?? 0) - 1 && <br />}
+              <li className="">{formatTimeSlot(slot)}</li>
+              {index < (event.details?.timeSlots?.length ?? 0) - 1}
             </React.Fragment>
           ))}
-        </div>
+        </ul>
       )}
     </div>
   );

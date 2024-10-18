@@ -1,9 +1,11 @@
 // src/features/event/components/EventEdit.tsx
 import { useSession } from "@/contexts/SessionProvider";
+import { useToast } from "@/hooks/use-toast";
 import { useGlobalStore } from "@/store/useGlobalStore";
 import { EventType, InterestType, QuestionType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
+import { startOfDay } from "date-fns";
 import { useState } from "react";
 import CoHostManagementModal from "./CoHostManagementModal";
 import EditableEventDate from "./EditableEventDate";
@@ -24,6 +26,8 @@ const EventEdit = ({
   allUsers: UserType[];
   onUpdateField: (field: string, value: any) => void;
 }) => {
+  const { toast } = useToast();
+  const today = startOfDay(new Date());
   const [title, setTitle] = useState(event?.title || "");
   const [type, setType] = useState<string>(event?.eventType || "");
   const [mode, setMode] = useState<string>(event?.details?.mode || "");
@@ -88,12 +92,22 @@ const EventEdit = ({
       if (response.ok) {
         console.log(`${field} updated successfully`);
         console.log(response.data);
+        toast({
+          description: `${field} updated successfully`,
+          className: "bg-evento-gradient text-white",
+          duration: 3000,
+        });
         onUpdateField(field, value); // Call the callback to update the parent state
       } else {
         console.error("Error updating the event");
       }
     } catch (error) {
       console.error("Error updating the event", error);
+      toast({
+        description: "Error updating the event",
+        variant: "destructive",
+        duration: 3000,
+      });
     } finally {
       setIsUpdating(false);
       setEditMode({ ...editMode, [field]: false }); // Disable edit mode after updating
@@ -237,8 +251,8 @@ const EventEdit = ({
         setUrl("");
         break;
       case "date":
-        setStartDate("");
-        setEndDate("");
+        setStartDate(today.toString());
+        setEndDate(today.toString());
         setStartTime("08:00");
         setEndTime("18:00");
         setTimeSlots([]);
@@ -342,7 +356,7 @@ const EventEdit = ({
         startTime={startTime}
         endTime={endTime}
         timeSlots={timeSlots}
-        onUpdateField={handleUpdate}
+        handleUpdate={handleUpdate}
         handleCancel={() => handleCancel("date")}
         handleReset={() => handleReset("date")}
         isUpdating={isUpdating}
