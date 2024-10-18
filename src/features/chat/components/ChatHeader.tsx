@@ -4,19 +4,31 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useSocket } from "@/contexts/SocketProvider";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 const ChatHeader = () => {
   const { activeConversation } = useSocket();
+  const [animationClass, setAnimationClass] = useState("");
+  useEffect(() => {
+    if (activeConversation) {
+      setAnimationClass("animate-fade-in");
+      const timeout = setTimeout(() => {
+        setAnimationClass("");
+      }, 500);
+
+      return () => clearTimeout(timeout);
+    }
+  }, [activeConversation]);
   return (
-    <div className="fixed w-full flex items-center p-4 bg-evento-gradient text-white border-b z-10">
+    <div className="fixed w-full flex items-center p-4 bg-evento-gradient text-white border-b z-10 ">
       {activeConversation ? (
         <>
-          <div className="relative w-10 h-10 mr-3 ">
+          <div className={`relative w-10 h-10 mr-3 ${animationClass}`}>
             {activeConversation?.initialMedia[0]?.url ? (
               <Image
                 src={activeConversation?.initialMedia[0]?.url || ""}
                 alt={activeConversation?.title || ""}
                 fill
-                className="rounded-full"
+                className="rounded-full "
               />
             ) : (
               <Avatar className="w-10 h-10 rounded-full">
@@ -30,9 +42,9 @@ const ChatHeader = () => {
           </div>{" "}
         </>
       ) : (
-        <p className="py-2">Select a conversation</p>
+        <p className={`py-2 ${animationClass}`}>Select a conversation</p>
       )}
-      <h3 className="text-lg font-bold">
+      <h3 className={`text-lg font-bold ${animationClass}`}>
         {activeConversation && activeConversation.title}
       </h3>
     </div>

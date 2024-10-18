@@ -8,6 +8,7 @@ import { useSocket } from "@/contexts/SocketProvider";
 import { toast } from "@/hooks/use-toast";
 import { useGlobalStore } from "@/store/useGlobalStore";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
+import { ArrowLeftIcon } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -21,8 +22,12 @@ const ConversationList = ({
   onSelectConversation: (title: string, profileImageUrl: string) => void;
 }) => {
   const { token } = useSession();
-  const { conversations, updateConversations, setActiveConversation } =
-    useSocket();
+  const {
+    conversations,
+    updateConversations,
+    setActiveConversation,
+    activeConversation,
+  } = useSocket();
   const [suggestedUsers, setSuggestedUsers] = useState<any[]>([]);
   const router = useRouter();
   const { users } = useGlobalStore((state) => state);
@@ -146,7 +151,14 @@ const ConversationList = ({
   return (
     <div className="flex-1 overflow-y-auto p-4 bg-gray-300 h-full">
       <div className="flex items-center gap-2 mb-2">
-        <Button onClick={() => router.push("/profile")}>Profile</Button>
+        {activeConversation && (
+          <Button
+            className="animate-slideInLeft duration-100 hidden md:block"
+            onClick={() => setActiveConversation(false)}
+          >
+            <ArrowLeftIcon />
+          </Button>
+        )}
         <Input
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}

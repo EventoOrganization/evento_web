@@ -1,9 +1,11 @@
 "use client";
 
-import Burger from "@/components/Burger";
+import { useSocket } from "@/contexts/SocketProvider";
 import ChatHeader from "@/features/chat/components/ChatHeader";
 import ConversationList from "@/features/chat/components/ConversationList";
 import { cn } from "@/lib/utils";
+import { CircleArrowLeftIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function ChatLayout({
@@ -11,16 +13,26 @@ export default function ChatLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
+  const [isOpen, setIsOpen] = useState(true);
+  const { setActiveConversation } = useSocket();
   const handleSelectConversation = () => {
     setIsOpen(false);
   };
   return (
     <>
-      <Burger
-        isOpen={isOpen}
-        setIsOpen={setIsOpen}
-        className="z-10 absolute top-5 right-5 md:hidden"
+      <CircleArrowLeftIcon
+        className={cn(
+          "z-10 absolute top-4 right-5 md:hidden w-10 h-10 text-white transition-opacity duration-300",
+          {
+            "opacity-0": isOpen,
+          },
+        )}
+        onClick={() => {
+          setActiveConversation(false);
+          setIsOpen(true);
+          router.replace("/chats", undefined);
+        }}
       />
       <div className="h-screen w-screen fixed inset-0 md:pb-0">
         <div className="flex w-full h-full">
