@@ -24,7 +24,7 @@ const TabSelector = ({ onChange, tabs, className }: TabSelectorProps) => {
   return (
     <div
       className={cn(
-        "relative flex justify-around w-full md:text-xl gap-4",
+        "relative flex justify-around w-full md:text-xl gap-2 md:gap-4",
         className,
       )}
     >
@@ -33,7 +33,7 @@ const TabSelector = ({ onChange, tabs, className }: TabSelectorProps) => {
           <div
             key={tab}
             className={cn(
-              "cursor-pointer font-medium px-4 py-2 transition-all duration-300 ease-in-out rounded-lg text-center shadow-xl border-2 border-gray-300 flex justify-center items-center",
+              "cursor-pointer font-medium px-1 md:px-4 py-2 transition-all duration-300 ease-in-out rounded-lg text-center shadow border border-gray-300 flex justify-center items-center",
               {
                 "text-white bg-evento-gradient font-bold": activeTab === tab,
                 "text-gray-500 bg-gray-200 hover:bg-gray-300":

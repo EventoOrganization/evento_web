@@ -146,7 +146,7 @@ const DiscoverPage = () => {
       </div>
       <Section className="flex flex-col-reverse md:grid grid-cols-2 lg:grid-cols-3  md:gap-0 items-start justify-end px-0">
         <ul className="w-full space-y-6 lg:col-span-2">
-          <li className="flex items-center sticky top-0 z-10 bg-muted py-4 flex-col gap-4 px-4">
+          <li className="flex items-center sticky top-0 z-10 bg-muted p-2 md:p-4 flex-col gap-2">
             <TabSelector
               onChange={setSelectedTab}
               tabs={["All events", "Near me", "Virtual"]}
