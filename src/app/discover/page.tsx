@@ -146,7 +146,7 @@ const DiscoverPage = () => {
       </div>
       <Section className="flex flex-col-reverse md:grid grid-cols-2 lg:grid-cols-3  md:gap-0 items-start justify-end px-0">
         <ul className="w-full space-y-6 lg:col-span-2 ">
-          <li className="flex items-center sticky top-0 z-20 bg-muted p-2 md:p-4 flex-col gap-2 border-b shadow">
+          <li className="flex items-center sticky top-0 z-20 bg-muted p-2 md:p-4 flex-col gap-2 border-b shadow md:shadow-none md:border-none">
             <TabSelector
               onChange={setSelectedTab}
               tabs={["All events", "Near me", "Virtual"]}
@@ -174,7 +174,7 @@ const DiscoverPage = () => {
             <li className="text-muted-foreground text-center space-y-4">
               <p>No events found.</p>
               <Button asChild className="bg-evento-gradient hover:opacity-80">
-                <Link href="/create-event">Creat one today !</Link>
+                <Link href="/create-event">Create one today!</Link>
               </Button>
             </li>
           )}
@@ -302,7 +302,7 @@ const DiscoverPage = () => {
           </div>{" "}
           <div className="p-4 hidden md:block">
             <h4 className="text-purple-600 font-bold">Follow Suggestions</h4>
-            <ul className="space-y-4 py-4">
+            <ul className="space-y-4 py-4  mb-20">
               {session.isAuthenticated ? (
                 users.map((user: UserType) => (
                   <li key={user._id} className="flex justify-between">

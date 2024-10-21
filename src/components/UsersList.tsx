@@ -126,6 +126,7 @@ const UsersList = ({
       setLoading(false);
     }
   };
+  if (user?.username === "anonymous") return;
   return (
     <div className="flex justify-between w-full items-center">
       <Link href={`/profile/${user?._id}`} className="flex items-center gap-4">
@@ -137,11 +138,11 @@ const UsersList = ({
             alt="user image"
             width={500}
             height={500}
-            className="w-10 h-10 rounded-full"
+            className="min-w-10 w-10 h-10 rounded-full"
           />
         ) : (
-          <div className="flex flex-col">
-            <Avatar className="w-10 h-10 ">
+          <div className="flex flex-col min-w-10 w-10 h-10">
+            <Avatar className="min-w-10 w-10 h-10 ">
               <AvatarImage
                 src="https://github.com/shadcn.png"
                 className="rounded-full"
