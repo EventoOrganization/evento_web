@@ -93,7 +93,7 @@ const Event = ({ className, event }: { className?: string; event?: any }) => {
                     </h4>
                   ))}
                 {event.coHosts.length > 1 && (
-                  <h4 className="truncate text-sm md:text-base">
+                  <h4 className="truncate text-sm md:text-base md:ml-1">
                     & {event.coHosts?.length} more
                   </h4>
                 )}
