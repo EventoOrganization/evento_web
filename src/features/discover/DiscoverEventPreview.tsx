@@ -7,6 +7,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import EventActionIcons from "@/features/event/components/EventActionIcons";
 import { cn } from "@/lib/utils";
+import { useGlobalStore } from "@/store/useGlobalStore";
+import { EventType } from "@/types/EventType";
 import { Loader } from "lucide-react";
 import Image from "next/image";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
@@ -23,8 +25,11 @@ const DiscoverEventPreview = ({
   const eventEndDate = event.details?.endDate
     ? new Date(event.details.endDate)
     : null;
+  const events = useGlobalStore((state) => state.events);
+  const currentEvent = events.find((e: EventType) => e._id === event._id);
+  if (!currentEvent) return;
   const renderDate = () => {
-    if (!event || !event.details) return <Loader />;
+    if (!currentEvent || !event.details) return <Loader />;
     const startDate = event?.details?.date;
     const endDate = event?.details?.endDate;
     const formatDate = (dateString: string) => {
@@ -134,7 +139,7 @@ const DiscoverEventPreview = ({
             {eventEndDate && eventEndDate > currentDate && (
               <>
                 <AvatarStack event={event} />
-                <EventActionIcons event={event} />
+                <EventActionIcons event={currentEvent} />
               </>
             )}
             {eventEndDate && eventEndDate < currentDate && (

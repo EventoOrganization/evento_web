@@ -40,6 +40,7 @@ const RenderMedia = ({ event }: { event: EventType }) => {
   const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation();
   };
+
   return (
     <div
       onTouchStart={handleTouchStart}
