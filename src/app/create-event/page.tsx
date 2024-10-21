@@ -266,12 +266,6 @@ const CreateEventPage = () => {
           <span>Create </span>
           <span>Event</span>
         </h2>
-        {/* <h2 className="event-text animate-slideInRight flex opacity-0 items-center bg-evento-gradient text-white rounded shadow">
-          <span className=" flex justify-center items-center">
-            <img src="/logo.png" alt="E" className="w-12 h-12" />
-          </span>
-          <span className="-translate-x-1.5">Event</span>
-        </h2> */}
       </div>
       <div className=" w-full flex">
         <Section className=" max-w-5xl w-full justify-start ">

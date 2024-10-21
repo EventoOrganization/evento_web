@@ -63,10 +63,10 @@ const CreateEventCarousel = () => {
     <div className="relative w-full">
       {mediaPreviews?.length === 0 ? (
         <div className="relative w-full pb-[56.25%] cursor-pointer bg-evento-gradient">
-          <PlusIcon
-            onClick={openModal}
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full opacity-20 hover:opacity-60 z-10 transition-opacity duration-300"
-          />
+          <div className=" absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full opacity-40  hover:opacity-80 z-10 transition-opacity duration-300 flex flex-col justify-center items-center">
+            <PlusIcon onClick={openModal} className="w-36 h-36" />
+            <p className="">Upload Evento Photo / Video</p>
+          </div>
           <Image
             src="https://evento-media-bucket.s3.ap-southeast-2.amazonaws.com/evento-bg.jpg"
             alt="Evento standard background"
