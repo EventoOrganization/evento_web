@@ -18,7 +18,6 @@ import { handleFieldChange } from "@/features/event/eventActions";
 import { useToast } from "@/hooks/use-toast";
 import { useEventStore } from "@/store/useEventStore";
 import { useGlobalStore } from "@/store/useGlobalStore";
-import { useProfileStore } from "@/store/useProfileStore";
 import { EventType, InterestType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
@@ -30,14 +29,15 @@ const CreateEventPage = () => {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
-  const { addEvent, users, interests } = useGlobalStore((state) => state);
+  const { addEvent, users, interests, userInfo } = useGlobalStore(
+    (state) => state,
+  );
   const { isAuthenticated, token } = useSession();
   const [selectedInterests, setSelectedInterests] = useState<InterestType[]>(
     eventStore.interests || [],
   );
   const [location, setLocation] = useState({ lat: 0, lng: 0 });
   const { user } = useSession();
-  const { userInfo } = useProfileStore();
   useEffect(() => {
     setFormValues({
       title: eventStore.title || "",

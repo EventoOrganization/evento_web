@@ -151,7 +151,9 @@ const UsersList = ({
           </div>
         )}
         <ul>
-          <li className="font-bold">{user?.username}</li>
+          <li className="font-bold">
+            {user?.username.charAt(0).toUpperCase() + user?.username.slice(1)}
+          </li>
           <li className="text-sm">
             {user?.firstName} {user?.lastName}
           </li>

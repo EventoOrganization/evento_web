@@ -4,6 +4,7 @@ import LinkedinIcon from "@/components/icons/LinkedinIcon";
 import TiktokIcon from "@/components/icons/TiktokIcon";
 import Section from "@/components/layout/Section";
 import TchatIcon from "@/components/TchatIcon";
+import TruncatedText from "@/components/TruncatedText";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import UserListModal from "@/components/UserListModal";
@@ -68,8 +69,8 @@ const UserProfile = ({
   return (
     <Section className="gap-6 md:pt-20 md:px-20">
       <div className=" w-full lg:grid lg:grid-cols-4">
-        <div className="col-span-3 self-start w-full max-w-lg">
-          <div className="flex items-center w-full justify-between ">
+        <div className="col-span-3 self-start w-full ">
+          <div className="flex items-center w-full justify-between md:pr-20">
             {profile?.profileImage ? (
               <Image
                 src={profile?.profileImage}
@@ -111,7 +112,10 @@ const UserProfile = ({
           <div className="flex flex-col items-start gap-4 ">
             <ul className=" pt-4 text-start">
               <li className="font-semibold text-xl flex gap-2">
-                {profile && profile.username && profile.username}
+                {profile &&
+                  profile.username &&
+                  profile.username.charAt(0).toUpperCase() +
+                    profile.username.slice(1)}
                 {user &&
                   pathname.startsWith("/profile/") &&
                   user._id !== profile?._id && (
@@ -124,7 +128,11 @@ const UserProfile = ({
                     </span>
                   )}
               </li>
-              <li>{profile && profile.bio && profile.bio}</li>
+              {/* <li>{profile && profile.bio && profile.bio}</li> */}
+              <TruncatedText
+                className="px-0"
+                text={(profile && profile.bio && profile.bio) || ""}
+              />
               {profile && profile.URL && (
                 <li>
                   <Link
@@ -142,7 +150,7 @@ const UserProfile = ({
         </div>
         <div>
           {pathname == "/profile" && (
-            <ul className="grid grid-cols-3 lg:grid-cols-1 items-center gap-4 my-4">
+            <ul className="grid grid-cols-3 lg:grid-cols-1 items-center gap-4 my-4 md:p-4">
               <li className="w-full">
                 <Link
                   href={"/profile/edit"}

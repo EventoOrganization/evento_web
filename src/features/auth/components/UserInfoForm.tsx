@@ -65,7 +65,7 @@ const UserInfoForm = ({ onAuthSuccess }: { onAuthSuccess: () => void }) => {
       );
       if (updateRes.error) {
         toast({
-          description: "Failed to update user info",
+          description: `${updateRes.error}`,
           variant: "destructive",
           duration: 3000,
         });

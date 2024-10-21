@@ -64,7 +64,24 @@ export const useGlobalStore = create<GlobalStoreState>()(
       events: [],
       users: [],
 
-      setProfileData: (data) => set(data),
+      setProfileData: (data: Partial<UserType>) => {
+        set((state) => {
+          if (!state.userInfo) return state;
+
+          const updatedUserInfo: UserType = {
+            ...state.userInfo,
+            ...data,
+            _id: data._id || state.userInfo._id,
+            username: data.username || state.userInfo.username,
+          };
+
+          return {
+            ...state,
+            userInfo: updatedUserInfo,
+          };
+        });
+      },
+
       updateFollowingUserIds: (userId, action) => {
         set((state) => {
           if (!state.userInfo) return state;

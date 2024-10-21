@@ -25,11 +25,11 @@ const TruncatedText = ({
   const toggleText = () => setIsExpanded(!isExpanded);
 
   return (
-    <div className=" p-4 text-sm w-full ">
+    <div className="text-sm w-full ">
       <p
         ref={textRef}
         className={cn(
-          `${isExpanded ? "" : "line-clamp-2"} break-words w-full  whitespace-pre-wrap`,
+          `${isExpanded ? "" : "line-clamp-2"} p-4 break-words w-full  whitespace-pre-wrap`,
           className,
         )}
         style={{ display: "-webkit-box", WebkitBoxOrient: "vertical" }}

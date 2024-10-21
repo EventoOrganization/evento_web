@@ -52,6 +52,7 @@ const EditProfilePage = () => {
 
   // Sync userInfo into formData when userInfo changes (if needed)
   useEffect(() => {
+    console.log("Updated userInfo:", userInfo);
     if (userInfo) {
       setFormData({
         username: userInfo.username || "",
@@ -184,24 +185,25 @@ const EditProfilePage = () => {
       );
 
       if (updateRes.error) {
+        console.log(updateRes);
         toast({
-          description: "Failed to update profile",
+          description: `${updateRes.error}`,
           variant: "destructive",
           duration: 3000,
         });
+        return;
       } else {
         toast({
           description: "Profile updated successfully",
           className: "bg-evento-gradient-button text-white",
           duration: 3000,
         });
-        // Optionally: refresh the profile data
+        console.log("updated profile", updateRes.data.username);
         setProfileData(updateRes.data);
+        router.push("/profile");
       }
     } catch (error) {
       console.error("Error updating profile:", error);
-    } finally {
-      router.push("/profile");
     }
   };
   useEffect(() => {
