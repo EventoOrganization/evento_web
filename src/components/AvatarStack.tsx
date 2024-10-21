@@ -23,10 +23,10 @@ const AvatarStack = ({ event }: { event: EventType }) => {
     setFriends(filteredFriends);
   }, []);
   return (
-    <div className="flex items-center space-x-2">
+    <div className="flex items-center">
       <div className="flex -space-x-3 overflow-hidden">
         {friends.slice(0, 3).map((friend, index) => (
-          <div key={index}>
+          <div key={index} className="mr-2">
             {friend.profileImage ? (
               <Image
                 key={index}

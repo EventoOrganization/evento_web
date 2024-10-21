@@ -81,7 +81,10 @@ const Event = ({ className, event }: { className?: string; event?: any }) => {
               )}
               <div className="flex flex-wrap overflow-hidden">
                 <h4 className="truncate text-sm md:text-base">
-                  {(event && event?.user.username) || ""}
+                  {(event &&
+                    event?.user.username.charAt(0).toUpperCase() +
+                      event?.user.username.slice(1)) ||
+                    ""}
                 </h4>
                 {event.coHosts.length === 1 &&
                   event.coHosts.map((coHost: any) => (
@@ -89,7 +92,9 @@ const Event = ({ className, event }: { className?: string; event?: any }) => {
                       className="truncate text-sm md:ml-1 md:text-base"
                       key={coHost.user_id._id}
                     >
-                      & {coHost?.user_id?.username}
+                      &{" "}
+                      {coHost?.user_id?.username.charAt(0).toUpperCase() +
+                        coHost?.user_id?.username.slice(1)}
                     </h4>
                   ))}
                 {event.coHosts.length > 1 && (
@@ -142,7 +147,10 @@ const Event = ({ className, event }: { className?: string; event?: any }) => {
                   }
                 }}
               >
-                <MapPinIcon2 fill="#7858C3" className="text-muted w-5 h-5" />
+                <MapPinIcon2
+                  fill="#7858C3"
+                  className="text-muted min-w-3 min-h-3 w-5 h-5"
+                />
                 <span className="truncate">
                   {event && event?.details?.location}
                 </span>
@@ -151,7 +159,10 @@ const Event = ({ className, event }: { className?: string; event?: any }) => {
                 {event?.details?.startTime} - {event?.details?.endTime}
               </p>
             </div>
-            <TruncatedText text={event?.details?.description} />
+            <TruncatedText
+              className="px-0"
+              text={event?.details?.description}
+            />
           </div>
           <div className="flex justify-between items-center">
             <div>

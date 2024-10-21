@@ -17,15 +17,19 @@ const TruncatedText = ({
 
   useEffect(() => {
     if (textRef.current) {
-      setIsOverflowing(
-        textRef.current.scrollHeight > textRef.current.clientHeight,
+      const overflow =
+        textRef.current.scrollHeight > textRef.current.clientHeight;
+      console.log(
+        `scrollHeight: ${textRef.current.scrollHeight}, clientHeight: ${textRef.current.clientHeight}, text length: ${text.length}`,
       );
+
+      setIsOverflowing(overflow && text.length > 100);
     }
   }, [text]);
   const toggleText = () => setIsExpanded(!isExpanded);
 
   return (
-    <div className="text-sm w-full ">
+    <div className="text-sm w-full mb-2">
       <p
         ref={textRef}
         className={cn(

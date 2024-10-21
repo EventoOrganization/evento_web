@@ -165,7 +165,7 @@ const DiscoverPage = () => {
               <li
                 key={event._id}
                 onClick={() => handleEventClick(event)}
-                className="px-4"
+                className="px-2 md:px-4"
               >
                 <Event event={event} />
               </li>
