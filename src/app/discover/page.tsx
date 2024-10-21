@@ -23,7 +23,7 @@ import { useGlobalStore } from "@/store/useGlobalStore";
 import { EventType, InterestType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
 import { format, startOfDay } from "date-fns";
-import { fr } from "date-fns/locale";
+import { enUS } from "date-fns/locale";
 import {
   Calendar as CalendarIcon,
   MenuIcon,
@@ -137,12 +137,6 @@ const DiscoverPage = () => {
         <h2 className="animate-slideInLeft font-black opacity-0">
           <span>Discover Events</span>
         </h2>
-        {/* <h2 className="event-text animate-slideInRight flex opacity-0 items-center bg-evento-gradient text-white rounded shadow">
-          <span className=" flex justify-center items-center">
-            <img src="/logo.png" alt="E" className="w-12 h-12" />
-          </span>
-          <span className="-translate-x-1.5">vents</span>
-        </h2> */}
       </div>
       <Section className="flex flex-col-reverse md:grid grid-cols-2 lg:grid-cols-3  md:gap-0 items-start justify-end px-0">
         <ul className="w-full space-y-6 lg:col-span-2 ">
@@ -194,7 +188,6 @@ const DiscoverPage = () => {
             onClick={() => setToggleSearch(!toggleSearch)}
           />
           <div className="flex flex-col gap-2 md:p-4 py-0 pt-0 rounded bg-muted">
-            {/* <LocationSelector onLocationChange={setLocation} /> */}
             <MyGoogleMapComponent
               location={location || { lat: 0, lng: 0 }}
               setLocation={setLocation}
@@ -247,7 +240,7 @@ const DiscoverPage = () => {
                     onSelect={handleStartDateChange}
                     initialFocus
                     fromDate={today}
-                    locale={fr}
+                    locale={enUS}
                   />
                 </PopoverContent>
               </Popover>
@@ -272,7 +265,7 @@ const DiscoverPage = () => {
                     onSelect={handleEndDateChange}
                     initialFocus
                     fromDate={startDate || today}
-                    locale={fr}
+                    locale={enUS}
                   />
                 </PopoverContent>
               </Popover>

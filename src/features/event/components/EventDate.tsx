@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/popover";
 import { useEventStore } from "@/store/useEventStore";
 import { format, startOfDay } from "date-fns";
-import { fr } from "date-fns/locale";
+import { enUS } from "date-fns/locale";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { handleFieldChange } from "../eventActions";
@@ -149,7 +149,7 @@ const EventDate = () => {
               onSelect={handleStartDateChange}
               fromDate={today}
               initialFocus
-              locale={fr}
+              locale={enUS}
             />
           </PopoverContent>
         </Popover>
@@ -181,7 +181,7 @@ const EventDate = () => {
               onSelect={handleEndDateChange}
               initialFocus
               fromDate={startDate || today}
-              locale={fr}
+              locale={enUS}
             />
           </PopoverContent>
         </Popover>
