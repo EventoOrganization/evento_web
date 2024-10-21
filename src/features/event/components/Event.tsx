@@ -56,11 +56,11 @@ const Event = ({ className, event }: { className?: string; event?: any }) => {
         )}
       >
         <div className=" ">
-          <div className="flex items-center justify-between gap-4 mb-4 ">
+          <div className="grid grid-cols-4 items-center justify-between gap-4 mb-4 ">
             <Link
               href={`/profile/${event?.user?._id}`}
               onClick={(e) => e.stopPropagation()}
-              className="flex items-center gap-2 "
+              className="flex items-center gap-2 col-span-2"
             >
               {event?.user?.profileImage ? (
                 <Image
@@ -79,18 +79,29 @@ const Event = ({ className, event }: { className?: string; event?: any }) => {
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
               )}
-              <h4 className="ml-2">{(event && event?.user.username) || ""}</h4>
-              {event.coHosts.length === 1 &&
-                event.coHosts.map((coHost: any) => (
-                  <h4 key={coHost.user_id._id}>
-                    & {coHost?.user_id?.username}
+              <div className="flex flex-wrap overflow-hidden">
+                <h4 className="truncate text-sm md:text-base">
+                  {(event && event?.user.username) || ""}
+                </h4>
+                {event.coHosts.length === 1 &&
+                  event.coHosts.map((coHost: any) => (
+                    <h4
+                      className="truncate text-sm md:ml-1 md:text-base"
+                      key={coHost.user_id._id}
+                    >
+                      & {coHost?.user_id?.username}
+                    </h4>
+                  ))}
+                {event.coHosts.length > 1 && (
+                  <h4 className="truncate text-sm md:text-base">
+                    & {event.coHosts?.length} more
                   </h4>
-                ))}
-              {event.coHosts.length > 1 && (
-                <h4>& {event.coHosts?.length} more</h4>
-              )}
+                )}
+              </div>
             </Link>
-            <span className="text-sm text-right">{renderDate()}</span>
+            <span className="text-sm text-right col-span-2">
+              {renderDate()}
+            </span>
           </div>
           <div>
             {pathname === "/discover" ? (
