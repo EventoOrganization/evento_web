@@ -64,6 +64,7 @@
     "react-datepicker": "^7.3.0",
     "react-day-picker": "8.10.1",
     "react-dom": "^18",
+    "react-easy-crop": "^5.1.0",
     "react-google-autocomplete": "^2.7.3",
     "react-google-places-autocomplete": "^4.0.1",
     "react-hook-form": "^7.52.2",

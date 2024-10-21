@@ -77,7 +77,7 @@ const UserProfile = ({
                 alt="user image"
                 width={500}
                 height={500}
-                className="w-20 h-20 md:w-36 md:h-36 rounded-full"
+                className="w-20 h-20 md:w-36 md:h-36 object-cover rounded-full"
               />
             ) : (
               <div className="flex flex-col">

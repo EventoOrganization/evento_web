@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useSession } from "@/contexts/SessionProvider";
+import EditProfileImage from "@/features/profile/EditProfileImage";
 import { useToast } from "@/hooks/use-toast";
 import { useGlobalStore } from "@/store/useGlobalStore";
 import { InterestType } from "@/types/EventType";
@@ -12,7 +13,6 @@ import { cn } from "@nextui-org/theme";
 import { useJsApiLoader } from "@react-google-maps/api";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-
 // Social media platforms list
 const socialPlatforms = ["instagram", "linkedin", "tiktok"];
 const libraries: ("places" | "geometry" | "drawing" | "visualization")[] = [
@@ -21,12 +21,15 @@ const libraries: ("places" | "geometry" | "drawing" | "visualization")[] = [
 const EditProfilePage = () => {
   const session = useSession();
   const [interests, setInterests] = useState<InterestType[]>([]);
+
   const { setProfileData } = useGlobalStore((state) => state);
   const userInfo = useGlobalStore((state) => state.userInfo);
   const { toast } = useToast();
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
-
+  const [croppedProfileImage, setCroppedProfileImage] = useState<string | null>(
+    userInfo?.profileImage || "",
+  );
   const [autocomplete, setAutocomplete] =
     useState<google.maps.places.Autocomplete | null>(null);
   const { isLoaded } = useJsApiLoader({
@@ -45,14 +48,16 @@ const EditProfilePage = () => {
     DOB: userInfo?.DOB || "",
     interests: userInfo?.interests || [],
     socialLinks: userInfo?.socialLinks || [{ platform: "", url: "" }],
+    profileImage: userInfo?.profileImage || "",
   });
 
   // State for the profile image file
-  const [profileImage, setProfileImage] = useState<File | null>(null);
-
+  // const [profileImage, setProfileImage] = useState<File | null>(null);
+  const handleUpdateCroppedImage = (croppedImage: string | null) => {
+    setCroppedProfileImage(croppedImage);
+  };
   // Sync userInfo into formData when userInfo changes (if needed)
   useEffect(() => {
-    console.log("Updated userInfo:", userInfo);
     if (userInfo) {
       setFormData({
         username: userInfo.username || "",
@@ -64,6 +69,7 @@ const EditProfilePage = () => {
         DOB: userInfo.DOB || "",
         interests: userInfo.interests || [],
         socialLinks: userInfo.socialLinks || [],
+        profileImage: userInfo.profileImage || "",
       });
     }
   }, [userInfo]);
@@ -123,13 +129,6 @@ const EditProfilePage = () => {
     setFormData({ ...formData, socialLinks: updatedLinks });
   };
 
-  // Handle file input change for the profile image
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setProfileImage(e.target.files[0]);
-    }
-  };
-
   // Handle interest selection change
   const handleInterestsChange = (selectedInterest: InterestType) => {
     const isSelected = formData.interests.some(
@@ -161,7 +160,13 @@ const EditProfilePage = () => {
     if (formData.socialLinks.length > 0) {
       dataToSend.append("socialLinks", JSON.stringify(formData.socialLinks));
     }
-
+    // add ProfileImage
+    if (croppedProfileImage) {
+      const response = await fetch(croppedProfileImage);
+      const blob = await response.blob();
+      const file = new File([blob], "profile.jpg", { type: "image/jpeg" });
+      dataToSend.append("profileImage", file);
+    }
     // Add interests
     if (formData.interests.length > 0) {
       const interestIds = formData.interests.map(
@@ -170,12 +175,6 @@ const EditProfilePage = () => {
       dataToSend.append("interest", JSON.stringify(interestIds));
     }
 
-    // Add profile image if selected
-    if (profileImage) {
-      dataToSend.append("profileImage", profileImage);
-    }
-
-    // Make API call to update the profile
     try {
       const updateRes = await fetchData<any>(
         "/profile/updateProfile",
@@ -198,7 +197,6 @@ const EditProfilePage = () => {
           className: "bg-evento-gradient-button text-white",
           duration: 3000,
         });
-        console.log("updated profile", updateRes.data.username);
         setProfileData(updateRes.data);
         router.push("/profile");
       }
@@ -241,13 +239,22 @@ const EditProfilePage = () => {
     <div className="container mx-auto max-w-lg py-10">
       <h1 className="text-2xl font-semibold mb-6">Edit Profile</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Profile Image */}
+
+        <EditProfileImage
+          userInfo={userInfo || undefined}
+          onUpdateImage={handleUpdateCroppedImage}
+        />
         {/* Username */}
         <div>
           <Label htmlFor="username">Username</Label>
           <Input
             type="text"
             name="username"
-            value={formData.username}
+            value={
+              formData.username.charAt(0).toUpperCase() +
+              formData.username.slice(1)
+            }
             onChange={handleChange}
           />
         </div>
@@ -336,12 +343,6 @@ const EditProfilePage = () => {
             value={formData.DOB}
             onChange={handleChange}
           />
-        </div>
-
-        {/* Profile Image */}
-        <div>
-          <Label htmlFor="profileImage">Profile Image</Label>
-          <Input type="file" accept="image/*" onChange={handleFileChange} />
         </div>
 
         {/* Social Links */}

@@ -1,6 +1,5 @@
 "use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   FormControl,
@@ -10,9 +9,11 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useSession } from "@/contexts/SessionProvider";
+import EditProfileImage from "@/features/profile/EditProfileImage";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/store/useAuthStore";
+import { useGlobalStore } from "@/store/useGlobalStore";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
@@ -21,28 +22,30 @@ import { z } from "zod";
 
 const userInfoSchema = z.object({
   username: z.string().min(1, "Username is required"),
-  profileImage: z.instanceof(File).optional(),
+  profileImage: z.string().optional(),
 });
 
 const UserInfoForm = ({ onAuthSuccess }: { onAuthSuccess: () => void }) => {
   const [isFetching, setIsFetching] = useState(false);
   const { toast } = useToast();
   const { setUser } = useAuthStore();
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const session = useSession();
+  const setProfileData = useGlobalStore((state) => state.setProfileData);
+  const [croppedProfileImage, setCroppedProfileImage] = useState<string | null>(
+    session?.user?.profileImage || null,
+  );
+
   const form = useForm<z.infer<typeof userInfoSchema>>({
     resolver: zodResolver(userInfoSchema),
     defaultValues: {
-      username: "",
-      profileImage: undefined,
+      username: session?.user?.username || "",
+      profileImage: croppedProfileImage || "",
     },
   });
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setSelectedImage(URL.createObjectURL(file));
-      form.setValue("profileImage", file);
-    }
+
+  const handleUpdateCroppedImage = (croppedImage: string | null) => {
+    setCroppedProfileImage(croppedImage);
+    form.setValue("profileImage", croppedImage || "");
   };
 
   const onSubmit: SubmitHandler<z.infer<typeof userInfoSchema>> = async (
@@ -52,8 +55,13 @@ const UserInfoForm = ({ onAuthSuccess }: { onAuthSuccess: () => void }) => {
     const formData = new FormData();
 
     formData.append("username", data.username);
-    if (data.profileImage) {
-      formData.append("profileImage", data.profileImage);
+
+    // Si une image est recadrée, la transformer en blob
+    if (croppedProfileImage) {
+      const response = await fetch(croppedProfileImage);
+      const blob = await response.blob();
+      const file = new File([blob], "profile.jpg", { type: "image/jpeg" });
+      formData.append("profileImage", file);
     }
 
     try {
@@ -63,6 +71,7 @@ const UserInfoForm = ({ onAuthSuccess }: { onAuthSuccess: () => void }) => {
         formData,
         session?.token,
       );
+
       if (updateRes.error) {
         toast({
           description: `${updateRes.error}`,
@@ -75,15 +84,16 @@ const UserInfoForm = ({ onAuthSuccess }: { onAuthSuccess: () => void }) => {
           className: "bg-evento-gradient-button text-white",
           duration: 3000,
         });
+
         const updatedUser = {
-          _id: updateRes.data._id, // S'assurer que vous récupérez l'ID
-          email: updateRes.data.email, // S'assurer que vous récupérez l'email
+          _id: updateRes.data._id,
+          email: updateRes.data.email,
           username: data.username,
-          profileImage: updateRes.data.profileImage || selectedImage,
-          // Ajouter toute autre propriété nécessaire
+          profileImage: updateRes.data.profileImage || croppedProfileImage,
         };
 
-        setUser(updatedUser); // Passer un objet complet conforme à UserType
+        setUser(updatedUser);
+        setProfileData(updateRes.data);
         onAuthSuccess();
       }
     } catch (err) {
@@ -104,38 +114,10 @@ const UserInfoForm = ({ onAuthSuccess }: { onAuthSuccess: () => void }) => {
           onSubmit={form.handleSubmit(onSubmit)}
           className="flex flex-col gap-4 items-center"
         >
-          {/* Avatar section */}
-          <FormField
-            control={form.control}
-            name="profileImage"
-            render={() => (
-              <FormItem className="w-full flex flex-col items-center">
-                <FormLabel className="sr-only">Profile Image</FormLabel>
-                <label
-                  htmlFor="file-input"
-                  className="text-eventoPurple underline cursor-pointer mt-2"
-                >
-                  <Avatar className="w-20 h-20 md:w-36 md:h-36 cursor-pointer">
-                    <AvatarImage
-                      src={selectedImage || "https://github.com/shadcn.png"}
-                    />
-                    <AvatarFallback>CN</AvatarFallback>
-                  </Avatar>
-                </label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  id="file-input"
-                  onChange={handleImageChange}
-                />
-                {form.formState.errors.profileImage && (
-                  <p className="text-sm font-medium text-destructive">
-                    {form.formState.errors.profileImage.message}
-                  </p>
-                )}
-              </FormItem>
-            )}
+          {/* Avatar section avec composant de recadrage */}
+          <EditProfileImage
+            userInfo={session.user || undefined}
+            onUpdateImage={handleUpdateCroppedImage}
           />
 
           {/* Username input */}

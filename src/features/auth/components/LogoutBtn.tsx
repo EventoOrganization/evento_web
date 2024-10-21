@@ -42,6 +42,7 @@ const LogoutBtn = () => {
   const clearStorageAndCookies = () => {
     // Clear sessionStorage by default
     sessionStorage.clear();
+    localStorage.clear();
 
     // Check if rememberMe was true and clear localStorage if needed
     const rememberMe = JSON.parse(
