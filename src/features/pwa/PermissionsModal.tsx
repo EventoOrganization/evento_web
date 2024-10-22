@@ -301,6 +301,10 @@ const PermissionsModal = () => {
   };
 
   const renderButtons = () => {
+    if (typeof window === "undefined") {
+      return null;
+    }
+
     const permissions = JSON.parse(
       localStorage.getItem(localStorageKey) || "{}",
     );
