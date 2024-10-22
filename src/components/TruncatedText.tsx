@@ -19,9 +19,9 @@ const TruncatedText = ({
     if (textRef.current) {
       const overflow =
         textRef.current.scrollHeight > textRef.current.clientHeight;
-      console.log(
-        `scrollHeight: ${textRef.current.scrollHeight}, clientHeight: ${textRef.current.clientHeight}, text length: ${text.length}`,
-      );
+      // console.log(
+      //   `scrollHeight: ${textRef.current.scrollHeight}, clientHeight: ${textRef.current.clientHeight}, text length: ${text.length}`,
+      // );
 
       setIsOverflowing(overflow && text.length > 100);
     }

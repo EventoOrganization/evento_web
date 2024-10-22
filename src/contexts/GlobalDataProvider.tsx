@@ -14,6 +14,7 @@ const GlobalDataProvider: React.FC<{ children: React.ReactNode }> = ({
     refreshEvents,
     refreshInterests,
     refreshUsers,
+    checkPermissions,
   } = useGlobalStore(); // Accès aux loaders et refreshers du store
   const { user, token } = useSession();
   // Fonction pour gérer le rafraîchissement des données
@@ -24,6 +25,7 @@ const GlobalDataProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   useEffect(() => {
+    checkPermissions();
     loadInterests();
     loadEvents(user || undefined);
     if (user?._id && token) {
