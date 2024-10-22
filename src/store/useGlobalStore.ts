@@ -285,7 +285,7 @@ export const useGlobalStore = create<GlobalStoreState>()(
             if (
               JSON.stringify(currentInterests) !== JSON.stringify(newInterests)
             ) {
-              console.log("New Interests !", currentInterests, newInterests);
+              // console.log("New Interests !", currentInterests, newInterests);
               set({ interests: newInterests });
             }
           }
