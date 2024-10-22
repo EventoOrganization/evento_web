@@ -1,3 +1,5 @@
+import withPWA from "next-pwa";
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
@@ -5,15 +7,21 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "evento-media-bucket.s3.ap-southeast-2.amazonaws.com",
-        pathname: "/**", // Autorise toutes les images sous ce domaine
+        pathname: "/**",
       },
       {
         protocol: "https",
         hostname: "github.com",
-        pathname: "/**", // Pour les images de GitHub si nécessaire
+        pathname: "/**",
       },
     ],
   },
 };
 
-export default nextConfig;
+// Configuration de PWA ici
+export default withPWA({
+  dest: "public",
+  register: true,
+  skipWaiting: true,
+  mode: process.env.NODE_ENV === "production" ? "production" : "development",
+})(nextConfig);
