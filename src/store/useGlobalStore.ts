@@ -9,16 +9,8 @@ interface GlobalStoreState {
   interests: InterestType[];
   events: EventType[];
   users: UserType[];
-  permissions: {
-    notifications: NotificationPermission | null;
-    geolocation: PermissionState | null;
-  };
-
   // Setters
-  setPermissions: (permissions: {
-    notifications: NotificationPermission | null;
-    geolocation: PermissionState | null;
-  }) => void;
+
   setProfileData: (data: Partial<GlobalStoreState>) => void;
   updateFollowingUserIds: (
     userId: string,
@@ -50,7 +42,6 @@ interface GlobalStoreState {
   refreshEvents: (user?: UserType) => Promise<void>;
   refreshUsers: (userId: string, token: string) => Promise<void>;
   // Permission checker
-  checkPermissions: () => Promise<void>;
 }
 
 const customStorage = {
@@ -73,42 +64,7 @@ export const useGlobalStore = create<GlobalStoreState>()(
       interests: [],
       events: [],
       users: [],
-      permissions: {
-        notifications: null,
-        geolocation: null,
-      },
 
-      setPermissions: (permissions) => {
-        set({ permissions });
-      },
-
-      checkPermissions: async () => {
-        let notificationPermission: NotificationPermission | null = null;
-        let geolocationPermission: PermissionState | null = null;
-
-        // Check notification permission
-        if (typeof Notification !== "undefined") {
-          notificationPermission = Notification.permission;
-        }
-
-        // Check geolocation permission
-        if (navigator.permissions) {
-          try {
-            const geoPermission = await navigator.permissions.query({
-              name: "geolocation",
-            });
-            geolocationPermission = geoPermission.state;
-          } catch (error) {
-            console.error("Error checking geolocation permission:", error);
-          }
-        }
-
-        // Update the permissions in the store
-        get().setPermissions({
-          notifications: notificationPermission,
-          geolocation: geolocationPermission,
-        });
-      },
       setProfileData: (data: Partial<UserType>) => {
         set((state) => {
           if (!state.userInfo) return state;

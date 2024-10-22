@@ -84,7 +84,11 @@ const MyGoogleMapComponent = ({
   // Fetch user's current location using Geolocation API
   useEffect(() => {
     const fetchCurrentLocation = () => {
-      if (navigator.geolocation) {
+      const storedPermissions = JSON.parse(
+        localStorage.getItem("userPermissions") || "{}",
+      );
+      if (storedPermissions.geolocation === "granted") {
+        // comment jouer ca que si dans userpermissions geolocation est set a "granted"?
         navigator.geolocation.getCurrentPosition(
           (position) => {
             const currentLocation = {

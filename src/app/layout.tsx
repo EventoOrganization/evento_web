@@ -9,6 +9,7 @@ import { getSessionSSR } from "@/utils/authUtilsSSR";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import PermissionsModal from "@/features/pwa/PermissionsModal";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -38,6 +39,7 @@ export default function RootLayout({
                 {children}
               </Main>
               <NavbarApp />
+              <PermissionsModal />
             </GlobalDataProvider>
           </SocketProvider>
         </SessionProvider>
