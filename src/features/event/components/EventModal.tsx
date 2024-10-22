@@ -44,7 +44,6 @@ const EventModal = ({
         <ScrollArea className="rounded h-full">
           <DiscoverEventPreview event={event} className="max-w-[90vw]" />
           {event.user._id === user?._id && (
-            // <Button onClick={handleDelete}>Delete Event</Button>
             <DeleteEventButton eventId={event._id} isHost={true} />
           )}
         </ScrollArea>

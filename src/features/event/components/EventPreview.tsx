@@ -24,7 +24,6 @@ const EventPreview = ({
   event?: EventType;
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-
   // Adjusted function for correct DateTimeFormatOptions types
   const formatDateResponsive = (dateString: string | undefined) => {
     if (!dateString) return "Invalid Date";
@@ -39,6 +38,7 @@ const EventPreview = ({
 
   const handleCardClick = () => {
     setIsModalOpen(true);
+    console.log("eventprev modal open", event);
   };
 
   const handleCloseModal = () => {

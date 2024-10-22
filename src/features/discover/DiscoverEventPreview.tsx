@@ -27,7 +27,6 @@ const DiscoverEventPreview = ({
     : null;
   const events = useGlobalStore((state) => state.events);
   const currentEvent = events.find((e: EventType) => e._id === event._id);
-  if (!currentEvent) return;
   const renderDate = () => {
     if (!currentEvent || !event.details) return <Loader />;
     const startDate = event?.details?.date;
@@ -56,12 +55,12 @@ const DiscoverEventPreview = ({
       return `From ${startDay} to ${endDay} ${monthYear}`;
     }
   };
-
+  console.log("coucou");
   return (
     <>
       <div
         className={cn(
-          "bg-white border maw-w-md shadow rounded p-4 w-full grid grid-cols-1 lg:grid-cols-2  h-fit gap-4 hover:shadow-xl hover:bg-slate-50 cursor-pointer relative",
+          "bg-white border shadow rounded p-4 w-full grid grid-cols-1 lg:grid-cols-2  h-fit gap-4 hover:shadow-xl hover:bg-slate-50 cursor-pointer relative",
           className,
         )}
       >
@@ -139,7 +138,7 @@ const DiscoverEventPreview = ({
             {eventEndDate && eventEndDate > currentDate && (
               <>
                 <AvatarStack event={event} />
-                <EventActionIcons event={currentEvent} />
+                <EventActionIcons event={currentEvent || event} />
               </>
             )}
             {eventEndDate && eventEndDate < currentDate && (
