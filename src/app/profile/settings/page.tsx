@@ -13,13 +13,25 @@ const Page = () => {
     requestNotificationPermission,
     notificationPermission,
     pwaNotification,
+    geolocationAutorization,
+    setGeolocationAutorization,
+    geolocationPermission,
+    requestLocationPermission,
     setPwaNotification,
   } = usePWAStore();
-  const handleToggle = () => {
-    console.log("NOTIFICATION TOGGLE");
+
+  const handleToggleNotification = () => {
     if (notificationPermission !== "granted") requestNotificationPermission();
-    if (token) setPwaNotification(token);
+    if (token) {
+      setPwaNotification(!pwaNotification, token);
+    }
   };
+
+  const handleToggleLocation = () => {
+    if (geolocationPermission !== "granted") requestLocationPermission();
+    setGeolocationAutorization(!geolocationAutorization);
+  };
+
   return (
     <div className="max-w-3xl mx-auto p-6 space-y-8">
       {/* Page header */}
@@ -51,7 +63,17 @@ const Page = () => {
         <h2 className="text-xl">Permissions Settings</h2>
         <div className="flex justify-between items-center bg-white shadow-sm rounded-lg p-4">
           <span>Notifications</span>
-          <ToggleSwitch isToggled={pwaNotification} onToggle={handleToggle} />
+          <ToggleSwitch
+            isToggled={pwaNotification}
+            onToggle={handleToggleNotification}
+          />
+        </div>
+        <div className="flex justify-between items-center bg-white shadow-sm rounded-lg p-4">
+          <span>Location</span>
+          <ToggleSwitch
+            isToggled={geolocationAutorization}
+            onToggle={handleToggleLocation}
+          />
         </div>
       </section>
 

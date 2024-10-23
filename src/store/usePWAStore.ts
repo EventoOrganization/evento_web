@@ -9,13 +9,13 @@ interface PWAPermissionState {
   pwaNotification: boolean; // is current user enabled notification
   // Geolocalisation
   geolocationPermission: PermissionState | null;
-
+  geolocationAutorization: boolean; // is current user enable geolocation
   // Methods to set navigator permissions
   setNotificationPermission: (permission: NotificationPermission) => void;
   setGeolocationPermission: (permission: PermissionState) => void;
   setPwaSubscription: (subscription: PushSubscription | null) => void;
-  setPwaNotification: (token: string) => void;
-
+  setPwaNotification: (newState: boolean, token: string) => void;
+  setGeolocationAutorization: (newState: boolean) => void;
   // Push subscription related
   subscribeToPush: (
     subscription: PushSubscription,
@@ -27,6 +27,7 @@ interface PWAPermissionState {
   // Loader for checking permissions
   checkPermissions: () => Promise<void>;
   requestNotificationPermission: () => Promise<void>;
+  requestLocationPermission: () => Promise<void>;
 }
 
 // Custom localStorage wrapper to conform to zustand's PersistStorage type
@@ -50,17 +51,22 @@ export const usePWAStore = create<PWAPermissionState>()(
       geolocationPermission: null,
       pwaSubscription: null,
       pwaNotification: false,
+      geolocationAutorization: false,
 
-      setPwaNotification: (token) => {
+      setGeolocationAutorization: (newState) => {
+        set(() => ({
+          geolocationAutorization: newState,
+        }));
+      },
+
+      setPwaNotification: (newState, token) => {
         fetchData(
           "/profile/updateProfile",
           HttpMethod.PUT,
           { pwaNotification: !get().pwaNotification }, // Use state getter
           token,
-        ).then((response) => {
-          console.log("Updated profile notification status:", response);
-          set((state) => ({ pwaNotification: !state.pwaNotification }));
-        });
+        );
+        set(() => ({ pwaNotification: newState }));
       },
 
       setPwaSubscription: (subscription) =>
@@ -111,15 +117,55 @@ export const usePWAStore = create<PWAPermissionState>()(
       },
       // Request notification permissions from the user
       requestNotificationPermission: async () => {
-        console.log("REQUEST");
         const permission = await Notification.requestPermission();
-        set({ notificationPermission: permission });
-        console.log("Notification permission status:", permission);
+        if (permission === "granted" || permission === "denied") {
+          set({ notificationPermission: permission });
+          console.log("Notification permission status:", permission);
+        }
+      },
+
+      // Request location permissions from the user
+      requestLocationPermission: async () => {
+        try {
+          if ("geolocation" in navigator) {
+            const permissionStatus = await navigator.permissions.query({
+              name: "geolocation",
+            });
+
+            // Si l'état de la permission est 'prompt', cela signifie qu'une demande peut être effectuée
+            if (permissionStatus.state === "prompt") {
+              navigator.geolocation.getCurrentPosition(
+                (position) => {
+                  console.log("Position actuelle:", position);
+                  set({ geolocationPermission: "granted" });
+                },
+                (error) => {
+                  console.error(
+                    "Erreur lors de l'obtention de la localisation:",
+                    error,
+                  );
+                  set({ geolocationPermission: "denied" });
+                },
+              );
+            } else {
+              set({ geolocationPermission: permissionStatus.state });
+            }
+          } else {
+            console.error(
+              "La géolocalisation n'est pas supportée dans ce navigateur.",
+            );
+          }
+        } catch (error) {
+          console.error(
+            "Erreur lors de la demande de permission de localisation:",
+            error,
+          );
+        }
       },
     }),
     {
       name: "pwa-store",
-      storage: localStorageCustom, // Utilisation du custom storage
+      storage: localStorageCustom,
     },
   ),
 );

@@ -4,7 +4,7 @@ import {
   FormItem,
   FormLabel,
 } from "@/components/ui/form";
-import Switch from "@/components/ui/Switch";
+import { Switch } from "@/components/ui/switch";
 import { useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { handleFieldChange } from "../eventActions";
