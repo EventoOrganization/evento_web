@@ -1,14 +1,29 @@
 "use client";
 
 import ComingSoon from "@/components/ComingSoon";
+import ToggleSwitch from "@/components/ToggleSwitch";
+import { useSession } from "@/contexts/SessionProvider";
 import DeleteAccountBtn from "@/features/auth/components/DeleteAccountBtn";
 import LogoutBtn from "@/features/auth/components/LogoutBtn";
+import { usePWAStore } from "@/store/usePWAStore";
 
 const Page = () => {
+  const { token } = useSession();
+  const {
+    requestNotificationPermission,
+    notificationPermission,
+    pwaNotification,
+    setPwaNotification,
+  } = usePWAStore();
+  const handleToggle = () => {
+    console.log("NOTIFICATION TOGGLE");
+    if (notificationPermission !== "granted") requestNotificationPermission();
+    if (token) setPwaNotification(token);
+  };
   return (
     <div className="max-w-3xl mx-auto p-6 space-y-8">
       {/* Page header */}
-      <div className="border-b pb-6">
+      <div className=" pb-6">
         <h1 className="text-3xl font-semibold text-gray-900">Settings</h1>
         <p className="text-gray-600">
           Manage your account and privacy settings
@@ -17,20 +32,26 @@ const Page = () => {
 
       {/* Account settings section */}
       <section className="space-y-4">
-        <h2 className="text-xl font-semibold text-gray-800">
-          Account Settings
-        </h2>
-        <div className="bg-white shadow-sm rounded-lg p-4">
-          <div className="flex justify-between items-center">
+        <ul className="space-y-4">
+          <h2 className="text-xl font-semibold text-gray-800">
+            Account Settings
+          </h2>
+          <li className="flex justify-between items-center bg-white shadow-sm rounded-lg p-4">
             <span className="text-gray-700">Logout</span>
             <LogoutBtn />
-          </div>
-        </div>
-        <div className="bg-white shadow-sm rounded-lg p-4">
-          <div className="flex justify-between items-center">
+          </li>
+          <li className="flex justify-between items-center bg-white shadow-sm rounded-lg p-4">
             <span className="text-gray-700">Delete Account</span>
             <DeleteAccountBtn />
-          </div>
+          </li>
+        </ul>
+      </section>
+      {/* Permissions Settings */}
+      <section className="space-y-4">
+        <h2 className="text-xl">Permissions Settings</h2>
+        <div className="flex justify-between items-center bg-white shadow-sm rounded-lg p-4">
+          <span>Notifications</span>
+          <ToggleSwitch isToggled={pwaNotification} onToggle={handleToggle} />
         </div>
       </section>
 

@@ -1,4 +1,5 @@
 import { EventType, InterestType } from "./EventType";
+import { PwaSubscriptionType } from "./PwaSubscriptionType";
 
 export type UserType = {
   _id: string;
@@ -15,7 +16,7 @@ export type UserType = {
   profileImage?: string;
   eventsAttended?: number;
   followingUserIds?: string[];
-
+  pwaSubscriptions?: PwaSubscriptionType[];
   followerUserIds?: string[];
   following?: number;
   isFollowingMe?: boolean;

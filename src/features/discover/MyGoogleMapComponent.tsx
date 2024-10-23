@@ -2,6 +2,7 @@
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { useEventStore } from "@/store/useEventStore";
+import { usePWAStore } from "@/store/usePWAStore";
 import { StandaloneSearchBox, useJsApiLoader } from "@react-google-maps/api";
 import { ChevronDown } from "lucide-react";
 import { usePathname } from "next/navigation";
@@ -31,6 +32,7 @@ const MyGoogleMapComponent = ({
     lat: 37.7749,
     lng: -122.4194,
   });
+  const { geolocationPermission } = usePWAStore();
   const searchBoxRef = useRef<google.maps.places.SearchBox | null>(null);
 
   const { isLoaded } = useJsApiLoader({
@@ -84,10 +86,7 @@ const MyGoogleMapComponent = ({
   // Fetch user's current location using Geolocation API
   useEffect(() => {
     const fetchCurrentLocation = () => {
-      const storedPermissions = JSON.parse(
-        localStorage.getItem("userPermissions") || "{}",
-      );
-      if (storedPermissions.geolocation === "granted") {
+      if (geolocationPermission === "granted") {
         // comment jouer ca que si dans userpermissions geolocation est set a "granted"?
         navigator.geolocation.getCurrentPosition(
           (position) => {
