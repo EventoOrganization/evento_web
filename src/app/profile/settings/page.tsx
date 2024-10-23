@@ -5,6 +5,7 @@ import ToggleSwitch from "@/components/ToggleSwitch";
 import { useSession } from "@/contexts/SessionProvider";
 import DeleteAccountBtn from "@/features/auth/components/DeleteAccountBtn";
 import LogoutBtn from "@/features/auth/components/LogoutBtn";
+import InstallPWAButton from "@/features/pwa/InstallPWAButton";
 import { usePWAStore } from "@/store/usePWAStore";
 
 const Page = () => {
@@ -74,6 +75,10 @@ const Page = () => {
             isToggled={geolocationAutorization}
             onToggle={handleToggleLocation}
           />
+        </div>
+        <div className="flex justify-between items-center bg-white shadow-sm rounded-lg p-4">
+          <span>Application</span>
+          <InstallPWAButton />
         </div>
       </section>
 
