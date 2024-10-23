@@ -76,10 +76,7 @@ const Page = () => {
             onToggle={handleToggleLocation}
           />
         </div>
-        <div className="flex justify-between items-center bg-white shadow-sm rounded-lg p-4">
-          <span>Application</span>
-          <InstallPWAButton />
-        </div>
+        <InstallPWAButton />
       </section>
 
       {/* Security settings section */}

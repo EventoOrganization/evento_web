@@ -1,4 +1,5 @@
 "use client";
+import { usePWAStore } from "@/store/usePWAStore";
 import { useEffect, useState } from "react";
 
 // Typing the deferredPrompt to ensure TypeScript recognizes the properties
@@ -11,7 +12,7 @@ const InstallPWAButton = () => {
   const [deferredPrompt, setDeferredPrompt] =
     useState<DeferredPromptType | null>(null);
   const [isInstallable, setIsInstallable] = useState(false);
-
+  const { notificationPermission } = usePWAStore();
   useEffect(() => {
     const handleBeforeInstallPrompt = (e: Event) => {
       e.preventDefault();
@@ -46,10 +47,13 @@ const InstallPWAButton = () => {
 
   return (
     <>
-      {isInstallable && (
-        <button onClick={handleInstallClick} className="install-button">
-          Install PWA
-        </button>
+      {isInstallable && notificationPermission === "granted" && (
+        <div className="flex justify-between items-center bg-white shadow-sm rounded-lg p-4">
+          <span>Application</span>
+          <button onClick={handleInstallClick} className="install-button">
+            Install PWA
+          </button>
+        </div>
       )}
     </>
   );
