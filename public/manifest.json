@@ -1,4 +1,5 @@
 {
+  "id": "/",
   "name": "Evento-app",
   "short_name": "Evento",
   "description": "Evento - Organize and discover events easily with our intuitive app.",
@@ -9,6 +10,20 @@
   "theme_color": "#5f6fed",
   "orientation": "portrait",
   "scope": "/",
+  "screenshots": [
+    {
+      "src": "/screenshot-desktop.png",
+      "type": "image/png",
+      "sizes": "2531x1183",
+      "form_factor": "wide"
+    },
+    {
+      "src": "/screenshot-mobile.png",
+      "type": "image/png",
+      "sizes": "549x975",
+      "form_factor": "narrow"
+    }
+  ],
   "icons": [
     {
       "src": "/icon-96x96.png",
@@ -33,8 +48,7 @@
     {
       "src": "/icon-192x192.png",
       "type": "image/png",
-      "sizes": "192x192",
-      "purpose": "any maskable"
+      "sizes": "192x192"
     },
     {
       "src": "/icon-384x384.png",
@@ -44,8 +58,7 @@
     {
       "src": "/icon-512x512.png",
       "type": "image/png",
-      "sizes": "512x512",
-      "purpose": "any maskable"
+      "sizes": "512x512"
     }
   ],
   "categories": ["social", "events", "productivity"]
