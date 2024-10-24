@@ -36,7 +36,7 @@ const PWAProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       setCurrentBrowser("firefox");
       return "firefox";
     }
-    if (ua.includes("Safari") && !ua.includes("Chrome")) {
+    if (ua.includes("Safari") && !ua.includes("safari")) {
       setCurrentBrowser("safari");
       return "safari";
     }

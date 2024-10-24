@@ -21,7 +21,6 @@ const Page = () => {
     requestLocationPermission,
     setPwaNotification,
     currentBrowser,
-    pwaSubscription,
   } = usePWAStore();
 
   const handleToggleNotification = () => {
@@ -75,9 +74,6 @@ const Page = () => {
           </h2>
           <ul className="text-xs text-muted-foreground italic">
             <li>{currentBrowser}</li>
-            <li className="breakword whitespace-nowrap">
-              {pwaSubscription?.endpoint}
-            </li>
           </ul>
           <div
             className={cn(
