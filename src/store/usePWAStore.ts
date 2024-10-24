@@ -87,6 +87,8 @@ export const usePWAStore = create<PWAPermissionState>()(
       },
 
       subscribeToPush: (subscription, browser, token) => {
+        console.log("Browser", browser);
+        console.log("subscription", subscription);
         set({ pwaSubscription: subscription });
         fetchData(
           "/profile/updateProfile",
@@ -97,6 +99,7 @@ export const usePWAStore = create<PWAPermissionState>()(
           },
           token,
         );
+        console.log("subscribeToPush called with subscription:", subscription);
       },
       unsubscribeFromPush: (browser, token) => {
         set({ pwaSubscription: null });
