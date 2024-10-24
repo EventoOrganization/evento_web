@@ -4,7 +4,7 @@
   "short_name": "Evento",
   "description": "Evento - Organize and discover events easily with our intuitive app.",
   "lang": "en",
-  "start_url": "/",
+  "start_url": "/discover",
   "display": "standalone",
   "background_color": "#5f6fed",
   "theme_color": "#5f6fed",
