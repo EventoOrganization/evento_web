@@ -67,7 +67,7 @@ const EditProfileImage = ({
     <>
       <div
         onClick={() => document.getElementById("profileImage")?.click()}
-        className="cursor-pointer"
+        className="cursor-pointer w-fit"
       >
         {userInfo?.profileImage ? (
           <Image
@@ -83,14 +83,14 @@ const EditProfileImage = ({
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
         )}
+        <Input
+          type="file"
+          id="profileImage"
+          accept="image/*"
+          onChange={handleFileChange}
+          className="hidden"
+        />
       </div>
-      <Input
-        type="file"
-        id="profileImage"
-        accept="image/*"
-        onChange={handleFileChange}
-        className="sr-only"
-      />
 
       {openDialog && (
         <Dialog open={openDialog} onOpenChange={setOpenDialog}>
