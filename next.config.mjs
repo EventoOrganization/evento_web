@@ -24,6 +24,5 @@ export default withPWA({
   register: true,
   skipWaiting: true,
   mode: process.env.NODE_ENV === "production" ? "production" : "development",
-  buildExcludes: [/middleware-manifest.json$/],
   importScripts: ["/custom-sw.js"],
 })(nextConfig);

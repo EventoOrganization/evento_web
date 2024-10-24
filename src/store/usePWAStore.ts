@@ -114,6 +114,7 @@ export const usePWAStore = create<PWAPermissionState>()(
       // Checking permissions
       checkPermissions: async () => {
         const notificationPermission = Notification.permission;
+        console.log("Notification permission:", notificationPermission);
         set({ notificationPermission });
         try {
           const geoPermission = await navigator.permissions.query({
