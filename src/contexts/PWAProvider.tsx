@@ -11,6 +11,7 @@ const PWAProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     subscribeToPush,
     unsubscribeFromPush,
     checkPermissions,
+    setCurrentBrowser,
   } = usePWAStore();
 
   const { userInfo } = useGlobalStore();
@@ -25,9 +26,19 @@ const PWAProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       return "unknown";
     }
     const ua = navigator.userAgent;
-    if (ua.includes("Chrome")) return "chrome";
-    if (ua.includes("Firefox")) return "firefox";
-    if (ua.includes("Safari") && !ua.includes("Chrome")) return "safari";
+    if (ua.includes("Chrome")) {
+      setCurrentBrowser("chrome");
+      return "chrome";
+    }
+    if (ua.includes("Firefox")) {
+      setCurrentBrowser("firefox");
+      return "firefox";
+    }
+    if (ua.includes("Safari") && !ua.includes("Chrome")) {
+      setCurrentBrowser("safari");
+      return "safari";
+    }
+    setCurrentBrowser("unknown");
     return "unknown";
   };
 

@@ -10,6 +10,12 @@
   "theme_color": "#5f6fed",
   "orientation": "portrait",
   "scope": "/",
+  "protocol_handlers": [
+    {
+      "protocol": "web+evento",
+      "url": "/?link=%s"
+    }
+  ],
   "screenshots": [
     {
       "src": "/screenshot-desktop.png",

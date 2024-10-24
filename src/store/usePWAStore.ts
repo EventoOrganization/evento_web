@@ -7,6 +7,7 @@ interface PWAPermissionState {
   notificationPermission: NotificationPermission | null; // current user browser permission
   pwaSubscription: PushSubscription | null; // current user browser subscription
   pwaNotification: boolean; // is current user enabled notification
+  currentBrowser: string;
   // Geolocalisation
   geolocationPermission: PermissionState | null;
   geolocationAutorization: boolean; // is current user enable geolocation
@@ -16,6 +17,7 @@ interface PWAPermissionState {
   setPwaSubscription: (subscription: PushSubscription | null) => void;
   setPwaNotification: (newState: boolean, token: string) => void;
   setGeolocationAutorization: (newState: boolean) => void;
+  setCurrentBrowser: (browser: string) => void;
   // Push subscription related
   subscribeToPush: (
     subscription: PushSubscription,
@@ -52,7 +54,11 @@ export const usePWAStore = create<PWAPermissionState>()(
       pwaSubscription: null,
       pwaNotification: false,
       geolocationAutorization: false,
+      currentBrowser: "",
 
+      setCurrentBrowser: (browser) => {
+        set({ currentBrowser: browser });
+      },
       setGeolocationAutorization: (newState) => {
         set(() => ({
           geolocationAutorization: newState,

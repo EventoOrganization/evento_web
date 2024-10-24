@@ -20,6 +20,8 @@ const Page = () => {
     geolocationPermission,
     requestLocationPermission,
     setPwaNotification,
+    currentBrowser,
+    pwaSubscription,
   } = usePWAStore();
 
   const handleToggleNotification = () => {
@@ -65,7 +67,18 @@ const Page = () => {
         </section>
         {/* Permissions Settings */}
         <section className="space-y-4">
-          <h2 className="text-xl">Permissions Settings</h2>
+          <h2 className="text-xl">
+            Permissions Settings{" "}
+            <span className="text-xs text-muted-foreground italic">
+              Under Development
+            </span>
+          </h2>
+          <ul className="text-xs text-muted-foreground italic">
+            <li>{currentBrowser}</li>
+            <li className="breakword whitespace-nowrap">
+              {pwaSubscription?.endpoint}
+            </li>
+          </ul>
           <div
             className={cn(
               notificationPermission === "granted"
