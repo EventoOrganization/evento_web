@@ -8,6 +8,7 @@ import LogoutBtn from "@/features/auth/components/LogoutBtn";
 import InstallPWAButton from "@/features/pwa/InstallPWAButton";
 import { cn } from "@/lib/utils";
 import { usePWAStore } from "@/store/usePWAStore";
+import { useEffect, useState } from "react";
 
 const Page = () => {
   const { token } = useSession();
@@ -22,7 +23,42 @@ const Page = () => {
     setPwaNotification,
     currentBrowser,
   } = usePWAStore();
+  const [isLocalStorageAvailable, setIsLocalStorageAvailable] = useState(true);
+  const [isSessionStorageAvailable, setIsSessionStorageAvailable] =
+    useState(true);
+  const [serviceWorkerStatus, setServiceWorkerStatus] =
+    useState<string>("Not Registered");
+  const [pushSubscription, setPushSubscription] = useState<string | null>(null);
 
+  // Vérifier la disponibilité de localStorage
+  const checkLocalStorageAvailability = () => {
+    try {
+      const testKey = "test";
+      localStorage.setItem(testKey, "testValue");
+      localStorage.removeItem(testKey);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  };
+
+  // Vérifier la disponibilité de sessionStorage
+  const checkSessionStorageAvailability = () => {
+    try {
+      const testKey = "test";
+      sessionStorage.setItem(testKey, "testValue");
+      sessionStorage.removeItem(testKey);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  };
+
+  useEffect(() => {
+    // Vérifier la disponibilité du localStorage et du sessionStorage
+    setIsLocalStorageAvailable(checkLocalStorageAvailability());
+    setIsSessionStorageAvailable(checkSessionStorageAvailability());
+  }, []);
   const handleToggleNotification = () => {
     if (notificationPermission !== "granted") requestNotificationPermission();
     if (token) {
@@ -34,6 +70,31 @@ const Page = () => {
     if (geolocationPermission !== "granted") requestLocationPermission();
     setGeolocationAutorization(!geolocationAutorization);
   };
+
+  useEffect(() => {
+    // Vérification du Service Worker et de la souscription Push
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.ready
+        .then((registration) => {
+          setServiceWorkerStatus("Registered");
+          return registration.pushManager.getSubscription();
+        })
+        .then((subscription) => {
+          if (subscription) {
+            setPushSubscription(subscription.endpoint);
+          } else {
+            setPushSubscription("No Subscription");
+          }
+        })
+        .catch((error) => {
+          console.error(
+            "Error checking service worker or subscription:",
+            error,
+          );
+          setServiceWorkerStatus("Error");
+        });
+    }
+  }, []);
 
   return (
     <>
@@ -64,6 +125,7 @@ const Page = () => {
             </li>
           </ul>
         </section>
+
         {/* Permissions Settings */}
         <section className="space-y-4">
           <h2 className="text-xl">
@@ -72,9 +134,11 @@ const Page = () => {
               Under Development
             </span>
           </h2>
-          <ul className="text-xs text-muted-foreground italic">
-            <li>{currentBrowser}</li>
-          </ul>
+          <div className="bg-yellow-200 text-yellow-800 p-4 rounded-lg">
+            <p>localStorage status: {isLocalStorageAvailable.toString()}</p>
+            <p>sessionStorage status: {isSessionStorageAvailable.toString()}</p>
+          </div>
+
           <div
             className={cn(
               notificationPermission === "granted"
@@ -85,7 +149,17 @@ const Page = () => {
               `flex justify-between items-center shadow-sm rounded-lg p-4`,
             )}
           >
-            <span>Notifications</span>
+            <div className="flex flex-col">
+              <h4>Notifications</h4>
+              <ul className="text-xs italic">
+                <li>Browser: {currentBrowser}</li>
+                <li>Service Worker Status: {serviceWorkerStatus}</li>
+                <li className="break-all">
+                  Push Subscription: {pushSubscription}
+                </li>
+                <li>Notification Permission: {notificationPermission}</li>
+              </ul>
+            </div>
             <ToggleSwitch
               isToggled={pwaNotification}
               onToggle={handleToggleNotification}

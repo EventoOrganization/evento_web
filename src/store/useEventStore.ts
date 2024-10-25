@@ -1,6 +1,6 @@
 import { InterestType, QuestionType, TimeSlotType } from "@/types/EventType";
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { persist } from "zustand/middleware"; // Ajout de PersistOptions
 
 type EventFormState = {
   title: string;
@@ -51,6 +51,37 @@ type EventFormState = {
     thumbnail: string,
   ) => void;
   addPredefinedMedia: (url: string, type: "image" | "video") => void;
+};
+
+const isLocalStorageAvailable = () => {
+  try {
+    const testKey = "test";
+    localStorage.setItem(testKey, "testValue");
+    localStorage.removeItem(testKey);
+    return true;
+  } catch (e) {
+    return false;
+  }
+};
+// Custom localStorage wrapper to conform to zustand's PersistStorage type
+const localStorageCustom = {
+  getItem: (name: string) => {
+    if (isLocalStorageAvailable()) {
+      const item = localStorage.getItem(name);
+      return item ? JSON.parse(item) : null;
+    }
+    return null;
+  },
+  setItem: (name: string, value: any) => {
+    if (isLocalStorageAvailable()) {
+      localStorage.setItem(name, JSON.stringify(value));
+    }
+  },
+  removeItem: (name: string) => {
+    if (isLocalStorageAvailable()) {
+      localStorage.removeItem(name);
+    }
+  },
 };
 
 export const useEventStore = create<EventFormState>()(
@@ -138,7 +169,6 @@ export const useEventStore = create<EventFormState>()(
           return { questions: updatedQuestions };
         }),
 
-      // Add uploaded media
       addUploadedMedia: (file, type) =>
         set((state) => {
           const updatedMedia = { ...state.uploadedMedia };
@@ -150,7 +180,6 @@ export const useEventStore = create<EventFormState>()(
           return { uploadedMedia: updatedMedia };
         }),
 
-      // Add predefined media
       addPredefinedMedia: (url, type) =>
         set((state) => {
           const updatedMedia = { ...state.predefinedMedia };
@@ -193,6 +222,7 @@ export const useEventStore = create<EventFormState>()(
     }),
     {
       name: "event-form-storage",
+      storage: isLocalStorageAvailable() ? localStorageCustom : undefined,
     },
   ),
 );

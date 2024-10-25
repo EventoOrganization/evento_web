@@ -44,16 +44,36 @@ interface GlobalStoreState {
   // Permission checker
 }
 
+// Fonction pour vérifier si le sessionStorage est disponible
+const isSessionStorageAvailable = () => {
+  try {
+    const testKey = "test";
+    sessionStorage.setItem(testKey, "testValue");
+    sessionStorage.removeItem(testKey);
+    return true;
+  } catch (e) {
+    return false;
+  }
+};
+
+// Custom sessionStorage wrapper pour gérer sessionStorage
 const customStorage = {
   getItem: (name: string) => {
-    const item = sessionStorage.getItem(name);
-    return item ? JSON.parse(item) : null;
+    if (isSessionStorageAvailable()) {
+      const item = sessionStorage.getItem(name);
+      return item ? JSON.parse(item) : null;
+    }
+    return null; // Si indisponible, retourner null
   },
   setItem: (name: string, value: any) => {
-    sessionStorage.setItem(name, JSON.stringify(value));
+    if (isSessionStorageAvailable()) {
+      sessionStorage.setItem(name, JSON.stringify(value));
+    }
   },
   removeItem: (name: string) => {
-    sessionStorage.removeItem(name);
+    if (isSessionStorageAvailable()) {
+      sessionStorage.removeItem(name);
+    }
   },
 };
 

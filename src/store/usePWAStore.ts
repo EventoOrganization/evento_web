@@ -32,17 +32,34 @@ interface PWAPermissionState {
   requestLocationPermission: () => Promise<void>;
 }
 
+const isLocalStorageAvailable = () => {
+  try {
+    const testKey = "test";
+    localStorage.setItem(testKey, "testValue");
+    localStorage.removeItem(testKey);
+    return true;
+  } catch (e) {
+    return false;
+  }
+};
 // Custom localStorage wrapper to conform to zustand's PersistStorage type
 const localStorageCustom = {
   getItem: (name: string) => {
-    const item = localStorage.getItem(name);
-    return item ? JSON.parse(item) : null;
+    if (isLocalStorageAvailable()) {
+      const item = localStorage.getItem(name);
+      return item ? JSON.parse(item) : null;
+    }
+    return null;
   },
   setItem: (name: string, value: any) => {
-    localStorage.setItem(name, JSON.stringify(value));
+    if (isLocalStorageAvailable()) {
+      localStorage.setItem(name, JSON.stringify(value));
+    }
   },
   removeItem: (name: string) => {
-    localStorage.removeItem(name);
+    if (isLocalStorageAvailable()) {
+      localStorage.removeItem(name);
+    }
   },
 };
 
