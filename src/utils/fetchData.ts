@@ -76,6 +76,7 @@ export const fetchData = async <T, B = any>(
     // If no content-type is JSON or response is not specified as JSON but is OK
     return { data: null, error: null, status: response.status, ok: true };
   } catch (error) {
+    console.error("Fetch failed due to network or CORS issues: ", error);
     return {
       data: null,
       error: `Failed to fetch data from ${endpoint}: ${error instanceof Error ? error.message : "Unknown error"}`,

@@ -41,6 +41,7 @@
     "@types/react-select": "^5.0.1",
     "@types/react-swipeable-views": "^0.13.5",
     "aws-sdk": "^2.1687.0",
+    "browser-image-compression": "^2.0.2",
     "class-variance-authority": "^0.7.0",
     "classnames": "^2.5.1",
     "clsx": "^2.1.1",

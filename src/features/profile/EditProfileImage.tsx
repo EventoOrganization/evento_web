@@ -1,4 +1,3 @@
-"use client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,7 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { UserType } from "@/types/UserType";
-import { getCroppedImg } from "@/utils/imageHelpers";
+import { getCroppedImg } from "@/utils/imageHelpers"; // Assurez-vous que cette fonction retourne une Data URL
 import Image from "next/image";
 import { useState } from "react";
 import Cropper, { Area } from "react-easy-crop";
@@ -21,7 +20,7 @@ const EditProfileImage = ({
   onUpdateImage,
 }: {
   userInfo?: UserType;
-  onUpdateImage: any;
+  onUpdateImage: (image: string) => void;
 }) => {
   const [openDialog, setOpenDialog] = useState(false);
   const [imageSrc, setImageSrc] = useState<string>(
@@ -39,27 +38,48 @@ const EditProfileImage = ({
       const reader = new FileReader();
       reader.onloadend = () => {
         setImageSrc(reader.result as string);
-        setOpenDialog(true); // Ouvre la modale ici
+        setOpenDialog(true);
       };
-      reader.readAsDataURL(file);
-      console.log("Imagetocrop", reader.result);
+      reader.readAsDataURL(file); // Directement en base64
     }
   };
 
-  const handleCropComplete = (
-    croppedAreaPercentage: any,
-    croppedAreaPixels: Area,
-  ) => {
+  const handleCropComplete = (croppedAreaPixels: Area) => {
     setCroppedArea(croppedAreaPixels);
   };
 
   const handleSaveCroppedImage = async () => {
     if (croppedArea && imageSrc) {
-      const croppedImage = await getCroppedImg(imageSrc, croppedArea);
-      console.log("imagecropé", croppedImage);
-      setImageSrc(croppedImage || "");
-      onUpdateImage(croppedImage);
-      setOpenDialog(false);
+      try {
+        // Obtenez la largeur et la hauteur réelles de l'image avant le recadrage
+        const imageElement = new window.Image();
+        imageElement.src = imageSrc;
+        const imageWidth = imageElement.naturalWidth;
+        const imageHeight = imageElement.naturalHeight;
+
+        console.log("Actual image dimensions before cropping:", {
+          imageWidth,
+          imageHeight,
+        });
+
+        // Passez les dimensions réelles et le zoom à `getCroppedImg`
+        const croppedImageDataUrl = await getCroppedImg(
+          imageSrc,
+          croppedArea,
+          imageWidth,
+          imageHeight,
+          zoom,
+        );
+
+        if (croppedImageDataUrl) {
+          setImageSrc(croppedImageDataUrl);
+          onUpdateImage(croppedImageDataUrl);
+          setOpenDialog(false);
+        }
+      } catch (error) {
+        console.error("Error during image processing:", error);
+        alert("An error occurred during image processing. Please try again.");
+      }
     }
   };
 
@@ -95,10 +115,10 @@ const EditProfileImage = ({
       {openDialog && (
         <Dialog open={openDialog} onOpenChange={setOpenDialog}>
           <DialogContent className="w-[95%] max-w-xl">
-            <DialogHeader className="">
+            <DialogHeader>
               <DialogTitle>Profile Image</DialogTitle>
               <DialogDescription>
-                Your profile image will be render in this format, please adapte
+                Your profile image will be rendered in this format. Please adapt
                 it.
               </DialogDescription>
             </DialogHeader>
@@ -116,8 +136,8 @@ const EditProfileImage = ({
             </div>
 
             <DialogFooter className="flex justify-around mt-4 gap-2">
-              <Button onClick={handleSaveCroppedImage}>Crop</Button>
-              <Button onClick={() => setOpenDialog(false)} variant={"outline"}>
+              <Button onClick={handleSaveCroppedImage}>Crop & Save</Button>
+              <Button onClick={() => setOpenDialog(false)} variant="outline">
                 Cancel
               </Button>
             </DialogFooter>

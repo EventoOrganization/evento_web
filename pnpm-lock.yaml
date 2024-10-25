@@ -86,6 +86,9 @@ dependencies:
   aws-sdk:
     specifier: ^2.1687.0
     version: 2.1687.0
+  browser-image-compression:
+    specifier: ^2.0.2
+    version: 2.0.2
   class-variance-authority:
     specifier: ^0.7.0
     version: 0.7.0
@@ -6481,6 +6484,12 @@ packages:
     dependencies:
       fill-range: 7.1.1
 
+  /browser-image-compression@2.0.2:
+    resolution: {integrity: sha512-pBLlQyUf6yB8SmmngrcOw3EoS4RpQ1BcylI3T9Yqn7+4nrQTXJD4sJDe5ODnJdrvNMaio5OicFo75rDyJD2Ucw==}
+    dependencies:
+      uzip: 0.20201231.0
+    dev: false
+
   /browserslist@4.23.2:
     resolution: {integrity: sha512-qkqSyistMYdxAcw+CzbZwlBy8AGmS/eEWs+sEV5TnLRGDOL+C5M2EnH6tlZyg0YoAxGJAFKh61En9BR941GnHA==}
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
@@ -12131,6 +12140,10 @@ packages:
   /uuid@9.0.1:
     resolution: {integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==}
     hasBin: true
+    dev: false
+
+  /uzip@0.20201231.0:
+    resolution: {integrity: sha512-OZeJfZP+R0z9D6TmBgLq2LHzSSptGMGDGigGiEe0pr8UBe/7fdflgHlHBNDASTXB5jnFuxHpNaJywSg8YFeGng==}
     dev: false
 
   /v8-to-istanbul@9.3.0:
