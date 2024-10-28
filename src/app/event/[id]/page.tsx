@@ -272,17 +272,6 @@ const EventPage = () => {
     }
   };
 
-  const combinedGuests = useMemo(
-    () => [
-      ...(event?.guests?.map((guest) => ({ ...guest, status: "guest" })) || []),
-      ...(event?.tempGuests?.map((tempGuest) => ({
-        ...tempGuest,
-        status: "tempGuest",
-      })) || []),
-    ],
-    [event?.guests, event?.tempGuests],
-  );
-
   const enrichUsersWithStoreData = (
     usersList: Array<any>,
     users: Array<any>,
@@ -304,7 +293,17 @@ const EventPage = () => {
       return user;
     });
   };
-
+  const enrichedGuests = enrichUsersWithStoreData(event?.guests || [], users);
+  const combinedGuests = useMemo(
+    () => [
+      ...(enrichedGuests.map((guest) => ({ ...guest, status: "guest" })) || []),
+      ...(event?.tempGuests?.map((tempGuest) => ({
+        ...tempGuest,
+        status: "tempGuest",
+      })) || []),
+    ],
+    [enrichedGuests, event?.tempGuests],
+  );
   const enrichedAttendees = enrichUsersWithStoreData(
     event?.attendees || [],
     users,
