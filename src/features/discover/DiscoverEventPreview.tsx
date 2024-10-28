@@ -5,11 +5,11 @@ import RenderMedia from "@/components/RenderMedia";
 import TruncatedText from "@/components/TruncatedText";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import Loader from "@/components/ui/Loader";
 import EventActionIcons from "@/features/event/components/EventActionIcons";
 import { cn } from "@/lib/utils";
 import { useGlobalStore } from "@/store/useGlobalStore";
 import { EventType } from "@/types/EventType";
-import { Loader } from "lucide-react";
 import Image from "next/image";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import PastEventGallery from "../event/components/PastEventGallery";
@@ -84,7 +84,12 @@ const DiscoverEventPreview = ({
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
               )}
-              <h4 className="ml-2">{(event && event?.user.username) || ""}</h4>
+              <h4 className="ml-2">
+                {(event &&
+                  event?.user.username.charAt(0).toUpperCase() +
+                    event?.user.username.slice(1)) ||
+                  ""}
+              </h4>
             </div>
             <span className="text-sm text-right">{renderDate()}</span>
           </div>

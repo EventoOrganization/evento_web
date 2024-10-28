@@ -68,7 +68,9 @@ const UsersList = ({
 
       if (response.ok) {
         setIsIFollowingHim((prevIsFollowing) => !prevIsFollowing);
-        setIsIFollowingHim(!isIFollowingHim);
+        const updatedStatus = !isIFollowingHim;
+        setIsIFollowingHim(updatedStatus);
+        updateUser({ _id: user._id, isIFollowingHim: updatedStatus });
         toast({
           title: "Success",
           description: `You ${!isIFollowingHim ? "followed" : "unfollowed"} this user`,

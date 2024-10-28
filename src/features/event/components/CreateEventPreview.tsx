@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useEventStore } from "@/store/useEventStore";
+import { useGlobalStore } from "@/store/useGlobalStore";
 import Image from "next/image";
 import CreateEventCarousel from "./CreateEventCarousel";
 const CreateEventPreview = ({
@@ -19,6 +20,7 @@ const CreateEventPreview = ({
 }) => {
   const eventStore = useEventStore();
   const { user } = useAuthStore();
+  const { userInfo } = useGlobalStore();
 
   const renderDate = () => {
     const startDate = eventStore.date;
@@ -126,9 +128,11 @@ const CreateEventPreview = ({
                   </Avatar>
                 )}
                 <h4 className="ml-2">
-                  {user && user.username
-                    ? user.username
-                    : eventStore.username || "Username"}
+                  {(user &&
+                    userInfo &&
+                    userInfo?.username.charAt(0).toUpperCase() +
+                      userInfo?.username.slice(1)) ||
+                    "Username"}
                 </h4>
               </div>
               <span className="text-sm">

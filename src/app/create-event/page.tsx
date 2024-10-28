@@ -42,7 +42,7 @@ const CreateEventPage = () => {
     setFormValues({
       title: eventStore.title || "",
       eventType: eventStore.eventType || "public",
-      username: user?.username || userInfo?.username || "",
+      username: userInfo?.username || "",
       date: eventStore.date || "",
       endDate: eventStore.endDate || eventStore.date || "",
       startTime: eventStore.startTime || "",
@@ -68,7 +68,7 @@ const CreateEventPage = () => {
   const [formValues, setFormValues] = useState({
     title: eventStore.title || "",
     eventType: eventStore.eventType || "public",
-    username: user?.username || userInfo?.username || "",
+    username: userInfo?.username || "",
     date: eventStore.date || "",
     endDate: eventStore.endDate || eventStore.date || "",
     startTime: eventStore.startTime || "",
