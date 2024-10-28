@@ -23,7 +23,7 @@ const TruncatedText = ({
       //   `scrollHeight: ${textRef.current.scrollHeight}, clientHeight: ${textRef.current.clientHeight}, text length: ${text.length}`,
       // );
 
-      setIsOverflowing(overflow && text.length > 100);
+      setIsOverflowing(overflow && text.length > 155);
     }
   }, [text]);
   const toggleText = () => setIsExpanded(!isExpanded);

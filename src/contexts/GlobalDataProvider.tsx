@@ -42,7 +42,7 @@ const GlobalDataProvider: React.FC<{ children: React.ReactNode }> = ({
 
     const interval = setInterval(() => {
       refreshData();
-    }, 3000000);
+    }, 30000);
 
     document.addEventListener("visibilitychange", handleVisibilityChange);
 

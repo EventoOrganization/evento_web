@@ -21,7 +21,7 @@ const libraries: ("places" | "geometry" | "drawing" | "visualization")[] = [
 const EditProfilePage = () => {
   const session = useSession();
   const [interests, setInterests] = useState<InterestType[]>([]);
-
+  const maxChars = 155;
   const { setProfileData } = useGlobalStore((state) => state);
   const userInfo = useGlobalStore((state) => state.userInfo);
   const { toast } = useToast();
@@ -295,7 +295,16 @@ const EditProfilePage = () => {
         {/* Bio */}
         <div>
           <Label htmlFor="bio">Bio</Label>
-          <Textarea name="bio" value={formData.bio} onChange={handleChange} />
+          <Textarea
+            maxLength={155}
+            name="bio"
+            value={formData.bio}
+            onChange={handleChange}
+            className="resize-none mb-1"
+          />
+          <div className="text-right text-sm text-gray-500">
+            {formData.bio.length}/{maxChars} characters
+          </div>
         </div>
 
         {/* Interests */}
