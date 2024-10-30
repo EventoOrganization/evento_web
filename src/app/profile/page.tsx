@@ -37,8 +37,8 @@ export default function CurrentUserProfilePage() {
       )}
       {isAuthModalOpen && (
         <AuthModal
-          onAuthSuccess={(token: string) => {
-            globalStore.loadUser(token);
+          onAuthSuccess={(token?: string) => {
+            if (token) globalStore.loadUser(token);
           }}
           onClose={() => setIsAuthModalOpen(false)}
         />

@@ -61,6 +61,7 @@ export type EventType = {
   latitude?: string;
   longitude?: string;
   location?: string;
+  requested?: UserType[];
   coHosts?: UserType[];
   guests?: UserType[];
   tempGuests?: TempUserType[];

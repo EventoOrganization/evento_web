@@ -22,7 +22,7 @@ const AuthModal = ({
   onAuthSuccess,
   onClose,
 }: {
-  onAuthSuccess: (token: string) => void; // Correction ici
+  onAuthSuccess: (token?: string) => void;
   onClose?: () => void;
 }) => {
   const { toast } = useToast();

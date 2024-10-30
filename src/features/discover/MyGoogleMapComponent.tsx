@@ -33,6 +33,7 @@ const MyGoogleMapComponent = ({
     lng: -122.4194,
   });
   const { geolocationPermission } = usePWAStore();
+  console.log("geolocationPermission", geolocationPermission);
   const searchBoxRef = useRef<google.maps.places.SearchBox | null>(null);
 
   const { isLoaded } = useJsApiLoader({
@@ -86,25 +87,21 @@ const MyGoogleMapComponent = ({
   // Fetch user's current location using Geolocation API
   useEffect(() => {
     const fetchCurrentLocation = () => {
-      if (geolocationPermission === "granted") {
-        // comment jouer ca que si dans userpermissions geolocation est set a "granted"?
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            const currentLocation = {
-              lat: position.coords.latitude,
-              lng: position.coords.longitude,
-            };
-            setLocation(currentLocation);
-            setMapCenter(currentLocation);
-            fetchAddressAndTimeZone(currentLocation.lat, currentLocation.lng);
-          },
-          (error) => {
-            console.error("Error fetching the geolocation", error);
-          },
-        );
-      } else {
-        console.error("Geolocation is not supported by this browser.");
-      }
+      // comment jouer ca que si dans userpermissions geolocation est set a "granted"?
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const currentLocation = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          };
+          setLocation(currentLocation);
+          setMapCenter(currentLocation);
+          fetchAddressAndTimeZone(currentLocation.lat, currentLocation.lng);
+        },
+        (error) => {
+          console.error("Error fetching the geolocation", error);
+        },
+      );
     };
 
     fetchCurrentLocation();

@@ -49,13 +49,10 @@ const PWAProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       console.log("Waiting for user info or token to be available...");
       return;
     }
-    console.log(
-      `User info and token available. User: ${userInfo?.username}, Token: ${token}`,
-    );
     const browser = getBrowserName();
-    console.log(`Browser determined: ${browser}`);
+    // console.log(`Browser determined: ${browser}`);
     checkPermissions();
-    console.log("Permissions checked.");
+    // console.log("Permissions checked.");
     const existingSubscription = userInfo?.pwaSubscriptions?.find(
       (sub: any) => sub.browser === browser,
     );
@@ -72,13 +69,13 @@ const PWAProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           console.error("Service Worker registration failed:", error);
         });
     }
-    console.log("Existing subscription:", !!existingSubscription);
+    // console.log("Existing subscription:", !!existingSubscription);
     if (notificationPermission === "granted") {
-      console.log("Notification permission granted, subscribing to push...");
-      console.log("keys", process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY);
-      navigator.serviceWorker.ready.then(() =>
-        console.log("Service Worker is ready."),
-      );
+      // console.log("Notification permission granted, subscribing to push...");
+      // console.log("keys", process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY);
+      // navigator.serviceWorker.ready.then(() =>
+      //   console.log("Service Worker is ready."),
+      // );
       navigator.serviceWorker.ready
         .then(async (registration) => {
           console.log("Service worker is ready.");
