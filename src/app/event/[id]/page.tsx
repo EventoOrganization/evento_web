@@ -576,6 +576,7 @@ const EventPage = () => {
                     title="Requested to Join"
                     count={event?.requested?.length || 0}
                     users={event?.requested || []}
+                    isRequestedTab={true}
                   />
                   <CollapsibleList
                     title="Refused"

@@ -18,11 +18,13 @@ const UsersList = ({
   fetchUsers,
   removeUserLocally,
   event,
+  isRequestedTab = false,
 }: {
   user?: any;
   fetchUsers?: () => void;
   removeUserLocally?: (userId: string) => void;
   event?: EventType;
+  isRequestedTab?: boolean;
 }) => {
   const { id: eventId } = useParams();
   const { token } = useSession();
@@ -46,7 +48,45 @@ const UsersList = ({
       }
     }
   }, [session, user, isIFollowingHim, isFollowingMe]);
+  const handleAcceptRequest = async () => {
+    if (!token) {
+      setIsAuthModalOpen(true);
+      return;
+    }
+    setLoading(true);
+    try {
+      const body = { userId: user._id };
+      const response = await fetchData(
+        `/events/${eventId}/acceptRequest`,
+        HttpMethod.POST,
+        body,
+        token,
+      );
 
+      if (response.ok) {
+        toast({
+          title: "Success",
+          description: "User has been added as a guest.",
+          duration: 2000,
+          className: "bg-evento-gradient text-white",
+        });
+        removeUserLocally?.(user._id);
+        fetchUsers?.(); // Rafraîchit la liste des utilisateurs
+      } else {
+        console.error("Error:", response.error);
+        toast({
+          title: "Error",
+          description: response.error,
+          variant: "destructive",
+          duration: 2000,
+        });
+      }
+    } catch (error) {
+      console.error("An error occurred:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
   const handleFollow = async () => {
     if (!token) {
       setIsAuthModalOpen(true);
@@ -128,6 +168,7 @@ const UsersList = ({
     }
   };
   if (user?.username === "anonymous") return;
+  console.log("user", user);
   return (
     <div className="flex justify-between w-full items-center">
       <Link href={`/profile/${user?._id}`} className="flex items-center gap-4">
@@ -196,6 +237,11 @@ const UsersList = ({
               {loading ? "Processing..." : <XIcon />}
             </Button>
           )}
+        {isRequestedTab && (
+          <Button onClick={handleAcceptRequest} disabled={loading}>
+            {loading ? "Processing..." : "Accept"}
+          </Button>
+        )}
       </div>
       {isAuthModalOpen && (
         <AuthModal

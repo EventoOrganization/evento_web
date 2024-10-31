@@ -49,7 +49,8 @@ const CreateEventPage = () => {
       endTime: eventStore.endTime || "",
       description: eventStore.description || "",
       mode: eventStore.mode || "in-person",
-      location: eventStore.location || "",
+      location:
+        eventStore.mode === "virtual" ? "Virtual" : eventStore.location || "",
       latitude: eventStore.latitude || "",
       longitude: eventStore.longitude || "",
       timeSlots: eventStore.timeSlots || [],
@@ -168,6 +169,7 @@ const CreateEventPage = () => {
       }
     });
     if (missingFields.length > 0) {
+      console.log(eventStore.location);
       toast({
         title: "Error",
         description: `Please fill in the following fields: ${missingFields.join(", ")}`,
@@ -377,12 +379,12 @@ const CreateEventPage = () => {
                 onChange={handleUpload}
               />
             </div> */}
-            {eventStore.mode !== "virtual" && (
+            <div className={`${eventStore.mode !== "virtual" ? "" : "hidden"}`}>
               <MyGoogleMapComponent
-                location={location}
+                location={location || { lat: 0, lng: 0 }}
                 setLocation={setLocation}
               />
-            )}
+            </div>
             <EventDate />
             <div>
               <Label className="sr-only" htmlFor="description">
