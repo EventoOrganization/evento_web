@@ -1,4 +1,5 @@
 import { EventType } from "@/types/EventType";
+import { renderDate } from "@/utils/dateUtils";
 import React from "react";
 
 type Props = {
@@ -6,7 +7,7 @@ type Props = {
   renderDate?: () => string;
 };
 
-const EventTimeSlots: React.FC<Props> = ({ event, renderDate }) => {
+const EventTimeSlots: React.FC<Props> = ({ event }) => {
   // Helper function to format date and time
   const formatTimeSlot = (slot: {
     date: string;
@@ -52,7 +53,7 @@ const EventTimeSlots: React.FC<Props> = ({ event, renderDate }) => {
           ))}
         </ul>
       ) : (
-        <p>{renderDate && renderDate()}</p>
+        <p>{renderDate && renderDate(event)}</p>
       )}
     </div>
   );

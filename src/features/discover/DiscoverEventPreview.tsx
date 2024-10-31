@@ -5,7 +5,6 @@ import RenderMedia from "@/components/RenderMedia";
 import TruncatedText from "@/components/TruncatedText";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import Loader from "@/components/ui/Loader";
 import EventActionIcons from "@/features/event/components/EventActionIcons";
 import { cn } from "@/lib/utils";
 import { useGlobalStore } from "@/store/useGlobalStore";
@@ -13,6 +12,7 @@ import { EventType } from "@/types/EventType";
 import Image from "next/image";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import PastEventGallery from "../event/components/PastEventGallery";
+import { renderDate } from "@/utils/dateUtils";
 
 const DiscoverEventPreview = ({
   className,
@@ -27,34 +27,7 @@ const DiscoverEventPreview = ({
     : null;
   const events = useGlobalStore((state) => state.events);
   const currentEvent = events.find((e: EventType) => e._id === event._id);
-  const renderDate = () => {
-    if (!currentEvent || !event.details) return <Loader />;
-    const startDate = event?.details?.date;
-    const endDate = event?.details?.endDate;
-    const formatDate = (dateString: string) => {
-      const date = new Date(dateString);
-      const options: Intl.DateTimeFormatOptions = {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      };
-      return date.toLocaleDateString("en-UK", options);
-    };
-    if (
-      !endDate ||
-      new Date(endDate).getTime() === new Date(startDate).getTime()
-    ) {
-      return `le ${formatDate(startDate)}`;
-    } else {
-      const startDay = new Date(startDate).getDate();
-      const endDay = new Date(endDate).getDate();
-      const monthYear = new Date(startDate).toLocaleDateString("en-UK", {
-        month: "long",
-        year: "numeric",
-      });
-      return `From ${startDay} to ${endDay} ${monthYear}`;
-    }
-  };
+
   console.log("coucou");
   return (
     <>
@@ -91,7 +64,7 @@ const DiscoverEventPreview = ({
                   ""}
               </h4>
             </div>
-            <span className="text-sm text-right">{renderDate()}</span>
+            <span className="text-sm text-right">{renderDate(event)}</span>
           </div>
           <div>
             <RenderMedia event={event} />

@@ -23,80 +23,51 @@ const CreateEventPreview = ({
   const { userInfo } = useGlobalStore();
 
   const renderDate = () => {
-    const startDate = eventStore.date;
-    const endDate = eventStore.endDate;
-    const formatDate = (dateString: string) => {
+    const startDate = eventStore.date || new Date().toISOString();
+    const endDate = eventStore.endDate || startDate;
+    const formatDate = (
+      dateString: string,
+      includeYear = false,
+      fullMonth = false,
+    ) => {
       const date = new Date(dateString);
       const options: Intl.DateTimeFormatOptions = {
-        year: "numeric",
-        month: "long",
+        month: fullMonth ? "long" : "short",
         day: "numeric",
+        ...(includeYear && { year: "numeric" }),
       };
       return date.toLocaleDateString("en-UK", options);
     };
-    if (
-      !endDate ||
-      new Date(endDate).getTime() === new Date(startDate).getTime()
-    ) {
-      return `${formatDate(startDate)}`;
-    } else {
-      const startDay = new Date(startDate).getDate();
-      const endDay = new Date(endDate).getDate();
-      const startDateObj = new Date(startDate);
-      const endDateObj = new Date(endDate);
 
-      const monthYear = startDateObj.toLocaleDateString("en-UK", {
+    const formatMonthYear = (dateString: string) => {
+      const date = new Date(dateString);
+      return date.toLocaleDateString("en-UK", {
         month: "long",
         year: "numeric",
       });
+    };
 
-      if (
-        endDateObj.getHours() === 0 &&
-        endDateObj.getMinutes() === 0 &&
-        endDateObj.getSeconds() === 0
-      ) {
-        return `from ${startDay} to ${endDay - 1} ${monthYear}`;
-      } else {
-        return `from ${startDay} to ${endDay} ${monthYear}`;
-      }
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+
+    if (start.getTime() === end.getTime()) {
+      return `The ${formatDate(startDate, true, true)}`; // ex: The 2 November 2024
     }
+
+    if (
+      start.getMonth() === end.getMonth() &&
+      start.getFullYear() === end.getFullYear()
+    ) {
+      return `From ${start.getDate()} to ${end.getDate()} ${formatMonthYear(startDate)}`;
+    }
+
+    if (start.getFullYear() === end.getFullYear()) {
+      return `From ${formatDate(startDate)} to ${formatDate(endDate, true)}`;
+    }
+
+    return `From ${formatDate(startDate, true)} to ${formatDate(endDate, true)}`;
   };
-  //   if (eventStore.timeSlots.length === 0) return "No times available";
 
-  //   let totalStartMinutes = 0,
-  //     totalEndMinutes = 0;
-
-  //   eventStore.timeSlots.forEach((slot) => {
-  //     const startTime = parse(slot.startTime, "HH:mm", new Date());
-  //     const endTime = parse(slot.endTime, "HH:mm", new Date());
-  //     totalStartMinutes += differenceInMinutes(
-  //       startTime,
-  //       new Date(0, 0, 0, 0, 0),
-  //     );
-  //     totalEndMinutes += differenceInMinutes(endTime, new Date(0, 0, 0, 0, 0));
-  //   });
-
-  //   const averageStartMinutes = totalStartMinutes / eventStore.timeSlots.length;
-  //   const averageEndMinutes = totalEndMinutes / eventStore.timeSlots.length;
-
-  //   const averageStartTime = new Date(0, 0, 0, 0, averageStartMinutes);
-  //   const averageEndTime = new Date(0, 0, 0, 0, averageEndMinutes);
-
-  //   return `${format(averageStartTime, "HH:mm")} - ${format(averageEndTime, "HH:mm")}`;
-  // };
-  // const renderMinMaxTimes = () => {
-  //   if (eventStore.timeSlots.length === 0) return "No times available";
-
-  //   let minStartTime = "23:59";
-  //   let maxEndTime = "00:00";
-
-  //   eventStore.timeSlots.forEach((slot) => {
-  //     if (slot.startTime < minStartTime) minStartTime = slot.startTime;
-  //     if (slot.endTime > maxEndTime) maxEndTime = slot.endTime;
-  //   });
-
-  //   return `${minStartTime}min - ${maxEndTime}max`;
-  // };
   return (
     <>
       <div

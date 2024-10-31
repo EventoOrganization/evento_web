@@ -7,6 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import DiscoverRenderMedia from "@/features/discover/DiscoverRenderMedia";
 import { cn } from "@/lib/utils";
+import { renderDate } from "@/utils/dateUtils";
 import { Loader } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -16,35 +17,6 @@ import EventActionIcons from "./EventActionIcons";
 
 const Event = ({ className, event }: { className?: string; event?: any }) => {
   const pathname = usePathname();
-
-  const renderDate = () => {
-    if (!event || !event.details) return <Loader />;
-    const startDate = event?.details?.date;
-    const endDate = event?.details?.endDate;
-    const formatDate = (dateString: string) => {
-      const date = new Date(dateString);
-      const options: Intl.DateTimeFormatOptions = {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      };
-      return date.toLocaleDateString("en-UK", options);
-    };
-    if (
-      !endDate ||
-      new Date(endDate).getTime() === new Date(startDate).getTime()
-    ) {
-      return `${formatDate(startDate)}`;
-    } else {
-      const startDay = new Date(startDate).getDate();
-      const endDay = new Date(endDate).getDate();
-      const monthYear = new Date(startDate).toLocaleDateString("en-UK", {
-        month: "long",
-        year: "numeric",
-      });
-      return `From ${startDay} to ${endDay} ${monthYear}`;
-    }
-  };
 
   return (
     <>
@@ -105,7 +77,7 @@ const Event = ({ className, event }: { className?: string; event?: any }) => {
               </div>
             </Link>
             <span className="text-sm text-right col-span-2">
-              {renderDate()}
+              {renderDate(event) || <Loader />}
             </span>
           </div>
           <div>

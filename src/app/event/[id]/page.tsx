@@ -20,6 +20,7 @@ import RSVPSubmissionsList from "@/features/event/components/RSVPSubmissionsList
 import { useToast } from "@/hooks/use-toast";
 import { useGlobalStore } from "@/store/useGlobalStore";
 import { EventType, InterestType } from "@/types/EventType";
+import { renderDate } from "@/utils/dateUtils";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import Image from "next/image";
@@ -216,17 +217,6 @@ const EventPage = () => {
     }
   };
 
-  const formatDate = (dateString: string | undefined) => {
-    if (!dateString) return "";
-    const date = new Date(dateString);
-    const options: Intl.DateTimeFormatOptions = {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    };
-    return date.toLocaleDateString("en-UK", options);
-  };
-
   const handleGuestsAllowFriendChange = async () => {
     try {
       const response = await fetchData(
@@ -258,24 +248,24 @@ const EventPage = () => {
     }
   };
 
-  const renderDate = () => {
-    const startDate = event?.details?.date;
-    const endDate = event?.details?.endDate;
-    if (
-      !endDate ||
-      new Date(endDate).getTime() === new Date(startDate || "").getTime()
-    ) {
-      return `On ${formatDate(startDate)}`;
-    } else {
-      const startDay = new Date(startDate || "").getDate();
-      const endDay = new Date(endDate).getDate();
-      const monthYear = new Date(startDate || "").toLocaleDateString("en-UK", {
-        month: "long",
-        year: "numeric",
-      });
-      return `From ${startDay} to ${endDay} ${monthYear}`;
-    }
-  };
+  // const renderDate = () => {
+  //   const startDate = event?.details?.date;
+  //   const endDate = event?.details?.endDate;
+  //   if (
+  //     !endDate ||
+  //     new Date(endDate).getTime() === new Date(startDate || "").getTime()
+  //   ) {
+  //     return `On ${formatDate(startDate)}`;
+  //   } else {
+  //     const startDay = new Date(startDate || "").getDate();
+  //     const endDay = new Date(endDate).getDate();
+  //     const monthYear = new Date(startDate || "").toLocaleDateString("en-UK", {
+  //       month: "long",
+  //       year: "numeric",
+  //     });
+  //     return `From ${startDay} to ${endDay} ${monthYear}`;
+  //   }
+  // };
 
   const enrichUsersWithStoreData = (
     usersList: Array<any>,
@@ -458,9 +448,12 @@ const EventPage = () => {
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
               )}
-              <h4 className="ml-2">{event?.user?.username || ""}</h4>
+              <h4 className="ml-2">
+                {event?.user?.username.charAt(0).toUpperCase() +
+                  event?.user?.username.slice(1) || ""}
+              </h4>
             </Link>
-            <span className="text-sm">{renderDate()}</span>
+            <span className="text-sm">{renderDate(event)}</span>
           </div>
           <RenderMedia event={event} />
         </div>
@@ -498,7 +491,7 @@ const EventPage = () => {
                   </ul>
                 )}
 
-                <EventTimeSlots event={event} renderDate={renderDate} />
+                <EventTimeSlots event={event} />
 
                 {event?.details?.mode !== "virtual" && (
                   <Button
