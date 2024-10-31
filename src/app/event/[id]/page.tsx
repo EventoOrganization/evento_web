@@ -499,25 +499,28 @@ const EventPage = () => {
                 )}
 
                 <EventTimeSlots event={event} renderDate={renderDate} />
-                <Button
-                  variant={"default"}
-                  className="flex gap-2 truncate max-w-full bg-evento-gradient text-white"
-                  onClick={() => {
-                    const address = event && event?.details?.location;
-                    if (address) {
-                      const encodedAddress = encodeURIComponent(address);
-                      const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`;
-                      window.open(googleMapsUrl, "_blank");
-                    } else {
-                      alert("Address is not available.");
-                    }
-                  }}
-                >
-                  <MapPinIcon2 fill="#fff" className="text-muted w-5 h-5" />
-                  <span className="truncate">
-                    {event && event?.details?.location}
-                  </span>
-                </Button>
+
+                {event?.details?.mode !== "virtual" && (
+                  <Button
+                    variant={"default"}
+                    className="flex gap-2 truncate max-w-full bg-evento-gradient text-white"
+                    onClick={() => {
+                      const address = event && event?.details?.location;
+                      if (address) {
+                        const encodedAddress = encodeURIComponent(address);
+                        const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`;
+                        window.open(googleMapsUrl, "_blank");
+                      } else {
+                        alert("Address is not available.");
+                      }
+                    }}
+                  >
+                    <MapPinIcon2 fill="#fff" className="text-muted w-5 h-5" />
+                    <span className="truncate">
+                      {event && event?.details?.location}
+                    </span>
+                  </Button>
+                )}
                 <p className="text-sm whitespace-pre-wrap break-words max-w-full">
                   {event?.details?.description}
                 </p>

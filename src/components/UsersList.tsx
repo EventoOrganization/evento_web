@@ -237,11 +237,13 @@ const UsersList = ({
               {loading ? "Processing..." : <XIcon />}
             </Button>
           )}
-        {isRequestedTab && (
-          <Button onClick={handleAcceptRequest} disabled={loading}>
-            {loading ? "Processing..." : "Accept"}
-          </Button>
-        )}
+        {isRequestedTab &&
+          (event?.user?._id === user?._id ||
+            event?.coHosts?.some((coHost) => coHost._id === user?._id)) && (
+            <Button onClick={handleAcceptRequest} disabled={loading}>
+              {loading ? "Processing..." : "Accept"}
+            </Button>
+          )}
       </div>
       {isAuthModalOpen && (
         <AuthModal
