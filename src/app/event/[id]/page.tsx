@@ -4,10 +4,11 @@ import CollapsibleList from "@/components/CollapsibleList";
 import MapPinIcon2 from "@/components/icons/MappPinIcon2";
 import Section from "@/components/layout/Section";
 import RenderMedia from "@/components/RenderMedia";
+import RequestModal from "@/components/RequestModal";
 import { Button } from "@/components/ui/button";
 import Loader from "@/components/ui/Loader";
 import { useSession } from "@/contexts/SessionProvider";
-// import AuthModal from "@/features/auth/components/AuthModal";
+import AuthModal from "@/features/auth/components/AuthModal";
 import TabSelector from "@/features/discover/TabSelector";
 import EventActionIcons from "@/features/event/components/EventActionIcons";
 import EventEdit from "@/features/event/components/EventEdit";
@@ -17,7 +18,6 @@ import PastEventGallery from "@/features/event/components/PastEventGallery";
 import RefusedUsersList from "@/features/event/components/RefusedUsersList";
 import RSVPSubmissionsList from "@/features/event/components/RSVPSubmissionsList";
 import { useToast } from "@/hooks/use-toast";
-// import { cn } from "@/lib/utils";
 import { useGlobalStore } from "@/store/useGlobalStore";
 import { EventType, InterestType } from "@/types/EventType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
@@ -45,7 +45,7 @@ const EventPage = () => {
   const [event, setEvent] = useState<EventType | null>(null);
   const [selectedTab, setSelectedTab] = useState("Description");
   const [filteredGuests, setFilteredGuests] = useState<any[]>([]);
-  // const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
   const [rsvpSubmissions, setRSVPSubmissions] = useState<
     RSVPAndRefusedResponse["rsvpSubmissions"]
@@ -55,8 +55,7 @@ const EventPage = () => {
   >([]);
   const { events, users } = useGlobalStore((state) => state);
   const [isGuestAllowed, setIsGuestAllowed] = useState<boolean | null>(null);
-  const [isEventPrivate, setIsEventPrivate] = useState<boolean | null>(null);
-  const { token } = useSession();
+  const { token, user } = useSession();
   const { toast } = useToast();
   const currentDate = new Date();
   const eventEndDate = event?.details?.endDate
@@ -136,8 +135,7 @@ const EventPage = () => {
       setEvent(storedEvent);
       console.log("stored event", storedEvent);
       setIsGuestAllowed(storedEvent.guestsAllowFriend || null);
-      setIsEventPrivate(storedEvent.eventType === "private" || null);
-      console.log("isEventPrivate", isEventPrivate, storedEvent.eventType);
+      console.log("isEventPrivate", storedEvent.eventType);
     }
 
     // Toujours récupérer les infos RSVP et refusées
@@ -338,35 +336,35 @@ const EventPage = () => {
     event?.favouritees || [],
     users,
   );
-  // const handleRequestToJoin = async () => {
-  //   try {
-  //     const response = await fetchData(
-  //       `/events/${eventId}/requestToJoin`,
-  //       HttpMethod.POST,
-  //       { userId: user?._id },
-  //       token,
-  //     );
-  //     if (response.ok) {
-  //       toast({
-  //         description: "Your request to join has been sent!",
-  //         className: "bg-evento-gradient text-white",
-  //         duration: 3000,
-  //       });
-  //     } else {
-  //       toast({
-  //         description: response.error,
-  //         variant: "destructive",
-  //         duration: 3000,
-  //       });
-  //     }
-  //   } catch (error) {
-  //     toast({
-  //       description: "Error sending join request.",
-  //       variant: "destructive",
-  //       duration: 3000,
-  //     });
-  //   }
-  // };
+  const handleRequestToJoin = async () => {
+    try {
+      const response = await fetchData(
+        `/events/${eventId}/requestToJoin`,
+        HttpMethod.POST,
+        { userId: user?._id },
+        token,
+      );
+      if (response.ok) {
+        toast({
+          description: "Your request to join has been sent!",
+          className: "bg-evento-gradient text-white",
+          duration: 3000,
+        });
+      } else {
+        toast({
+          description: response.error,
+          variant: "destructive",
+          duration: 3000,
+        });
+      }
+    } catch (error) {
+      toast({
+        description: "Error sending join request.",
+        variant: "destructive",
+        duration: 3000,
+      });
+    }
+  };
 
   useEffect(() => {
     const enrichedAttendeesIds = new Set(
@@ -417,47 +415,25 @@ const EventPage = () => {
       </div>
     );
   }
-  // const hasAccess =
-  //   event?.guestsAllowFriend || // L'événement permet l'invitation d'amis
-  //   event?.user?._id === user?._id || // Hôte de l'événement
-  //   event?.coHosts?.some((coHost) => coHost._id === user?._id) || // Co-hôte
-  //   event?.guests?.some((guest) => guest._id === user?._id); // Invité
+  const hasAccess =
+    event?.eventType === "private" &&
+    (event?.guestsAllowFriend ||
+      event?.user?._id === user?._id ||
+      event?.coHosts?.some((coHost) => coHost._id === user?._id) ||
+      event?.guests?.some((guest) => guest._id === user?._id));
 
-  // const handleAuthSuccess = () => {
-  //   console.log("handleAuthSuccess");
-  // };
-
+  const handleAuthSuccess = () => {
+    console.log("handleAuthSuccess");
+  };
   return (
     <>
-      {/* {isAuthModalOpen && <AuthModal onAuthSuccess={handleAuthSuccess} />} */}
-      {/* {!hasAccess && (
-        <div
-          className={cn(
-            "fixed z-20 top-0 left-0 w-screen h-screen backdrop-blur transition-opacity duration-300 flex items-center justify-center",
-            { hidden: isGuestAllowed },
-          )}
-        >
-          <div className="bg-white p-6 rounded-lg shadow-lg text-center max-w-md md:mx-auto mx-4">
-            <h2 className="text-2xl font-semibold mb-4">Private Event</h2>
-            <p className="mb-6 text-gray-600">
-              This is a private event, and access is currently restricted. To
-              request an invitation, click the button below.
-            </p>
-            <Button
-              onClick={() => {
-                if (token) {
-                  handleRequestToJoin();
-                } else {
-                  setIsAuthModalOpen(true);
-                }
-              }}
-              className="bg-evento-gradient text-white w-full"
-            >
-              Request to Join
-            </Button>
-          </div>
-        </div>
-      )} */}
+      {isAuthModalOpen && <AuthModal onAuthSuccess={handleAuthSuccess} />}
+      <RequestModal
+        isOpen={event?.eventType === "private" && !hasAccess}
+        onRequestToJoin={handleRequestToJoin}
+        onAuthModalOpen={() => setIsAuthModalOpen(true)}
+        hasToken={!!token}
+      />
       <div className="md:grid-cols-2 grid grid-cols-1 w-full h-screen ">
         <div className="md:p-10 md:pl-0 p-4 h-full ">
           <div className="flex items-center w-full justify-between mb-4">
