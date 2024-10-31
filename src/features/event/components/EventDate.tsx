@@ -46,6 +46,7 @@ const EventDate = () => {
   }, [timeSlots]);
 
   const handleStartDateChange = (date: Date | undefined) => {
+    setTimeSlots([]);
     if (date && date >= today) {
       const formattedDate = date ? format(date, "yyyy-MM-dd") : "";
       setStartDate(date);
