@@ -248,25 +248,6 @@ const EventPage = () => {
     }
   };
 
-  // const renderDate = () => {
-  //   const startDate = event?.details?.date;
-  //   const endDate = event?.details?.endDate;
-  //   if (
-  //     !endDate ||
-  //     new Date(endDate).getTime() === new Date(startDate || "").getTime()
-  //   ) {
-  //     return `On ${formatDate(startDate)}`;
-  //   } else {
-  //     const startDay = new Date(startDate || "").getDate();
-  //     const endDay = new Date(endDate).getDate();
-  //     const monthYear = new Date(startDate || "").toLocaleDateString("en-UK", {
-  //       month: "long",
-  //       year: "numeric",
-  //     });
-  //     return `From ${startDay} to ${endDay} ${monthYear}`;
-  //   }
-  // };
-
   const enrichUsersWithStoreData = (
     usersList: Array<any>,
     users: Array<any>,

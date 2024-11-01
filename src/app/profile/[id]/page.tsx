@@ -31,8 +31,8 @@ export default function UserProfilePage({
   };
   useEffect(() => {
     if (!profileData) getProfileData();
+    console.log("profileData", profileData);
   });
-
   if (!profileData) {
     return <div>Loading...</div>;
   } else {
