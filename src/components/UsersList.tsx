@@ -10,7 +10,7 @@ import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { XIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 const UsersList = ({
@@ -26,9 +26,11 @@ const UsersList = ({
   event?: EventType;
   isRequestedTab?: boolean;
 }) => {
-  const { id: eventId } = useParams();
+  const { id } = useParams();
+  const eventId = Array.isArray(id) ? id[0] : id;
   const { token } = useSession();
   const { toast } = useToast();
+  const pathname = usePathname();
   const [loading, setLoading] = useState<boolean>(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
   const [isIFollowingHim, setIsIFollowingHim] = useState<boolean | null>(
@@ -146,6 +148,10 @@ const UsersList = ({
       );
 
       if (response.ok) {
+        useGlobalStore.getState().updateEvent({
+          _id: eventId,
+          guests: event?.guests?.filter((guest) => guest._id !== user._id),
+        });
         updateUser({
           _id: user._id,
           isIFollowingHim: !isIFollowingHim, // Changement du statut localement
@@ -167,8 +173,12 @@ const UsersList = ({
       setLoading(false);
     }
   };
+  useEffect(() => {
+    console.log("Guests updated in UsersList:", user); // Remplacez `guests` par la prop exacte
+  }, [user]);
+
   if (user?.username === "anonymous") return;
-  console.log("user", user);
+  const isSuccessPage = pathname.includes(`/create-event/${eventId}/success`);
   return (
     <div className="flex justify-between w-full items-center">
       <Link href={`/profile/${user?._id}`} className="flex items-center gap-4">
@@ -203,7 +213,7 @@ const UsersList = ({
         </ul>
       </Link>
       <div className="flex gap-2">
-        {!isLoggedUser && user.status !== "tempGuest" && (
+        {!isLoggedUser && user.status !== "tempGuest" && !isSuccessPage && (
           <Button
             variant={"ghost"}
             className={`

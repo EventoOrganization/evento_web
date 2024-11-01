@@ -22,6 +22,7 @@ interface GlobalStoreState {
   updateUser: (updateUser: Partial<UserType>) => void;
   addEvent: (newEvent: EventType) => void;
   deleteEvent: (eventId: string) => void;
+  updateEvent: (updatedEvent: Partial<EventType>) => void;
   updateEventStatus: (
     eventId: string,
     newStatus: {
@@ -131,6 +132,32 @@ export const useGlobalStore = create<GlobalStoreState>()(
           ),
         }));
       },
+      updateEvent: (updatedEvent: Partial<EventType>) => {
+        set((state) => {
+          console.log("Updating event:", updatedEvent); // Log l'événement mis à jour
+          const newEvents = state.events.map((event) =>
+            event._id === updatedEvent._id
+              ? { ...event, ...updatedEvent }
+              : event,
+          );
+          console.log("New events list:", newEvents); // Log la nouvelle liste d'événements
+
+          return {
+            events: newEvents,
+            userInfo: state.userInfo?._id
+              ? {
+                  ...state.userInfo,
+                  hostedEvents: state.userInfo.hostedEvents?.map((event) =>
+                    event._id === updatedEvent._id
+                      ? { ...event, ...updatedEvent }
+                      : event,
+                  ),
+                }
+              : state.userInfo,
+          };
+        });
+      },
+
       updateEventStatus: (eventId, newStatus, user) => {
         set((state) => ({
           events: state.events.map((event) => {

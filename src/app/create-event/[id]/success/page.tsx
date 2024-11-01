@@ -15,7 +15,7 @@ import { fetchData, HttpMethod } from "@/utils/fetchData";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type SelectedUser = UserType | TempUserType;
 
@@ -37,10 +37,13 @@ const EventSuccessPage = () => {
   const favouriteIds = event?.favouritees
     ? event.favouritees.map((f) => f?._id || "")
     : [];
-
+  const currentGuests = [
+    ...(event?.guests || []),
+    ...(event?.tempGuests || []),
+  ];
   const excludedUserIds = [...attendeeIds, ...favouriteIds];
 
-  // Handle change for allowing guests to bring friends
+  // Fonction pour activer ou désactiver l'option "Permettre aux invités d'amener des amis"
   const handleGuestsAllowFriendChange = async () => {
     try {
       const response = await fetchData(
@@ -74,6 +77,7 @@ const EventSuccessPage = () => {
     }
   };
 
+  // Ajout des invités à la liste des utilisateurs sélectionnés
   const addUser = (user: TempUserType) => {
     setCurrentSelectedUsers((prevUsers) => [...prevUsers, user]);
   };
@@ -95,20 +99,23 @@ const EventSuccessPage = () => {
       ),
     );
   };
-
   const handleSubmitGuests = async () => {
-    const guests = currentSelectedUsers
-      .filter((user) => !!user._id)
-      .map((user) => ({
-        id: user._id,
-        email: user.email,
-        username: user.username,
-      }));
+    // Filtrer uniquement les utilisateurs qui sont de type UserType
+    const allGuests = [...currentGuests, ...currentSelectedUsers].filter(
+      (user): user is UserType => !!user._id,
+    );
+
+    const guests = allGuests.map((user) => ({
+      _id: user._id,
+      email: user.email.toLowerCase(),
+      username: user.username,
+      profileImage: user.profileImage,
+    }));
 
     const tempGuests = currentSelectedUsers
-      .filter((user) => !user._id)
+      .filter((user): user is TempUserType => !user._id)
       .map((tempGuest) => ({
-        email: tempGuest.email,
+        email: tempGuest.email.toLowerCase(),
         username: tempGuest.username,
       }));
 
@@ -128,15 +135,19 @@ const EventSuccessPage = () => {
 
       if (response.ok) {
         toast({
-          description: "Guests and preference updated successfully!",
+          description: "Guests updated successfully!",
           className: "bg-evento-gradient text-white",
           duration: 3000,
         });
-        setCurrentSelectedUsers([]);
+        useGlobalStore.getState().updateEvent({
+          _id: eventId,
+          guests: allGuests, // Ici, seuls les `UserType` sont inclus
+        });
+        setCurrentSelectedUsers([]); // Réinitialiser la sélection
       } else {
-        console.error("Error updating guests and preference", response.error);
+        console.error("Error updating guests", response.error);
         toast({
-          description: "Error updating guests and preference",
+          description: "Error updating guests",
           variant: "destructive",
           duration: 3000,
         });
@@ -144,7 +155,7 @@ const EventSuccessPage = () => {
     } catch (error) {
       console.error("Error submitting guests:", error);
       toast({
-        description: "Error submitting guests, please contact the support",
+        description: "Error submitting guests",
         variant: "destructive",
         duration: 3000,
       });
@@ -163,11 +174,15 @@ const EventSuccessPage = () => {
     (user) =>
       !excludedUserIds.includes(user._id) &&
       !currentSelectedUsers.some((selected) => selected._id === user._id) &&
-      !event?.guests?.some((guest) => guest._id === user._id) &&
+      !event?.guests?.some((guest) => guest._id === user._id) && // Exclure les invités déjà ajoutés
       (user.username.toLowerCase().includes(filter) ||
         user.firstName?.toLowerCase().includes(filter) ||
         user.lastName?.toLowerCase().includes(filter)),
   );
+
+  useEffect(() => {
+    console.log("Updated guests:", combinedGuests); // Affiche les invités mis à jour dans la console
+  }, [combinedGuests]);
 
   if (!event) {
     return <div>Loading...</div>;
@@ -184,6 +199,15 @@ const EventSuccessPage = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Section className="justify-start gap-2 items-start">
+          <div className="flex items-center justify-between w-full">
+            <h1 className="text-xl font-bold">{event?.title}</h1>
+            <Link
+              href={`/event/${event?._id}`}
+              className="underline text-blue-500"
+            >
+              See your event!
+            </Link>
+          </div>
           <h2>Add your guests on Evento</h2>
           <Input
             type="text"
@@ -231,74 +255,12 @@ const EventSuccessPage = () => {
               <div className="p-2 opacity-80">No users available</div>
             )}
           </ScrollArea>
-          <h3 className="mt-4">Selected ({currentSelectedUsers.length})</h3>
-          <ScrollArea className="h-48 border rounded bg-white w-full">
-            {currentSelectedUsers.map((user) => (
-              <div
-                key={user._id || user.username + user.email}
-                className="p-2 flex items-center justify-between cursor-pointer hover:bg-muted/20 space-x-4"
-              >
-                <div className="flex items-center space-x-4">
-                  {user.profileImage ? (
-                    <Image
-                      src={user.profileImage}
-                      alt="user image"
-                      width={50}
-                      height={50}
-                      className="w-12 h-12 rounded-full"
-                    />
-                  ) : (
-                    <Avatar className="w-12 h-12 rounded-full">
-                      <AvatarImage
-                        className="w-12 h-12 rounded-full"
-                        src="https://github.com/shadcn.png"
-                      />
-                      <AvatarFallback>CN</AvatarFallback>
-                    </Avatar>
-                  )}
-                  <div className="flex flex-col">
-                    <span className="font-semibold text-sm md:text-base">
-                      {user.username}
-                    </span>
-                    <span className="text-xs">
-                      {user.lastName} {user.firstName}
-                    </span>
-                  </div>
-                </div>
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  onClick={() => removeUser(user)}
-                >
-                  Remove
-                </Button>
-              </div>
-            ))}
-          </ScrollArea>
-
           <EventAddTempGuest onAddTempGuest={handleAddTempGuest} />
           <CSVImport onAddTempGuests={handleAddTempGuestsFromCSV} />
-          <Button
-            type="button"
-            className="bg-evento-gradient border shadow mt-2 w-full"
-            onClick={handleSubmitGuests} // Call the submission handler here
-          >
-            Save
-          </Button>
         </Section>
 
         <Section className="justify-start">
           <div className="space-y-4 pb-20 w-full">
-            <div className="flex items-center justify-between">
-              <h1 className="text-xl font-bold">{event?.title}</h1>
-              <Link
-                href={`/event/${event?._id}`}
-                className="underline text-blue-500"
-              >
-                {" "}
-                See your event!
-              </Link>
-            </div>
             {event.isHosted && (
               <div className="flex items-center gap-2">
                 <input
@@ -312,23 +274,67 @@ const EventSuccessPage = () => {
                 </label>
               </div>
             )}
-            <CollapsibleList
-              title="Going"
-              count={event?.attendees?.length || 0}
-              users={event?.attendees || []}
-            />
-            <CollapsibleList
-              title="Saved"
-              count={event?.favouritees?.length || 0}
-              users={event?.favouritees || []}
-            />
-            {combinedGuests.length > 0 && (
-              <CollapsibleList
-                title="Guests"
-                count={combinedGuests.length}
-                users={combinedGuests}
-              />
+            <h3 className="flex justify-between items-center text-eventoPurpleLight font-bold p-2 rounded-md w-fit text-base">
+              Selected ({currentSelectedUsers.length})
+            </h3>
+            <ScrollArea className="h-fit border rounded bg-white w-full">
+              {currentSelectedUsers.map((user) => (
+                <div
+                  key={user._id || user.username + user.email}
+                  className="p-2 flex items-center justify-between cursor-pointer hover:bg-muted/20 space-x-4"
+                >
+                  <div className="flex items-center space-x-4">
+                    {user.profileImage ? (
+                      <Image
+                        src={user.profileImage}
+                        alt="user image"
+                        width={50}
+                        height={50}
+                        className="w-12 h-12 rounded-full"
+                      />
+                    ) : (
+                      <Avatar className="w-12 h-12 rounded-full">
+                        <AvatarImage
+                          className="w-12 h-12 rounded-full"
+                          src="https://github.com/shadcn.png"
+                        />
+                        <AvatarFallback>CN</AvatarFallback>
+                      </Avatar>
+                    )}
+                    <div className="flex flex-col">
+                      <span className="font-semibold text-sm md:text-base">
+                        {user.username}
+                      </span>
+                      <span className="text-xs">
+                        {user.lastName} {user.firstName}
+                      </span>
+                    </div>
+                  </div>
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={() => removeUser(user)}
+                  >
+                    Remove
+                  </Button>
+                </div>
+              ))}
+            </ScrollArea>
+            {currentSelectedUsers.length > 0 && (
+              <Button
+                type="button"
+                className="bg-evento-gradient border shadow mt-2 w-full"
+                onClick={handleSubmitGuests}
+              >
+                Send invitation
+              </Button>
             )}
+            <CollapsibleList
+              title="Invited"
+              count={combinedGuests.length}
+              users={combinedGuests}
+              event={event}
+            />
           </div>
         </Section>
       </div>

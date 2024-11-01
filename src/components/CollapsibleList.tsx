@@ -2,9 +2,9 @@ import { cn } from "@/lib/utils";
 import { EventType } from "@/types/EventType";
 import { TempUserType, UserType } from "@/types/UserType";
 import { ChevronDownIcon } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import UsersList from "./UsersList";
-
+type SelectedUser = UserType | TempUserType;
 const CollapsibleList = ({
   title,
   count,
@@ -19,14 +19,15 @@ const CollapsibleList = ({
   isRequestedTab?: boolean;
 }) => {
   const [isOpen, setIsOpen] = useState(title === "Going" ? true : false);
-  const [usersList, setUsersList] = useState<UserType[] | TempUserType[]>(
-    users,
-  );
+  const [usersList, setUsersList] = useState<SelectedUser[]>(users);
   const removeUserLocally = (userId: string) => {
     setUsersList((prevUsers) =>
       prevUsers.filter((user) => user._id !== userId),
     );
   };
+  useEffect(() => {
+    setUsersList(users);
+  }, [users]);
   return (
     <div className="mb-4 w-full  ease-in-out">
       <button
