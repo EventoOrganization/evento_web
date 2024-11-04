@@ -387,7 +387,7 @@ const EventPage = () => {
       </div>
     );
   }
-  console.log("tempGuests", event.tempGuests);
+  console.log("tempGuests", event);
   const hasAccess =
     (event?.eventType === "private" &&
       (event?.guestsAllowFriend ||

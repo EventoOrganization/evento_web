@@ -68,6 +68,7 @@ const LoginForm = ({
         },
       );
       if (error) {
+        console.log("data", error);
         toast({
           description: error,
           variant: "destructive",
