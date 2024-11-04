@@ -25,7 +25,7 @@ import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import Image from "next/image";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 export interface RSVPAndRefusedResponse {
   _id: string;
@@ -41,13 +41,14 @@ export interface RSVPAndRefusedResponse {
 }
 
 const EventPage = () => {
+  const searchParams = useSearchParams();
   const { id } = useParams();
   const eventId = Array.isArray(id) ? id[0] : id;
   const [event, setEvent] = useState<EventType | null>(null);
   const [selectedTab, setSelectedTab] = useState("Description");
   const [filteredGuests, setFilteredGuests] = useState<any[]>([]);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-
+  const email = searchParams.get("email");
   const [rsvpSubmissions, setRSVPSubmissions] = useState<
     RSVPAndRefusedResponse["rsvpSubmissions"]
   >([]);
@@ -386,12 +387,15 @@ const EventPage = () => {
       </div>
     );
   }
+  console.log("tempGuests", event.tempGuests);
   const hasAccess =
-    event?.eventType === "private" &&
-    (event?.guestsAllowFriend ||
-      event?.user?._id === user?._id ||
-      event?.coHosts?.some((coHost) => coHost._id === user?._id) ||
-      event?.guests?.some((guest) => guest._id === user?._id));
+    (event?.eventType === "private" &&
+      (event?.guestsAllowFriend ||
+        event?.user?._id === user?._id ||
+        event?.coHosts?.some((coHost) => coHost._id === user?._id) ||
+        event?.guests?.some((guest) => guest._id === user?._id))) ||
+    (email &&
+      event?.tempGuests?.some((tempGuest) => tempGuest.email === email));
 
   const handleAuthSuccess = () => {
     console.log("handleAuthSuccess");
