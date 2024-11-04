@@ -8,10 +8,19 @@ import { handleFieldChange } from "../eventActions";
 
 const EventURL = () => {
   const eventStore = useEventStore();
-  const [isEditing, setIsEditing] = useState(eventStore.URL ? true : false);
+  const [isEditing, setIsEditing] = useState(!!eventStore.URL);
 
   const handleButtonClick = () => {
     setIsEditing((prevState) => !prevState);
+  };
+
+  const handleURLChange = (value: string) => {
+    const formattedURL =
+      value.startsWith("http://") || value.startsWith("https://")
+        ? value
+        : `https://${value}`;
+
+    handleFieldChange("URL", formattedURL);
   };
 
   return (
@@ -33,7 +42,7 @@ const EventURL = () => {
           <Input
             type="url"
             value={eventStore.URL || ""}
-            onChange={(e) => handleFieldChange("URL", e.target.value)}
+            onChange={(e) => handleURLChange(e.target.value)}
             placeholder="Enter your URL"
             className="w-full"
           />
