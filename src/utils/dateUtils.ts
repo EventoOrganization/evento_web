@@ -28,7 +28,7 @@ export const renderDate = (event: any) => {
 
   // Check if the start and end dates are the same
   if (start.getTime() === end.getTime()) {
-    return `The ${formatDate(startDate, true, true)}`; // ex: The 9 January 2025
+    return `${formatDate(startDate, true, true)}`; // ex: The 9 January 2025
   }
 
   // Check if start and end dates are in the same month and year
