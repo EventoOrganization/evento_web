@@ -49,6 +49,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
       console.log("No token or user, no fetch...");
       return;
     }
+
     const fetchConversations = async () => {
       const result = await fetchData<any[]>(
         "/chats/fetchConversations",
@@ -56,55 +57,61 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
         null,
         token,
       );
+
       if (result.ok && result.data) {
-        const structuredConversations = result.data.map((conversation) => {
-          // Determine if the logged-in user is the sender or receiver, then set accordingly
-          const isSender = conversation.senderId._id === user?._id;
-          const otherUser = isSender
-            ? conversation.reciverId
-            : conversation.senderId;
+        const structuredConversations = result.data
+          .filter(
+            (conversation) => conversation.senderId && conversation.reciverId,
+          ) // Filter out incomplete conversations
+          .map((conversation) => {
+            // Determine if the logged-in user is the sender or receiver, then set accordingly
+            const isSender = conversation.senderId?._id === user?._id;
+            const otherUser = isSender
+              ? conversation.reciverId
+              : conversation.senderId;
 
-          // Standard fields
-          const conversationData = {
-            _id: conversation._id,
-            title: "",
-            messages: conversation.recentMessages || [],
-            lastMessage:
-              conversation.recentMessages[0]?.message || "No messages yet",
-            initialMedia: conversation.groupId
-              ? conversation.groupId.eventId?.initialMedia || []
-              : [
-                  {
-                    url:
-                      otherUser?.profileImage ||
-                      "https://github.com/shadcn.png",
-                  },
-                ],
-          };
+            // Define the conversation structure with a fallback
+            const conversationData = {
+              _id: conversation._id,
+              title: "",
+              messages: conversation.recentMessages || [],
+              lastMessage:
+                conversation.recentMessages[0]?.message || "No messages yet",
+              initialMedia: conversation.groupId
+                ? conversation.groupId.eventId?.initialMedia || []
+                : [
+                    {
+                      url:
+                        otherUser?.profileImage ||
+                        "https://github.com/shadcn.png",
+                    },
+                  ],
+            };
 
-          // Adjust based on conversation type
-          if (conversation.groupId) {
-            // Group conversation logic remains unchanged
-            conversationData.title =
-              conversation.groupId.groupName || "Group Chat";
-            conversationData.initialMedia =
-              conversation.groupId.eventId?.initialMedia || [];
-          } else {
-            // Private conversation uses other user's data
-            conversationData.title = otherUser?.username || "Private Chat";
-            conversationData.initialMedia = [
-              {
-                url: otherUser?.profileImage || "https://github.com/shadcn.png",
-              },
-            ];
-          }
+            // Handle group conversations
+            if (conversation.groupId) {
+              conversationData.title =
+                conversation.groupId.groupName || "Group Chat";
+              conversationData.initialMedia =
+                conversation.groupId.eventId?.initialMedia || [];
+            } else {
+              // Private conversation logic
+              conversationData.title = otherUser?.username || "Private Chat";
+              conversationData.initialMedia = [
+                {
+                  url:
+                    otherUser?.profileImage || "https://github.com/shadcn.png",
+                },
+              ];
+            }
 
-          return conversationData;
-        });
+            return conversationData;
+          });
 
         updateConversations(() => structuredConversations);
       }
     };
+
     fetchConversations();
   }, [user]);
 
