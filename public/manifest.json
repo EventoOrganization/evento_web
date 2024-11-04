@@ -6,8 +6,8 @@
   "lang": "en",
   "start_url": "/discover",
   "display": "standalone",
-  "background_color": "#5f6fed",
-  "theme_color": "#5f6fed",
+  "background_color": "#F1F5F9",
+  "theme_color": "#a62ba7",
   "orientation": "portrait",
   "scope": "/",
   "protocol_handlers": [
