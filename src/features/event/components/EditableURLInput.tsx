@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { useEffect, useState } from "react";
 
 interface EditableURLInputProps {
   value: string;
@@ -25,6 +26,20 @@ const EditableURLInput = ({
   toggleEditMode,
   field = "URL",
 }: EditableURLInputProps) => {
+  const [url, setUrl] = useState(value);
+
+  // Ajoute automatiquement https:// si manquant
+  useEffect(() => {
+    if (editMode && url && !/^(https?:\/\/)/i.test(url)) {
+      setUrl(`https://${url}`);
+    }
+  }, [editMode, url]);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUrl(e.target.value);
+    onChange(e.target.value);
+  };
+
   return (
     <div className={cn("flex flex-col gap-2")}>
       <div className="flex justify-between">
@@ -61,8 +76,8 @@ const EditableURLInput = ({
       </div>
       <Input
         type="url"
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
+        value={url}
+        onChange={handleInputChange}
         className="w-full"
         placeholder="Enter URL"
         disabled={!editMode}
