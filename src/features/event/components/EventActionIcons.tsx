@@ -49,8 +49,8 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
       setIsAuthModalOpen(true);
       return;
     }
-
-    const isCurrentlySet = event[status]; // Utiliser directement `event`
+    console.log("token", token);
+    const isCurrentlySet = event[status];
 
     try {
       setLoading(status);
@@ -93,7 +93,7 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
       );
     } catch (error) {
       console.error(`Error updating event status (${status}):`, error);
-      alert(`Failed to update event status to ${status}. Please try again.`);
+      // alert(`Failed to update event status to ${status}. Please try again.`);
     } finally {
       setLoading(null);
     }

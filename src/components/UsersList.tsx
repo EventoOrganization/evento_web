@@ -173,9 +173,6 @@ const UsersList = ({
       setLoading(false);
     }
   };
-  useEffect(() => {
-    console.log("Guests updated in UsersList:", user); // Remplacez `guests` par la prop exacte
-  }, [user]);
 
   if (user?.username === "anonymous") return;
   const isSuccessPage = pathname.includes(`/create-event/${eventId}/success`);

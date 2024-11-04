@@ -256,8 +256,9 @@ const EventPage = () => {
   ) => {
     return usersList.map((user: any) => {
       const userFromStore = users.find(
-        (storeUser: any) => storeUser._id === user._id,
+        (storeUser: any) => storeUser && storeUser._id === user?._id,
       );
+
       if (userFromStore) {
         return {
           ...user,
@@ -270,17 +271,28 @@ const EventPage = () => {
       return user;
     });
   };
-  const enrichedGuests = enrichUsersWithStoreData(event?.guests || [], users);
+  const enrichedGuests = enrichUsersWithStoreData(
+    (event?.guests || []).filter((guest) => guest && guest._id),
+    users,
+  );
+
   const combinedGuests = useMemo(
     () => [
-      ...(enrichedGuests.map((guest) => ({ ...guest, status: "guest" })) || []),
-      ...(event?.tempGuests?.map((tempGuest) => ({
-        ...tempGuest,
-        status: "tempGuest",
-      })) || []),
+      ...(enrichedGuests
+        .filter((guest) => guest && guest._id)
+        .map((guest) => ({ ...guest, status: "guest" })) || []),
+      ...(event?.tempGuests
+        ? event.tempGuests
+            .filter((tempGuest) => tempGuest && tempGuest._id)
+            .map((tempGuest) => ({
+              ...tempGuest,
+              status: "tempGuest",
+            }))
+        : []), // Définit une liste vide si tempGuests est undefined
     ],
     [enrichedGuests, event?.tempGuests],
   );
+
   const enrichedAttendees = enrichUsersWithStoreData(
     event?.attendees || [],
     users,
@@ -346,8 +358,11 @@ const EventPage = () => {
       enrichedRefused.map((user: any) => user._id),
     );
     const enrichedFavouritesIds = new Set(
-      enrichedFavourites.map((user: any) => user._id),
+      enrichedFavourites
+        .filter((user: any) => user && user._id)
+        .map((user: any) => user._id),
     );
+
     const uniqueGuests = new Set();
 
     const newFilteredGuests = combinedGuests.filter((guest) => {
@@ -387,7 +402,7 @@ const EventPage = () => {
       </div>
     );
   }
-  console.log("tempGuests", event);
+  console.log("event", event);
   const hasAccess =
     (event?.eventType === "private" &&
       (event?.guestsAllowFriend ||
