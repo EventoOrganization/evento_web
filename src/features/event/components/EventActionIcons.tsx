@@ -23,12 +23,19 @@ import RefusalModal from "./RefusalModal";
 type EventActionIconsProps = {
   event: EventType;
   className?: string;
+  updateEventStatusLocally?: (
+    statusKey: EventStatusKeys,
+    value: boolean,
+  ) => void;
+  isLocal?: boolean;
 };
 type EventStatusKeys = "isGoing" | "isFavourite" | "isRefused";
 
 const EventActionIcons: React.FC<EventActionIconsProps> = ({
   event,
   className = "",
+  updateEventStatusLocally,
+  isLocal = false,
 }) => {
   const { toast } = useToast();
   const { token, user } = useSession();
@@ -84,16 +91,22 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
         className: "bg-evento-gradient text-white",
         duration: 1000,
       });
-
-      // Mettre à jour le store
-      updateEventStatusInStore(
-        event._id,
-        { [status]: !isCurrentlySet },
-        user as UserType,
-      );
+      if (isLocal && updateEventStatusLocally) {
+        updateEventStatusLocally(status, !isCurrentlySet);
+        updateEventStatusInStore(
+          event._id,
+          { [status]: !isCurrentlySet },
+          user as UserType,
+        );
+      } else {
+        updateEventStatusInStore(
+          event._id,
+          { [status]: !isCurrentlySet },
+          user as UserType,
+        );
+      }
     } catch (error) {
       console.error(`Error updating event status (${status}):`, error);
-      // alert(`Failed to update event status to ${status}. Please try again.`);
     } finally {
       setLoading(null);
     }

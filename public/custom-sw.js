@@ -10,9 +10,14 @@ self.addEventListener("push", function (event) {
   event.waitUntil(self.registration.showNotification(title, options));
 });
 if ("workbox" in self) {
-  workbox.setConfig({ debug: false }); // Désactive les logs en mode production
-
-  // Si vous voulez un niveau de log particulier en mode développement
-  // Remplacez "debug" par "silent" pour ne rien afficher.
+  workbox.setConfig({ debug: false });
   workbox.core.setLogLevel(workbox.core.LOG_LEVELS.silent);
+
+  // Remplace toutes les fonctions de log par une fonction vide
+  const noop = () => {};
+  workbox.core.logger.log = noop;
+  workbox.core.logger.warn = noop;
+  workbox.core.logger.error = noop;
+  workbox.core.logger.debug = noop;
+  workbox.core.logger.info = noop;
 }

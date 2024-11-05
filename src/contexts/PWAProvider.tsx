@@ -78,19 +78,19 @@ const PWAProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       // );
       navigator.serviceWorker.ready
         .then(async (registration) => {
-          console.log("Service worker is ready.");
+          // console.log("Service worker is ready.");
           const subscription = await registration.pushManager.getSubscription();
-          console.log("Existing subscription:", subscription);
+          // console.log("Existing subscription:", subscription);
           if (!subscription) {
             // No subscription found, we need to subscribe
-            console.log("No subscription found, subscribing now...");
+            // console.log("No subscription found, subscribing now...");
             try {
-              console.log("Subscribing to push...");
+              // console.log("Subscribing to push...");
               const newSubscription = await registration.pushManager.subscribe({
                 userVisibleOnly: true,
                 applicationServerKey: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
               });
-              console.log("New subscription obtained:", newSubscription);
+              // console.log("New subscription obtained:", newSubscription);
               subscribeToPush(newSubscription, browser, token);
             } catch (err) {
               console.error("Failed to subscribe to push", err);
@@ -101,15 +101,15 @@ const PWAProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
               existingSubscription &&
               subscription.endpoint === existingSubscription?.endpoint
             ) {
-              console.log("Subscription is up to date");
+              // console.log("Subscription is up to date");
             } else {
-              console.log("Updating existing subscription");
+              // console.log("Updating existing subscription");
               subscribeToPush(subscription, browser, token);
             }
           }
         })
         .catch((err) => {
-          console.log("Failed to get service worker registration:", err);
+          // console.log("Failed to get service worker registration:", err);
           console.error("ServiceWorker registration error:", err);
         });
     } else {
