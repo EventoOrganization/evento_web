@@ -36,6 +36,7 @@ const UsersList = ({
   const [isIFollowingHim, setIsIFollowingHim] = useState<boolean | null>(
     user?.isIFollowingHim,
   );
+  const [isTempGuest, setIsTempGuest] = useState<boolean>(false);
   const [isLoggedUser, setIsLoggedUser] = useState<boolean>(false);
   const isFollowingMe = user?.isFollowingMe;
   const session = useSession();
@@ -48,6 +49,9 @@ const UsersList = ({
       if (session.user._id === user._id) {
         setIsLoggedUser(true);
       }
+    }
+    if (isIFollowingHim === undefined) {
+      setIsTempGuest(true);
     }
   }, [session, user, isIFollowingHim, isFollowingMe]);
   const handleAcceptRequest = async () => {
@@ -210,7 +214,7 @@ const UsersList = ({
         </ul>
       </Link>
       <div className="flex gap-2">
-        {!isLoggedUser && user.status !== "tempGuest" && !isSuccessPage && (
+        {!isLoggedUser && !isTempGuest && !isSuccessPage && (
           <Button
             variant={"ghost"}
             className={`

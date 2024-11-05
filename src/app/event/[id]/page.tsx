@@ -97,9 +97,9 @@ const EventPage = () => {
   useEffect(() => {
     const fetchEventData = async () => {
       try {
-        const userQuery = user ? `&user=${user._id}` : "";
+        const userQuery = user ? `?userId=${user._id}` : "";
         const response = await fetchData(
-          `/events/getEvent/${eventId}?userId=${user?._id}${userQuery}`,
+          `/events/getEvent/${eventId}${userQuery}`,
           HttpMethod.GET,
           null,
           token,
@@ -221,7 +221,11 @@ const EventPage = () => {
           />
         )}
         {selectedTab === "Attendees" && hasAccess && (
-          <EventAttendeesTab event={event} />
+          <EventAttendeesTab
+            event={event}
+            isAdmin={isAdmin}
+            isPrivate={isPrivate}
+          />
         )}
         {selectedTab === "Settings" && (
           <>
