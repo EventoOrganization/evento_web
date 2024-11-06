@@ -47,6 +47,13 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
   const [isRefusalModalOpen, setIsRefusalModalOpen] = useState(false);
   const [refusalReason, setRefusalReason] = useState<string>("");
   const [loading, setLoading] = useState<string | null>(null);
+  // const hasEventEnded = event.details?.endDate
+  //   ? new Date(event.details.endDate) < new Date()
+  //   : false;
+
+  // if (hasEventEnded) {
+  //   return null;
+  // }
   const updateEventStatus = async (
     status: EventStatusKeys,
     rsvpAnswers?: any,
@@ -167,6 +174,7 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
     setShowQuestionModal(false);
     handleGoing(answers);
   };
+  console.log("eventdate to hidden if pasted", event.details?.endDate);
   return (
     <div className={`flex gap-2 ${className}`}>
       {/* Action to mark as Going */}

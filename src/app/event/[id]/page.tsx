@@ -164,7 +164,7 @@ const EventPage = () => {
   }
 
   return (
-    <div className="md:grid-cols-2 grid grid-cols-1 w-full h-screen">
+    <div className="md:grid-cols-2 grid grid-cols-1 w-full">
       {isAuthModalOpen && (
         <AuthModal onAuthSuccess={() => setIsAuthModalOpen(false)} />
       )}
@@ -174,7 +174,7 @@ const EventPage = () => {
         onAuthModalOpen={() => setIsAuthModalOpen(true)}
         hasToken={!!token}
       />
-      <div className="md:p-10 md:pl-0 p-4 h-full">
+      <div className="md:p-10 md:pl-0 p-4 h-full ">
         <div className="flex items-center w-full justify-between mb-4">
           <Link
             className="flex items-center gap-2"

@@ -41,7 +41,11 @@ export default function RootLayout({
               <GlobalDataProvider>
                 <Toaster />
                 {/* <Header /> */}
-                <Main className={cn("pb-28 px-0 lg:px-10 max-w-7xl mx-auto")}>
+                <Main
+                  className={cn(
+                    "pb-14 md:pb-28 px-0 lg:px-10 max-w-7xl mx-auto",
+                  )}
+                >
                   {children}
                 </Main>
                 <NavbarApp />

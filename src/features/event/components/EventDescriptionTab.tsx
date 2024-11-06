@@ -1,6 +1,7 @@
 // components/EventDescriptionTab.tsx
 
 import { EventStatusKeys } from "@/app/event/[id]/page";
+import AddToCalendar from "@/components/AddToCalendar";
 import EventActionIcons from "@/features/event/components/EventActionIcons";
 import { EventType } from "@/types/EventType";
 import EventTimeSlots from "./EventTimeSlots";
@@ -22,6 +23,7 @@ const EventDescriptionTab: React.FC<EventDescriptionTabProps> = ({
       <h1 className="text-xl font-bold">{event?.title}</h1>
       <EventTimeSlots event={event} />
       <p>{event?.details?.description}</p>
+      {<AddToCalendar event={event} />}
       <EventActionIcons
         event={event}
         updateEventStatusLocally={updateEventStatusLocally}
