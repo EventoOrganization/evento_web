@@ -14,6 +14,7 @@ import { useParams, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 const UsersList = ({
+  isAdmin = false,
   user,
   fetchUsers,
   removeUserLocally,
@@ -25,6 +26,7 @@ const UsersList = ({
   removeUserLocally?: (userId: string) => void;
   event?: EventType;
   isRequestedTab?: boolean;
+  isAdmin?: boolean;
 }) => {
   const { id } = useParams();
   const eventId = Array.isArray(id) ? id[0] : id;
@@ -44,6 +46,7 @@ const UsersList = ({
     updateUser: state.updateUser,
     users: state.users,
   }));
+
   useEffect(() => {
     if (session?.user && user) {
       if (session.user._id === user._id) {
@@ -54,6 +57,7 @@ const UsersList = ({
       setIsTempGuest(true);
     }
   }, [session, user, isIFollowingHim, isFollowingMe]);
+
   const handleAcceptRequest = async () => {
     if (!token) {
       setIsAuthModalOpen(true);
@@ -93,6 +97,7 @@ const UsersList = ({
       setLoading(false);
     }
   };
+
   const handleFollow = async () => {
     if (!token) {
       setIsAuthModalOpen(true);
@@ -133,6 +138,7 @@ const UsersList = ({
       setLoading(false);
     }
   };
+
   const handleUnGuest = async () => {
     if (!token) {
       setIsAuthModalOpen(true);
@@ -167,7 +173,6 @@ const UsersList = ({
           className: "bg-evento-gradient text-white",
         });
         if (removeUserLocally) removeUserLocally(user._id);
-        // if (fetchUsers) fetchUsers();
       } else {
         console.error("Error:", response.error);
       }
@@ -180,6 +185,7 @@ const UsersList = ({
 
   if (user?.username === "anonymous") return;
   const isSuccessPage = pathname.includes(`/create-event/${eventId}/success`);
+
   return (
     <div className="flex justify-between w-full items-center">
       <Link href={`/profile/${user?._id}`} className="flex items-center gap-4">
@@ -214,29 +220,33 @@ const UsersList = ({
         </ul>
       </Link>
       <div className="flex gap-2">
-        {!isLoggedUser && !isTempGuest && !isSuccessPage && (
-          <Button
-            variant={"ghost"}
-            className={`
-          px-5 py-2 rounded-lg font-semibold text-white transition-all hover:scale-105 duration-300 hover:text-white
-          ${isIFollowingHim && !isFollowingMe ? "bg-gray-400 hover:bg-gray-500 " : ""}
-          ${isFollowingMe && !isIFollowingHim ? "bg-green-600 hover:bg-green-600/80 " : ""}
-          ${isFollowingMe && isIFollowingHim ? " bg-evento-gradient " : ""}
-          ${!isFollowingMe && !isIFollowingHim ? "bg-eventoBlue hover:bg-eventoBlue/80 " : ""}
-          `}
-            onClick={handleFollow}
-            disabled={loading}
-          >
-            {loading
-              ? "Processing..."
-              : isFollowingMe && !isIFollowingHim
-                ? "Follow Back"
-                : isFollowingMe && isIFollowingHim
-                  ? "Friends"
-                  : !isFollowingMe && isIFollowingHim
-                    ? "Unfollow"
-                    : "Follow"}
-          </Button>
+        {user.reason && isAdmin ? (
+          <span className="text-red-500 font-semibold">{user.reason}</span>
+        ) : (
+          !isLoggedUser &&
+          !isTempGuest &&
+          !isSuccessPage && (
+            <Button
+              variant={"ghost"}
+              className={`px-5 py-2 rounded-lg font-semibold text-white transition-all hover:scale-105 duration-300 hover:text-white
+              ${isIFollowingHim && !isFollowingMe ? "bg-gray-400 hover:bg-gray-500 " : ""}
+              ${isFollowingMe && !isIFollowingHim ? "bg-green-600 hover:bg-green-600/80 " : ""}
+              ${isFollowingMe && isIFollowingHim ? " bg-evento-gradient " : ""}
+              ${!isFollowingMe && !isIFollowingHim ? "bg-eventoBlue hover:bg-eventoBlue/80 " : ""}`}
+              onClick={handleFollow}
+              disabled={loading}
+            >
+              {loading
+                ? "Processing..."
+                : isFollowingMe && !isIFollowingHim
+                  ? "Follow Back"
+                  : isFollowingMe && isIFollowingHim
+                    ? "Friends"
+                    : !isFollowingMe && isIFollowingHim
+                      ? "Unfollow"
+                      : "Follow"}
+            </Button>
+          )
         )}
         {event?.user._id === session?.user?._id &&
           (user.status === "tempGuest" || user.status === "guest") && (
@@ -260,7 +270,7 @@ const UsersList = ({
         <AuthModal
           onAuthSuccess={() => {
             setIsAuthModalOpen(false);
-            fetchUsers?.(); // Fetch the users again on successful authentication
+            fetchUsers?.();
           }}
           onClose={() => setIsAuthModalOpen(false)}
         />

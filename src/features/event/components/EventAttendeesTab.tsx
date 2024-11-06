@@ -38,6 +38,7 @@ const EventAttendeesTab: React.FC<EventAttendeesTabProps> = ({
   return (
     <div className="w-full">
       <CollapsibleList
+        isAdmin={isAdmin}
         title="Going"
         count={event.attendees?.length || 0}
         users={event.attendees || []}
@@ -57,6 +58,7 @@ const EventAttendeesTab: React.FC<EventAttendeesTabProps> = ({
       {isAdmin && (
         <>
           <CollapsibleList
+            isAdmin={isAdmin}
             title="Requested to Join"
             count={event?.requested?.length || 0}
             users={event?.requested || []}

@@ -1,3 +1,4 @@
+import RSVPSubmissionsList from "@/features/event/components/RSVPSubmissionsList";
 import { cn } from "@/lib/utils";
 import { EventType } from "@/types/EventType";
 import { TempUserType, UserType } from "@/types/UserType";
@@ -11,12 +12,14 @@ const CollapsibleList = ({
   users,
   event,
   isRequestedTab = false,
+  isAdmin = false,
 }: {
   title: string;
   count: number;
   users: (UserType | TempUserType)[];
   event?: EventType;
   isRequestedTab?: boolean;
+  isAdmin?: boolean;
 }) => {
   const [isOpen, setIsOpen] = useState(title === "Going" ? true : false);
   const [usersList, setUsersList] = useState<SelectedUser[]>(users);
@@ -30,26 +33,32 @@ const CollapsibleList = ({
   }, [users]);
   return (
     <div className="mb-4 w-full  ease-in-out">
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="flex justify-between items-center text-eventoPurpleLight font-bold p-2 rounded-md  w-fit"
-      >
-        {title} ( {count} )
-        <span>
-          <ChevronDownIcon
-            className={cn(
-              "transition-transform duration-300",
-              isOpen ? "rotate-180" : "rotate-0",
-            )}
-          />
-        </span>
-      </button>
+      <div className="flex justify-between">
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className="flex justify-between items-center text-eventoPurpleLight font-bold p-2 rounded-md  w-fit"
+        >
+          {title} ( {count} )
+          <span>
+            <ChevronDownIcon
+              className={cn(
+                "transition-transform duration-300",
+                isOpen ? "rotate-180" : "rotate-0",
+              )}
+            />
+          </span>
+        </button>
+        {title === "Going" && isAdmin && (
+          <RSVPSubmissionsList rsvp={usersList} />
+        )}
+      </div>
       {isOpen && (
         <div className="mt-2 space-y-2">
           {usersList
             .filter((user) => user && user._id)
             .map((user) => (
               <UsersList
+                isAdmin={isAdmin}
                 key={user._id}
                 user={user}
                 removeUserLocally={removeUserLocally}

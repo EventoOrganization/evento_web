@@ -113,6 +113,10 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
   };
 
   const handleGoing = (submittedAnswers: any) => {
+    if (!token) {
+      setIsAuthModalOpen(true);
+      return;
+    }
     if (
       !event.isGoing &&
       event?.questions?.length !== undefined &&
