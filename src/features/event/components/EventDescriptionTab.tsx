@@ -23,7 +23,7 @@ const EventDescriptionTab: React.FC<EventDescriptionTabProps> = ({
       <h1 className="text-xl font-bold">{event?.title}</h1>
       <EventTimeSlots event={event} />
       <p>{event?.details?.description}</p>
-      {<AddToCalendar event={event} />}
+      {event.isGoing && <AddToCalendar event={event} />}
       <EventActionIcons
         event={event}
         updateEventStatusLocally={updateEventStatusLocally}
