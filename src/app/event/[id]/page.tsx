@@ -29,21 +29,30 @@ const EventPage = () => {
   const { token, user } = useSession();
   const { toast } = useToast();
   const { users } = useGlobalStore((state) => state);
+
   const [event, setEvent] = useState<EventType | null>(null);
   const [selectedTab, setSelectedTab] = useState("Description");
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [isPrivate, setIsPrivate] = useState(false);
-  const [hasAccess, setHasAccess] = useState(true);
-  const [isGuest, setIsGuest] = useState(false);
-  const [isTempGuest, setIsTempGuest] = useState(false);
+
+  // Access control state
+  const [accessControl, setAccessControl] = useState({
+    isPrivate: false,
+    isAdmin: false,
+    isGuest: false,
+    isTempGuest: false,
+    hasAccess: true,
+  });
+
+  // Fonction pour mettre à jour le champ de l'événement
   const handleUpdateField = (field: string, value: any) => {
     if (event) {
-      const updateFunction = createUpdateEventField(event); // Crée la fonction
-      const updatedEvent = updateFunction(field, value); // Utilise-la avec deux arguments
+      const updateFunction = createUpdateEventField(event);
+      const updatedEvent = updateFunction(field, value);
       setEvent(updatedEvent);
     }
   };
+
+  // Mettre à jour le statut local de l'événement
   const updateEventStatusLocally = (
     statusKey: EventStatusKeys,
     value: boolean,
@@ -65,6 +74,7 @@ const EventPage = () => {
     });
   };
 
+  // Gérer la demande de rejoindre
   const handleRequestToJoin = async () => {
     try {
       const response = await fetchData(
@@ -94,6 +104,8 @@ const EventPage = () => {
       });
     }
   };
+
+  // Charger les données de l'événement
   useEffect(() => {
     const fetchEventData = async () => {
       try {
@@ -116,25 +128,33 @@ const EventPage = () => {
     fetchEventData();
   }, [eventId, token, toast]);
 
+  // Calculer les droits d'accès
   useEffect(() => {
-    if (event?.eventType === "private") {
-      setIsPrivate(true);
-      setIsAdmin(event.user?._id === user?._id || false);
-      setIsGuest(
-        event.guests?.some((guest) => guest._id === user?._id) || false,
-      );
-      setIsTempGuest(
+    if (event) {
+      const isPrivate = event.eventType === "private";
+      const isAdmin = event.user?._id === user?._id;
+      const isGuest =
+        event.guests?.some((guest) => guest._id === user?._id) || false;
+      const isTempGuest =
         event.tempGuests?.some(
           (guest) => guest.email === params.get("email"),
-        ) || false,
-      );
-    } else {
-      setIsPrivate(false);
-    }
+        ) || false;
+      const hasAccess = !isPrivate || isAdmin || isGuest || isTempGuest;
 
-    setHasAccess(!isPrivate || isAdmin || isGuest || isTempGuest);
+      setAccessControl({ isPrivate, isAdmin, isGuest, isTempGuest, hasAccess });
+
+      // Log final pour débogage en une seule fois
+      console.log("Access Control:", {
+        isPrivate,
+        isAdmin,
+        isGuest,
+        isTempGuest,
+        hasAccess,
+      });
+    }
   }, [event, user, params]);
 
+  // Affichage de l'événement
   if (!event) {
     return (
       <div className="w-full h-full flex items-center justify-center">
@@ -149,7 +169,7 @@ const EventPage = () => {
         <AuthModal onAuthSuccess={() => setIsAuthModalOpen(false)} />
       )}
       <RequestModal
-        isOpen={isPrivate && !hasAccess}
+        isOpen={accessControl.isPrivate && !accessControl.hasAccess}
         onRequestToJoin={handleRequestToJoin}
         onAuthModalOpen={() => setIsAuthModalOpen(true)}
         hasToken={!!token}
@@ -190,9 +210,11 @@ const EventPage = () => {
         <TabSelector
           onChange={setSelectedTab}
           tabs={
-            ["Description", "Attendees", isAdmin ? "Settings" : null].filter(
-              Boolean,
-            ) as string[]
+            [
+              "Description",
+              "Attendees",
+              accessControl.isAdmin ? "Settings" : null,
+            ].filter(Boolean) as string[]
           }
           className="mb-10"
         />
@@ -202,21 +224,19 @@ const EventPage = () => {
             updateEventStatusLocally={updateEventStatusLocally}
           />
         )}
-        {selectedTab === "Attendees" && hasAccess && (
+        {selectedTab === "Attendees" && accessControl.hasAccess && (
           <EventAttendeesTab
             event={event}
-            isAdmin={isAdmin}
-            isPrivate={isPrivate}
+            isAdmin={accessControl.isAdmin}
+            isPrivate={accessControl.isPrivate}
           />
         )}
         {selectedTab === "Settings" && (
-          <>
-            <EventEdit
-              event={event}
-              allUsers={users}
-              onUpdateField={handleUpdateField}
-            />
-          </>
+          <EventEdit
+            event={event}
+            allUsers={users}
+            onUpdateField={handleUpdateField}
+          />
         )}
       </Section>
     </div>
