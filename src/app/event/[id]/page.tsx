@@ -119,40 +119,22 @@ const EventPage = () => {
   useEffect(() => {
     if (event?.eventType === "private") {
       setIsPrivate(true);
-      console.log("Event is private.");
-      if (event?.user?._id === user?._id) {
-        setIsAdmin(true);
-        console.log("Access granted: user is the admin.");
-      } else {
-        setIsAdmin(false);
-        console.log("Access condition failed: user is not the admin.");
-      }
-
-      if (event?.guests?.some((guest) => guest._id === user?._id)) {
-        setIsGuest(true);
-        console.log("Access granted: user is in the guest list.");
-      } else {
-        setIsGuest(false);
-        console.log("Access condition failed: user is not in the guest list.");
-      }
-
-      if (
-        event?.tempGuests?.some((guest) => guest.email === params.get("email"))
-      ) {
-        setIsTempGuest(true);
-        console.log("Access granted: user is a temporary guest.");
-      } else {
-        setIsTempGuest(false);
-        console.log("Access condition failed: user is not a temporary guest.");
-      }
+      setIsAdmin(event.user?._id === user?._id || false);
+      setIsGuest(
+        event.guests?.some((guest) => guest._id === user?._id) || false,
+      );
+      setIsTempGuest(
+        event.tempGuests?.some(
+          (guest) => guest.email === params.get("email"),
+        ) || false,
+      );
     } else {
       setIsPrivate(false);
-      console.log("Event is public.");
     }
-    const accessGranted = !isPrivate || isAdmin || isGuest || isTempGuest;
-    setHasAccess(accessGranted);
-    console.log("event", event);
-  }, [event]);
+
+    setHasAccess(!isPrivate || isAdmin || isGuest || isTempGuest);
+  }, [event, user, params]);
+
   if (!event) {
     return (
       <div className="w-full h-full flex items-center justify-center">
