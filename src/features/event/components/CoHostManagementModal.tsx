@@ -150,7 +150,7 @@ const CoHostManagementModal: React.FC<CoHostManagementModalProps> = ({
             );
           })
         ) : (
-          <p>No co-hosts added yet.</p>
+          <p>No Co-Hosts added yet.</p>
         )}
       </div>
     </div>

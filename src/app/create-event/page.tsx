@@ -21,6 +21,7 @@ import { useGlobalStore } from "@/store/useGlobalStore";
 import { EventType, InterestType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
+import { XIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 const CreateEventPage = () => {
@@ -365,9 +366,10 @@ const CreateEventPage = () => {
                     onClick={() =>
                       handleRemoveInterest && handleRemoveInterest(interest._id)
                     }
-                    className="bg-eventoPurpleLight/30 w-fit px-2 py-1 rounded-lg text-sm cursor-pointer"
+                    className="bg-eventoPurpleLight/30 w-fit px-2 py-1 rounded-lg text-sm cursor-pointer flex items-center"
                   >
                     {interest.name}
+                    <XIcon className="w-4 h-4 ml-1" />
                   </li>
                 ))}
             </ul>

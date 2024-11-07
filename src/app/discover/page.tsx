@@ -304,7 +304,9 @@ const DiscoverPage = () => {
                 ))
               ) : (
                 <>
-                  <p>Login to find friend who like same interest than you !</p>
+                  <p>
+                    Log in to find friends who have the same interests as you!
+                  </p>
                   <Button
                     className="bg-evento-gradient w-full"
                     onClick={() => setIsAuthModalOpen(true)}

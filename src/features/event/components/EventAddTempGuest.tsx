@@ -33,7 +33,7 @@ const EventAddTempGuest = ({ onAddTempGuest }: { onAddTempGuest: any }) => {
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            placeholder="Username"
+            placeholder="Name"
             required
           />
         </div>

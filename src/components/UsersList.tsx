@@ -123,7 +123,7 @@ const UsersList = ({
         updateUser({ _id: user._id, isIFollowingHim: updatedStatus });
         toast({
           title: "Success",
-          description: `You ${!isIFollowingHim ? "followed" : "unfollowed"} this user`,
+          description: `You are now ${!isIFollowingHim ? "following" : "unfollowing"} this user`,
           duration: 2000,
           className: "bg-evento-gradient text-white",
         });
