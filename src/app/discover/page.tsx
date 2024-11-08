@@ -294,16 +294,79 @@ const DiscoverPage = () => {
             </ul>
           </div>{" "}
           <div className="p-4 hidden md:block">
-            <h4 className="text-purple-600 font-bold">Follow Suggestions</h4>
-            <ul className="space-y-4 py-4  mb-20">
+            <div className="space-y-4  mb-20">
               {session.isAuthenticated ? (
-                users.map((user: UserType) => (
-                  <li key={user._id} className="flex justify-between">
-                    <UsersList user={user} />
-                  </li>
-                ))
+                <>
+                  {/* 1. Utilisateurs qui vous suivent mais que vous ne suivez pas */}
+                  <h4 className="text-purple-600 font-bold">
+                    You may know them
+                  </h4>
+                  <ul className="space-y-2">
+                    {users
+                      .filter(
+                        (user) => !user.isIFollowingHim && user.isFollowingMe,
+                      )
+                      .map((user: UserType) => (
+                        <li key={user._id} className="flex justify-between">
+                          <UsersList user={user} />
+                        </li>
+                      ))}
+                  </ul>
+
+                  {/* 2. Utilisateurs avec des intérêts communs */}
+                  <h4 className="text-purple-600 font-bold">
+                    They share your interests
+                  </h4>
+                  <ul className="space-y-2">
+                    {users
+                      .filter(
+                        (user) =>
+                          user.matchingInterests &&
+                          user.matchingInterests > 0 &&
+                          !user.isIFollowingHim,
+                      )
+                      .map((user: UserType) => (
+                        <li key={user._id} className="flex justify-between">
+                          <UsersList user={user} />
+                        </li>
+                      ))}
+                  </ul>
+
+                  {/* 3. Suggestions générales si aucune autre suggestion n'est disponible */}
+                  {users.filter(
+                    (user) =>
+                      !user.isIFollowingHim &&
+                      !user.isFollowingMe &&
+                      (!user.matchingInterests || user.matchingInterests === 0),
+                  ).length === 0 && (
+                    <>
+                      <h4 className="text-purple-600 font-bold">
+                        General Suggestions
+                      </h4>
+                      <ul className="space-y-2">
+                        {users
+                          .filter(
+                            (user) =>
+                              !user.isIFollowingHim &&
+                              !user.isFollowingMe &&
+                              (!user.matchingInterests ||
+                                user.matchingInterests === 0),
+                          )
+                          .slice(0, 10) // Limiter à un maximum de 10 utilisateurs
+                          .map((user: UserType) => (
+                            <li key={user._id} className="flex justify-between">
+                              <UsersList user={user} />
+                            </li>
+                          ))}
+                      </ul>
+                    </>
+                  )}
+                </>
               ) : (
                 <>
+                  <h4 className="text-purple-600 font-bold">
+                    Follow Suggestions
+                  </h4>
                   <p>
                     Log in to find friends who have the same interests as you!
                   </p>
@@ -315,7 +378,7 @@ const DiscoverPage = () => {
                   </Button>
                 </>
               )}
-            </ul>
+            </div>
           </div>
         </div>
         {isAuthModalOpen && (
