@@ -1,7 +1,9 @@
 // components/EventAttendeesTab.tsx
 
 import CollapsibleList from "@/components/CollapsibleList";
+import GuestAllowFriendToggle from "@/components/GuestAllowFriendToggle";
 import { EventType } from "@/types/EventType";
+import EventGuestModal from "./EventGuestModal";
 
 interface EventAttendeesTabProps {
   event: EventType;
@@ -37,6 +39,12 @@ const EventAttendeesTab: React.FC<EventAttendeesTabProps> = ({
   );
   return (
     <div className="w-full">
+      {isAdmin && (
+        <div className="flex items-center justify-between">
+          <GuestAllowFriendToggle event={event} />
+          <EventGuestModal event={event} />
+        </div>
+      )}
       <CollapsibleList
         isAdmin={isAdmin}
         title="Going"
