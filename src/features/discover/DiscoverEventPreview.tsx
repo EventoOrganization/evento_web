@@ -9,10 +9,10 @@ import EventActionIcons from "@/features/event/components/EventActionIcons";
 import { cn } from "@/lib/utils";
 import { useGlobalStore } from "@/store/useGlobalStore";
 import { EventType } from "@/types/EventType";
+import { renderDate } from "@/utils/dateUtils";
 import Image from "next/image";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import PastEventGallery from "../event/components/PastEventGallery";
-import { renderDate } from "@/utils/dateUtils";
 
 const DiscoverEventPreview = ({
   className,
@@ -25,7 +25,7 @@ const DiscoverEventPreview = ({
   const eventEndDate = event.details?.endDate
     ? new Date(event.details.endDate)
     : null;
-  const events = useGlobalStore((state) => state.events);
+  const { events } = useGlobalStore((state) => state);
   const currentEvent = events.find((e: EventType) => e._id === event._id);
 
   console.log("coucou");

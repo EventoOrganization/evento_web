@@ -10,13 +10,13 @@ import CSVImport from "@/features/event/components/CSVImport";
 import EventAddTempGuest from "@/features/event/components/EventAddTempGuest";
 import { useToast } from "@/hooks/use-toast";
 import { useGlobalStore } from "@/store/useGlobalStore";
+import { EventType } from "@/types/EventType";
 import { TempUserType, UserType } from "@/types/UserType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-
 type SelectedUser = UserType | TempUserType;
 
 const EventSuccessPage = () => {
@@ -37,10 +37,6 @@ const EventSuccessPage = () => {
   const favouriteIds = event?.favouritees
     ? event.favouritees.map((f) => f?._id || "")
     : [];
-  const currentGuests = [
-    ...(event?.guests || []),
-    ...(event?.tempGuests || []),
-  ];
   const excludedUserIds = [...attendeeIds, ...favouriteIds];
 
   // Fonction pour activer ou désactiver l'option "Permettre aux invités d'amener des amis"
@@ -100,33 +96,30 @@ const EventSuccessPage = () => {
     );
   };
   const handleSubmitGuests = async () => {
-    // Filtrer uniquement les utilisateurs qui sont de type UserType
-    const allGuests = [...currentGuests, ...currentSelectedUsers].filter(
+    const newGuests = currentSelectedUsers.filter(
       (user): user is UserType => !!user._id,
     );
-
-    const guests = allGuests.map((user) => ({
-      _id: user._id,
-      email: user.email.toLowerCase(),
-      username: user.username,
-      profileImage: user.profileImage,
-    }));
-
-    const tempGuests = currentSelectedUsers
-      .filter((user): user is TempUserType => !user._id)
-      .map((tempGuest) => ({
-        email: tempGuest.email.toLowerCase(),
-        username: tempGuest.username,
-      }));
+    const newTempGuests = currentSelectedUsers.filter(
+      (user): user is TempUserType => !user._id,
+    );
 
     const updateData = {
-      guests,
-      tempGuests,
+      guests: newGuests.map((user) => ({
+        _id: user._id,
+        email: user.email.toLowerCase(),
+        username: user.username,
+        profileImage: user.profileImage,
+      })),
+      tempGuests: newTempGuests.map((tempGuest) => ({
+        email: tempGuest.email.toLowerCase(),
+        username: tempGuest.username,
+      })),
       user,
     };
 
     try {
-      const response = await fetchData(
+      // Appel à l'API pour ajouter les invités
+      const response = await fetchData<EventType>(
         `/events/addGuests/${eventId}`,
         HttpMethod.PATCH,
         updateData,
@@ -134,6 +127,8 @@ const EventSuccessPage = () => {
       );
 
       if (response.ok) {
+        const updatedEvent = response?.data?.event;
+        console.log("Updated event:", updatedEvent);
         toast({
           description: "Guests updated successfully!",
           className: "bg-evento-gradient text-white",
@@ -141,9 +136,10 @@ const EventSuccessPage = () => {
         });
         useGlobalStore.getState().updateEvent({
           _id: eventId,
-          guests: allGuests, // Ici, seuls les `UserType` sont inclus
+          guests: updatedEvent?.guests || [],
+          tempGuests: updatedEvent?.tempGuests || [],
         });
-        setCurrentSelectedUsers([]); // Réinitialiser la sélection
+        setCurrentSelectedUsers([]);
       } else {
         console.error("Error updating guests", response.error);
         toast({
@@ -187,7 +183,7 @@ const EventSuccessPage = () => {
   if (!event) {
     return <div>Loading...</div>;
   }
-
+  console.log("event", event);
   return (
     <>
       <Section className="text-center h-full">

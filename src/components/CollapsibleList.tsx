@@ -29,6 +29,7 @@ const CollapsibleList = ({
   useEffect(() => {
     setUsersList(users);
   }, [users]);
+  console.log("CollapsibleList usersList", usersList);
   return (
     <div className="mb-4 w-full  ease-in-out">
       <div className="flex justify-between">
