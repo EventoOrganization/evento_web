@@ -1,5 +1,8 @@
 "use client";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { EventType } from "@/types/EventType";
+import { Briefcase, Calendar, Download, Globe, Mail } from "lucide-react";
+import { Button } from "./ui/button";
 
 type AddToCalendarProps = {
   event: EventType;
@@ -8,7 +11,6 @@ type AddToCalendarProps = {
 const AddToCalendar: React.FC<AddToCalendarProps> = ({ event }) => {
   const details = event?.details;
 
-  // Vérification initiale pour retourner null si les détails de l'événement ou les dates sont manquants
   if (
     !details ||
     !details.date ||
@@ -20,50 +22,115 @@ const AddToCalendar: React.FC<AddToCalendarProps> = ({ event }) => {
     return null;
   }
 
+  const { title = "Evento", description = "", location = "" } = event;
+  const startDateTime = new Date(
+    `${details.date.split("T")[0]}T${details.startTime}`,
+  );
+  const endDateTime = new Date(
+    `${details.endDate.split("T")[0]}T${details.endTime}`,
+  );
+
+  const formatDateForCalendar = (date: Date) =>
+    date.toISOString().replace(/-|:|\.\d+/g, "");
+
+  const googleStartDateTime = formatDateForCalendar(startDateTime);
+  const googleEndDateTime = formatDateForCalendar(endDateTime);
+
   const handleGoogleCalendar = () => {
-    try {
-      // Combine les dates et heures sans indiquer de fuseau horaire (UTC)
-      const startDateTime = new Date(
-        `${details.date?.split("T")[0]}T${details.startTime}`,
-      );
-      const endDateTime = new Date(
-        `${details.endDate?.split("T")[0]}T${details.endTime}`,
-      );
+    const url = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(
+      title,
+    )}&dates=${googleStartDateTime}/${googleEndDateTime}&details=${encodeURIComponent(
+      description,
+    )}&location=${encodeURIComponent(location)}&sf=true&output=xml`;
+    window.open(url, "_blank");
+  };
 
-      console.log("Local Start DateTime:", startDateTime.toString());
-      console.log("Local End DateTime:", endDateTime.toString());
+  const handleYahooCalendar = () => {
+    const yahooStartDateTime = `${startDateTime.toISOString().replace(/[-:]/g, "").split(".")[0]}`;
+    const yahooEndDateTime = `${endDateTime.toISOString().replace(/[-:]/g, "").split(".")[0]}`;
+    const url = `https://calendar.yahoo.com/?v=60&view=d&type=20&title=${encodeURIComponent(
+      title,
+    )}&st=${yahooStartDateTime}&et=${yahooEndDateTime}&desc=${encodeURIComponent(
+      description,
+    )}&in_loc=${encodeURIComponent(location)}`;
+    window.open(url, "_blank");
+  };
 
-      // Formater pour Google Calendar (YYYYMMDDTHHMMSS)
-      const googleStartDateTime = startDateTime
-        .toISOString()
-        .replace(/-|:|\.\d+/g, "");
-      const googleEndDateTime = endDateTime
-        .toISOString()
-        .replace(/-|:|\.\d+/g, "");
+  const handleOutlookCalendar = () => {
+    const url = `https://outlook.live.com/calendar/0/deeplink/compose?subject=${encodeURIComponent(
+      title,
+    )}&body=${encodeURIComponent(description)}&location=${encodeURIComponent(
+      location,
+    )}&startdt=${startDateTime.toISOString()}&enddt=${endDateTime.toISOString()}&allday=false&path=/calendar/view/Month`;
+    window.open(url, "_blank");
+  };
 
-      console.log("Google Calendar Start DateTime:", googleStartDateTime);
-      console.log("Google Calendar End DateTime:", googleEndDateTime);
-
-      const title = encodeURIComponent(event.title || "Evento");
-      const encodedDescription = encodeURIComponent(details.description || "");
-      const encodedLocation = encodeURIComponent(details.location || "");
-
-      const url = `https://www.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${googleStartDateTime}/${googleEndDateTime}&details=${encodedDescription}&location=${encodedLocation}&sf=true&output=xml`;
-      window.open(url, "_blank");
-    } catch (error) {
-      console.error("Error while converting date/time:", error);
-    }
+  const downloadICS = () => {
+    const icsContent = `
+BEGIN:VCALENDAR
+VERSION:2.0
+BEGIN:VEVENT
+SUMMARY:${title}
+DESCRIPTION:${description}
+LOCATION:${location}
+DTSTART:${formatDateForCalendar(startDateTime)}
+DTEND:${formatDateForCalendar(endDateTime)}
+END:VEVENT
+END:VCALENDAR
+`;
+    const blob = new Blob([icsContent], { type: "text/calendar" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `${title}.ics`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   return (
-    <div className="flex gap-4 mt-4">
-      <button
-        onClick={handleGoogleCalendar}
-        className=" py-2 text-blue-500 rounded-md hover:text-blue-600"
-      >
-        Add to Google Calendar
-      </button>
-    </div>
+    <Dialog>
+      <DialogTrigger asChild>
+        <button className="flex items-center gap-2 py-2 text-blue-500 hover:text-blue-600">
+          <Calendar size={20} />
+          Add to Calendar
+        </button>
+      </DialogTrigger>
+      <DialogContent className="grid grid-cols-2 items-center gap-4 p-6 bg-white rounded-md shadow-md max-w-[90%] w-fit">
+        <Button
+          variant={"outline"}
+          onClick={handleGoogleCalendar}
+          className="flex items-center gap-2 text-blue-500"
+        >
+          <Globe size={24} />
+          Google Calendar
+        </Button>
+        <Button
+          variant={"outline"}
+          onClick={handleYahooCalendar}
+          className="flex items-center gap-2 text-purple-500"
+        >
+          <Mail size={24} />
+          Yahoo Calendar
+        </Button>
+        <Button
+          variant={"outline"}
+          onClick={handleOutlookCalendar}
+          className="flex items-center gap-2 text-blue-700"
+        >
+          <Briefcase size={24} />
+          Outlook Calendar
+        </Button>
+        <Button
+          variant={"outline"}
+          onClick={downloadICS}
+          className="flex items-center gap-2 text-green-500"
+        >
+          <Download size={24} />
+          Download ICS
+        </Button>
+      </DialogContent>
+    </Dialog>
   );
 };
 
