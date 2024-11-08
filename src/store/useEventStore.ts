@@ -18,7 +18,9 @@ type EventFormState = {
   longitude?: string;
   location?: string;
   timeZone?: string;
-  URL?: string;
+  isUrl?: boolean;
+  UrlLink?: string;
+  UrlTitle?: string;
   coHosts?: string[];
   interests?: InterestType[];
   isTimeSlotsEnabled: boolean;
@@ -103,7 +105,9 @@ export const useEventStore = create<EventFormState>()(
       longitude: undefined,
       location: undefined,
       timeZone: undefined,
-      URL: undefined,
+      isUrl: undefined,
+      UrlLink: undefined,
+      UrlTitle: undefined,
       mediaPreviews: [],
       tempMediaPreview: [],
       timeSlots: [],
@@ -208,7 +212,9 @@ export const useEventStore = create<EventFormState>()(
           longitude: undefined,
           location: undefined,
           timeZone: undefined,
-          URL: undefined,
+          isUrl: undefined,
+          UrlLink: undefined,
+          UrlTitle: undefined,
           mediaPreviews: [],
           timeSlots: [],
           isTimeSlotsEnabled: false,

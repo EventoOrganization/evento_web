@@ -151,7 +151,9 @@ const CreateEventPreview = ({
           </div>
           {/* Placeholder for TruncatedText */}
           <p className="whitespace-pre-wrap">{eventStore.description}</p>
-          <p className="text-blue-500 underline">{eventStore.URL}</p>
+          <p className="text-blue-500 underline">
+            {eventStore.UrlTitle || eventStore.UrlLink}
+          </p>
         </div>
       </div>
     </>

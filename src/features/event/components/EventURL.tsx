@@ -1,54 +1,56 @@
 "use client";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/utils";
+import { Switch } from "@/components/ui/togglerbtn";
 import { useEventStore } from "@/store/useEventStore";
-import { useState } from "react";
 import { handleFieldChange } from "../eventActions";
 
 const EventURL = () => {
   const eventStore = useEventStore();
-  const [isEditing, setIsEditing] = useState(!!eventStore.URL);
+  const { isUrl } = eventStore;
 
   const handleButtonClick = () => {
-    setIsEditing((prevState) => !prevState);
+    if (isUrl) {
+      handleFieldChange("UrlLink", "");
+      handleFieldChange("UrlTitle", "");
+    } else {
+      handleFieldChange("isUrl", true);
+    }
   };
-
-  const handleURLChange = (value: string) => {
+  const handleUrlLinkChange = (value: string) => {
     const formattedURL =
       value.startsWith("http://") || value.startsWith("https://")
         ? value
         : `https://${value}`;
 
-    handleFieldChange("URL", formattedURL);
+    handleFieldChange("UrlLink", formattedURL);
+  };
+  const handleUrlTitleChange = (value: string) => {
+    handleFieldChange("UrlTitle", value);
   };
 
   return (
-    <div>
-      {!isEditing ? (
-        <Button
-          type="button"
-          variant="outline"
-          onClick={handleButtonClick}
-          className={cn(
-            "transition-colors",
-            isEditing && "bg-evento-gradient text-white",
-          )}
-        >
-          {isEditing ? "Edit URL" : "Add URL"}
-        </Button>
-      ) : (
+    <>
+      <Switch onClick={handleButtonClick} checked={isUrl} />
+
+      {isUrl && (
         <div className="flex items-center gap-2">
           <Input
             type="url"
-            value={eventStore.URL || ""}
-            onChange={(e) => handleURLChange(e.target.value)}
+            value={eventStore.UrlLink || ""}
+            onChange={(e) => handleUrlLinkChange(e.target.value)}
             placeholder="Enter your URL"
+            className="w-full"
+          />
+          <Input
+            type="url"
+            value={eventStore.UrlTitle || ""}
+            onChange={(e) => handleUrlTitleChange(e.target.value)}
+            placeholder="Enter a custom title (optional)"
             className="w-full"
           />
         </div>
       )}
-    </div>
+    </>
   );
 };
 

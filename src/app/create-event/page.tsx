@@ -61,7 +61,8 @@ const CreateEventPage = () => {
       questions: eventStore.questions || [],
       additionalField: eventStore.additionalField || [],
       includeChat: eventStore.includeChat || false,
-      URL: eventStore.URL || "",
+      UrlLink: eventStore.UrlLink || "",
+      UrlTitle: eventStore.UrlTitle || "",
       uploadedMedia: eventStore.uploadedMedia || { images: [], videos: [] },
       predefinedMedia: eventStore.predefinedMedia || { images: [], videos: [] },
       interests: eventStore.interests || [],
@@ -87,7 +88,8 @@ const CreateEventPage = () => {
     questions: eventStore.questions || [],
     additionalField: eventStore.additionalField || [],
     includeChat: eventStore.includeChat || false,
-    URL: eventStore.URL || "",
+    UrlLink: eventStore.UrlLink || "",
+    UrlTitle: eventStore.UrlTitle || "",
     uploadedMedia: eventStore.uploadedMedia || { images: [], videos: [] },
     predefinedMedia: eventStore.predefinedMedia || { images: [], videos: [] },
     interests: eventStore.interests || [],
@@ -170,7 +172,7 @@ const CreateEventPage = () => {
       }
     });
     if (missingFields.length > 0) {
-      console.log(eventStore.location);
+      // console.log(eventStore.location);
       toast({
         title: "Error",
         description: `Please fill in the following fields: ${missingFields.join(", ")}`,
@@ -185,7 +187,8 @@ const CreateEventPage = () => {
       !formValues.createRSVP ||
       !formValues.questions ||
       !formValues.includeChat ||
-      !formValues.URL ||
+      !formValues.UrlLink ||
+      !formValues.UrlTitle ||
       !formValues.interests
     ) {
       console.warn("Non- fields are missing or empty:", {
@@ -194,7 +197,8 @@ const CreateEventPage = () => {
         createRSVP: formValues.createRSVP,
         questions: formValues.questions,
         includeChat: formValues.includeChat,
-        URL: formValues.URL,
+        URLLink: formValues.UrlLink,
+        URLTitle: formValues.UrlTitle,
         interests: formValues.interests,
       });
       // return;
