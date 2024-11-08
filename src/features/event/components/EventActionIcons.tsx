@@ -155,18 +155,49 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
     }
   };
 
-  const handleSend = () => {
-    if (navigator.share) {
-      navigator
-        .share({
+  const handleSend = async () => {
+    const eventUrl = `${process.env.NEXT_PUBLIC_FRONTEND_URL}/event/${event?._id}`;
+
+    const shareApiSupported = true; // to check if the share api is supported
+
+    if (shareApiSupported && navigator.share) {
+      try {
+        await navigator.share({
           title: "Check out this event",
           text: "Check out this event I found!",
-          url: `${process.env.NEXT_PUBLIC_FRONTEND_URL}/event/${event?._id}`,
-        })
-        .then(() => console.log("Successful share"))
-        .catch((error) => console.log("Error sharing", error));
+          url: eventUrl,
+        });
+        console.log("Successful share");
+      } catch (error) {
+        console.error("Error sharing:", error);
+      }
+    } else if (navigator.clipboard) {
+      // Utiliser le presse-papier si le partage n'est pas supporté
+      try {
+        await navigator.clipboard.writeText(eventUrl);
+        toast({
+          title: "Link copied to clipboard!",
+          description: "The event link has been copied. You can share it now.",
+          className: "bg-evento-gradient text-white",
+          duration: 3000,
+        });
+      } catch (error) {
+        console.error("Failed to copy link:", error);
+        toast({
+          title: "Failed to copy",
+          description: "Unable to copy the link to the clipboard.",
+          variant: "destructive",
+          duration: 3000,
+        });
+      }
     } else {
-      console.log("Web Share API is not supported in this browser.");
+      console.log("Clipboard API is not supported in this browser.");
+      toast({
+        title: "Sharing not supported",
+        description: "Your browser does not support sharing or copying links.",
+        variant: "destructive",
+        duration: 3000,
+      });
     }
   };
 
