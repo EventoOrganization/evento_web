@@ -144,13 +144,13 @@ const EventPage = () => {
       setAccessControl({ isPrivate, isAdmin, isGuest, isTempGuest, hasAccess });
 
       // Log final pour débogage en une seule fois
-      console.log("Access Control:", {
-        isPrivate,
-        isAdmin,
-        isGuest,
-        isTempGuest,
-        hasAccess,
-      });
+      // console.log("Access Control:", {
+      //   isPrivate,
+      //   isAdmin,
+      //   isGuest,
+      //   isTempGuest,
+      //   hasAccess,
+      // });
     }
   }, [event, user, params]);
 

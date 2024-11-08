@@ -177,7 +177,7 @@ const EventGuestModal = ({
         (user.lastName && user.lastName.toLowerCase().includes(filter))),
   );
 
-  console.log("filteredUsers", filteredUsers);
+  // console.log("filteredUsers", filteredUsers);
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>

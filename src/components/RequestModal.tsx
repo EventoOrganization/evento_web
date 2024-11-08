@@ -15,8 +15,8 @@ const RequestModal: React.FC<RequestModalProps> = ({
   onAuthModalOpen,
   hasToken,
 }) => {
-  console.log("hasToken", hasToken);
-  console.log("isOpen", isOpen);
+  // console.log("hasToken", hasToken);
+  // console.log("isOpen", isOpen);
   if (!isOpen) return null;
 
   return (
