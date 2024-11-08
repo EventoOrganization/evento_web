@@ -24,6 +24,19 @@ const EventDescriptionTab: React.FC<EventDescriptionTabProps> = ({
   return (
     <div className="space-y-4 w-full">
       <h1 className="text-xl font-bold">{event?.title}</h1>
+      <ul className="flex flex-wrap gap-2">
+        {event.interests &&
+          event.interests?.map((interest) => {
+            return (
+              <li
+                key={interest._id || interest.name}
+                className="bg-eventoPurpleLight/30 w-fit px-2 py-1 rounded-lg text-sm"
+              >
+                {interest.name}
+              </li>
+            );
+          })}
+      </ul>
       <Link href={URL} target="_blank" className="text-blue-500">
         {event?.details?.URLtitle || event?.details?.URLlink}
       </Link>
