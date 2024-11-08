@@ -129,6 +129,7 @@ const UserProfile = ({
                   )}
               </li>
               {/* <li>{profile && profile.bio && profile.bio}</li> */}
+
               <TruncatedText
                 className="px-0"
                 text={(profile && profile.bio && profile.bio) || ""}

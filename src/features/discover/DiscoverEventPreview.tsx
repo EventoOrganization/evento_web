@@ -11,6 +11,7 @@ import { useGlobalStore } from "@/store/useGlobalStore";
 import { EventType } from "@/types/EventType";
 import { renderDate } from "@/utils/dateUtils";
 import Image from "next/image";
+import Link from "next/link";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import PastEventGallery from "../event/components/PastEventGallery";
 
@@ -28,7 +29,6 @@ const DiscoverEventPreview = ({
   const { events } = useGlobalStore((state) => state);
   const currentEvent = events.find((e: EventType) => e._id === event._id);
 
-  console.log("coucou");
   return (
     <>
       <div
@@ -110,6 +110,12 @@ const DiscoverEventPreview = ({
                 {event?.details?.startTime} - {event?.details?.endTime}
               </p>
             </div>
+            <Link href={event?.details?.URLlink} target="_blank">
+              <TruncatedText
+                text={event?.details?.URLtitle || event?.details?.URLlink || ""}
+                isLink
+              />
+            </Link>
             <TruncatedText text={event?.details?.description} expand={true} />
           </div>
           <div className="flex justify-between items-center">

@@ -1,6 +1,7 @@
 "use client";
 
 import MapPinIcon2 from "@/components/icons/MappPinIcon2";
+import TruncatedText from "@/components/TruncatedText";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -151,9 +152,11 @@ const CreateEventPreview = ({
           </div>
           {/* Placeholder for TruncatedText */}
           <p className="whitespace-pre-wrap">{eventStore.description}</p>
-          <p className="text-blue-500 underline">
-            {eventStore.UrlTitle || eventStore.UrlLink}
-          </p>
+
+          <TruncatedText
+            isLink
+            text={eventStore.UrlTitle || eventStore.UrlLink || ""}
+          />
         </div>
       </div>
     </>

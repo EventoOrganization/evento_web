@@ -11,7 +11,6 @@ import { useSession } from "@/contexts/SessionProvider";
 import DiscoverEventPreview from "@/features/discover/DiscoverEventPreview";
 import Link from "next/link";
 import DeleteEventButton from "./DeleteEventButton";
-
 const EventModal = ({
   event,
   isOpen,
@@ -25,7 +24,6 @@ const EventModal = ({
   const handleClickInsideModal = (e: React.MouseEvent) => {
     e.stopPropagation();
   };
-
   if (!event) return null;
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>

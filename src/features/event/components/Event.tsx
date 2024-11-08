@@ -132,6 +132,10 @@ const Event = ({ className, event }: { className?: string; event?: any }) => {
               </p>
             </div>
             <TruncatedText
+              text={event?.details?.URLtitle || event?.details?.URLlink || ""}
+              isLink
+            />
+            <TruncatedText
               className="px-0"
               text={event?.details?.description}
             />
