@@ -19,13 +19,13 @@ const UsersList = ({
   fetchUsers,
   removeUserLocally,
   event,
-  isRequestedTab = false,
+  title,
 }: {
   user?: any;
   fetchUsers?: () => void;
   removeUserLocally?: (userId: string) => void;
   event?: EventType;
-  isRequestedTab?: boolean;
+  title?: string;
   isAdmin?: boolean;
 }) => {
   const { id } = useParams();
@@ -258,13 +258,11 @@ const UsersList = ({
               {loading ? "Processing..." : <XIcon />}
             </Button>
           )}
-        {isRequestedTab &&
-          (event?.user?._id === user?._id ||
-            event?.coHosts?.some((coHost) => coHost._id === user?._id)) && (
-            <Button onClick={handleAcceptRequest} disabled={loading}>
-              {loading ? "Processing..." : "Accept"}
-            </Button>
-          )}
+        {title === "Requested to Join" && isAdmin && (
+          <Button onClick={handleAcceptRequest} disabled={loading}>
+            {loading ? "Processing..." : "Accept"}
+          </Button>
+        )}
       </div>
       {isAuthModalOpen && (
         <AuthModal

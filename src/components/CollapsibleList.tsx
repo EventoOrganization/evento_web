@@ -11,14 +11,12 @@ const CollapsibleList = ({
   count,
   users,
   event,
-  isRequestedTab = false,
   isAdmin = false,
 }: {
   title: string;
   count: number;
   users: (UserType | TempUserType)[];
   event?: EventType;
-  isRequestedTab?: boolean;
   isAdmin?: boolean;
 }) => {
   const [isOpen, setIsOpen] = useState(title === "Going" ? true : false);
@@ -63,7 +61,7 @@ const CollapsibleList = ({
                 user={user}
                 removeUserLocally={removeUserLocally}
                 event={event}
-                isRequestedTab={isRequestedTab}
+                title={title}
               />
             ))}
         </div>

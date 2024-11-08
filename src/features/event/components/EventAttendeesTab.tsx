@@ -16,7 +16,7 @@ const EventAttendeesTab: React.FC<EventAttendeesTabProps> = ({
   isAdmin,
   isPrivate,
 }) => {
-  console.log("eventAttendeesTab", event);
+  // console.log("eventAttendeesTab", event);
 
   const goingIds = new Set(
     (event.attendees || []).map((user) => user._id!).filter((id) => id),
@@ -70,13 +70,11 @@ const EventAttendeesTab: React.FC<EventAttendeesTabProps> = ({
             title="Requested to Join"
             count={event?.requested?.length || 0}
             users={event?.requested || []}
-            isRequestedTab={true}
           />
           <CollapsibleList
             title="favorited"
             count={event?.favouritees?.length || 0}
             users={event?.favouritees || []}
-            isRequestedTab={true}
           />
         </>
       )}
