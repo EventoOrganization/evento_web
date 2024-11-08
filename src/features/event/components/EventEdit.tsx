@@ -32,6 +32,7 @@ const EventEdit = ({
   const [type, setType] = useState<string>(event?.eventType || "");
   const [mode, setMode] = useState<string>(event?.details?.mode || "");
   const [url, setUrl] = useState(event?.details?.URLlink || "");
+  const [urlTitle, setUrlTitle] = useState(event?.details?.URLtitle || "");
   const [questions, setQuestions] = useState<QuestionType[]>(
     event?.questions || [],
   );
@@ -217,6 +218,7 @@ const EventEdit = ({
         break;
       case "url":
         setUrl(event?.details?.URLlink || "");
+        setUrlTitle(event?.details?.URLtitle || "");
         break;
       case "date":
         setStartDate(event.details?.date || "");
@@ -249,6 +251,7 @@ const EventEdit = ({
         break;
       case "url":
         setUrl("");
+        setUrlTitle("");
         break;
       case "date":
         setStartDate(today.toString());
@@ -375,15 +378,20 @@ const EventEdit = ({
         toggleEditMode={() => toggleEditMode("description")}
       />
       <EditableURLInput
-        value={url}
-        onChange={setUrl}
-        handleUpdate={() => handleUpdate("url", url)}
+        urlValue={url}
+        titleValue={urlTitle}
+        onUrlChange={setUrl}
+        onUrlTitleChange={setUrlTitle}
+        handleUpdate={() => {
+          handleUpdate("url", { url, urlTitle });
+        }}
         handleCancel={() => handleCancel("url")}
         handleReset={() => handleReset("url")}
         isUpdating={isUpdating}
         editMode={editMode.url}
         toggleEditMode={() => toggleEditMode("url")}
       />
+
       {event.isHosted && (
         <CoHostManagementModal
           event={event}

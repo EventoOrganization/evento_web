@@ -119,4 +119,5 @@ export type EventDetailsType = {
   createRSVP?: boolean;
   tages?: string;
   URLlink?: string;
+  URLtitle?: string;
 };

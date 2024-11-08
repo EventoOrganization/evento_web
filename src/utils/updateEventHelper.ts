@@ -43,7 +43,8 @@ export function createUpdateEventField(event: EventType) {
         }
         break;
       case "url":
-        updatedEvent.details.URLlink = value || "";
+        updatedEvent.details.URLlink = value.url || "";
+        updatedEvent.details.URLtitle = value.urlTitle || "";
         break;
       case "createRSVP":
         updatedEvent.details.createRSVP = value;
