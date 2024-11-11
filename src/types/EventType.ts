@@ -108,6 +108,7 @@ export type EventDetailsType = {
   endDate?: string;
   startTime?: string;
   endTime?: string;
+  timeZone?: string;
   timeSlots?: {
     date: string;
     startTime: string;

@@ -38,10 +38,10 @@ const StaticProfilePage = ({
 
         <div className="text-center mt-8">
           <h2 className="text-2xl font-bold">Why Join Evento?</h2>
-          <ul className="list-disc list-inside mt-4 text-muted-foreground">
-            <li>Explore events around you</li>
-            <li>Create and host your own events</li>
-            <li>Connect with other event attendees</li>
+          <ul className="list-disc list-inside mt-4 text-muted-foreground text-left">
+            <li>Create and host your events in a few clicks</li>
+            <li>Explore events based on your interests </li>
+            <li>Connect with other event attendees and hosts</li>
           </ul>
         </div>
       </Section>

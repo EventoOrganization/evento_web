@@ -8,7 +8,6 @@ import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { startOfDay } from "date-fns";
 import { useState } from "react";
 import CoHostManagementModal from "./CoHostManagementModal";
-import EditableEventDate from "./EditableEventDate";
 import EditableInputText from "./EditableInputText";
 import EditableLocation from "./EditableLocation";
 import EditableMultiSelect from "./EditableMultiSelect";
@@ -16,6 +15,7 @@ import EditableQuestionsForm from "./EditableQuestionsForm";
 import EditableSelect from "./EditableSelect";
 import EditableTextArea from "./EditableTextArea";
 import EditableURLInput from "./EditableURLInput";
+import EventDateComponent from "./EventDateComponent";
 
 const EventEdit = ({
   event,
@@ -32,6 +32,7 @@ const EventEdit = ({
   const [type, setType] = useState<string>(event?.eventType || "");
   const [mode, setMode] = useState<string>(event?.details?.mode || "");
   const [url, setUrl] = useState(event?.details?.URLlink || "");
+  const [timeZone, setTimeZone] = useState(event?.details?.timeZone || "");
   const [urlTitle, setUrlTitle] = useState(event?.details?.URLtitle || "");
   const [questions, setQuestions] = useState<QuestionType[]>(
     event?.questions || [],
@@ -74,7 +75,6 @@ const EventEdit = ({
   const [endTime, setEndTime] = useState(event.details?.endTime || "18:00");
   const [timeSlots, setTimeSlots] = useState(event.details?.timeSlots || []);
   const { token } = useSession();
-
   const handleUpdate = async (field: string, value: any) => {
     console.log("field", field, "value", value);
     setIsUpdating(true);
@@ -98,7 +98,7 @@ const EventEdit = ({
           className: "bg-evento-gradient text-white",
           duration: 3000,
         });
-        onUpdateField(field, value); // Call the callback to update the parent state
+        onUpdateField(field, value);
       } else {
         console.error("Error updating the event");
       }
@@ -111,7 +111,8 @@ const EventEdit = ({
       });
     } finally {
       setIsUpdating(false);
-      setEditMode({ ...editMode, [field]: false }); // Disable edit mode after updating
+      setEditMode({ ...editMode, [field]: false });
+      console.log("event updated", event);
     }
   };
 
@@ -226,6 +227,7 @@ const EventEdit = ({
         setStartTime(event.details?.startTime || "08:00");
         setEndTime(event.details?.endTime || "18:00");
         setTimeSlots(event.details?.timeSlots || []);
+        setTimeZone(event.details?.timeZone || "");
         break;
       default:
         break;
@@ -257,8 +259,9 @@ const EventEdit = ({
         setStartDate(today.toString());
         setEndDate(today.toString());
         setStartTime("08:00");
-        setEndTime("18:00");
+        setEndTime("");
         setTimeSlots([]);
+        setTimeZone("");
         break;
       default:
         break;
@@ -353,13 +356,27 @@ const EventEdit = ({
         editMode={editMode.location}
         toggleEditMode={() => toggleEditMode("location")}
       />
-      <EditableEventDate
+      {/* <EditableEventDate
         startDate={startDate}
         endDate={endDate}
         startTime={startTime}
         endTime={endTime}
         timeSlots={timeSlots}
         handleUpdate={handleUpdate}
+        handleCancel={() => handleCancel("date")}
+        handleReset={() => handleReset("date")}
+        isUpdating={isUpdating}
+        editMode={editMode.date}
+        toggleEditMode={() => toggleEditMode("date")}
+      /> */}
+      <EventDateComponent
+        startDate={startDate}
+        endDate={endDate}
+        startTime={startTime}
+        endTime={endTime}
+        timeZone={timeZone}
+        timeSlots={timeSlots}
+        handleUpdate={(field, value) => handleUpdate(field, value)}
         handleCancel={() => handleCancel("date")}
         handleReset={() => handleReset("date")}
         isUpdating={isUpdating}

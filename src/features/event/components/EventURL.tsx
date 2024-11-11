@@ -2,17 +2,25 @@
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/togglerbtn";
 import { useEventStore } from "@/store/useEventStore";
+import { useEffect, useState } from "react";
 import { handleFieldChange } from "../eventActions";
-
 const EventURL = () => {
   const eventStore = useEventStore();
   const { isUrl } = eventStore;
+  const [isToggleOn, setIsToggleOn] = useState(isUrl || false);
+  useEffect(() => {
+    if (isUrl) {
+      setIsToggleOn(true);
+    }
+  }, []);
 
   const handleButtonClick = () => {
-    if (isUrl) {
+    if (isToggleOn) {
+      setIsToggleOn(false);
       handleFieldChange("UrlLink", "");
       handleFieldChange("UrlTitle", "");
     } else {
+      setIsToggleOn(true);
       handleFieldChange("isUrl", true);
     }
   };
@@ -30,9 +38,8 @@ const EventURL = () => {
 
   return (
     <>
-      <Switch onClick={handleButtonClick} checked={isUrl} />
-
-      {isUrl && (
+      <Switch onClick={handleButtonClick} checked={isToggleOn} />
+      {isToggleOn && (
         <div className="flex items-center gap-2">
           <Input
             type="url"

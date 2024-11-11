@@ -11,7 +11,7 @@ import CreateEventModal from "@/features/event/components/CreateEventModal";
 import CreateEventPreview from "@/features/event/components/CreateEventPreview";
 import EnableChatButton from "@/features/event/components/EnableChatButton";
 import EventCoHostsModal from "@/features/event/components/EventCoHostsModal";
-import EventDate from "@/features/event/components/EventDate";
+import EventDateComponent from "@/features/event/components/EventDateComponent";
 import EventQuestionsForm from "@/features/event/components/EventQuestionsForm";
 import EventURL from "@/features/event/components/EventURL";
 import { handleFieldChange } from "@/features/event/eventActions";
@@ -33,12 +33,14 @@ const CreateEventPage = () => {
   const { addEvent, users, interests, userInfo } = useGlobalStore(
     (state) => state,
   );
-  const { isAuthenticated, token } = useSession();
+  const { isAuthenticated, token, user } = useSession();
   const [selectedInterests, setSelectedInterests] = useState<InterestType[]>(
     eventStore.interests || [],
   );
   const [location, setLocation] = useState({ lat: 0, lng: 0 });
-  const { user } = useSession();
+  useEffect(() => {
+    handleFieldChange("username", user?.username);
+  }, [isAuthenticated]);
   useEffect(() => {
     setFormValues({
       title: eventStore.title || "",
@@ -48,6 +50,7 @@ const CreateEventPage = () => {
       endDate: eventStore.endDate || eventStore.date || "",
       startTime: eventStore.startTime || "",
       endTime: eventStore.endTime || "",
+      timeZone: eventStore.timeZone || "",
       description: eventStore.description || "",
       mode: eventStore.mode || "in-person",
       location:
@@ -76,6 +79,7 @@ const CreateEventPage = () => {
     endDate: eventStore.endDate || eventStore.date || "",
     startTime: eventStore.startTime || "",
     endTime: eventStore.endTime || "",
+    timeZone: eventStore.timeZone || "",
     description: eventStore.description || "",
     mode: eventStore.mode || "in-person",
     location: eventStore.location || "",
@@ -159,7 +163,8 @@ const CreateEventPage = () => {
       { name: "Date", value: formValues.date },
       { name: "End Date", value: formValues.endDate },
       { name: "Start Time", value: formValues.startTime },
-      { name: "End Time", value: formValues.endTime },
+      { name: "Time Zone", value: formValues.timeZone },
+      // { name: "End Time", value: formValues.endTime },
       { name: "Description", value: formValues.description },
       {
         name: "Média (Pictures and/or Vidéos)",
@@ -391,7 +396,8 @@ const CreateEventPage = () => {
                 setLocation={setLocation}
               />
             </div>
-            <EventDate />
+            {/* <EventDate /> */}
+            <EventDateComponent />
             <div>
               <Label className="sr-only" htmlFor="description">
                 Description
