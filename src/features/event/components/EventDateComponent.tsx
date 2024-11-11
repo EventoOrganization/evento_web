@@ -13,7 +13,7 @@ import { TimeSelect } from "@/components/TimeSelect";
 import { Switch } from "@/components/ui/togglerbtn";
 import { useEventStore } from "@/store/useEventStore";
 import { TimeSlotType } from "@/types/EventType";
-import { isSameDay, updateTimeSlots } from "@/utils/dateUtils";
+import { isSameDay, setDateWithTime, updateTimeSlots } from "@/utils/dateUtils";
 import { timeZonesMap } from "@/utils/timezones";
 import { format, startOfDay } from "date-fns";
 import { fr } from "date-fns/locale";
@@ -64,19 +64,27 @@ const EventDateComponent = ({
 
   const [localStartDate, setLocalStartDate] = useState<string>(
     isEditMode
-      ? initialStartDate || ""
-      : eventStore.date || format(today, "yyyy-MM-dd"),
+      ? setDateWithTime(initialStartDate || "", initialStartTime || "00:00")
+      : setDateWithTime(
+          eventStore.date || format(today, "yyyy-MM-dd"),
+          "00:00",
+        ),
   );
+
   const [localEndDate, setLocalEndDate] = useState<string>(
     isEditMode
-      ? initialEndDate || ""
-      : eventStore.endDate || format(today, "yyyy-MM-dd"),
+      ? setDateWithTime(initialEndDate || "", initialEndTime || "23:59")
+      : setDateWithTime(
+          eventStore.endDate || format(today, "yyyy-MM-dd"),
+          "23:59",
+        ),
   );
+
   const [localStartTime, setLocalStartTime] = useState<string>(
     isEditMode ? initialStartTime || "08:00" : eventStore.startTime || "08:00",
   );
   const [localEndTime, setLocalEndTime] = useState<string>(
-    isEditMode ? initialEndTime || "18:00" : eventStore.endTime || "18:00",
+    isEditMode ? initialEndTime || "" : eventStore.endTime || "",
   );
   const [localTimeSlots, setLocalTimeSlots] = useState<TimeSlotType[]>(
     isEditMode ? initialTimeSlots : eventStore.timeSlots || [],
@@ -137,30 +145,30 @@ const EventDateComponent = ({
   const handleStartDateChange = (date: Date | undefined) => {
     if (date) {
       const formattedDate = format(date, "yyyy-MM-dd");
-      setLocalStartDate(formattedDate);
-      !isEditMode && handleFieldChange("date", formattedDate);
-
-      // Mettre à jour `endDate` si elle est avant `startDate`
-      if (!localEndDate || new Date(formattedDate) > new Date(localEndDate)) {
-        setLocalEndDate(formattedDate);
-        !isEditMode && handleFieldChange("endDate", formattedDate);
-      }
-      updateSlots();
+      const computedStartDate = setDateWithTime(formattedDate, localStartTime);
+      setLocalStartDate(computedStartDate);
+      !isEditMode && handleFieldChange("date", computedStartDate);
     }
   };
+
+  const handleEndDateChange = (date: Date | undefined) => {
+    if (date) {
+      const formattedDate = format(date, "yyyy-MM-dd");
+      const computedEndDate = setDateWithTime(
+        formattedDate,
+        localEndTime,
+        true,
+      );
+      setLocalEndDate(computedEndDate);
+      !isEditMode && handleFieldChange("endDate", computedEndDate);
+    }
+  };
+
   useEffect(() => {
     if (isEditMode && initialTimeSlots) {
       setLocalTimeSlots(initialTimeSlots);
     }
   }, [isEditMode, initialTimeSlots]);
-  const handleEndDateChange = (date: Date | undefined) => {
-    if (date) {
-      const formattedDate = format(date, "yyyy-MM-dd");
-      setLocalEndDate(formattedDate);
-      !isEditMode && handleFieldChange("endDate", formattedDate);
-      updateSlots();
-    }
-  };
 
   const handleTimeChange = (field: string, value: string) => {
     const isValidTime = /^\d{2}:\d{2}$/.test(value);

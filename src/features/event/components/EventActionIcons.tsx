@@ -6,6 +6,7 @@ import { useGlobalStore } from "@/store/useGlobalStore";
 import { EventType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
+import { startOfDay } from "date-fns";
 import {
   Bookmark,
   BookmarkCheck,
@@ -48,7 +49,7 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
   const [refusalReason, setRefusalReason] = useState<string>("");
   const [loading, setLoading] = useState<string | null>(null);
   const hasEventEnded = event.details?.endDate
-    ? new Date(event.details.endDate) < new Date()
+    ? new Date(event.details.endDate) < startOfDay(new Date())
     : false;
 
   if (hasEventEnded) {
@@ -205,7 +206,6 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
     setShowQuestionModal(false);
     handleGoing(answers);
   };
-  console.log("eventdate to hidden if pasted", event.details?.endDate);
   return (
     <div className={`flex gap-2 ${className}`}>
       {/* Action to mark as Going */}

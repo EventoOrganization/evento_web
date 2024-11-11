@@ -146,3 +146,23 @@ export const renderDate = (event: any) => {
 
   return `From ${formatDate(startDate, true)} to ${formatDate(endDate, true)}`;
 };
+
+export const setDateWithTime = (
+  dateString: string,
+  timeString: string | undefined,
+  isEndDate = false,
+) => {
+  const date = new Date(dateString);
+  if (timeString) {
+    const [hours, minutes] = timeString.split(":").map(Number);
+    date.setHours(hours, minutes, 0, 0);
+  } else {
+    // Si aucune heure n'est définie, utilisez 00:00:00 pour startDate ou 23:59:59 pour endDate
+    if (isEndDate) {
+      date.setHours(23, 59, 59, 999);
+    } else {
+      date.setHours(0, 0, 0, 0);
+    }
+  }
+  return date.toISOString();
+};
