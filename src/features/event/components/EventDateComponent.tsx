@@ -157,7 +157,7 @@ const EventDateComponent = ({
     if (date) {
       const formattedDate = format(date, "yyyy-MM-dd");
       setLocalEndDate(formattedDate);
-      handleFieldChange("endDate", formattedDate);
+      !isEditMode && handleFieldChange("endDate", formattedDate);
       updateSlots();
     }
   };
@@ -167,14 +167,14 @@ const EventDateComponent = ({
     if (isValidTime) {
       if (field === "startTime") {
         setLocalStartTime(value);
-        handleFieldChange("startTime", value);
+        !isEditMode && handleFieldChange("startTime", value);
         if (localEndTime && value >= localEndTime) {
           setLocalEndTime("");
-          handleFieldChange("endTime", "");
+          !isEditMode && handleFieldChange("endTime", "");
         }
       } else if (field === "endTime") {
         setLocalEndTime(value);
-        handleFieldChange("endTime", value);
+        !isEditMode && handleFieldChange("endTime", value);
       }
     }
   };
@@ -212,8 +212,8 @@ const EventDateComponent = ({
               <Button
                 onClick={() =>
                   handleUpdate("date", {
-                    startDate: localStartDate,
-                    endDate: localEndDate,
+                    startDate: new Date(localStartDate).toISOString(),
+                    endDate: new Date(localEndDate).toISOString(),
                     startTime: localStartTime,
                     endTime: localEndTime,
                     timeZone: selectedTimeZone,
@@ -249,7 +249,7 @@ const EventDateComponent = ({
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-2">
         <Popover>
           <PopoverTrigger asChild>
-            <Button variant="outline" disabled={!editMode}>
+            <Button variant="outline" disabled={!editMode && isEditMode}>
               <CalendarIcon className="mr-2 h-4 w-4" />
               {localStartDate
                 ? format(new Date(localStartDate), "dd/MM/yyyy")
@@ -268,7 +268,7 @@ const EventDateComponent = ({
         </Popover>
         <Popover>
           <PopoverTrigger asChild>
-            <Button variant="outline" disabled={!editMode}>
+            <Button variant="outline" disabled={!editMode && isEditMode}>
               <CalendarIcon className="mr-2 h-4 w-4" />
               {localEndDate
                 ? format(new Date(localEndDate), "dd/MM/yyyy")
@@ -289,9 +289,9 @@ const EventDateComponent = ({
           selectedTimeZone={selectedTimeZone || ""}
           setSelectedTimeZone={(value) => {
             setSelectedTimeZone(value);
-            handleFieldChange("timeZone", value);
+            !isEditMode && handleFieldChange("timeZone", value);
           }}
-          editMode={editMode}
+          editMode={isEditMode ? editMode : true}
         />
       </div>
       {!isSameDay(localStartDate, localEndDate) && (
@@ -301,7 +301,7 @@ const EventDateComponent = ({
               id="useMultipleTimes"
               checked={useMultipleTimes}
               onCheckedChange={handleCheckboxChange}
-              disabled={!editMode}
+              disabled={!editMode && isEditMode}
             />
             <Label className="ml-2" htmlFor="useMultipleTimes">
               Use multiple times
@@ -323,7 +323,7 @@ const EventDateComponent = ({
                   handleTimeSlotChange(index, "startTime", value);
                   !isEditMode && handleFieldChange("timeSlots", localTimeSlots);
                 }}
-                disabled={!editMode}
+                disabled={!editMode && isEditMode}
               />
               <TimeSelect
                 value={slot.endTime}
@@ -332,7 +332,7 @@ const EventDateComponent = ({
                   !isEditMode && handleFieldChange("timeSlots", localTimeSlots);
                 }}
                 filterOptions={(time) => time > slot.startTime}
-                disabled={!editMode}
+                disabled={!editMode && isEditMode}
               />
             </div>
           ))}
@@ -342,13 +342,13 @@ const EventDateComponent = ({
           <TimeSelect
             value={localStartTime}
             onChange={(value) => handleTimeChange("startTime", value)}
-            disabled={!editMode}
+            disabled={!editMode && isEditMode}
           />
           <TimeSelect
             value={localEndTime}
             onChange={(value) => handleTimeChange("endTime", value)}
             filterOptions={(time) => time > localStartTime}
-            disabled={!editMode}
+            disabled={!editMode && isEditMode}
           />
         </div>
       )}

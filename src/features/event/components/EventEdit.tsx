@@ -6,7 +6,7 @@ import { EventType, InterestType, QuestionType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { startOfDay } from "date-fns";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CoHostManagementModal from "./CoHostManagementModal";
 import EditableInputText from "./EditableInputText";
 import EditableLocation from "./EditableLocation";
@@ -44,7 +44,9 @@ const EventEdit = ({
   const [selectedInterests, setSelectedInterests] = useState<InterestType[]>(
     event?.interests || [],
   );
-
+  useEffect(() => {
+    console.log("event", event);
+  }, [event]);
   const [location, setLocation] = useState(event?.details?.location || "");
   const [longitude, setLongitude] = useState(
     event?.details?.loc?.coordinates[0] || 0,
