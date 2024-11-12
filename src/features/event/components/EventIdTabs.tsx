@@ -23,7 +23,7 @@ import { useParams, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 export type EventStatusKeys = "isGoing" | "isFavourite" | "isRefused";
 
-const EventIdTabs = () => {
+const EventIdTabs = ({ evento }: { evento?: EventType }) => {
   const { id } = useParams();
   const params = useSearchParams();
   const eventId = Array.isArray(id) ? id[0] : id;
@@ -31,7 +31,7 @@ const EventIdTabs = () => {
   const { toast } = useToast();
   const { users } = useGlobalStore((state) => state);
 
-  const [event, setEvent] = useState<EventType | null>(null);
+  const [event, setEvent] = useState<EventType | null>(evento || null);
   const [selectedTab, setSelectedTab] = useState("Description");
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
