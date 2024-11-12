@@ -151,20 +151,18 @@ export const renderDate = (event: any) => {
 
 export const setDateWithTime = (
   dateString: string,
-  timeString: string | undefined,
+  timeString: string,
   isEndDate = false,
 ) => {
   const date = new Date(dateString);
-  if (timeString) {
-    const [hours, minutes] = timeString.split(":").map(Number);
-    date.setHours(hours, minutes, 0, 0);
+  const [hours, minutes] = timeString.split(":").map(Number);
+
+  // Si c'est `endDate` et que l'heure n'est pas spécifiée, définir à la fin de la journée
+  if (isEndDate && (!hours || !minutes)) {
+    date.setHours(23, 59, 59, 999);
   } else {
-    // Si aucune heure n'est définie, utilisez 00:00:00 pour startDate ou 23:59:59 pour endDate
-    if (isEndDate) {
-      date.setHours(23, 59, 59, 999);
-    } else {
-      date.setHours(0, 0, 0, 0);
-    }
+    date.setHours(hours || 0, minutes || 0, 0, 0);
   }
+
   return date.toISOString();
 };

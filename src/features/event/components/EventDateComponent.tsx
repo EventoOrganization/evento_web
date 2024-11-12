@@ -146,8 +146,16 @@ const EventDateComponent = ({
     if (date) {
       const formattedDate = format(date, "yyyy-MM-dd");
       const computedStartDate = setDateWithTime(formattedDate, localStartTime);
+
       setLocalStartDate(computedStartDate);
       !isEditMode && handleFieldChange("date", computedStartDate);
+
+      // Si la nouvelle startDate dépasse la endDate, met à jour la endDate
+      if (new Date(computedStartDate) > new Date(localEndDate)) {
+        const computedEndDate = setDateWithTime(formattedDate, "23:59");
+        setLocalEndDate(computedEndDate);
+        !isEditMode && handleFieldChange("endDate", computedEndDate);
+      }
     }
   };
 
@@ -159,6 +167,14 @@ const EventDateComponent = ({
         localEndTime,
         true,
       );
+
+      // Vérifie si la endDate est inférieure à la startDate, ajuste si nécessaire
+      if (new Date(computedEndDate) < new Date(localStartDate)) {
+        const computedStartDate = setDateWithTime(formattedDate, "00:00");
+        setLocalStartDate(computedStartDate);
+        !isEditMode && handleFieldChange("date", computedStartDate);
+      }
+
       setLocalEndDate(computedEndDate);
       !isEditMode && handleFieldChange("endDate", computedEndDate);
     }
