@@ -129,10 +129,8 @@ export const renderDate = (event: any) => {
   const start = new Date(startDate);
   const end = new Date(endDate);
 
-  // Vérifie si la différence entre les dates est inférieure à 24 heures
   const isSameDay = end.getTime() - start.getTime() < 24 * 60 * 60 * 1000;
 
-  // Si c'est le même jour (moins de 24h de différence)
   if (isSameDay) {
     return `${formatDate(startDate, true, true)}`;
   }

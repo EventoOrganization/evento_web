@@ -51,8 +51,10 @@ const CreateEventPreview = ({
     const start = new Date(startDate);
     const end = new Date(endDate);
 
-    if (start.getTime() === end.getTime()) {
-      return `The ${formatDate(startDate, true, true)}`; // ex: The 2 November 2024
+    const isSameDay = end.getTime() - start.getTime() < 24 * 60 * 60 * 1000;
+
+    if (isSameDay) {
+      return `${formatDate(startDate, true, true)}`;
     }
 
     if (

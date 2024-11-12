@@ -5,6 +5,7 @@ import GlobalDataProvider from "@/contexts/GlobalDataProvider";
 import PWAProvider from "@/contexts/PWAProvider";
 import { SessionProvider } from "@/contexts/SessionProvider";
 import { SocketProvider } from "@/contexts/SocketProvider";
+import GoogleAnalytics from "@/features/googleAnalitics/GoogleAnalytics";
 import { cn } from "@/lib/utils";
 import { getSessionSSR } from "@/utils/authUtilsSSR";
 import type { Metadata } from "next";
@@ -70,6 +71,7 @@ export default function RootLayout({
         <link rel="canonical" href="https://evento-app.io" />
       </head>
       <body className={cn(inter.className, "relative bg-muted")}>
+        <GoogleAnalytics />
         <SessionProvider
           initialUser={session?.user}
           initialToken={session?.token}
