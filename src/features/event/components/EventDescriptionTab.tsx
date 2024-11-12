@@ -1,7 +1,10 @@
 // components/EventDescriptionTab.tsx
 
 import AddToCalendar from "@/components/AddToCalendar";
-import TruncateText from "@/components/TruncatedText";
+import {
+  default as TruncatedText,
+  default as TruncateText,
+} from "@/components/TruncatedText";
 import EventActionIcons from "@/features/event/components/EventActionIcons";
 import { EventType } from "@/types/EventType";
 import Link from "next/link";
@@ -42,7 +45,11 @@ const EventDescriptionTab: React.FC<EventDescriptionTabProps> = ({
         />
       </Link>
       <EventTimeSlots event={event} />
-      <p>{event?.details?.description}</p>
+      <TruncatedText
+        className="px-0"
+        text={event?.details?.description || ""}
+        expand={true}
+      />
       {event.isGoing && <AddToCalendar event={event} />}
       <EventActionIcons
         event={event}

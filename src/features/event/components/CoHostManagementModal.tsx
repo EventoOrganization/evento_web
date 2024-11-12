@@ -70,11 +70,11 @@ const CoHostManagementModal: React.FC<CoHostManagementModalProps> = ({
           "flex-row": !editMode,
         })}
       >
-        <h3 className="text-eventoPurpleLight">CoHosts</h3>
+        <h3 className="text-eventoPurpleLight">Co-Hosts</h3>
         {editMode ? (
           <div className="space-x-2 w-full flex justify-end">
             <AddUserModal
-              title="CoHosts"
+              title="Co-Hosts"
               allUsers={allUsers}
               selectedUsers={coHosts}
               onSave={setCoHosts} // Directly update the local state with selected co-hosts
