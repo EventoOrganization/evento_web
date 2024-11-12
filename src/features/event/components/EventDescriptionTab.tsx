@@ -1,11 +1,11 @@
 // components/EventDescriptionTab.tsx
 
-import { EventStatusKeys } from "@/app/event/[id]/page";
 import AddToCalendar from "@/components/AddToCalendar";
 import TruncateText from "@/components/TruncatedText";
 import EventActionIcons from "@/features/event/components/EventActionIcons";
 import { EventType } from "@/types/EventType";
 import Link from "next/link";
+import { EventStatusKeys } from "./EventIdTabs";
 import EventTimeSlots from "./EventTimeSlots";
 interface EventDescriptionTabProps {
   event: EventType;

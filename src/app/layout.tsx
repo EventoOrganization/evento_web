@@ -11,16 +11,41 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ["latin"], display: "swap" });
 
 export const metadata: Metadata = {
   title: {
-    default: "Evento App",
+    default: "Evento",
     template: "%s - Evento",
   },
   description:
-    "Evento - Organize and discover events easily with our intuitive app.",
+    "Organize, plan, and discover events effortlessly with Evento. Simplify invitations, RSVPs, and event management—all in one intuitive platform.",
   manifest: "/manifest.json",
+  openGraph: {
+    type: "website",
+    url: "https://evento-app.io",
+    title: "Evento",
+    description: "Discover and plan events effortlessly with Evento.",
+    siteName: "Evento",
+    images: [
+      {
+        url: "https://evento-media-bucket.s3.ap-southeast-2.amazonaws.com/og-image.jpg",
+        width: 1200,
+        height: 675,
+        alt: "Evento App - Discover Events",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    site: "@eventoapp",
+    creator: "@eventoapp",
+    title: "Evento",
+    description: "Discover and plan events effortlessly with Evento.",
+    images: [
+      "https://evento-media-bucket.s3.ap-southeast-2.amazonaws.com/og-image.jpg",
+    ],
+  },
 };
 
 export default function RootLayout({
@@ -31,6 +56,19 @@ export default function RootLayout({
   const session = getSessionSSR();
   return (
     <html lang="en" suppressHydrationWarning={true}>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+          rel="stylesheet"
+        />
+        <link rel="canonical" href="https://evento-app.io" />
+      </head>
       <body className={cn(inter.className, "relative bg-muted")}>
         <SessionProvider
           initialUser={session?.user}
@@ -40,7 +78,6 @@ export default function RootLayout({
             <SocketProvider>
               <GlobalDataProvider>
                 <Toaster />
-                {/* <Header /> */}
                 <Main
                   className={cn(
                     "pb-14 md:pb-28 px-0 lg:px-10 max-w-7xl mx-auto",
