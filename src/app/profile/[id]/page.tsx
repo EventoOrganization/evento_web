@@ -1,50 +1,58 @@
-// src/app/profile/[id]/page.tsx
-"use client";
 import UserProfile from "@/features/profile/UserProfile";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
-import { useEffect, useState } from "react";
+import { Metadata } from "next";
 
-export default function UserProfilePage({
-  params,
-}: {
+type Props = {
   params: { id: string };
-}) {
-  const { id: userId } = params;
-  const [profileData, setProfileData] = useState<any>(null);
-  const getProfileData = async () => {
-    if (profileData) return;
-    try {
-      const profileRes = await fetchData<any>(
-        `/profile/userProfile/${userId}`,
-        HttpMethod.GET,
-        null,
-        null,
-      );
-      if (profileRes && profileRes.data) {
-        setProfileData(profileRes.data);
-      } else {
-        console.log("Failed to fetch profile data");
-      }
-    } catch (error) {
-      console.error("Error fetching profile data:", error);
-    }
-  };
-  useEffect(() => {
-    if (!profileData) getProfileData();
-    console.log("profileData", profileData);
-  });
-  if (!profileData) {
-    return <div>Loading...</div>;
-  } else {
-    return (
-      <>
-        <UserProfile
-          profile={profileData}
-          upcomingEvents={profileData?.upcomingEvents || []}
-          pastEvents={profileData?.pastEvents || []}
-          hostingEvents={profileData?.hostedEvents || []}
-        />
-      </>
+};
+
+// Fonction pour récupérer les données côté serveur
+async function fetchProfileData(userId: string): Promise<any | null> {
+  try {
+    const profileRes = await fetchData<any>(
+      `/profile/userProfile/${userId}`,
+      HttpMethod.GET,
+      null,
+      null,
     );
+    return profileRes.data || null;
+  } catch (error) {
+    console.error("Error fetching profile data:", error);
+    return null;
   }
+}
+
+// Fonction pour générer dynamiquement le metadata
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const profileData = await fetchProfileData(params.id);
+
+  if (!profileData) {
+    return {
+      title: "User not found - Evento",
+      description: "This user profile could not be found on Evento.",
+    };
+  }
+
+  return {
+    title: `${profileData?.username.charAt(0).toUpperCase()}${profileData?.username.slice(1)} - Evento`,
+    description: `View the profile of ${profileData?.username} on Evento.`,
+  };
+}
+
+// Composant principal pour la page profil utilisateur (Server Component)
+export default async function UserProfilePage({ params }: Props) {
+  const profileData = await fetchProfileData(params.id);
+
+  if (!profileData) {
+    return <p>User not found.</p>;
+  }
+
+  return (
+    <UserProfile
+      profile={profileData}
+      upcomingEvents={profileData.upcomingEvents || []}
+      pastEvents={profileData.pastEvents || []}
+      hostingEvents={profileData.hostedEvents || []}
+    />
+  );
 }

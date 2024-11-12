@@ -38,6 +38,7 @@ const UserProfile = ({
   hostingEvents?: EventType[];
   pastHostedEvents?: EventType[];
 }) => {
+  console.log("profile", profile);
   const router = useRouter();
   const pathname = usePathname();
   const [modalType, setModalType] = useState<ModalType | "">("");
