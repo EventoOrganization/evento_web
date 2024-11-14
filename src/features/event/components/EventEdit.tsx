@@ -65,6 +65,7 @@ const EventEdit = ({
     eventType: false,
     mode: false,
     date: false,
+    coHosts: false,
   });
   const [startDate, setStartDate] = useState(event.details?.date || "");
   const [endDate, setEndDate] = useState(event.details?.endDate || "");
@@ -73,7 +74,9 @@ const EventEdit = ({
   );
   const [endTime, setEndTime] = useState(event.details?.endTime || "18:00");
   const [timeSlots, setTimeSlots] = useState(event.details?.timeSlots || []);
+  const [coHosts, setCoHosts] = useState(event.coHosts || []);
   const { token } = useSession();
+
   const handleUpdate = async (field: string, value: any) => {
     console.log("field", field, "value", value);
     setIsUpdating(true);
@@ -97,6 +100,7 @@ const EventEdit = ({
           className: "bg-evento-gradient text-white",
           duration: 3000,
         });
+        console.log("field updated successfully with", value);
         onUpdateField(field, value);
       } else {
         console.error("Error updating the event");
@@ -111,7 +115,6 @@ const EventEdit = ({
     } finally {
       setIsUpdating(false);
       setEditMode({ ...editMode, [field]: false });
-      console.log("event updated", event);
     }
   };
 
@@ -228,6 +231,10 @@ const EventEdit = ({
         setTimeSlots(event.details?.timeSlots || []);
         setTimeZone(event.details?.timeZone || "");
         break;
+      case "coHosts":
+        console.log("Canceling co-hosts");
+        setCoHosts(event.coHosts || []);
+        break;
       default:
         break;
     }
@@ -262,6 +269,10 @@ const EventEdit = ({
         setTimeSlots([]);
         setTimeZone("");
         break;
+      case "coHosts":
+        console.log("Resetting co-hosts");
+        setCoHosts([]);
+        break;
       default:
         break;
     }
@@ -275,7 +286,6 @@ const EventEdit = ({
     };
     await handleUpdate("locationData", locationData);
   };
-
   return (
     <div className="space-y-4 pb-20 w-full">
       <h2>Edit Event</h2>
@@ -410,9 +420,13 @@ const EventEdit = ({
 
       {event.isHosted && (
         <CoHostManagementModal
-          event={event}
+          coHosts={coHosts}
           allUsers={allUsers}
           onUpdateField={handleUpdate}
+          handleCancel={() => handleCancel("coHosts")}
+          handleReset={() => handleReset("coHosts")}
+          editMode={editMode.coHosts}
+          toggleEditMode={() => toggleEditMode("coHosts")}
         />
       )}
       {/* RSVP Questions */}

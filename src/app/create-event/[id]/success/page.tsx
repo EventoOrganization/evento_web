@@ -170,7 +170,9 @@ const EventSuccessPage = () => {
     (user) =>
       !excludedUserIds.includes(user._id) &&
       !currentSelectedUsers.some((selected) => selected._id === user._id) &&
-      !event?.guests?.some((guest) => guest._id === user._id) && // Exclure les invités déjà ajoutés
+      !event?.guests?.some((guest) => guest._id === user._id) &&
+      !event?.coHosts?.some((coHost) => coHost.userId === user._id) &&
+      user.username !== "anonymous" &&
       (user.username.toLowerCase().includes(filter) ||
         user.firstName?.toLowerCase().includes(filter) ||
         user.lastName?.toLowerCase().includes(filter)),

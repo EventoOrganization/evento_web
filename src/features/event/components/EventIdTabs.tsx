@@ -48,6 +48,7 @@ const EventIdTabs = ({ evento }: { evento?: EventType }) => {
     if (event) {
       const updateFunction = createUpdateEventField(event);
       const updatedEvent = updateFunction(field, value);
+      console.log("Updated event finally:", updatedEvent);
       setEvent(updatedEvent);
     }
   };
@@ -161,6 +162,7 @@ const EventIdTabs = ({ evento }: { evento?: EventType }) => {
       </div>
     );
   }
+
   return (
     <>
       <StructuredData event={event} />
@@ -197,10 +199,31 @@ const EventIdTabs = ({ evento }: { evento?: EventType }) => {
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
               )}
-              <h4 className="ml-2">
-                {event?.user?.username.charAt(0).toUpperCase() +
-                  event?.user?.username.slice(1) || ""}
-              </h4>
+              <div className="flex flex-wrap overflow-hidden">
+                <h4 className="truncate text-sm md:text-base">
+                  {(event &&
+                    event?.user.username.charAt(0).toUpperCase() +
+                      event?.user.username.slice(1)) ||
+                    ""}
+                </h4>
+                {event.coHosts?.length === 1 &&
+                  event.coHosts.map((coHost: any) => (
+                    <h4
+                      className="truncate text-sm md:ml-1 md:text-base"
+                      key={coHost._id}
+                    >
+                      &{" "}
+                      {coHost?.userId?.username &&
+                        coHost?.userId?.username.charAt(0).toUpperCase() +
+                          coHost?.userId?.username.slice(1)}
+                    </h4>
+                  ))}
+                {event.coHosts && event.coHosts.length > 1 && (
+                  <h4 className="truncate text-sm md:text-base md:ml-1">
+                    & {event.coHosts?.length} more
+                  </h4>
+                )}
+              </div>
             </Link>
             <span className="text-sm">{renderDate(event)}</span>
           </div>

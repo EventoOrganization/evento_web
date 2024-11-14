@@ -1,4 +1,3 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -7,7 +6,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input"; // Import Input component for filtering
+import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { UserType } from "@/types/UserType";
@@ -16,9 +15,9 @@ import { useEffect, useState } from "react";
 
 interface AddUserModalProps {
   title: string;
-  allUsers: UserType[];
-  selectedUsers: { userId: string; status: string }[] | string;
-  onSave: (selectedUsers: { userId: string; status: string }[]) => void;
+  allUsers: UserType[] | [];
+  selectedUsers: any[];
+  onSave: (selectedUsers: any[]) => void;
 }
 
 const AddUserModal = ({
@@ -28,38 +27,22 @@ const AddUserModal = ({
   onSave,
 }: AddUserModalProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [currentSelectedUsers, setCurrentSelectedUsers] = useState<
-    { user: UserType; status: string }[]
-  >([]);
-  const [filter, setFilter] = useState<string>(""); // New state for filtering users
+  const [currentSelectedUsers, setCurrentSelectedUsers] = useState<any[]>([]);
+  const [filter, setFilter] = useState<string>("");
 
   useEffect(() => {
-    if (Array.isArray(selectedUsers)) {
-      const initialSelectedUsers = allUsers
-        .filter((user) => selectedUsers.some((s) => s.userId === user._id))
-        .map((user) => ({
-          user,
-          status:
-            selectedUsers.find((s) => s.userId === user._id)?.status ||
-            "read-only",
-        }));
-      setCurrentSelectedUsers(initialSelectedUsers);
-    } else {
-      setCurrentSelectedUsers([]);
-    }
-  }, [selectedUsers, allUsers]);
+    setCurrentSelectedUsers(selectedUsers);
+  }, [selectedUsers]);
 
-  // Function to handle changes in the input field and update the filter
   const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFilter(e.target.value.toLowerCase());
   };
 
-  // Filter available users based on the filter input (username, firstName, or lastName)
   const availableUsers = allUsers
     .filter(
       (user) =>
         !currentSelectedUsers.some(
-          (selectedUser) => selectedUser.user._id === user._id,
+          (selected) => selected.userId._id === user._id,
         ),
     )
     .filter(
@@ -72,39 +55,38 @@ const AddUserModal = ({
   const addUser = (user: UserType) => {
     setCurrentSelectedUsers([
       ...currentSelectedUsers,
-      { user, status: "read-only" },
+      { userId: user, status: "read-only" },
     ]);
   };
 
-  const isValidUrl = (url: string) => {
-    return url.startsWith("http://") || url.startsWith("https://");
-  };
+  const removeUser = (userId: string) => {
+    console.log("Removing user with ID:", userId);
 
-  const removeUser = (user: UserType) => {
-    setCurrentSelectedUsers(
-      currentSelectedUsers.filter(
-        (selectedUser) => selectedUser.user._id !== user._id,
-      ),
-    );
+    setCurrentSelectedUsers((prevSelectedUsers) => {
+      const updatedUsers = prevSelectedUsers.filter((selected) => {
+        const selectedUserId =
+          typeof selected.userId === "string"
+            ? selected.userId
+            : selected.userId._id;
+        return selectedUserId !== userId;
+      });
+      console.log("Updated selected users:", updatedUsers);
+      return updatedUsers;
+    });
   };
 
   const handleStatusChange = (userId: string, newStatus: string) => {
     setCurrentSelectedUsers((prevSelectedUsers) =>
-      prevSelectedUsers.map((selectedUser) =>
-        selectedUser.user._id === userId
-          ? { ...selectedUser, status: newStatus }
-          : selectedUser,
+      prevSelectedUsers.map((selected) =>
+        selected.userId._id === userId
+          ? { ...selected, status: newStatus }
+          : selected,
       ),
     );
   };
 
   const handleSave = () => {
-    onSave(
-      currentSelectedUsers.map(({ user, status }) => ({
-        userId: user._id,
-        status,
-      })),
-    );
+    onSave(currentSelectedUsers);
     setIsOpen(false);
   };
 
@@ -113,9 +95,8 @@ const AddUserModal = ({
       <DialogTrigger asChild>
         <Button
           variant="outline"
-          type="button"
           className={cn({
-            "bg-evento-gradient text-white": currentSelectedUsers.length > 0,
+            "bg-evento-gradient": currentSelectedUsers.length > 0,
           })}
         >
           {title}
@@ -129,119 +110,83 @@ const AddUserModal = ({
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>
 
-        {/* Input for filtering users */}
         <Input
           type="text"
-          placeholder="Search by username, first name, or last name"
+          placeholder="Search users"
           value={filter}
           onChange={handleFilterChange}
           className="mb-4"
         />
 
-        <div className="flex flex-col-reverse justify-between gap-4">
+        <div className="flex flex-col-reverse gap-4">
+          {/* Liste des utilisateurs disponibles */}
           <div>
-            <h3 className="mb-2">
-              All Users {"("}
-              {availableUsers.length}
-              {")"}
-            </h3>
+            <h3 className="mb-2">All Users ({availableUsers.length})</h3>
             <ScrollArea className="h-48 border rounded">
               {availableUsers.length > 0 ? (
                 availableUsers.map((user) => (
                   <div
                     key={user._id}
-                    className="p-2 flex items-center cursor-pointer hover:bg-muted/20 space-x-4"
+                    className="p-2 flex items-center cursor-pointer hover:bg-muted/20"
                     onClick={() => addUser(user)}
                   >
-                    {user.profileImage && isValidUrl(user?.profileImage) ? (
-                      <Image
-                        src={user.profileImage}
-                        alt="user image"
-                        width={50}
-                        height={50}
-                        className="w-12 h-12 rounded-full"
-                      />
-                    ) : (
-                      <Avatar className="w-12 h-12 rounded-full">
-                        <AvatarImage
-                          className="w-12 h-12 rounded-full"
-                          src="https://github.com/shadcn.png"
-                        />
-                        <AvatarFallback>CN</AvatarFallback>
-                      </Avatar>
-                    )}
-                    <div className="flex flex-col">
-                      <span className="font-semibold text-sm md:text-base">
-                        {user.username}
-                      </span>
-                      <span className="text-xs">
-                        {user.lastName} {user.firstName}
-                      </span>
+                    <Image
+                      src={user.profileImage || "https://github.com/shadcn.png"}
+                      alt={user.username}
+                      width={40}
+                      height={40}
+                      className="w-10 h-10 rounded-full"
+                    />
+                    <div className="ml-4">
+                      <p>{user.username}</p>
+                      <p className="text-xs">{user.email}</p>
                     </div>
                   </div>
                 ))
               ) : (
-                <div className="p-2 text-muted">No users available</div>
+                <p className="p-2 text-muted">No users found</p>
               )}
             </ScrollArea>
           </div>
 
+          {/* Liste des utilisateurs sélectionnés */}
           <div>
-            <h3 className="mb-2">
-              Selected {"("}
-              {currentSelectedUsers.length}
-              {")"}
-            </h3>
+            <h3 className="mb-2">Selected ({currentSelectedUsers.length})</h3>
             <ScrollArea className="h-48 border rounded">
-              {currentSelectedUsers.map(({ user, status }) => (
+              {currentSelectedUsers.map(({ userId, status }) => (
                 <div
-                  key={user._id}
-                  className="p-2 flex items-center justify-between cursor-pointer hover:bg-muted/20 space-x-4"
+                  key={userId._id}
+                  className="p-2 flex items-center justify-between"
                 >
                   <div className="flex items-center space-x-4">
-                    {user.profileImage && isValidUrl(user?.profileImage) ? (
-                      <Image
-                        src={user.profileImage}
-                        alt="user image"
-                        width={50}
-                        height={50}
-                        className="w-12 h-12 rounded-full"
-                      />
-                    ) : (
-                      <Avatar className="w-12 h-12 rounded-full">
-                        <AvatarImage
-                          className="w-12 h-12 rounded-full"
-                          src="https://github.com/shadcn.png"
-                        />
-                        <AvatarFallback>CN</AvatarFallback>
-                      </Avatar>
-                    )}
-                    <div className="flex flex-col">
-                      <span className="font-semibold text-sm md:text-base">
-                        {user.username}
-                      </span>
-                      <span className="text-xs">
-                        {user.lastName} {user.firstName}
-                      </span>
+                    <Image
+                      src={
+                        userId.profileImage || "https://github.com/shadcn.png"
+                      }
+                      alt={userId.username}
+                      width={40}
+                      height={40}
+                      className="w-10 h-10 rounded-full"
+                    />
+                    <div>
+                      <p>{userId.username}</p>
+                      <p className="text-xs">{userId.email}</p>
                     </div>
                   </div>
-
-                  {/* Dropdown for selecting the role */}
                   <select
                     value={status}
                     onChange={(e) =>
-                      handleStatusChange(user._id, e.target.value)
+                      handleStatusChange(userId._id, e.target.value)
                     }
                     className="border rounded p-1"
                   >
                     <option value="read-only">Read-only</option>
                     <option value="admin">Admin</option>
                   </select>
-
                   <Button
                     variant="destructive"
                     size="sm"
-                    onClick={() => removeUser(user)}
+                    onClick={() => removeUser(userId._id)}
                   >
                     Remove
                   </Button>
@@ -250,15 +195,9 @@ const AddUserModal = ({
             </ScrollArea>
           </div>
         </div>
-        <div className="mt-4 flex items-center justify-between">
-          <Button
-            type="button"
-            className="bg-evento-gradient-button border shadow mt-2"
-            onClick={handleSave}
-          >
-            Save
-          </Button>
-        </div>
+        <Button className="bg-evento-gradient mt-4" onClick={handleSave}>
+          Save
+        </Button>
       </DialogContent>
     </Dialog>
   );

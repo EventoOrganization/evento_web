@@ -8,6 +8,7 @@ export type UserType = {
   firstName?: string;
   lastName?: string;
   email: string;
+  userId?: string;
   URL?: string;
   countryCode?: string;
   createdAt?: string;

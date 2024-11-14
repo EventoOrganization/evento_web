@@ -234,7 +234,6 @@ const CreateEventContent = () => {
         url: media.url,
         type: media.type,
       }));
-
     const formData = {
       ...formValues,
       uploadedMedia: [...initialMedia],

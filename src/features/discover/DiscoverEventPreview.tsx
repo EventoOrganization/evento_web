@@ -57,12 +57,31 @@ const DiscoverEventPreview = ({
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
               )}
-              <h4 className="ml-2">
-                {(event &&
-                  event?.user.username.charAt(0).toUpperCase() +
-                    event?.user.username.slice(1)) ||
-                  ""}
-              </h4>
+              <div className="flex flex-wrap overflow-hidden">
+                <h4 className="truncate text-sm md:text-base">
+                  {(event &&
+                    event?.user.username.charAt(0).toUpperCase() +
+                      event?.user.username.slice(1)) ||
+                    ""}
+                </h4>
+                {event.coHosts.length === 1 &&
+                  event.coHosts.map((coHost: any) => (
+                    <h4
+                      className="truncate text-sm md:ml-1 md:text-base"
+                      key={coHost._id}
+                    >
+                      &{" "}
+                      {coHost?.userId?.username &&
+                        coHost?.userId?.username.charAt(0).toUpperCase() +
+                          coHost?.userId?.username.slice(1)}
+                    </h4>
+                  ))}
+                {event.coHosts.length > 1 && (
+                  <h4 className="truncate text-sm md:text-base md:ml-1">
+                    & {event.coHosts?.length} more
+                  </h4>
+                )}
+              </div>
             </div>
             <span className="text-sm text-right">{renderDate(event)}</span>
           </div>

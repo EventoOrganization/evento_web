@@ -7,62 +7,38 @@ import { useEffect, useState } from "react";
 import AddUserModal from "./AddUserModal";
 
 interface CoHostManagementModalProps {
-  event: any;
+  handleCancel: () => void;
+  handleReset: () => void;
+  editMode: boolean;
+  toggleEditMode: () => void;
+  coHosts: any[];
   allUsers: UserType[];
-  onUpdateField: (field: string, value: any) => void; // Update function passed from parent
+  onUpdateField: (field: string, value: any) => void;
 }
 
 const CoHostManagementModal: React.FC<CoHostManagementModalProps> = ({
-  event,
+  coHosts,
   allUsers,
-  onUpdateField, // Receive this function from the parent component
+  onUpdateField,
+  handleCancel,
+  handleReset,
+  editMode,
+  toggleEditMode,
 }) => {
-  const [coHosts, setCoHosts] = useState<
-    { userId: string; status: string; user?: UserType }[]
-  >([]);
-  const [editMode, setEditMode] = useState(false);
-
+  const [selectedUsers, setSelectedUsers] = useState<any[]>(coHosts);
   useEffect(() => {
-    if (event.coHosts) {
-      const mappedCoHosts = event.coHosts.map((coHost: any) => {
-        return {
-          userId: coHost.user_id._id,
-          status: coHost.status,
-          username: coHost.user_id.username,
-          profileImage: coHost.user_id.profileImage,
-        };
-      });
-      setCoHosts(mappedCoHosts);
-    }
-  }, [event.coHosts, allUsers]);
-
-  const handleOpenEditMode = () => {
-    setEditMode(true);
+    setSelectedUsers(coHosts);
+  }, [coHosts]);
+  const handleSelectUsers = (users: UserType[]) => {
+    console.log("Saving co-hosts:", selectedUsers);
+    setSelectedUsers(users);
+    console.log("localCoHosts", users);
   };
-
-  const handleCancelEditMode = () => {
-    setCoHosts(
-      event.coHosts.map((coHost: any) => {
-        return {
-          userId: coHost.user_id._id,
-          status: coHost.status,
-          username: coHost.user_id.username,
-          profileImage: coHost.user_id.profileImage,
-        };
-      }) || [],
-    );
-    setEditMode(false);
-  };
-
   const handleSaveCoHosts = () => {
-    onUpdateField("coHosts", coHosts); // Send updated co-hosts to the parent component
-    setEditMode(false); // Exit edit mode
+    setSelectedUsers(selectedUsers);
+    onUpdateField("coHosts", selectedUsers);
+    toggleEditMode();
   };
-
-  const handleResetCoHosts = () => {
-    setCoHosts([]);
-  };
-
   return (
     <div>
       <div
@@ -76,8 +52,8 @@ const CoHostManagementModal: React.FC<CoHostManagementModalProps> = ({
             <AddUserModal
               title="Co-Hosts"
               allUsers={allUsers}
-              selectedUsers={coHosts}
-              onSave={setCoHosts} // Directly update the local state with selected co-hosts
+              selectedUsers={selectedUsers}
+              onSave={handleSelectUsers}
             />
             <Button
               variant="outline"
@@ -89,14 +65,14 @@ const CoHostManagementModal: React.FC<CoHostManagementModalProps> = ({
             <Button
               variant="outline"
               className="text-gray-600"
-              onClick={handleCancelEditMode}
+              onClick={handleCancel}
             >
               Cancel
             </Button>
             <Button
               variant="outline"
               className="text-red-600"
-              onClick={handleResetCoHosts}
+              onClick={handleReset}
             >
               Reset
             </Button>
@@ -105,7 +81,7 @@ const CoHostManagementModal: React.FC<CoHostManagementModalProps> = ({
           <Button
             className="w-fit"
             variant={"outline"}
-            onClick={handleOpenEditMode}
+            onClick={toggleEditMode}
           >
             Edit Co-Hosts
           </Button>
@@ -114,19 +90,21 @@ const CoHostManagementModal: React.FC<CoHostManagementModalProps> = ({
 
       {/* List current co-hosts */}
       <div className="mt-4 space-y-2">
-        {coHosts.length > 0 ? (
-          coHosts.map((coHost) => {
-            const user = allUsers.find((user) => user._id === coHost.userId);
+        {selectedUsers.length > 0 ? (
+          selectedUsers.map((coHost) => {
+            const userInfo = coHost.userId;
+            const userId =
+              typeof userInfo === "string" ? userInfo : userInfo?._id;
             return (
               <div
-                key={coHost.userId}
+                key={userId}
                 className="flex items-center justify-between p-2 border rounded-md"
               >
                 <div className="flex items-center">
-                  {user?.profileImage ? (
+                  {userInfo?.profileImage ? (
                     <Image
-                      src={user.profileImage}
-                      alt={user.username}
+                      src={userInfo.profileImage}
+                      alt={userInfo.username}
                       width={10}
                       height={10}
                       className="w-10 h-10 rounded-full"
@@ -141,8 +119,8 @@ const CoHostManagementModal: React.FC<CoHostManagementModalProps> = ({
                     </Avatar>
                   )}
                   <div className="ml-4">
-                    <p className="text-sm font-medium">{user?.username}</p>
-                    <p className="text-xs text-gray-500">{user?.email}</p>
+                    <p className="text-sm font-medium">{userInfo?.username}</p>
+                    <p className="text-xs text-gray-500">{userInfo?.email}</p>
                   </div>
                 </div>
                 <div className="text-xs text-gray-500">{coHost.status}</div>

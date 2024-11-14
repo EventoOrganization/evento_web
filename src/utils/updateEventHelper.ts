@@ -71,6 +71,12 @@ export function createUpdateEventField(event: EventType) {
           }));
         }
         break;
+      case "coHosts":
+        console.log("coHosts helper", value);
+        if (Array.isArray(value)) {
+          updatedEvent.coHosts = value;
+        }
+        break;
       default:
         console.warn("Unknown field", field);
     }

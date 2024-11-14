@@ -14,7 +14,6 @@ const EventCoHostsModal = ({
   const [coHosts, setCoHosts] = useState<{ userId: string; status: string }[]>(
     [],
   );
-
   const handleSave = (
     selectedCoHosts: { userId: string; status: string }[],
   ) => {

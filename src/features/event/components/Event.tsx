@@ -62,11 +62,12 @@ const Event = ({ className, event }: { className?: string; event?: any }) => {
                   event.coHosts.map((coHost: any) => (
                     <h4
                       className="truncate text-sm md:ml-1 md:text-base"
-                      key={coHost.user_id._id}
+                      key={coHost._id}
                     >
                       &{" "}
-                      {coHost?.user_id?.username.charAt(0).toUpperCase() +
-                        coHost?.user_id?.username.slice(1)}
+                      {coHost?.userId?.username &&
+                        coHost?.userId?.username.charAt(0).toUpperCase() +
+                          coHost?.userId?.username.slice(1)}
                     </h4>
                   ))}
                 {event.coHosts.length > 1 && (
