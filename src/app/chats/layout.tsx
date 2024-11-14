@@ -1,5 +1,6 @@
 "use client";
 
+import ComingSoon from "@/components/ComingSoon";
 import { useSocket } from "@/contexts/SocketProvider";
 import ChatHeader from "@/features/chat/components/ChatHeader";
 import ConversationList from "@/features/chat/components/ConversationList";
@@ -19,6 +20,11 @@ export default function ChatLayout({
   const handleSelectConversation = () => {
     setIsOpen(false);
   };
+  const dev = true;
+
+  if (dev) {
+    return <ComingSoon message="This feature is currently under development" />;
+  }
   return (
     <>
       <CircleArrowLeftIcon

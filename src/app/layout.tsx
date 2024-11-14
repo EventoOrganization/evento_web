@@ -1,3 +1,4 @@
+import ChatbotComponent from "@/components/ChatbotComponent";
 import Main from "@/components/layout/Main";
 import NavbarApp from "@/components/Navbar";
 import { Toaster } from "@/components/ui/toaster";
@@ -86,6 +87,7 @@ export default function RootLayout({
                   )}
                 >
                   {children}
+                  <ChatbotComponent />
                 </Main>
                 <NavbarApp />
               </GlobalDataProvider>
