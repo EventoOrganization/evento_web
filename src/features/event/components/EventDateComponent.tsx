@@ -16,7 +16,7 @@ import { TimeSlotType } from "@/types/EventType";
 import { isSameDay, setDateWithTime, updateTimeSlots } from "@/utils/dateUtils";
 import { timeZonesMap } from "@/utils/timezones";
 import { format, startOfDay } from "date-fns";
-import { fr } from "date-fns/locale";
+import { enGB } from "date-fns/locale";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { handleFieldChange } from "../eventActions";
@@ -286,7 +286,7 @@ const EventDateComponent = ({
               selected={new Date(localStartDate)}
               onSelect={handleStartDateChange}
               fromDate={today}
-              locale={fr}
+              locale={enGB}
             />
           </PopoverContent>
         </Popover>
@@ -305,7 +305,7 @@ const EventDateComponent = ({
               selected={new Date(localEndDate)}
               onSelect={handleEndDateChange}
               fromDate={new Date(localStartDate)}
-              locale={fr}
+              locale={enGB}
             />
           </PopoverContent>
         </Popover>
