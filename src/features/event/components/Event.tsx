@@ -129,7 +129,8 @@ const Event = ({ className, event }: { className?: string; event?: any }) => {
                 </span>
               </Button>
               <p className="whitespace-nowrap">
-                {event?.details?.startTime} - {event?.details?.endTime}
+                {event?.details?.startTime} {event?.detail?.endTime && "-"}{" "}
+                {event?.details?.endTime}
               </p>
             </div>
             <TruncatedText
