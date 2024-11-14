@@ -1,6 +1,5 @@
 "use client";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { Switch } from "@/components/ui/togglerbtn";
 import { useEventStore } from "@/store/useEventStore";
 import { useEffect, useState } from "react";
 import { handleFieldChange } from "../eventActions";
@@ -20,17 +19,10 @@ const EnableChatButton = () => {
   };
 
   return (
-    <Button
-      type="button"
-      variant="outline"
-      onClick={handleButtonClick}
-      className={cn(
-        "transition-colors",
-        checked && "bg-evento-gradient text-white",
-      )}
-    >
-      {checked ? "Chat Enabled" : "Enable Chat"}
-    </Button>
+    <div className="flex items-center gap-2">
+      <Switch checked={checked} onClick={handleButtonClick} />
+      <h6 className="">Add Chat</h6>
+    </div>
   );
 };
 

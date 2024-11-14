@@ -37,9 +37,9 @@ const EventURL = () => {
   };
 
   return (
-    <>
+    <div className="flex items-center gap-2">
       <Switch onClick={handleButtonClick} checked={isToggleOn} />
-      {isToggleOn && (
+      {isToggleOn ? (
         <div className="flex items-center gap-2">
           <Input
             type="url"
@@ -56,8 +56,10 @@ const EventURL = () => {
             className="w-full"
           />
         </div>
+      ) : (
+        <h6 className="">Add URL Link</h6>
       )}
-    </>
+    </div>
   );
 };
 

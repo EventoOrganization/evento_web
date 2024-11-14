@@ -95,9 +95,12 @@ const AddUserModal = ({
       <DialogTrigger asChild>
         <Button
           variant="outline"
-          className={cn({
-            "bg-evento-gradient": currentSelectedUsers.length > 0,
-          })}
+          className={cn(
+            {
+              "bg-evento-gradient": currentSelectedUsers.length > 0,
+            },
+            "w-fit",
+          )}
         >
           {title}
           {currentSelectedUsers.length > 0

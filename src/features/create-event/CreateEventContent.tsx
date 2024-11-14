@@ -410,7 +410,7 @@ const CreateEventContent = () => {
               />
             </div>
             <h4 className="text-eventoPurpleLight">More Options</h4>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-2 flex-col">
               <EventCoHostsModal
                 allUsers={users as UserType[]}
                 currentUserId={user?._id || ""}
