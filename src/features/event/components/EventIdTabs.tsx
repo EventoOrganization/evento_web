@@ -21,6 +21,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import DeleteEventButton from "./DeleteEventButton";
 export type EventStatusKeys = "isGoing" | "isFavourite" | "isRefused";
 
 const EventIdTabs = ({ evento }: { evento?: EventType }) => {
@@ -228,6 +229,10 @@ const EventIdTabs = ({ evento }: { evento?: EventType }) => {
             <span className="text-sm">{renderDate(event)}</span>
           </div>
           <RenderMedia event={event} />
+          <DeleteEventButton
+            eventId={event._id}
+            isHost={accessControl.isAdmin}
+          />
         </div>
         <Section className="justify-start py-10 w-full h-full">
           <TabSelector

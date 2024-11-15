@@ -21,7 +21,9 @@ const DeleteEventButton = ({
   const { token } = useSession();
   const deleteEventFromStore = useGlobalStore((state) => state.deleteEvent);
   const { toast } = useToast(); // Ajoute la fonctionnalité toast
-
+  if (!isHost) {
+    return null;
+  }
   const handleDelete = async () => {
     if (!isHost) return;
     setLoading(true);
