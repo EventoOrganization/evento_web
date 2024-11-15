@@ -157,7 +157,7 @@ const CreateEventContent = () => {
       { name: "Username", value: formValues.username },
       { name: "Event Type", value: formValues.eventType },
       { name: "Mode", value: formValues.mode },
-      { name: "Location", value: formValues.location },
+      // { name: "Location", value: formValues.location },
       // { name: "Latitude", value: formValues.latitude },
       // { name: "Longitude", value: formValues.longitude },
       { name: "Date", value: formValues.date },

@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@nextui-org/theme";
 
 interface EditableTextAreaProps {
@@ -62,11 +62,12 @@ const EditableTextArea = ({
         )}
       </div>
       {label && <label className="font-bold text-lg">{label}</label>}
-      <Input
-        type="textarea"
+      <Textarea
+        id="description"
+        name="description"
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full"
+        placeholder="Enter event description"
         disabled={!editMode}
       />
     </div>
