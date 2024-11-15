@@ -1,19 +1,56 @@
 "use client";
+import { useSession } from "@/contexts/SessionProvider";
+import { useToast } from "@/hooks/use-toast";
+import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { cn } from "@nextui-org/theme";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { useRef, useState } from "react";
 import { Button } from "./ui/button";
 
 const ChatbotComponent = ({ className }: { className?: string }) => {
+  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [message, setMessage] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-
-  const handleSendMessage = () => {
-    if (message.trim() !== "") {
+  const { token } = useSession();
+  const { toast } = useToast();
+  const handleSendMessage = async () => {
+    if (message.trim() === "") {
+      toast({ description: "Please enter a message", className: "bg-red-500" });
+      return;
+    }
+    try {
+      const body = {
+        feedback: `Feedback from page: ${pathname} - ${message}`,
+      };
+      const res = await fetchData<any>(
+        "/ia/feedbacks/submit",
+        HttpMethod.POST,
+        body,
+        token,
+      );
+      if (res.status) {
+        toast({
+          title: "Thank you for your feedback!",
+          description: "Message sent successfully",
+          className: "bg-evento-gradient text-white",
+          duration: 3000,
+        });
+        setMessage("");
+        setIsOpen(false);
+      } else {
+        toast({
+          description: "Failed to send message",
+          className: "bg-red-500 text-white",
+          duration: 3000,
+        });
+      }
       console.log("Sending message:", message);
-      setMessage(""); // Effacer le message après envoi
+      setMessage("");
+    } catch (error) {
+      console.error("Error sending message:", error);
     }
   };
 
@@ -38,7 +75,7 @@ const ChatbotComponent = ({ className }: { className?: string }) => {
       className={cn(
         "z-50  fixed bottom-0 right-0 w-fit md:bottom-6 md:right-6",
         className,
-        { "w-full md:w-fit": isOpen },
+        { "w-full md:w-fit": isOpen, hidden: !token },
       )}
     >
       {/* Bouton pliable */}
@@ -72,7 +109,7 @@ const ChatbotComponent = ({ className }: { className?: string }) => {
 
         {/* Zone de texte visible lorsque le chatbot est ouvert */}
         {isOpen && (
-          <div className=" w-full flex flex-col gap-2">
+          <div className=" w-full flex flex-col gap-2 p-2">
             <textarea
               ref={textareaRef}
               value={message}

@@ -65,6 +65,30 @@ const DiscoverPageContent = () => {
     setIsHydrated(true);
     setIsPending(false);
   }, []);
+  useEffect(() => {
+    if (isHydrated && events?.length > 0) {
+      const filteredEvents = filterEvents(
+        events,
+        selectedInterests,
+        searchText,
+        selectedTab,
+        location,
+        startDate,
+        endDate,
+      );
+      setFilteredEvents(filteredEvents);
+    }
+  }, [
+    isHydrated,
+    selectedInterests,
+    searchText,
+    selectedTab,
+    events,
+    location,
+    startDate,
+    endDate,
+  ]);
+
   const handleInterestToggle = (interest: InterestType) => {
     setSelectedInterests((prev) =>
       prev.some((i) => i._id === interest._id)
