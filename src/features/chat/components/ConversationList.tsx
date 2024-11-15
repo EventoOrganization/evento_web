@@ -72,7 +72,7 @@ const ConversationList = ({
   //           {
   //             url:
   //               conversation.reciverId?.profileImage ||
-  //               "https://github.com/shadcn.png",
+  //               "/icon-384x384.png",
   //           },
   //         ],
   //       };
@@ -190,7 +190,7 @@ const ConversationList = ({
                     <Avatar className="w-10 h-10 rounded-full">
                       <AvatarImage
                         className="w-10 h-10 rounded-full"
-                        src="https://github.com/shadcn.png"
+                        src="/icon-384x384.png"
                       />
                       <AvatarFallback>CN</AvatarFallback>
                     </Avatar>
@@ -233,7 +233,7 @@ const ConversationList = ({
               <div className="relative w-12 h-12 mr-4">
                 {user.profileImage ? (
                   <Image
-                    src={user.profileImage || "https://github.com/shadcn.png"}
+                    src={user.profileImage || "/icon-384x384.png"}
                     alt={user.username}
                     fill
                     className="rounded-full"
@@ -242,7 +242,7 @@ const ConversationList = ({
                   <Avatar className="w-10 h-10 rounded-full">
                     <AvatarImage
                       className="w-10 h-10 rounded-full"
-                      src="https://github.com/shadcn.png"
+                      src="/icon-384x384.png"
                     />
                     <AvatarFallback>CN</AvatarFallback>
                   </Avatar>

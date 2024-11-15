@@ -24,7 +24,7 @@ const EditProfileImage = ({
 }) => {
   const [openDialog, setOpenDialog] = useState(false);
   const [imageSrc, setImageSrc] = useState<string>(
-    userInfo?.profileImage || "https://github.com/shadcn.png",
+    userInfo?.profileImage || "/icon-384x384.png",
   );
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
@@ -99,7 +99,7 @@ const EditProfileImage = ({
           />
         ) : (
           <Avatar className="w-20 h-20 md:w-36 md:h-36">
-            <AvatarImage src={imageSrc || "https://github.com/shadcn.png"} />
+            <AvatarImage src={imageSrc || "/icon-384x384.png"} />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
         )}

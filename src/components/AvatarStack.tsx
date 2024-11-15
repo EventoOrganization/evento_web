@@ -40,7 +40,7 @@ const AvatarStack = ({ event }: { event: EventType }) => {
               <Avatar key={index} className="w-12 h-12 rounded-full">
                 <AvatarImage
                   className="w-12 h-12 rounded-full"
-                  src="https://github.com/shadcn.png"
+                  src="/icon-384x384.png"
                 />
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>

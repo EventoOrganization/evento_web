@@ -83,7 +83,7 @@ const UserProfile = ({
             ) : (
               <div className="flex flex-col">
                 <Avatar className="w-20 h-20 md:w-36 md:h-36">
-                  <AvatarImage src="https://github.com/shadcn.png" />
+                  <AvatarImage src="/icon-384x384.png" />
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
               </div>

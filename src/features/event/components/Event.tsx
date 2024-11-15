@@ -45,7 +45,7 @@ const Event = ({ className, event }: { className?: string; event?: any }) => {
               ) : (
                 <Avatar>
                   <AvatarImage
-                    src={"https://github.com/shadcn.png"}
+                    src={"/icon-384x384.png"}
                     className="rounded-full min-w-10 w-10 h-10 "
                   />
                   <AvatarFallback>CN</AvatarFallback>

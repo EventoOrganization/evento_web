@@ -69,10 +69,7 @@ const AttendeesList = ({
         ) : (
           <div className="flex flex-col">
             <Avatar className="w-10 h-10 ">
-              <AvatarImage
-                src="https://github.com/shadcn.png"
-                className="rounded-full"
-              />
+              <AvatarImage src="/icon-384x384.png" className="rounded-full" />
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
           </div>

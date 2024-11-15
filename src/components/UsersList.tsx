@@ -202,10 +202,7 @@ const UsersList = ({
         ) : (
           <div className="flex flex-col min-w-10 w-10 h-10">
             <Avatar className="min-w-10 w-10 h-10 ">
-              <AvatarImage
-                src="https://github.com/shadcn.png"
-                className="rounded-full"
-              />
+              <AvatarImage src="/icon-384x384.png" className="rounded-full" />
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
           </div>

@@ -16,7 +16,7 @@ const StaticProfilePage = ({
             <div className="flex items-center justify-center w-full mb-4">
               <div className="flex flex-col">
                 <Avatar className="w-36 h-36 md:w-48 md:h-48">
-                  <AvatarImage src="https://github.com/shadcn.png" />
+                  <AvatarImage src="/icon-384x384.png" />
                   <AvatarFallback>U</AvatarFallback>
                 </Avatar>
               </div>

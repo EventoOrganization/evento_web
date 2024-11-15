@@ -38,9 +38,7 @@ export const startPrivateChat = async (
         lastMessage: "No messages yet",
         initialMedia: [
           {
-            url:
-              conversation.reciverId?.profileImage ||
-              "https://github.com/shadcn.png",
+            url: conversation.reciverId?.profileImage || "/icon-384x384.png",
           },
         ],
       };

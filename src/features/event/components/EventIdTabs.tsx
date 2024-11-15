@@ -194,7 +194,7 @@ const EventIdTabs = ({ evento }: { evento?: EventType }) => {
               ) : (
                 <Avatar>
                   <AvatarImage
-                    src={"https://github.com/shadcn.png"}
+                    src={"/icon-384x384.png"}
                     className="rounded-full w-10 h-10"
                   />
                   <AvatarFallback>CN</AvatarFallback>
