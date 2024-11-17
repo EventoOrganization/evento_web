@@ -7,7 +7,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useEventStore } from "@/store/useEventStore";
 import { timeZonesMap } from "@/utils/timezones";
+import { useEffect, useState } from "react";
 import { handleFieldChange } from "../eventActions";
 
 interface SelectTimeZoneProps {
@@ -21,11 +23,15 @@ const SelectTimeZone = ({
   setSelectedTimeZone,
   editMode,
 }: SelectTimeZoneProps) => {
-  // Trouver le label correspondant à l'identifiant stocké
-  const currentLabel =
-    timeZonesMap.find((tz) => tz.value === selectedTimeZone)?.label ||
-    "Choose your UTC";
-
+  const [currentLabel, setCurrentLabel] = useState("Timezone");
+  const eventoStore = useEventStore();
+  useEffect(() => {
+    setCurrentLabel(
+      eventoStore.timeZone ||
+        timeZonesMap.find((tz) => tz.value === selectedTimeZone)?.label ||
+        "Timezone",
+    );
+  }, []);
   return (
     <>
       <Label htmlFor="timeZoneSelect" className="sr-only">
