@@ -126,8 +126,8 @@ const DiscoverEventPreview = ({
                 </span>
               </Button>
               <p className="whitespace-nowrap">
-                {event?.details?.startTime} {event?.detail?.endTime && "-"}{" "}
-                {event?.details?.endTime}
+                {event?.details?.startTime}{" "}
+                {event?.details?.endTime ? ` - ${event?.details?.endTime}` : ""}
               </p>
             </div>
             <Link href={event?.details?.URLlink} target="_blank">

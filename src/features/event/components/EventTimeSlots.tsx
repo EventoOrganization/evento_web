@@ -40,7 +40,7 @@ const EventTimeSlots: React.FC<Props> = ({ event }) => {
 
     return `${formattedDate}\n${startTime} - ${endTime}`;
   };
-
+  console.log("event", event);
   return (
     <div>
       {event?.details?.timeSlots && event?.details?.timeSlots?.length > 1 ? (
@@ -53,7 +53,13 @@ const EventTimeSlots: React.FC<Props> = ({ event }) => {
           ))}
         </ul>
       ) : (
-        <p>{renderDate && renderDate(event)}</p>
+        <div className="flex justify-between gap-4">
+          <p>{renderDate && renderDate(event)}</p>
+          <p className="whitespace-nowrap">
+            {event?.details?.startTime}
+            {event?.details?.endTime ? ` - ${event?.details?.endTime}` : ""}
+          </p>
+        </div>
       )}
     </div>
   );
