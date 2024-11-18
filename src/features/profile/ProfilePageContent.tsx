@@ -14,7 +14,7 @@ export default function ProfilePageContent() {
   const { userInfo, events } = useGlobalStore((state) => state);
   useEffect(() => {
     if (!isMounted) setIsMounted(true);
-  }, []);
+  }, [isMounted]);
 
   const upcomingFilteredEvents = useMemo(() => {
     return events.filter((event) => event.isGoing || event.isFavourite);

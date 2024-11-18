@@ -85,8 +85,6 @@ const DiscoverPageContent = () => {
     selectedTab,
     events,
     location,
-    events,
-    events,
     interests,
     users,
     startDate,
