@@ -59,26 +59,25 @@ const DiscoverPageContent = () => {
   const [toggleSearch, setToggleSearch] = useState(false);
   const [SeeMoreCount, setSeeMoreCount] = useState<number>(10);
   const [filteredEvents, setFilteredEvents] = useState<EventType[]>([]);
-
   useEffect(() => {
-    if (!isHydrated) setIsHydrated(true);
-  }, []);
-
+    if (!isHydrated && events) {
+      setIsHydrated(true);
+    }
+  }, [events]);
   useEffect(() => {
     if (isHydrated && events && events.length > 0) {
       const filteredEvents = filterEvents(
-        events,
-        selectedInterests,
-        searchText,
-        selectedTab,
-        location,
-        startDate,
-        endDate,
+        events || [],
+        selectedInterests || [],
+        searchText || "",
+        selectedTab || "All events",
+        location || null,
+        startDate || null,
+        endDate || null,
       );
       setFilteredEvents(filteredEvents);
     }
   }, [
-    isHydrated,
     selectedInterests,
     searchText,
     selectedEvent,

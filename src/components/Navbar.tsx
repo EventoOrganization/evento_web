@@ -14,17 +14,13 @@ export default function NavbarApp() {
   const pathname = usePathname();
   const { activeConversation } = useSocket();
   const [isVisible, setIsVisible] = useState(true);
-
   useEffect(() => {
-    if (activeConversation) {
-      setIsVisible(false);
-    } else {
-      setIsVisible(true);
-    }
+    setIsVisible(!activeConversation);
   }, [activeConversation]);
 
   return (
     <nav
+      key={pathname}
       className={cn(
         "fixed w-full bg-background z-20 h-11 md:h-20 flex border justify-evenly md:min-w-72 md:py-4 items-center left-1/2 bottom-6 -translate-x-1/2 rounded-lg shadow max-w-80 md:w-full md:max-w-2xl",
         "transition-all duration-500 ease-in-out",

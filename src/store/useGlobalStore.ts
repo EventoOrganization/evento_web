@@ -50,26 +50,28 @@ interface GlobalStoreState {
   // Permission checker
 }
 const isSafariOrIOS = (): boolean => {
-  const navigatorExtended = navigator as NavigatorExtended;
+  // Vérifier si le code s'exécute côté client
+  if (typeof window === "undefined" || typeof navigator === "undefined") {
+    return false;
+  }
 
+  const navigatorExtended = navigator as NavigatorExtended;
   if (navigatorExtended.userAgentData) {
     const brands = navigatorExtended.userAgentData.brands.map((brand) =>
       brand.brand.toLowerCase(),
     );
-    const isSafari = brands.includes("safari");
-    const isIOS = /iphone|ipad|ipod/.test(navigator.userAgent.toLowerCase());
-    return isSafari || isIOS;
-  } else {
-    const userAgent = navigator.userAgent.toLowerCase();
-    const isSafari =
-      userAgent.includes("safari") && !userAgent.includes("chrome");
-    const isIOS = /iphone|ipad|ipod/.test(userAgent);
-    return isSafari || isIOS;
+    return brands.includes("apple");
   }
+
+  return (
+    /Safari/.test(navigator.userAgent) &&
+    /iPhone|iPad|iPod/.test(navigator.platform)
+  );
 };
 
 // Détecter si le navigateur est Safari ou iOS
-const shouldPersist = !isSafariOrIOS();
+const shouldPersist = typeof window !== "undefined" && isSafariOrIOS();
+
 // Fonction pour vérifier si le sessionStorage est disponible
 const isSessionStorageAvailable = () => {
   try {
@@ -104,7 +106,7 @@ const customStorage = {
 };
 
 export const useGlobalStore = create<GlobalStoreState>()(
-  !shouldPersist
+  typeof window !== "undefined" && !shouldPersist
     ? (set, get) => ({
         userInfo: null,
         interests: [],
