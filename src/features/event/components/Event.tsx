@@ -54,6 +54,7 @@ const Event = ({ className, event }: { className?: string; event?: any }) => {
               <div className="flex flex-wrap overflow-hidden">
                 <h4 className="truncate text-sm md:text-base">
                   {(event &&
+                    event?.user?.username &&
                     event?.user.username.charAt(0).toUpperCase() +
                       event?.user.username.slice(1)) ||
                     ""}
