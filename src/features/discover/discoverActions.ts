@@ -43,10 +43,14 @@ export const filterEvents = (
           }) ?? false
         );
       });
-
     const matchesSearchText =
       event.title?.toLowerCase().includes(searchLower) ||
       event.details?.description?.toLowerCase().includes(searchLower);
+    const matchLocation =
+      searchText &&
+      event.details?.location?.toLowerCase().includes(searchLower);
+
+    const matchesTextOrLocation = matchesSearchText || matchLocation;
     const eventStartDate = event.details?.date
       ? new Date(event.details.date)
       : null;
@@ -76,7 +80,6 @@ export const filterEvents = (
         typeof endDay === "number" &&
         eventStartDay <= endDay &&
         eventEndDay >= startDay);
-
     const isNearMe =
       selectedTab === "Near me" &&
       location &&
@@ -94,6 +97,8 @@ export const filterEvents = (
 
     const matchesTab = selectedTab === "All events" || isNearMe || isVirtual;
 
-    return matchesInterest && matchesSearchText && matchesDate && matchesTab;
+    return (
+      matchesInterest && matchesTextOrLocation && matchesDate && matchesTab
+    );
   });
 };

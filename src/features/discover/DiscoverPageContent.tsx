@@ -217,12 +217,6 @@ const DiscoverPageContent = () => {
             className="md:hidden self-end"
             onClick={() => setToggleSearch(!toggleSearch)}
           />
-          <div className="flex flex-col gap-2 md:p-4 py-0 pt-0 rounded bg-muted">
-            <MyGoogleMapComponent
-              location={location || { lat: 0, lng: 0 }}
-              setLocation={setLocation}
-            />
-          </div>
           <div className="relative flex items-center md:p-4">
             <Search
               className="w-6 h-6 absolute left-3 md:left-6 text-eventoPurpleDark"
@@ -234,6 +228,12 @@ const DiscoverPageContent = () => {
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
               className="pl-12 border-none bg-white py-2 rounded-lg w-full"
+            />
+          </div>
+          <div className="flex flex-col gap-2 md:p-4 py-0 pt-0 rounded bg-muted">
+            <MyGoogleMapComponent
+              location={location || { lat: 0, lng: 0 }}
+              setLocation={setLocation}
             />
           </div>
           <div className="md:p-4  gap-4 ">
