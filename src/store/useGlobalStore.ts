@@ -140,7 +140,6 @@ export const useGlobalStore = create<GlobalStoreState>()(
               ? { ...event, ...updatedEvent }
               : event,
           );
-          console.log("New events list:", newEvents); // Log la nouvelle liste d'événements
 
           return {
             events: newEvents,
@@ -355,7 +354,6 @@ export const useGlobalStore = create<GlobalStoreState>()(
 
             // Met à jour le store si de nouveaux événements sont trouvés
             if (JSON.stringify(currentEvents) !== JSON.stringify(newEvents)) {
-              console.log("New Events !", currentEvents, newEvents);
               set({ events: newEvents });
             }
           }

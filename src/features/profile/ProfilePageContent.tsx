@@ -4,7 +4,7 @@ import AuthModal from "@/features/auth/components/AuthModal";
 import StaticProfilePage from "@/features/profile/StaticProfilePage";
 import UserProfile from "@/features/profile/UserProfile";
 import { useGlobalStore } from "@/store/useGlobalStore";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 export default function ProfilePageContent() {
   const session = useSession();
@@ -13,14 +13,13 @@ export default function ProfilePageContent() {
   const globalStore = useGlobalStore();
   const { userInfo, events } = useGlobalStore((state) => state);
   useEffect(() => {
-    setIsMounted(true);
+    if (!isMounted) setIsMounted(true);
   }, []);
-  const upcomingFilteredEvents = events.filter(
-    (event) => event.isGoing || event.isFavourite,
-  );
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
+
+  const upcomingFilteredEvents = useMemo(() => {
+    return events.filter((event) => event.isGoing || event.isFavourite);
+  }, [events]);
+
   return (
     <>
       {isMounted && session.isAuthenticated ? (

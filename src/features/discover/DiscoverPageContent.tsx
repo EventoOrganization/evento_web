@@ -54,21 +54,18 @@ const DiscoverPageContent = () => {
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [selectedTab, setSelectedTab] = useState("All events");
   const [location, setLocation] = useState<Location | null>(null);
-  const [filteredEvents, setFilteredEvents] = useState<EventType[]>(
-    events || [],
-  );
-  const [isPending, setIsPending] = useState(false);
   const session = useSession();
   const [isHydrated, setIsHydrated] = useState(false);
   const [toggleSearch, setToggleSearch] = useState(false);
   const [SeeMoreCount, setSeeMoreCount] = useState<number>(10);
-  // Wait until the client has fully hydrated to prevent SSR mismatches
+  const [filteredEvents, setFilteredEvents] = useState<EventType[]>([]);
+
   useEffect(() => {
-    setIsHydrated(true);
-    setIsPending(false);
+    if (!isHydrated) setIsHydrated(true);
   }, []);
+
   useEffect(() => {
-    if (isHydrated && events?.length > 0) {
+    if (isHydrated && events && events.length > 0) {
       const filteredEvents = filterEvents(
         events,
         selectedInterests,
@@ -84,37 +81,6 @@ const DiscoverPageContent = () => {
     isHydrated,
     selectedInterests,
     searchText,
-    selectedTab,
-    events,
-    location,
-    startDate,
-    endDate,
-  ]);
-
-  const handleInterestToggle = (interest: InterestType) => {
-    setSelectedInterests((prev) =>
-      prev.some((i) => i._id === interest._id)
-        ? prev.filter((i) => i._id !== interest._id)
-        : [...prev, interest],
-    );
-  };
-
-  useEffect(() => {
-    if (events && events.length > 0) {
-      const filteredEvents = filterEvents(
-        events,
-        selectedInterests,
-        searchText,
-        selectedTab,
-        location,
-        startDate,
-        endDate,
-      );
-      setFilteredEvents(filteredEvents);
-    }
-  }, [
-    selectedInterests,
-    searchText,
     selectedEvent,
     selectedTab,
     events,
@@ -126,10 +92,22 @@ const DiscoverPageContent = () => {
     startDate,
     endDate,
   ]);
-
   if (!isHydrated) {
-    return null;
+    return (
+      <Section>
+        <Loader />
+      </Section>
+    );
   }
+
+  const handleInterestToggle = (interest: InterestType) => {
+    setSelectedInterests((prev) =>
+      prev.some((i) => i._id === interest._id)
+        ? prev.filter((i) => i._id !== interest._id)
+        : [...prev, interest],
+    );
+  };
+
   const handleEventClick = (event: EventType) => {
     const storedEvent = events.find((ev) => ev._id === event._id);
     setSelectedEvent(storedEvent);
@@ -180,11 +158,7 @@ const DiscoverPageContent = () => {
               <MenuIcon onClick={() => setToggleSearch(!toggleSearch)} />
             </span>
           </li>
-          {isPending ? (
-            <div className="w-full h-96 rounded">
-              <Loader />
-            </div>
-          ) : filteredEvents.length > 0 ? (
+          {filteredEvents.length > 0 ? (
             filteredEvents.map((event) => (
               <li
                 key={event._id}
