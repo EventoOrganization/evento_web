@@ -1,18 +1,13 @@
 "use client";
-// import Hero from "@/features/home/Hero";
-// import HowItWorks from "@/features/home/HowItWorks";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
-export default function Home() {
-  const router = useRouter();
-  useEffect(() => {
-    router.push("https://join-evento-waitlist.squarespace.com");
-  }, []);
 
+import Hero from "@/features/home/Hero";
+import Tuto from "@/features/home/Tuto";
+
+export default function Home() {
   return (
     <>
-      {/* <Hero />
-      <HowItWorks /> */}
+      <Hero />
+      <Tuto />
     </>
   );
 }

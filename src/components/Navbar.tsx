@@ -17,9 +17,9 @@ export default function NavbarApp() {
 
   useEffect(() => {
     if (activeConversation) {
-      setIsVisible(false); // Masque la navbar quand il y a une conversation active
+      setIsVisible(false);
     } else {
-      setIsVisible(true); // Affiche la navbar si aucune conversation n'est active
+      setIsVisible(true);
     }
   }, [activeConversation]);
 
@@ -27,15 +27,11 @@ export default function NavbarApp() {
     <nav
       className={cn(
         "fixed w-full bg-background z-20 h-11 md:h-20 flex border justify-evenly md:min-w-72 md:py-4 items-center left-1/2 bottom-6 -translate-x-1/2 rounded-lg shadow max-w-80 md:w-full md:max-w-2xl",
-        "transition-all duration-500 ease-in-out", // Transition fluide sur la disparition/apparition
-        isVisible ? "opacity-100" : "opacity-0 pointer-events-none", // Opacité avec gestion des événements (clics)
+        "transition-all duration-500 ease-in-out",
+        isVisible ? "opacity-100" : "opacity-0 pointer-events-none",
       )}
     >
-      <Link
-        href="https://join-evento-waitlist.squarespace.com/evento-2"
-        // target="_blank"
-        className="relative group"
-      >
+      <Link href="/" className="relative group">
         <HomeIcon2 pathname={pathname === "/"} className="w-8 h-8" />
         <span className="hidden md:block absolute left-1/2 border shadow -translate-x-1/2 bottom-full mb-2 px-2 py-1 bg-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap overflow-hidden text-ellipsis w-max">
           Back to home

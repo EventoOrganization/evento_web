@@ -167,7 +167,7 @@ const EventIdTabs = ({ evento }: { evento?: EventType }) => {
   return (
     <>
       <StructuredData event={event} />
-      <div className="md:grid-cols-2 grid grid-cols-1 w-full">
+      <div className="md:grid-cols-2 grid grid-cols-1 w-full max-w-7xl mx-auto">
         {isAuthModalOpen && (
           <AuthModal onAuthSuccess={() => setIsAuthModalOpen(false)} />
         )}

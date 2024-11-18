@@ -1,4 +1,5 @@
 import ChatbotComponent from "@/components/ChatbotComponent";
+import Footer from "@/components/Footer";
 import Main from "@/components/layout/Main";
 import NavbarApp from "@/components/Navbar";
 import { Toaster } from "@/components/ui/toaster";
@@ -81,12 +82,9 @@ export default function RootLayout({
             <SocketProvider>
               <GlobalDataProvider>
                 <Toaster />
-                <Main
-                  className={cn(
-                    "pb-14 md:pb-28 px-0 lg:px-10 max-w-7xl mx-auto",
-                  )}
-                >
+                <Main className={cn("pb-14 md:pb-28")}>
                   {children}
+                  <Footer />
                   <ChatbotComponent />
                 </Main>
                 <NavbarApp />
