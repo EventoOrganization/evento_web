@@ -72,8 +72,9 @@ const isSafariOrIOS = (): boolean => {
 // Détecter si le navigateur est Safari ou iOS
 const shouldPersist = typeof window !== "undefined" && isSafariOrIOS();
 
-// Fonction pour vérifier si le sessionStorage est disponible
+const isClient = typeof window !== "undefined";
 const isSessionStorageAvailable = () => {
+  if (!isClient) return false;
   try {
     const testKey = "test";
     sessionStorage.setItem(testKey, "testValue");
