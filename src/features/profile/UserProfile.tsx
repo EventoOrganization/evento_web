@@ -28,17 +28,16 @@ enum ModalType {
 const UserProfile = ({
   profile,
   upcomingEvents,
-  pastEvents,
+  pastEventsHosted,
+  pastEventsGoing,
   hostingEvents,
-  pastHostedEvents,
 }: {
   profile?: UserType | null;
   upcomingEvents?: EventType[];
-  pastEvents?: EventType[];
   hostingEvents?: EventType[];
-  pastHostedEvents?: EventType[];
+  pastEventsGoing?: EventType[];
+  pastEventsHosted?: EventType[];
 }) => {
-  console.log("profile", profile);
   const router = useRouter();
   const pathname = usePathname();
   const [modalType, setModalType] = useState<ModalType | "">("");
@@ -248,18 +247,18 @@ const UserProfile = ({
             : "There are no events at the moment. Explore Evento and create or host an event easily."
         }
       />
-      {pastEvents && pastEvents?.length > 0 && (
+      {pastEventsGoing && pastEventsGoing?.length > 0 && (
         <EventSection
           title="Past Events Attended"
-          events={pastEvents}
+          events={pastEventsGoing}
           sectionStyle="flex flex-col items-start gap-4 p-0  lg: max-w-7xl"
           noEventsMessage="There are no events at the moment. Explore Evento and create or host an event easily."
         />
       )}
-      {pastHostedEvents && pastHostedEvents?.length > 0 && (
+      {pastEventsHosted && pastEventsHosted?.length > 0 && (
         <EventSection
           title="Past Events Hosted"
-          events={pastHostedEvents}
+          events={pastEventsHosted}
           sectionStyle="flex flex-col items-start gap-4 p-0  lg: max-w-7xl"
           noEventsMessage="There are no events at the moment. Explore Evento and create or host an event easily."
         />

@@ -16,6 +16,8 @@ export type UserType = {
   token?: string;
   profileImage?: string;
   eventsAttended?: number;
+  pastEventsGoing?: EventType[];
+  pastEventsHosted?: EventType[];
   matchingInterests?: number;
   followingUserIds?: string[];
   pwaSubscriptions?: PwaSubscriptionType[];

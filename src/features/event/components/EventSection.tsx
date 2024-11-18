@@ -40,7 +40,7 @@ const EventSection = ({
               href={title === "Events Hosting" ? "/create-event" : "/discover"}
             >
               {title === "Events Hosting"
-                ? "Create your first event !"
+                ? "Create your event !"
                 : "Find events you’ll love !"}
             </Link>
           </Button>
