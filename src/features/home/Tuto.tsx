@@ -59,7 +59,7 @@ const Tuto = () => {
             learn, and have fun!
           </p>
           <Button className="bg-evento-gradient text-white hover:opacity-80 py-8 md:text-xl w-fit self-center">
-            <Link href="/create-event">DISCOVER EVENTS</Link>
+            <Link href="/discover">DISCOVER EVENTS</Link>
           </Button>
         </div>
 
@@ -105,7 +105,7 @@ const Tuto = () => {
             events that resonate with you.
           </p>
           <Button className="bg-evento-gradient text-white hover:opacity-80 py-8 md:text-xl w-fit self-center">
-            <Link href="/create-event">CREATE A PROFILE</Link>
+            <Link href="/profile">CREATE A PROFILE</Link>
           </Button>
         </div>
       </Section>
