@@ -134,6 +134,7 @@ const UserProfile = ({
               <TruncatedText
                 className="px-0"
                 text={(profile && profile.bio && profile.bio) || ""}
+                expand
               />
               {profile && profile.URL && (
                 <li>
