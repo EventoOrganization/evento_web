@@ -17,11 +17,11 @@ const GlobalDataProvider: React.FC<{ children: React.ReactNode }> = ({
   } = useGlobalStore(); // Accès aux loaders et refreshers du store
   const { user, token } = useSession();
   // Fonction pour gérer le rafraîchissement des données
-  // const refreshData = () => {
-  //   refreshInterests();
-  //   refreshEvents(user || undefined);
-  //   refreshUsers(user?._id || "", token || "");
-  // };
+  const refreshData = () => {
+    refreshInterests();
+    refreshEvents(user || undefined);
+    refreshUsers(user?._id || "", token || "");
+  };
 
   useEffect(() => {
     loadInterests();
@@ -36,12 +36,12 @@ const GlobalDataProvider: React.FC<{ children: React.ReactNode }> = ({
 
     const handleVisibilityChange = () => {
       if (!document.hidden) {
-        // refreshData();
+        refreshData();
       }
     };
 
     const interval = setInterval(() => {
-      // refreshData();
+      refreshData();
     }, 30000);
 
     document.addEventListener("visibilitychange", handleVisibilityChange);
