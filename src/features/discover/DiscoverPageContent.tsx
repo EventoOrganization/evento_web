@@ -26,6 +26,7 @@ import { format, startOfDay } from "date-fns";
 import { enUS } from "date-fns/locale";
 import {
   Calendar as CalendarIcon,
+  ChevronDownIcon,
   MenuIcon,
   Search,
   XIcon,
@@ -60,6 +61,7 @@ const DiscoverPageContent = () => {
   const session = useSession();
   const [isHydrated, setIsHydrated] = useState(false);
   const [toggleSearch, setToggleSearch] = useState(false);
+  const [SeeMoreCount, setSeeMoreCount] = useState<number>(10);
   // Wait until the client has fully hydrated to prevent SSR mismatches
   useEffect(() => {
     setIsHydrated(true);
@@ -154,6 +156,10 @@ const DiscoverPageContent = () => {
     }
     setEndDate(date || null);
     setShowReset(true);
+  };
+  const handleSeeMore = () => {
+    setSeeMoreCount(SeeMoreCount + 10);
+    console.log("see more");
   };
   return (
     <>
@@ -322,39 +328,54 @@ const DiscoverPageContent = () => {
               {session.isAuthenticated ? (
                 <>
                   {/* 1. Utilisateurs qui vous suivent mais que vous ne suivez pas */}
-                  <h4 className="text-purple-600 font-bold">
-                    You may know them
-                  </h4>
-                  <ul className="space-y-2">
-                    {users
-                      .filter(
-                        (user) => !user.isIFollowingHim && user.isFollowingMe,
-                      )
-                      .map((user: UserType) => (
-                        <li key={user._id} className="flex justify-between">
-                          <UsersList user={user} />
-                        </li>
-                      ))}
-                  </ul>
+                  {users.filter(
+                    (user) => !user.isIFollowingHim && user.isFollowingMe,
+                  ).length > 0 && (
+                    <>
+                      <h4 className="text-purple-600 font-bold">
+                        You may know them
+                      </h4>
+                      <ul className="space-y-2">
+                        {users
+                          .filter(
+                            (user) =>
+                              !user.isIFollowingHim && user.isFollowingMe,
+                          )
+                          .map((user: UserType) => (
+                            <li key={user._id} className="flex justify-between">
+                              <UsersList user={user} />
+                            </li>
+                          ))}
+                      </ul>
+                    </>
+                  )}
 
                   {/* 2. Utilisateurs avec des intérêts communs */}
-                  <h4 className="text-purple-600 font-bold">
-                    They share your interests
-                  </h4>
-                  <ul className="space-y-2">
-                    {users
-                      .filter(
-                        (user) =>
-                          user.matchingInterests &&
-                          user.matchingInterests > 0 &&
-                          !user.isIFollowingHim,
-                      )
-                      .map((user: UserType) => (
-                        <li key={user._id} className="flex justify-between">
-                          <UsersList user={user} />
-                        </li>
-                      ))}
-                  </ul>
+                  {users.filter(
+                    (user) =>
+                      typeof user.matchingInterests === "number" &&
+                      user.matchingInterests > 0,
+                  ).length > 0 && (
+                    <>
+                      <h4 className="text-purple-600 font-bold">
+                        They share your interests
+                      </h4>
+                      <ul className="space-y-2">
+                        {users
+                          .filter(
+                            (user) =>
+                              user.matchingInterests &&
+                              user.matchingInterests > 0 &&
+                              !user.isIFollowingHim,
+                          )
+                          .map((user: UserType) => (
+                            <li key={user._id} className="flex justify-between">
+                              <UsersList user={user} />
+                            </li>
+                          ))}
+                      </ul>
+                    </>
+                  )}
 
                   {/* 3. Suggestions générales si aucune autre suggestion n'est disponible */}
                   {users.filter(
@@ -362,11 +383,9 @@ const DiscoverPageContent = () => {
                       !user.isIFollowingHim &&
                       !user.isFollowingMe &&
                       (!user.matchingInterests || user.matchingInterests === 0),
-                  ).length === 0 && (
+                  ).length > 0 && (
                     <>
-                      <h4 className="text-purple-600 font-bold">
-                        General Suggestions
-                      </h4>
+                      <h4 className="text-purple-600 font-bold">Other users</h4>
                       <ul className="space-y-2">
                         {users
                           .filter(
@@ -376,13 +395,19 @@ const DiscoverPageContent = () => {
                               (!user.matchingInterests ||
                                 user.matchingInterests === 0),
                           )
-                          .slice(0, 10) // Limiter à un maximum de 10 utilisateurs
+                          .slice(0, SeeMoreCount) // Limiter à un maximum de 10 utilisateurs
                           .map((user: UserType) => (
                             <li key={user._id} className="flex justify-between">
                               <UsersList user={user} />
                             </li>
                           ))}
                       </ul>
+                      <p
+                        className="text-sm text-blue-400 underline cursor-pointer flex gap-2"
+                        onClick={() => handleSeeMore()}
+                      >
+                        <ChevronDownIcon /> See more
+                      </p>
                     </>
                   )}
                 </>
