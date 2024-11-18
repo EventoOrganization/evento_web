@@ -107,7 +107,7 @@ const customStorage = {
 };
 
 export const useGlobalStore = create<GlobalStoreState>()(
-  typeof window !== "undefined" && !shouldPersist
+  typeof window !== "undefined" && shouldPersist
     ? (set, get) => ({
         userInfo: null,
         interests: [],
