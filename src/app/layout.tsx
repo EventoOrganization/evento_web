@@ -7,11 +7,13 @@ import GlobalDataProvider from "@/contexts/GlobalDataProvider";
 import PWAProvider from "@/contexts/PWAProvider";
 import { SessionProvider } from "@/contexts/SessionProvider";
 import { SocketProvider } from "@/contexts/SocketProvider";
+import GoogleAnalytics from "@/features/googleAnalitics/GoogleAnalytics";
 import { cn } from "@/lib/utils";
 import { getSessionSSR } from "@/utils/authUtilsSSR";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import ErrorBoundary from "@/components/ErrorBoundary";
 
 const inter = Inter({ subsets: ["latin"], display: "swap" });
 
@@ -72,24 +74,26 @@ export default function RootLayout({
         <link rel="canonical" href="https://evento-app.io" />
       </head>
       <body className={cn(inter.className, "relative bg-muted")}>
-        {/* <GoogleAnalytics /> */}
+        <GoogleAnalytics />
         <SessionProvider
           initialUser={session?.user}
           initialToken={session?.token}
         >
-          <PWAProvider>
-            <SocketProvider>
-              <GlobalDataProvider>
-                <Toaster />
-                <Main className={cn("pb-14 md:pb-28")}>
-                  {children}
-                  <Footer />
-                  <ChatbotComponent />
-                </Main>
-                <NavbarApp />
-              </GlobalDataProvider>
-            </SocketProvider>
-          </PWAProvider>
+          <ErrorBoundary>
+            <PWAProvider>
+              <SocketProvider>
+                <GlobalDataProvider>
+                  <Toaster />
+                  <Main className={cn("pb-14 md:pb-28")}>
+                    {children}
+                    <Footer />
+                    <ChatbotComponent />
+                  </Main>
+                  <NavbarApp />
+                </GlobalDataProvider>
+              </SocketProvider>
+            </PWAProvider>
+          </ErrorBoundary>
         </SessionProvider>
       </body>
     </html>
