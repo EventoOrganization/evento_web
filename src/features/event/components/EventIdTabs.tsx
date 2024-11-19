@@ -257,6 +257,7 @@ const EventIdTabs = ({ evento }: { evento?: EventType }) => {
               event={event}
               isAdmin={accessControl.isAdmin}
               isPrivate={accessControl.isPrivate}
+              setEvent={setEvent}
             />
           )}
           {selectedTab === "Settings" && (

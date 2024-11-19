@@ -22,12 +22,18 @@ import { useEffect, useState } from "react";
 import CSVImport from "./CSVImport";
 import EventAddTempGuest from "./EventAddTempGuest";
 type SelectedUser = UserType | TempUserType;
-const EventGuestModal = ({
+type EventGuestModalProps = {
+  onSave?: () => void;
+  event: EventType | undefined;
+  setEvent?: (event: EventType) => void;
+};
+type EventResponse = {
+  event: EventType;
+};
+const EventGuestModal: React.FC<EventGuestModalProps> = ({
   onSave,
   event,
-}: {
-  onSave?: () => void;
-  event?: EventType;
+  setEvent,
 }) => {
   const { id: eventId } = useParams();
   const [isOpen, setIsOpen] = useState(false);
@@ -35,6 +41,9 @@ const EventGuestModal = ({
   const { users: allUsers } = useGlobalStore((state) => ({
     users: state.users as UserType[],
   }));
+  const [excludedUserIds, setExcludedUserIds] = useState<Set<string>>(
+    new Set(),
+  );
   const [currentSelectedUsers, setCurrentSelectedUsers] = useState<
     SelectedUser[]
   >([]);
@@ -86,7 +95,7 @@ const EventGuestModal = ({
       user,
     };
     try {
-      const response = await fetchData(
+      const response = await fetchData<EventResponse>(
         `/events/addGuests/${eventId}`,
         HttpMethod.PATCH,
         updateData,
@@ -94,6 +103,15 @@ const EventGuestModal = ({
       );
 
       if (response.ok) {
+        const updatedEvent = response.data?.event as EventType | undefined;
+        if (setEvent && updatedEvent && event) {
+          setEvent({
+            ...event,
+            guests: updatedEvent.guests,
+            tempGuests: updatedEvent.tempGuests,
+          });
+        }
+
         toast({
           description: "Guests and preference updated successfully!",
           className: "bg-evento-gradient text-white",
@@ -121,48 +139,20 @@ const EventGuestModal = ({
     if (onSave) onSave();
   };
 
-  const [excludedUserIds, setExcludedUserIds] = useState<Set<string>>(
-    new Set(),
-  );
-
   useEffect(() => {
-    if (event) {
-      const attendeeIds = event?.attendees
-        ? event.attendees.map((a) => a._id)
-        : [];
-      const favouriteIds = event?.favouritees
-        ? event.favouritees.map((f) => f._id)
-        : [];
-      const refusedIds = event?.refused ? event.refused.map((r) => r._id) : [];
-      const requestedIds = event?.requested
-        ? event.requested.map((r) => r._id)
-        : [];
-      const coHostIds = event?.coHosts ? event.coHosts.map((c) => c._id) : [];
-      const guestIds = event?.guests ? event.guests.map((g) => g._id) : [];
+    if (!event || !user) return;
 
-      const allExcludedIds = new Set([
-        ...attendeeIds,
-        ...favouriteIds,
-        ...refusedIds,
-        ...requestedIds,
-        ...coHostIds,
-        ...guestIds,
-      ]);
+    const allExcludedIds = new Set<string>([
+      ...(event.attendees?.map((a) => a._id) || []),
+      ...(event.favouritees?.map((f) => f._id) || []),
+      ...(event.refused?.map((r) => r._id) || []),
+      ...(event.requested?.map((r) => r._id) || []),
+      ...(event.coHosts?.map((c) => c._id) || []),
+      ...(event.guests?.map((g) => g._id) || []),
+      user._id,
+    ]);
 
-      if (user) {
-        allExcludedIds.add(user._id);
-      }
-
-      setExcludedUserIds(allExcludedIds);
-
-      // console.log("attendeeIds", attendeeIds);
-      // console.log("favouriteIds", favouriteIds);
-      // console.log("refusedIds", refusedIds);
-      // console.log("requestedIds", requestedIds);
-      // console.log("coHostIds", coHostIds);
-      // console.log("guestIds", guestIds);
-      // console.log("allExcludedIds", Array.from(allExcludedIds));
-    }
+    setExcludedUserIds(allExcludedIds);
   }, [event, user]);
 
   const filteredUsers = (allUsers ?? []).filter(
@@ -170,11 +160,10 @@ const EventGuestModal = ({
       !excludedUserIds.has(user._id) &&
       !currentSelectedUsers.some((selected) => selected._id === user._id) &&
       !event?.guests?.some((guest) => guest._id === user._id) &&
-      user.username &&
-      user.username.toLowerCase() !== "anonymous" &&
-      ((user.username && user.username.toLowerCase().includes(filter)) ||
-        (user.firstName && user.firstName.toLowerCase().includes(filter)) ||
-        (user.lastName && user.lastName.toLowerCase().includes(filter))),
+      user.username?.toLowerCase() !== "anonymous" &&
+      [user.username, user.firstName, user.lastName]
+        .filter(Boolean)
+        .some((field) => field?.toLowerCase().includes(filter)),
   );
 
   // console.log("filteredUsers", filteredUsers);

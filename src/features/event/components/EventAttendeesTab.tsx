@@ -6,30 +6,32 @@ import { EventType } from "@/types/EventType";
 import EventGuestModal from "./EventGuestModal";
 
 interface EventAttendeesTabProps {
-  event: EventType;
+  event: EventType | undefined;
   isAdmin?: boolean;
   isPrivate?: boolean;
+  setEvent?: (event: EventType) => void;
 }
 
 const EventAttendeesTab: React.FC<EventAttendeesTabProps> = ({
   event,
   isAdmin,
   isPrivate,
+  setEvent,
 }) => {
   // console.log("eventAttendeesTab", event);
 
   const goingIds = new Set(
-    (event.attendees || []).map((user) => user._id!).filter((id) => id),
+    (event?.attendees || []).map((user) => user._id!).filter((id) => id),
   );
   const favouritedIds = new Set(
-    (event.favouritees || []).map((user) => user._id!).filter((id) => id),
+    (event?.favouritees || []).map((user) => user._id!).filter((id) => id),
   );
   const refusedIds = new Set(
-    (event.refused || []).map((user) => user._id!).filter((id) => id),
+    (event?.refused || []).map((user) => user._id!).filter((id) => id),
   );
   const invitedUsers = [
-    ...(event.guests || []),
-    ...(event.tempGuests || []),
+    ...(event?.guests || []),
+    ...(event?.tempGuests || []),
   ].filter(
     (user) =>
       user._id &&
@@ -37,32 +39,32 @@ const EventAttendeesTab: React.FC<EventAttendeesTabProps> = ({
       !favouritedIds.has(user._id) &&
       !refusedIds.has(user._id),
   );
-  console.log("event", event);
   return (
     <div className="w-full">
       {isAdmin && (
         <div className="flex items-center justify-between">
           <GuestAllowFriendToggle event={event} />
-          <EventGuestModal event={event} />
+          <EventGuestModal event={event} setEvent={setEvent} />
         </div>
       )}
       <CollapsibleList
         isAdmin={isAdmin}
         title="Going"
-        count={event.attendees?.length || 0}
-        users={event.attendees || []}
+        count={event?.attendees?.length || 0}
+        users={event?.attendees || []}
       />
       <CollapsibleList
         title="Invited"
         count={invitedUsers?.length || 0}
         users={invitedUsers || []}
         event={event}
+        setEvent={setEvent}
       />
       {isPrivate && (
         <CollapsibleList
           title="Refused"
-          count={event.refused?.length || 0}
-          users={event.refused || []}
+          count={event?.refused?.length || 0}
+          users={event?.refused || []}
         />
       )}
       {isAdmin && (

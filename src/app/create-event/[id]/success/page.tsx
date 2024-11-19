@@ -145,28 +145,19 @@ const EventSuccessPage = () => {
         updateData,
         token,
       );
-      console.log("response", response);
       if (response.ok) {
-        // const updatedEvent = response?.data?.event;
-        // Mettez à jour localement les invités combinés
         const updatedEvent = response.data?.event;
-        console.log("updatedEvent", updatedEvent);
-        // Mettez à jour les invités avec les données du backend
         setEvent({
           ...event!,
-          guests: updatedEvent?.guests, // Données réelles retournées
-          tempGuests: updatedEvent?.tempGuests, // Données réelles retournées
+          guests: updatedEvent?.guests,
+          tempGuests: updatedEvent?.tempGuests,
         });
         toast({
           description: "Guests updated successfully!",
           className: "bg-evento-gradient text-white",
           duration: 3000,
         });
-        // useGlobalStore.getState().updateEvent({
-        //   _id: eventId,
-        //   guests: updatedEvent?.guests || [],
-        //   tempGuests: updatedEvent?.tempGuests || [],
-        // });
+
         setCurrentSelectedUsers([]);
       } else {
         console.error("Error updating guests", response.error);

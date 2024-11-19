@@ -7,7 +7,7 @@ import { useState } from "react";
 import { Switch } from "./ui/togglerbtn";
 
 type Props = {
-  event: EventType | null;
+  event?: EventType | undefined;
   onStatusChange?: (status: boolean) => void;
 };
 
