@@ -39,33 +39,29 @@ const ProfileEditContent = () => {
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
     libraries,
   });
-  useEffect(() => {
-    if (session.isAuthenticated) {
-      const loadUser = async (token: string) => {
-        try {
-          const userRes = await fetchData(
-            `/profile/getLoggedUserProfile`,
-            HttpMethod.GET,
-            null,
-            token,
-          );
-          if (userRes && !userRes.error) {
-            setUserInfo(userRes.data as UserType);
-          } else {
-            console.error(
-              "Erreur lors du fetch de l'utilisateur:",
-              userRes?.error,
-            );
-          }
-        } catch (error) {
-          console.error("Erreur lors du fetch de l'utilisateur:", error);
-        }
-      };
-      if (session.token) {
-        loadUser(session.token);
+  const loadUser = async (token: string) => {
+    try {
+      const userRes = await fetchData(
+        `/profile/getLoggedUserProfile`,
+        HttpMethod.GET,
+        null,
+        token,
+      );
+      if (userRes && !userRes.error && userRes.data) {
+        setUserInfo(userRes.data as UserType);
+      } else {
+        console.error("Erreur lors du fetch de l'utilisateur:", userRes?.error);
       }
+    } catch (error) {
+      console.error("Erreur lors du fetch de l'utilisateur:", error);
     }
-  }, [session]);
+  };
+
+  useEffect(() => {
+    if (session.isAuthenticated && session.token) {
+      loadUser(session.token);
+    }
+  }, [session.isAuthenticated, session.token]);
   // Initialize form state based on userInfo
   const [formData, setFormData] = useState({
     username: userInfo?.username || "",
