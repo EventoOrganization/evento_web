@@ -43,7 +43,7 @@ const UserProfile = ({
   // const { user, token } = useSession();
   useEffect(() => {
     setIsMounted(true);
-  });
+  }, []);
 
   const platformIcons: Record<string, JSX.Element> = {
     linkedin: <LinkedinIcon />,
@@ -78,7 +78,7 @@ const UserProfile = ({
               <div className="flex items-center w-full justify-between md:pr-20">
                 {profile?.profileImage ? (
                   <Image
-                    src={profile?.profileImage}
+                    src={profile?.profileImage || "/icon-512x512.png"}
                     alt="user image"
                     width={500}
                     height={500}
@@ -199,7 +199,7 @@ const UserProfile = ({
                     {profile?.socialLinks?.length > 0 && (
                       <ul className="flex md:flex-col gap-4">
                         {profile.socialLinks.map((link, index) => (
-                          <li key={index} className="">
+                          <li key={`${index}-${link}`} className="">
                             <Link
                               className=""
                               href={link.url}
