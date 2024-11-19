@@ -244,16 +244,11 @@ const UsersList = ({
             </Button>
           )
         )}
-        {event?.user._id === session?.user?._id &&
-          (user.status === "tempGuest" || user.status === "guest") && (
-            <Button
-              variant="outline"
-              onClick={handleUnGuest}
-              disabled={loading}
-            >
-              {loading ? "Processing..." : <XIcon />}
-            </Button>
-          )}
+        {event?.user._id === session?.user?._id && (
+          <Button variant="outline" onClick={handleUnGuest} disabled={loading}>
+            {loading ? "Processing..." : <XIcon />}
+          </Button>
+        )}
         {title === "Requested to Join" && isAdmin && (
           <Button onClick={handleAcceptRequest} disabled={loading}>
             {loading ? "Processing..." : "Accept"}
