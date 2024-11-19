@@ -4,9 +4,9 @@ import MapPinIcon2 from "@/components/icons/MappPinIcon2";
 import TruncatedText from "@/components/TruncatedText";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { useSession } from "@/contexts/SessionProvider";
 import { cn } from "@/lib/utils";
 import { useEventStore } from "@/store/useEventStore";
-import { useGlobalStore } from "@/store/useGlobalStore";
 import Image from "next/image";
 import CreateEventCarousel from "./CreateEventCarousel";
 const CreateEventPreview = ({
@@ -19,8 +19,7 @@ const CreateEventPreview = ({
   handleRemoveInterest?: (interestId: string) => void;
 }) => {
   const eventStore = useEventStore();
-  const { userInfo } = useGlobalStore();
-
+  const { user } = useSession();
   const renderDate = () => {
     const startDate = eventStore.date || new Date().toISOString();
     const endDate = eventStore.endDate || startDate;
@@ -82,9 +81,9 @@ const CreateEventPreview = ({
           <div className="flex flex-col w-full">
             <div className="flex justify-between items-center mb-4">
               <div className="flex gap-2 items-center">
-                {userInfo?.profileImage ? (
+                {user && user?.profileImage ? (
                   <Image
-                    src={userInfo?.profileImage || ""}
+                    src={user?.profileImage || ""}
                     alt="user image"
                     width={30}
                     height={30}
@@ -100,9 +99,9 @@ const CreateEventPreview = ({
                   </Avatar>
                 )}
                 <h4 className="ml-2">
-                  {(userInfo &&
-                    userInfo?.username.charAt(0).toUpperCase() +
-                      userInfo?.username.slice(1)) ||
+                  {(eventStore &&
+                    eventStore?.username.charAt(0).toUpperCase() +
+                      eventStore?.username.slice(1)) ||
                     "Username"}
                 </h4>
               </div>
