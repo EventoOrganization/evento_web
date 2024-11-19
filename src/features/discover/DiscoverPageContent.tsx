@@ -83,20 +83,13 @@ const DiscoverPageContent = () => {
     selectedEvent,
     selectedTab,
     events,
-    location,
-    interests,
-    users,
+    // location,
+    // interests,
+    // users,
     startDate,
     endDate,
     isHydrated,
   ]);
-  if (!isHydrated) {
-    return (
-      <Section>
-        <Loader />
-      </Section>
-    );
-  }
 
   const handleInterestToggle = (interest: InterestType) => {
     setSelectedInterests((prev) =>
@@ -139,281 +132,303 @@ const DiscoverPageContent = () => {
   };
   return (
     <>
-      <div className="relative flex justify-center items-center mt-10 text-eventoPurpleLight gap-2">
-        <h2 className="animate-slideInLeft font-black opacity-0">
-          <span>Discover Events</span>
-        </h2>
-      </div>
-      <Section className="flex flex-col-reverse md:grid grid-cols-2 lg:grid-cols-3  md:gap-0 items-start justify-end px-0">
-        <ul className="w-full space-y-6 lg:col-span-2 ">
-          <li className="flex items-center sticky top-0 z-20 bg-muted p-2 md:p-4 flex-col gap-2 border-b shadow md:shadow-none md:border-none">
-            <TabSelector
-              onChange={setSelectedTab}
-              tabs={["All events", "Near me", "Virtual"]}
-            />
-            <span className="flex gap-2 md:hidden self-end">
-              Show filters
-              <MenuIcon onClick={() => setToggleSearch(!toggleSearch)} />
-            </span>
-          </li>
-          {filteredEvents.length > 0 ? (
-            filteredEvents.map((event) => (
-              <li
-                key={event._id}
-                onClick={() => handleEventClick(event)}
-                className="px-2 md:px-4"
-              >
-                <Event event={event} />
+      {!isHydrated ? (
+        <Loader />
+      ) : (
+        <>
+          {" "}
+          <div className="relative flex justify-center items-center mt-10 text-eventoPurpleLight gap-2">
+            <h2 className="animate-slideInLeft font-black opacity-0">
+              <span>Discover Events</span>
+            </h2>
+          </div>
+          <Section className="flex flex-col-reverse md:grid grid-cols-2 lg:grid-cols-3  md:gap-0 items-start justify-end px-0">
+            <ul className="w-full space-y-6 lg:col-span-2 ">
+              <li className="flex items-center sticky top-0 z-20 bg-muted p-2 md:p-4 flex-col gap-2 border-b shadow md:shadow-none md:border-none">
+                <TabSelector
+                  onChange={setSelectedTab}
+                  tabs={["All events", "Near me", "Virtual"]}
+                />
+                <span className="flex gap-2 md:hidden self-end">
+                  Show filters
+                  <MenuIcon onClick={() => setToggleSearch(!toggleSearch)} />
+                </span>
               </li>
-            ))
-          ) : (
-            <li className="text-muted-foreground text-center space-y-4">
-              <p>No events found.</p>
-              <Button asChild className="bg-evento-gradient hover:opacity-80">
-                <Link href="/create-event">Create one today!</Link>
-              </Button>
-            </li>
-          )}
-        </ul>
-        <div
-          className={cn(
-            "flex flex-col gap-2 w-full transition-all duration-300 bg-muted md:translate-x-0 md:max-h-fit md:opacity-100 px-4",
-            {
-              "translate-x-[-100%] h-0 opacity-0": !toggleSearch,
-              "translate-x-0 max-h-fit sticky opacity-100 z-20 top-0 pt-5":
-                toggleSearch,
-            },
-          )}
-        >
-          <XIcon
-            className="md:hidden self-end"
-            onClick={() => setToggleSearch(!toggleSearch)}
-          />
-          <div className="relative flex items-center md:p-4">
-            <Search
-              className="w-6 h-6 absolute left-3 md:left-6 text-eventoPurpleDark"
-              strokeWidth={2.5}
-            />
-            <Input
-              type="text"
-              placeholder="Search for events or organisers ..."
-              value={searchText}
-              onChange={(e) => setSearchText(e.target.value)}
-              className="pl-12 border-none bg-white py-2 rounded-lg w-full"
-            />
-          </div>
-          <div className="flex flex-col gap-2 md:p-4 py-0 pt-0 rounded bg-muted">
-            <MyGoogleMapComponent
-              location={location || { lat: 0, lng: 0 }}
-              setLocation={setLocation}
-            />
-          </div>
-          <div className="md:p-4  gap-4 ">
-            <div className="flex justify-between items-center ">
-              <h4 className=" text-purple-600 font-bold">Select Date</h4>
-              {showReset && (
-                <button
-                  onClick={resetDate}
-                  className=" text-sm hover:underline"
-                >
-                  Reset
-                </button>
-              )}
-            </div>
-            <div className="relative flex flex-col gap-4">
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className="w-full justify-start text-left font-normal"
+              {filteredEvents.length > 0 ? (
+                filteredEvents.map((event) => (
+                  <li
+                    key={event._id}
+                    onClick={() => handleEventClick(event)}
+                    className="px-2 md:px-4"
                   >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {startDate ? (
-                      format(startDate, "dd/MM/yyyy")
-                    ) : (
-                      <span>Select Start Date</span>
-                    )}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0">
-                  <Calendar
-                    mode="single"
-                    selected={startDate || today}
-                    onSelect={handleStartDateChange}
-                    initialFocus
-                    fromDate={today}
-                    locale={enUS}
-                  />
-                </PopoverContent>
-              </Popover>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className="w-full justify-start text-left font-normal"
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {endDate ? (
-                      format(endDate, "dd/MM/yyyy")
-                    ) : (
-                      <span>Select End Date</span>
-                    )}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0">
-                  <Calendar
-                    mode="single"
-                    selected={endDate || today}
-                    onSelect={handleEndDateChange}
-                    initialFocus
-                    fromDate={startDate || today}
-                    locale={enUS}
-                  />
-                </PopoverContent>
-              </Popover>
-            </div>
-          </div>
-          <div className="p-4">
-            <h4 className="text-purple-600 font-bold">Select Interests</h4>
-            <ul className="flex flex-wrap gap-4 mt-4">
-              {interests.map((interest) => (
-                <Button
-                  key={interest._id}
-                  asChild
-                  className={cn(
-                    "cursor-pointer bg-gray-200 text-black hover:bg-eventoPurpleLight/60",
-                    {
-                      "bg-evento-gradient text-white":
-                        selectedInterests.includes(interest),
-                    },
-                  )}
-                >
-                  <li onClick={() => handleInterestToggle(interest)}>
-                    {interest.name}
+                    <Event event={event} />
                   </li>
-                </Button>
-              ))}
-            </ul>
-          </div>{" "}
-          <div className="p-4 hidden md:block">
-            <div className="space-y-4  mb-20">
-              {session.isAuthenticated ? (
-                <>
-                  {/* 1. Utilisateurs qui vous suivent mais que vous ne suivez pas */}
-                  {users.filter(
-                    (user) => !user.isIFollowingHim && user.isFollowingMe,
-                  ).length > 0 && (
-                    <>
-                      <h4 className="text-purple-600 font-bold">
-                        You may know them
-                      </h4>
-                      <ul className="space-y-2">
-                        {users
-                          .filter(
-                            (user) =>
-                              !user.isIFollowingHim && user.isFollowingMe,
-                          )
-                          .map((user: UserType) => (
-                            <li key={user._id} className="flex justify-between">
-                              <UsersList user={user} />
-                            </li>
-                          ))}
-                      </ul>
-                    </>
-                  )}
-
-                  {/* 2. Utilisateurs avec des intérêts communs */}
-                  {users.filter(
-                    (user) =>
-                      typeof user.matchingInterests === "number" &&
-                      user.matchingInterests > 0,
-                  ).length > 0 && (
-                    <>
-                      <h4 className="text-purple-600 font-bold">
-                        They share your interests
-                      </h4>
-                      <ul className="space-y-2">
-                        {users
-                          .filter(
-                            (user) =>
-                              user.matchingInterests &&
-                              user.matchingInterests > 0 &&
-                              !user.isIFollowingHim,
-                          )
-                          .map((user: UserType) => (
-                            <li key={user._id} className="flex justify-between">
-                              <UsersList user={user} />
-                            </li>
-                          ))}
-                      </ul>
-                    </>
-                  )}
-
-                  {/* 3. Suggestions générales si aucune autre suggestion n'est disponible */}
-                  {users.filter(
-                    (user) =>
-                      !user.isIFollowingHim &&
-                      !user.isFollowingMe &&
-                      (!user.matchingInterests || user.matchingInterests === 0),
-                  ).length > 0 && (
-                    <>
-                      <h4 className="text-purple-600 font-bold">Other users</h4>
-                      <ul className="space-y-2">
-                        {users
-                          .filter(
-                            (user) =>
-                              !user.isIFollowingHim &&
-                              !user.isFollowingMe &&
-                              (!user.matchingInterests ||
-                                user.matchingInterests === 0),
-                          )
-                          .slice(0, SeeMoreCount) // Limiter à un maximum de 10 utilisateurs
-                          .map((user: UserType) => (
-                            <li key={user._id} className="flex justify-between">
-                              <UsersList user={user} />
-                            </li>
-                          ))}
-                      </ul>
-                      <p
-                        className="text-sm text-blue-400 underline cursor-pointer flex gap-2"
-                        onClick={() => handleSeeMore()}
-                      >
-                        <ChevronDownIcon /> See more
-                      </p>
-                    </>
-                  )}
-                </>
+                ))
               ) : (
-                <>
-                  <h4 className="text-purple-600 font-bold">
-                    Follow Suggestions
-                  </h4>
-                  <p>
-                    Log in to find friends who have the same interests as you!
-                  </p>
+                <li className="text-muted-foreground text-center space-y-4">
+                  <p>No events found.</p>
                   <Button
-                    className="bg-evento-gradient w-full"
-                    onClick={() => setIsAuthModalOpen(true)}
+                    asChild
+                    className="bg-evento-gradient hover:opacity-80"
                   >
-                    Login
+                    <Link href="/create-event">Create one today!</Link>
                   </Button>
-                </>
+                </li>
               )}
+            </ul>
+            <div
+              className={cn(
+                "flex flex-col gap-2 w-full transition-all duration-300 bg-muted md:translate-x-0 md:max-h-fit md:opacity-100 px-4",
+                {
+                  "translate-x-[-100%] h-0 opacity-0": !toggleSearch,
+                  "translate-x-0 max-h-fit sticky opacity-100 z-20 top-0 pt-5":
+                    toggleSearch,
+                },
+              )}
+            >
+              <XIcon
+                className="md:hidden self-end"
+                onClick={() => setToggleSearch(!toggleSearch)}
+              />
+              <div className="relative flex items-center md:p-4">
+                <Search
+                  className="w-6 h-6 absolute left-3 md:left-6 text-eventoPurpleDark"
+                  strokeWidth={2.5}
+                />
+                <Input
+                  type="text"
+                  placeholder="Search for events or organisers ..."
+                  value={searchText}
+                  onChange={(e) => setSearchText(e.target.value)}
+                  className="pl-12 border-none bg-white py-2 rounded-lg w-full"
+                />
+              </div>
+              <div className="flex flex-col gap-2 md:p-4 py-0 pt-0 rounded bg-muted">
+                <MyGoogleMapComponent
+                  location={location || { lat: 0, lng: 0 }}
+                  setLocation={setLocation}
+                />
+              </div>
+              <div className="md:p-4  gap-4 ">
+                <div className="flex justify-between items-center ">
+                  <h4 className=" text-purple-600 font-bold">Select Date</h4>
+                  {showReset && (
+                    <button
+                      onClick={resetDate}
+                      className=" text-sm hover:underline"
+                    >
+                      Reset
+                    </button>
+                  )}
+                </div>
+                <div className="relative flex flex-col gap-4">
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className="w-full justify-start text-left font-normal"
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {startDate ? (
+                          format(startDate, "dd/MM/yyyy")
+                        ) : (
+                          <span>Select Start Date</span>
+                        )}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0">
+                      <Calendar
+                        mode="single"
+                        selected={startDate || today}
+                        onSelect={handleStartDateChange}
+                        initialFocus
+                        fromDate={today}
+                        locale={enUS}
+                      />
+                    </PopoverContent>
+                  </Popover>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className="w-full justify-start text-left font-normal"
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {endDate ? (
+                          format(endDate, "dd/MM/yyyy")
+                        ) : (
+                          <span>Select End Date</span>
+                        )}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0">
+                      <Calendar
+                        mode="single"
+                        selected={endDate || today}
+                        onSelect={handleEndDateChange}
+                        initialFocus
+                        fromDate={startDate || today}
+                        locale={enUS}
+                      />
+                    </PopoverContent>
+                  </Popover>
+                </div>
+              </div>
+              <div className="p-4">
+                <h4 className="text-purple-600 font-bold">Select Interests</h4>
+                <ul className="flex flex-wrap gap-4 mt-4">
+                  {interests.map((interest) => (
+                    <Button
+                      key={interest._id}
+                      asChild
+                      className={cn(
+                        "cursor-pointer bg-gray-200 text-black hover:bg-eventoPurpleLight/60",
+                        {
+                          "bg-evento-gradient text-white":
+                            selectedInterests.includes(interest),
+                        },
+                      )}
+                    >
+                      <li onClick={() => handleInterestToggle(interest)}>
+                        {interest.name}
+                      </li>
+                    </Button>
+                  ))}
+                </ul>
+              </div>{" "}
+              <div className="p-4 hidden md:block">
+                <div className="space-y-4  mb-20">
+                  {session.isAuthenticated ? (
+                    <>
+                      {users.filter(
+                        (user) => !user.isIFollowingHim && user.isFollowingMe,
+                      ).length > 0 && (
+                        <>
+                          <h4 className="text-purple-600 font-bold">
+                            You may know them
+                          </h4>
+                          <ul className="space-y-2">
+                            {users
+                              .filter(
+                                (user) =>
+                                  !user.isIFollowingHim && user.isFollowingMe,
+                              )
+                              .map((user: UserType) => (
+                                <li
+                                  key={user._id}
+                                  className="flex justify-between"
+                                >
+                                  <UsersList user={user} />
+                                </li>
+                              ))}
+                          </ul>
+                        </>
+                      )}
+
+                      {/* 2. Utilisateurs avec des intérêts communs */}
+                      {users.filter(
+                        (user) =>
+                          typeof user.matchingInterests === "number" &&
+                          user.matchingInterests > 0,
+                      ).length > 0 && (
+                        <>
+                          <h4 className="text-purple-600 font-bold">
+                            They share your interests
+                          </h4>
+                          <ul className="space-y-2">
+                            {users
+                              .filter(
+                                (user) =>
+                                  user.matchingInterests &&
+                                  user.matchingInterests > 0 &&
+                                  !user.isIFollowingHim,
+                              )
+                              .map((user: UserType) => (
+                                <li
+                                  key={user._id}
+                                  className="flex justify-between"
+                                >
+                                  <UsersList user={user} />
+                                </li>
+                              ))}
+                          </ul>
+                        </>
+                      )}
+
+                      {/* 3. Suggestions générales si aucune autre suggestion n'est disponible */}
+                      {users.filter(
+                        (user) =>
+                          !user.isIFollowingHim &&
+                          !user.isFollowingMe &&
+                          (!user.matchingInterests ||
+                            user.matchingInterests === 0),
+                      ).length > 0 && (
+                        <>
+                          <h4 className="text-purple-600 font-bold">
+                            Other users
+                          </h4>
+                          <ul className="space-y-2">
+                            {users
+                              .filter(
+                                (user) =>
+                                  !user.isIFollowingHim &&
+                                  !user.isFollowingMe &&
+                                  (!user.matchingInterests ||
+                                    user.matchingInterests === 0),
+                              )
+                              .slice(0, SeeMoreCount) // Limiter à un maximum de 10 utilisateurs
+                              .map((user: UserType) => (
+                                <li
+                                  key={user._id}
+                                  className="flex justify-between"
+                                >
+                                  <UsersList user={user} />
+                                </li>
+                              ))}
+                          </ul>
+                          <p
+                            className="text-sm text-blue-400 underline cursor-pointer flex gap-2"
+                            onClick={() => handleSeeMore()}
+                          >
+                            <ChevronDownIcon /> See more
+                          </p>
+                        </>
+                      )}
+                    </>
+                  ) : (
+                    <>
+                      <h4 className="text-purple-600 font-bold">
+                        Follow Suggestions
+                      </h4>
+                      <p>
+                        Log in to find friends who have the same interests as
+                        you!
+                      </p>
+                      <Button
+                        className="bg-evento-gradient w-full"
+                        onClick={() => setIsAuthModalOpen(true)}
+                      >
+                        Login
+                      </Button>
+                    </>
+                  )}
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-        {isAuthModalOpen && (
-          <AuthModal
-            onAuthSuccess={() => setIsAuthModalOpen(false)}
-            onClose={() => setIsAuthModalOpen(false)}
-          />
-        )}{" "}
-        <EventModal
-          isOpen={isEventModalOpen}
-          event={selectedEvent}
-          onClose={() => setIsEventModalOpen(false)}
-        />
-      </Section>
+            {isAuthModalOpen && (
+              <AuthModal
+                onAuthSuccess={() => setIsAuthModalOpen(false)}
+                onClose={() => setIsAuthModalOpen(false)}
+              />
+            )}{" "}
+            <EventModal
+              isOpen={isEventModalOpen}
+              event={selectedEvent}
+              onClose={() => setIsEventModalOpen(false)}
+            />
+          </Section>
+        </>
+      )}
     </>
   );
 };
