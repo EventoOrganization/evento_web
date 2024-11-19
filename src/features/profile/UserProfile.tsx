@@ -7,7 +7,6 @@ import TruncatedText from "@/components/TruncatedText";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import Loader from "@/components/ui/Loader";
-import UserListModal from "@/components/UserListModal";
 import EventSection from "@/features/event/components/EventSection";
 import { EventType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
@@ -17,10 +16,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
-enum ModalType {
-  FOLLOWERS = "followers",
-  FOLLOWING = "following",
-}
+// enum ModalType {
+//   FOLLOWERS = "followers",
+//   FOLLOWING = "following",
+// }
 
 const UserProfile = ({
   profile,
@@ -38,7 +37,7 @@ const UserProfile = ({
   const [isMounted, setIsMounted] = useState(false);
   // const router = useRouter();
   const pathname = usePathname();
-  const [modalType, setModalType] = useState<ModalType | "">("");
+  // const [modalType, setModalType] = useState<ModalType | "">("");
   // const { conversations, updateConversations, setActiveConversation } =
   //   useSocket();
   // const { user, token } = useSession();
@@ -102,7 +101,7 @@ const UserProfile = ({
                     </span>
                     <p>Event Attended</p>
                   </Button>
-                  <Button
+                  {/* <Button
                     className="h-fit flex flex-col items-center bg-transparent text-black hover:bg-gray-200"
                     onClick={() => setModalType(ModalType.FOLLOWING)}
                   >
@@ -112,7 +111,7 @@ const UserProfile = ({
                         : 0}
                     </span>
                     <p>Following</p>
-                  </Button>
+                  </Button> */}
                 </>
               </div>
               <div className="flex flex-col items-start gap-4 ">
@@ -181,7 +180,7 @@ const UserProfile = ({
                       <SettingsIcon className="sm:hidden" />
                     </Link>
                   </li>
-                  <li className="w-full">
+                  {/* <li className="w-full">
                     <Button
                       className={
                         "bg-gray-200 text-black rounded-full px-8 hover:bg-gray-200/50 w-full"
@@ -190,7 +189,7 @@ const UserProfile = ({
                     >
                       Followers
                     </Button>
-                  </li>
+                  </li> */}
                 </ul>
               )}
               <div className="mt-2 flex gap-10 justify-between">
@@ -269,7 +268,7 @@ const UserProfile = ({
               noEventsMessage="There are no events at the moment. Explore Evento and create or host an event easily."
             />
           )}
-          <UserListModal
+          {/* <UserListModal
             isOpen={!!modalType}
             closeModal={() => setModalType("")}
             title={
@@ -280,7 +279,7 @@ const UserProfile = ({
                 ? profile?.followingUserIds || []
                 : profile?.followerUserIds || []
             }
-          />
+          /> */}
         </Section>
       )}
     </>
