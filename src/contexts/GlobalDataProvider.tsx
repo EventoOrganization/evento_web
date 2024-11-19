@@ -18,9 +18,9 @@ const GlobalDataProvider: React.FC<{ children: React.ReactNode }> = ({
   const { user, token } = useSession();
   // Fonction pour gérer le rafraîchissement des données
   const refreshData = () => {
-    refreshInterests();
-    refreshEvents(user || undefined);
-    refreshUsers(user?._id || "", token || "");
+    // refreshInterests();
+    // refreshEvents(user || undefined);
+    // refreshUsers(user?._id || "", token || "");
   };
 
   useEffect(() => {
