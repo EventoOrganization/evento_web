@@ -3,22 +3,19 @@ import InstagramIcon from "@/components/icons/InstagramIcon";
 import LinkedinIcon from "@/components/icons/LinkedinIcon";
 import TiktokIcon from "@/components/icons/TiktokIcon";
 import Section from "@/components/layout/Section";
-import TchatIcon from "@/components/TchatIcon";
 import TruncatedText from "@/components/TruncatedText";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import Loader from "@/components/ui/Loader";
 import UserListModal from "@/components/UserListModal";
-import { useSession } from "@/contexts/SessionProvider";
-import { useSocket } from "@/contexts/SocketProvider";
 import EventSection from "@/features/event/components/EventSection";
 import { EventType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
-import { EditIcon, MessageCirclePlusIcon, SettingsIcon } from "lucide-react";
+import { EditIcon, SettingsIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
-import { startPrivateChat } from "../chat/components/chatsActions";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 
 enum ModalType {
   FOLLOWERS = "followers",
@@ -38,34 +35,41 @@ const UserProfile = ({
   pastEventsGoing?: EventType[];
   pastEventsHosted?: EventType[];
 }) => {
-  const router = useRouter();
+  const [isMounted, setIsMounted] = useState(false);
+  // const router = useRouter();
   const pathname = usePathname();
   const [modalType, setModalType] = useState<ModalType | "">("");
-  const { conversations, updateConversations, setActiveConversation } =
-    useSocket();
-  const { user, token } = useSession();
+  // const { conversations, updateConversations, setActiveConversation } =
+  //   useSocket();
+  // const { user, token } = useSession();
+  useEffect(() => {
+    setIsMounted(true);
+  });
+  if (!isMounted) {
+    return <Loader />;
+  }
   const platformIcons: Record<string, JSX.Element> = {
     linkedin: <LinkedinIcon />,
     tiktok: <TiktokIcon />,
     instagram: <InstagramIcon />,
   };
-  const conversationWithUser = conversations.find(
-    (conversation) => conversation.title === profile?.username,
-  );
-  const handleMessageIconClick = async () => {
-    if (conversationWithUser) {
-      setActiveConversation(conversationWithUser);
-      router.push(`/chats?conversationId=${conversationWithUser._id}`);
-    } else if (profile?._id && token) {
-      await startPrivateChat(
-        profile._id,
-        token,
-        updateConversations,
-        setActiveConversation,
-        router,
-      );
-    }
-  };
+  // const conversationWithUser = conversations.find(
+  //   (conversation) => conversation.title === profile?.username,
+  // );
+  // const handleMessageIconClick = async () => {
+  //   if (conversationWithUser) {
+  //     setActiveConversation(conversationWithUser);
+  //     router.push(`/chats?conversationId=${conversationWithUser._id}`);
+  //   } else if (profile?._id && token) {
+  //     await startPrivateChat(
+  //       profile._id,
+  //       token,
+  //       updateConversations,
+  //       setActiveConversation,
+  //       router,
+  //     );
+  //   }
+  // };
   return (
     <Section className="gap-6 md:pt-20 md:px-20">
       <div className=" w-full lg:grid lg:grid-cols-4">
@@ -116,7 +120,7 @@ const UserProfile = ({
                   profile.username &&
                   profile.username.charAt(0).toUpperCase() +
                     profile.username.slice(1)}
-                {user &&
+                {/* {user &&
                   pathname.startsWith("/profile/") &&
                   user._id !== profile?._id && (
                     <span onClick={handleMessageIconClick}>
@@ -126,7 +130,7 @@ const UserProfile = ({
                         <TchatIcon className="cursor-pointer" pathname />
                       )}
                     </span>
-                  )}
+                  )} */}
               </li>
               {/* <li>{profile && profile.bio && profile.bio}</li> */}
 
