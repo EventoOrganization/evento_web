@@ -23,7 +23,7 @@ import { useEffect, useState } from "react";
 
 const UserProfile = ({
   profile,
-  upcomingEvents,
+  // upcomingEvents,
   pastEventsHosted,
   pastEventsGoing,
   hostingEvents,
@@ -232,7 +232,7 @@ const UserProfile = ({
             )}
           </div>
 
-          <EventSection
+          {/* <EventSection
             title="Upcoming Events"
             events={upcomingEvents}
             sectionStyle="flex flex-col items-start gap-4 p-0 lg: max-w-7xl"
@@ -241,7 +241,7 @@ const UserProfile = ({
                 ? "This user isn't going to upcoming events at the moment."
                 : "There are no events at the moment. Explore Evento and create or host an event easily."
             }
-          />
+          /> */}
           <EventSection
             title="Events Hosting"
             events={hostingEvents}
