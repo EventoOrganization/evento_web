@@ -38,7 +38,7 @@ export default function ProfilePageContent() {
     if (session.isAuthenticated && session.token) {
       loadUser(session.token);
     }
-  }, [session.isAuthenticated, session.token]);
+  }, [session.isAuthenticated]);
 
   return (
     <>
