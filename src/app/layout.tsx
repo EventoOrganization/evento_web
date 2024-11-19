@@ -1,4 +1,5 @@
 import ChatbotComponent from "@/components/ChatbotComponent";
+import ErrorBoundary from "@/components/ErrorBoundary";
 import Footer from "@/components/Footer";
 import Main from "@/components/layout/Main";
 import NavbarApp from "@/components/Navbar";
@@ -13,7 +14,6 @@ import { getSessionSSR } from "@/utils/authUtilsSSR";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import ErrorBoundary from "@/components/ErrorBoundary";
 
 const inter = Inter({ subsets: ["latin"], display: "swap" });
 
@@ -76,8 +76,8 @@ export default function RootLayout({
       <body className={cn(inter.className, "relative bg-muted")}>
         <GoogleAnalytics />
         <SessionProvider
-          initialUser={session?.user}
-          initialToken={session?.token}
+          initialUser={session?.user || null}
+          initialToken={session?.token || null}
         >
           <ErrorBoundary>
             <PWAProvider>
