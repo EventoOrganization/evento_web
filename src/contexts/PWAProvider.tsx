@@ -5,6 +5,8 @@ import React, { useEffect, useState } from "react";
 import { useSession } from "./SessionProvider";
 
 const PWAProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const dev = true;
+
   const [isClient, setIsClient] = useState(false);
   const {
     notificationPermission,
@@ -118,7 +120,9 @@ const PWAProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       } else return;
     }
   }, [notificationPermission, isClient, token, userInfo]);
-
+  if (dev) {
+    return;
+  }
   return <>{children}</>;
 };
 
