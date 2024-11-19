@@ -7,7 +7,7 @@ import TruncatedText from "@/components/TruncatedText";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import Loader from "@/components/ui/Loader";
-import EventSection from "@/features/event/components/EventSection";
+import UserListModal from "@/components/UserListModal";
 import { EventType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
 import { EditIcon, SettingsIcon } from "lucide-react";
@@ -16,17 +16,17 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
-// enum ModalType {
-//   FOLLOWERS = "followers",
-//   FOLLOWING = "following",
-// }
+enum ModalType {
+  FOLLOWERS = "followers",
+  FOLLOWING = "following",
+}
 
 const UserProfile = ({
   profile,
   // upcomingEvents,
-  pastEventsHosted,
-  pastEventsGoing,
-  hostingEvents,
+  // pastEventsHosted,
+  // pastEventsGoing,
+  // hostingEvents,
 }: {
   profile?: UserType | null;
   upcomingEvents?: EventType[];
@@ -37,7 +37,7 @@ const UserProfile = ({
   const [isMounted, setIsMounted] = useState(false);
   // const router = useRouter();
   const pathname = usePathname();
-  // const [modalType, setModalType] = useState<ModalType | "">("");
+  const [modalType, setModalType] = useState<ModalType | "">("");
   // const { conversations, updateConversations, setActiveConversation } =
   //   useSocket();
   // const { user, token } = useSession();
@@ -101,7 +101,7 @@ const UserProfile = ({
                     </span>
                     <p>Event Attended</p>
                   </Button>
-                  {/* <Button
+                  <Button
                     className="h-fit flex flex-col items-center bg-transparent text-black hover:bg-gray-200"
                     onClick={() => setModalType(ModalType.FOLLOWING)}
                   >
@@ -111,7 +111,7 @@ const UserProfile = ({
                         : 0}
                     </span>
                     <p>Following</p>
-                  </Button> */}
+                  </Button>
                 </>
               </div>
               <div className="flex flex-col items-start gap-4 ">
@@ -122,16 +122,16 @@ const UserProfile = ({
                       profile.username.charAt(0).toUpperCase() +
                         profile.username.slice(1)}
                     {/* {user &&
-                  pathname.startsWith("/profile/") &&
-                  user._id !== profile?._id && (
-                    <span onClick={handleMessageIconClick}>
-                      {!conversationWithUser ? (
-                        <MessageCirclePlusIcon />
-                      ) : (
-                        <TchatIcon className="cursor-pointer" pathname />
-                      )}
-                    </span>
-                  )} */}
+                      pathname.startsWith("/profile/") &&
+                      user._id !== profile?._id && (
+                        <span onClick={handleMessageIconClick}>
+                          {!conversationWithUser ? (
+                            <MessageCirclePlusIcon />
+                          ) : (
+                            <TchatIcon className="cursor-pointer" pathname />
+                          )}
+                        </span>
+                      )} */}
                   </li>
                   {/* <li>{profile && profile.bio && profile.bio}</li> */}
 
@@ -217,7 +217,7 @@ const UserProfile = ({
               </div>
             </div>
 
-            {profile?.interests && profile?.interests?.length > 0 && (
+            {/* {profile?.interests && profile?.interests?.length > 0 && (
               <div className="md:flex mt-2 items-start hidden gap-2">
                 <ul className="flex gap-2">
                   {profile.interests.map((interest, index) => (
@@ -229,7 +229,7 @@ const UserProfile = ({
                   ))}
                 </ul>
               </div>
-            )}
+            )} */}
           </div>
 
           {/* <EventSection
@@ -242,7 +242,7 @@ const UserProfile = ({
                 : "There are no events at the moment. Explore Evento and create or host an event easily."
             }
           /> */}
-          <EventSection
+          {/* <EventSection
             title="Events Hosting"
             events={hostingEvents}
             sectionStyle="flex flex-col items-start gap-4 p-0 lg: max-w-7xl"
@@ -267,8 +267,8 @@ const UserProfile = ({
               sectionStyle="flex flex-col items-start gap-4 p-0  lg: max-w-7xl"
               noEventsMessage="There are no events at the moment. Explore Evento and create or host an event easily."
             />
-          )}
-          {/* <UserListModal
+          )} */}
+          <UserListModal
             isOpen={!!modalType}
             closeModal={() => setModalType("")}
             title={
@@ -279,7 +279,7 @@ const UserProfile = ({
                 ? profile?.followingUserIds || []
                 : profile?.followerUserIds || []
             }
-          /> */}
+          />
         </Section>
       )}
     </>
