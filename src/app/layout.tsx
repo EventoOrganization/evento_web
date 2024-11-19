@@ -1,5 +1,4 @@
 import ChatbotComponent from "@/components/ChatbotComponent";
-import ErrorBoundary from "@/components/ErrorBoundary";
 import Footer from "@/components/Footer";
 import Main from "@/components/layout/Main";
 import NavbarApp from "@/components/Navbar";
@@ -79,21 +78,19 @@ export default function RootLayout({
           initialUser={session?.user || null}
           initialToken={session?.token || null}
         >
-          <ErrorBoundary>
-            <PWAProvider>
-              <SocketProvider>
-                <GlobalDataProvider>
-                  <Toaster />
-                  <Main className={cn("pb-14 md:pb-28")}>
-                    {children}
-                    <Footer />
-                    <ChatbotComponent />
-                  </Main>
-                  <NavbarApp />
-                </GlobalDataProvider>
-              </SocketProvider>
-            </PWAProvider>
-          </ErrorBoundary>
+          <PWAProvider>
+            <SocketProvider>
+              <GlobalDataProvider>
+                <Toaster />
+                <Main className={cn("pb-14 md:pb-28")}>
+                  {children}
+                  <Footer />
+                  <ChatbotComponent />
+                </Main>
+                <NavbarApp />
+              </GlobalDataProvider>
+            </SocketProvider>
+          </PWAProvider>
         </SessionProvider>
       </body>
     </html>

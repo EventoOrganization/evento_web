@@ -12,7 +12,7 @@ interface MainProps {
   fullHeight?: boolean;
 }
 
-const Main: React.FC<MainProps> = async ({
+const Main: React.FC<MainProps> = ({
   children,
   className,
   id,
