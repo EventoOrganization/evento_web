@@ -20,10 +20,10 @@ const libraries: ("places" | "geometry" | "drawing" | "visualization")[] = [
 ];
 const ProfileEditContent = () => {
   const session = useSession();
-  const [interests, setInterests] = useState<InterestType[]>([]);
   const maxChars = 155;
   const { setProfileData } = useGlobalStore((state) => state);
   const userInfo = useGlobalStore((state) => state.userInfo);
+  const interests = useGlobalStore((state) => state.interests);
   const { toast } = useToast();
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -82,18 +82,6 @@ const ProfileEditContent = () => {
       ...formData,
       [e.target.name]: e.target.value,
     });
-  };
-  const loadInterests = async () => {
-    try {
-      const interestRes = await fetchData("/users/getInterestsListing");
-      if (interestRes && !interestRes.error) {
-        setInterests(interestRes.data as InterestType[]);
-      } else {
-        console.error("Failed to fetch interests:", interestRes?.error);
-      }
-    } catch (error) {
-      console.error("Error fetching interests:", error);
-    }
   };
   // Handle changes for social links
   const handleSocialLinkChange = (
@@ -204,10 +192,6 @@ const ProfileEditContent = () => {
       console.error("Error updating profile:", error);
     }
   };
-  useEffect(() => {
-    loadInterests();
-  }, []);
-
   useEffect(() => {
     if (isLoaded && window.google && inputRef.current && !autocomplete) {
       try {
