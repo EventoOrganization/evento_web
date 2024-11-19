@@ -8,6 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import Loader from "@/components/ui/Loader";
 import UserListModal from "@/components/UserListModal";
+import EventSection from "@/features/event/components/EventSection";
 import { EventType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
 import { EditIcon, SettingsIcon } from "lucide-react";
@@ -23,10 +24,10 @@ enum ModalType {
 
 const UserProfile = ({
   profile,
-  // upcomingEvents,
-  // pastEventsHosted,
-  // pastEventsGoing,
-  // hostingEvents,
+  upcomingEvents,
+  pastEventsHosted,
+  pastEventsGoing,
+  hostingEvents,
 }: {
   profile?: UserType | null;
   upcomingEvents?: EventType[];
@@ -43,7 +44,7 @@ const UserProfile = ({
   // const { user, token } = useSession();
   useEffect(() => {
     setIsMounted(true);
-  }, []);
+  });
 
   const platformIcons: Record<string, JSX.Element> = {
     linkedin: <LinkedinIcon />,
@@ -78,7 +79,7 @@ const UserProfile = ({
               <div className="flex items-center w-full justify-between md:pr-20">
                 {profile?.profileImage ? (
                   <Image
-                    src={profile?.profileImage || "/icon-512x512.png"}
+                    src={profile?.profileImage}
                     alt="user image"
                     width={500}
                     height={500}
@@ -122,16 +123,16 @@ const UserProfile = ({
                       profile.username.charAt(0).toUpperCase() +
                         profile.username.slice(1)}
                     {/* {user &&
-                      pathname.startsWith("/profile/") &&
-                      user._id !== profile?._id && (
-                        <span onClick={handleMessageIconClick}>
-                          {!conversationWithUser ? (
-                            <MessageCirclePlusIcon />
-                          ) : (
-                            <TchatIcon className="cursor-pointer" pathname />
-                          )}
-                        </span>
-                      )} */}
+                  pathname.startsWith("/profile/") &&
+                  user._id !== profile?._id && (
+                    <span onClick={handleMessageIconClick}>
+                      {!conversationWithUser ? (
+                        <MessageCirclePlusIcon />
+                      ) : (
+                        <TchatIcon className="cursor-pointer" pathname />
+                      )}
+                    </span>
+                  )} */}
                   </li>
                   {/* <li>{profile && profile.bio && profile.bio}</li> */}
 
@@ -180,7 +181,7 @@ const UserProfile = ({
                       <SettingsIcon className="sm:hidden" />
                     </Link>
                   </li>
-                  {/* <li className="w-full">
+                  <li className="w-full">
                     <Button
                       className={
                         "bg-gray-200 text-black rounded-full px-8 hover:bg-gray-200/50 w-full"
@@ -189,7 +190,7 @@ const UserProfile = ({
                     >
                       Followers
                     </Button>
-                  </li> */}
+                  </li>
                 </ul>
               )}
               <div className="mt-2 flex gap-10 justify-between">
@@ -199,7 +200,7 @@ const UserProfile = ({
                     {profile?.socialLinks?.length > 0 && (
                       <ul className="flex md:flex-col gap-4">
                         {profile.socialLinks.map((link, index) => (
-                          <li key={`${index}-${link}`} className="">
+                          <li key={index} className="">
                             <Link
                               className=""
                               href={link.url}
@@ -217,7 +218,7 @@ const UserProfile = ({
               </div>
             </div>
 
-            {/* {profile?.interests && profile?.interests?.length > 0 && (
+            {profile?.interests && profile?.interests?.length > 0 && (
               <div className="md:flex mt-2 items-start hidden gap-2">
                 <ul className="flex gap-2">
                   {profile.interests.map((interest, index) => (
@@ -229,10 +230,10 @@ const UserProfile = ({
                   ))}
                 </ul>
               </div>
-            )} */}
+            )}
           </div>
 
-          {/* <EventSection
+          <EventSection
             title="Upcoming Events"
             events={upcomingEvents}
             sectionStyle="flex flex-col items-start gap-4 p-0 lg: max-w-7xl"
@@ -241,8 +242,8 @@ const UserProfile = ({
                 ? "This user isn't going to upcoming events at the moment."
                 : "There are no events at the moment. Explore Evento and create or host an event easily."
             }
-          /> */}
-          {/* <EventSection
+          />
+          <EventSection
             title="Events Hosting"
             events={hostingEvents}
             sectionStyle="flex flex-col items-start gap-4 p-0 lg: max-w-7xl"
@@ -267,7 +268,7 @@ const UserProfile = ({
               sectionStyle="flex flex-col items-start gap-4 p-0  lg: max-w-7xl"
               noEventsMessage="There are no events at the moment. Explore Evento and create or host an event easily."
             />
-          )} */}
+          )}
           <UserListModal
             isOpen={!!modalType}
             closeModal={() => setModalType("")}

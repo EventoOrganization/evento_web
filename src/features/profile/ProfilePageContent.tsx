@@ -3,19 +3,20 @@ import { useSession } from "@/contexts/SessionProvider";
 import AuthModal from "@/features/auth/components/AuthModal";
 import StaticProfilePage from "@/features/profile/StaticProfilePage";
 import UserProfile from "@/features/profile/UserProfile";
+import { useGlobalStore } from "@/store/useGlobalStore";
 import { UserType } from "@/types/UserType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 export default function ProfilePageContent() {
   const session = useSession();
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  // const globalStore = useGlobalStore();
-  // const { events } = useGlobalStore((state) => state);
+  const globalStore = useGlobalStore();
+  const { events } = useGlobalStore((state) => state);
   const [userInfo, setUserInfo] = useState<UserType | null>(null);
-  // const upcomingFilteredEvents = useMemo(() => {
-  //   return events.filter((event) => event.isGoing || event.isFavourite);
-  // }, [events]);
+  const upcomingFilteredEvents = useMemo(() => {
+    return events.filter((event) => event.isGoing || event.isFavourite);
+  }, [events]);
   const loadUser = async (token: string) => {
     try {
       const userRes = await fetchData(
@@ -38,14 +39,14 @@ export default function ProfilePageContent() {
     if (session.isAuthenticated && session.token) {
       loadUser(session.token);
     }
-  }, [session.isAuthenticated]);
+  }, [session]);
 
   return (
     <>
       {session.isAuthenticated ? (
         <UserProfile
           profile={userInfo}
-          // upcomingEvents={upcomingFilteredEvents}
+          upcomingEvents={upcomingFilteredEvents}
           pastEventsGoing={userInfo?.pastEventsGoing || []}
           pastEventsHosted={userInfo?.pastEventsHosted || []}
           hostingEvents={userInfo?.hostedEvents}
@@ -58,8 +59,7 @@ export default function ProfilePageContent() {
       {isAuthModalOpen && (
         <AuthModal
           onAuthSuccess={(token?: string) => {
-            // if (token) globalStore.loadUser(token);
-            console.log("token", token);
+            if (token) globalStore.loadUser(token);
           }}
           onClose={() => setIsAuthModalOpen(false)}
         />

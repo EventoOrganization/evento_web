@@ -34,21 +34,21 @@ const GlobalDataProvider: React.FC<{ children: React.ReactNode }> = ({
       loadUsers("", "");
     }
 
-    // const handleVisibilityChange = () => {
-    //   if (!document.hidden) {
-    //     refreshData();
-    //   }
-    // };
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        refreshData();
+      }
+    };
 
     const interval = setInterval(() => {
       refreshData();
     }, 30000);
 
-    // document.addEventListener("visibilitychange", handleVisibilityChange);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
 
     return () => {
       clearInterval(interval);
-      // document.removeEventListener("visibilitychange", handleVisibilityChange);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
   }, [
     loadInterests,
