@@ -182,7 +182,6 @@ const UsersList = ({
       setLoading(false);
     }
   };
-
   if (user?.username === "anonymous") return;
   const isSuccessPage = pathname.includes(`/create-event/${eventId}/success`);
 

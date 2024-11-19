@@ -22,7 +22,7 @@ type SelectedUser = UserType | TempUserType;
 const EventSuccessPage = () => {
   const { id } = useParams();
   const eventId = Array.isArray(id) ? id[0] : id;
-  const { userInfo, users } = useGlobalStore((state) => state);
+  const { users } = useGlobalStore((state) => state);
   const [isGuestAllowed, setIsGuestAllowed] = useState<boolean | null>(null);
   const { user, token } = useSession();
   const { toast } = useToast();
@@ -30,7 +30,7 @@ const EventSuccessPage = () => {
     SelectedUser[]
   >([]);
   const [filter, setFilter] = useState<string>("");
-  const event = userInfo?.hostedEvents?.find((ev) => ev._id === id);
+  const [event, setEvent] = useState<EventType | null>(null);
   const attendeeIds = event?.attendees
     ? event?.attendees?.map((a) => a?._id) || ""
     : [];
@@ -38,7 +38,27 @@ const EventSuccessPage = () => {
     ? event.favouritees.map((f) => f?._id || "")
     : [];
   const excludedUserIds = [...attendeeIds, ...favouriteIds];
-
+  useEffect(() => {
+    const fetchEventData = async () => {
+      try {
+        const userQuery = user ? `?userId=${user._id}` : "";
+        const response = await fetchData(
+          `/events/getEvent/${eventId}${userQuery}`,
+          HttpMethod.GET,
+          null,
+          token,
+        );
+        if (response.ok) {
+          setEvent(response.data as EventType);
+        } else {
+          toast({ description: "Event not found", variant: "destructive" });
+        }
+      } catch {
+        toast({ description: "Error fetching event", variant: "destructive" });
+      }
+    };
+    fetchEventData();
+  }, [eventId, token, toast]);
   // Fonction pour activer ou désactiver l'option "Permettre aux invités d'amener des amis"
   const handleGuestsAllowFriendChange = async () => {
     try {
@@ -125,20 +145,28 @@ const EventSuccessPage = () => {
         updateData,
         token,
       );
-
+      console.log("response", response);
       if (response.ok) {
-        const updatedEvent = response?.data?.event;
-        console.log("Updated event:", updatedEvent);
+        // const updatedEvent = response?.data?.event;
+        // Mettez à jour localement les invités combinés
+        const updatedEvent = response.data?.event;
+        console.log("updatedEvent", updatedEvent);
+        // Mettez à jour les invités avec les données du backend
+        setEvent({
+          ...event!,
+          guests: updatedEvent?.guests, // Données réelles retournées
+          tempGuests: updatedEvent?.tempGuests, // Données réelles retournées
+        });
         toast({
           description: "Guests updated successfully!",
           className: "bg-evento-gradient text-white",
           duration: 3000,
         });
-        useGlobalStore.getState().updateEvent({
-          _id: eventId,
-          guests: updatedEvent?.guests || [],
-          tempGuests: updatedEvent?.tempGuests || [],
-        });
+        // useGlobalStore.getState().updateEvent({
+        //   _id: eventId,
+        //   guests: updatedEvent?.guests || [],
+        //   tempGuests: updatedEvent?.tempGuests || [],
+        // });
         setCurrentSelectedUsers([]);
       } else {
         console.error("Error updating guests", response.error);
@@ -177,10 +205,6 @@ const EventSuccessPage = () => {
         user.firstName?.toLowerCase().includes(filter) ||
         user.lastName?.toLowerCase().includes(filter)),
   );
-
-  useEffect(() => {
-    console.log("Updated guests:", combinedGuests); // Affiche les invités mis à jour dans la console
-  }, [combinedGuests]);
 
   if (!event) {
     return <div>Loading...</div>;
@@ -332,6 +356,7 @@ const EventSuccessPage = () => {
               count={combinedGuests.length}
               users={combinedGuests}
               event={event}
+              setEvent={setEvent}
             />
           </div>
         </Section>

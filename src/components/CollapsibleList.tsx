@@ -3,33 +3,38 @@ import { cn } from "@/lib/utils";
 import { EventType } from "@/types/EventType";
 import { TempUserType, UserType } from "@/types/UserType";
 import { ChevronDownIcon } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import UsersList from "./UsersList";
-type SelectedUser = UserType | TempUserType;
 const CollapsibleList = ({
   title,
   count,
   users,
   event,
   isAdmin = false,
+  setEvent,
 }: {
   title: string;
   count: number;
   users: (UserType | TempUserType)[];
   event?: EventType;
   isAdmin?: boolean;
+  setEvent?: (event: EventType) => void;
 }) => {
   const [isOpen, setIsOpen] = useState(title === "Going" ? true : false);
-  const [usersList, setUsersList] = useState<SelectedUser[]>(users);
   const removeUserLocally = (userId: string) => {
-    setUsersList((prevUsers) =>
-      prevUsers.filter((user) => user._id !== userId),
-    );
+    if (!setEvent || !event) return;
+
+    const updatedGuests =
+      event?.guests?.filter((guest) => guest._id !== userId) || [];
+    const updatedTempGuests =
+      event?.tempGuests?.filter((tempGuest) => tempGuest._id !== userId) || [];
+
+    setEvent({
+      ...event,
+      guests: updatedGuests,
+      tempGuests: updatedTempGuests,
+    });
   };
-  useEffect(() => {
-    setUsersList(users);
-  }, [users]);
-  console.log("CollapsibleList usersList", usersList);
   return (
     <div className="mb-4 w-full  ease-in-out">
       <div className="flex justify-between">
@@ -47,13 +52,11 @@ const CollapsibleList = ({
             />
           </span>
         </button>
-        {title === "Going" && isAdmin && (
-          <RSVPSubmissionsList rsvp={usersList} />
-        )}
+        {title === "Going" && isAdmin && <RSVPSubmissionsList rsvp={users} />}
       </div>
       {isOpen && (
         <div className="mt-2 space-y-2">
-          {usersList
+          {users
             .filter((user) => user && user._id)
             .map((user) => (
               <UsersList

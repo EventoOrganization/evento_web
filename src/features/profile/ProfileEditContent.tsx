@@ -8,6 +8,7 @@ import EditProfileImage from "@/features/profile/EditProfileImage";
 import { useToast } from "@/hooks/use-toast";
 import { useGlobalStore } from "@/store/useGlobalStore";
 import { InterestType } from "@/types/EventType";
+import { UserType } from "@/types/UserType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { cn } from "@nextui-org/theme";
 import { useJsApiLoader } from "@react-google-maps/api";
@@ -22,7 +23,8 @@ const ProfileEditContent = () => {
   const session = useSession();
   const maxChars = 155;
   const { setProfileData } = useGlobalStore((state) => state);
-  const userInfo = useGlobalStore((state) => state.userInfo);
+  // const userInfo = useGlobalStore((state) => state.userInfo);
+  const [userInfo, setUserInfo] = useState<UserType | null>(null);
   const interests = useGlobalStore((state) => state.interests);
   const { toast } = useToast();
   const router = useRouter();
@@ -37,6 +39,33 @@ const ProfileEditContent = () => {
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
     libraries,
   });
+  useEffect(() => {
+    if (session.isAuthenticated) {
+      const loadUser = async (token: string) => {
+        try {
+          const userRes = await fetchData(
+            `/profile/getLoggedUserProfile`,
+            HttpMethod.GET,
+            null,
+            token,
+          );
+          if (userRes && !userRes.error) {
+            setUserInfo(userRes.data as UserType);
+          } else {
+            console.error(
+              "Erreur lors du fetch de l'utilisateur:",
+              userRes?.error,
+            );
+          }
+        } catch (error) {
+          console.error("Erreur lors du fetch de l'utilisateur:", error);
+        }
+      };
+      if (session.token) {
+        loadUser(session.token);
+      }
+    }
+  }, [session]);
   // Initialize form state based on userInfo
   const [formData, setFormData] = useState({
     username: userInfo?.username || "",
