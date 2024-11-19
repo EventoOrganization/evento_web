@@ -25,8 +25,6 @@ export const useSocket = () => {
 };
 
 export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
-  const dev = true;
-
   const [socket, setSocket] = useState<Socket | null>(null);
   const [messages, setMessages] = useState<any[]>([]);
   const [conversations, setConversations] = useState<any[]>([]);
@@ -51,7 +49,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
       console.log("No token or user, no fetch...");
       return;
     }
-    if (dev) return;
+
     const fetchConversations = async () => {
       const dev = true;
       if (dev) return;
