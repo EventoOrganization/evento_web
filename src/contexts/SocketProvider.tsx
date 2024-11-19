@@ -51,6 +51,8 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     }
 
     const fetchConversations = async () => {
+      const dev = true;
+      if (dev) return;
       const result = await fetchData<any[]>(
         "/chats/fetchConversations",
         HttpMethod.GET,

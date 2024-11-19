@@ -88,6 +88,7 @@ const DiscoverPageContent = () => {
     users,
     startDate,
     endDate,
+    isHydrated,
   ]);
   if (!isHydrated) {
     return (

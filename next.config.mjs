@@ -23,6 +23,7 @@ export default withPWA({
   dest: "public",
   register: true,
   skipWaiting: true,
+  disable: process.env.NODE_ENV === "development",
   buildExcludes: [/app-build-manifest.json$/],
   mode: process.env.NODE_ENV === "production" ? "production" : "development",
   importScripts: ["/custom-sw.js"],
