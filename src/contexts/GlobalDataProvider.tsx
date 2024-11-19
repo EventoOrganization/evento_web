@@ -6,23 +6,24 @@ import { useSession } from "./SessionProvider";
 const GlobalDataProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const { loadUsers, loadUser, loadInterests, refreshUsers } = useGlobalStore();
+  const { loadEvents, loadUser, loadInterests, refreshUsers } =
+    useGlobalStore();
   const { user, token } = useSession();
 
   useEffect(() => {
     loadInterests();
-    // loadEvents(user || undefined);
+    loadEvents(user || undefined);
 
     if (user?._id && token) {
       refreshUsers(user._id, token);
       loadUser(token);
     } else {
-      loadUsers("", "");
+      // loadUsers("", "");
     }
   }, [
     loadInterests,
-    // loadEvents,
-    loadUsers,
+    loadEvents,
+    // loadUsers,
     loadUser,
     refreshUsers,
     user,
