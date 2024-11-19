@@ -197,7 +197,6 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
       return updatedConversations;
     });
   };
-
   return (
     <SocketContext.Provider
       value={{
