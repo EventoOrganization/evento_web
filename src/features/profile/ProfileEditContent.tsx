@@ -39,6 +39,7 @@ const ProfileEditContent = () => {
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
     libraries,
   });
+
   const loadUser = async (token: string) => {
     try {
       const userRes = await fetchData(
@@ -244,6 +245,7 @@ const ProfileEditContent = () => {
       }
     }
   }, [isLoaded, inputRef.current, autocomplete]);
+
   return (
     <div className="container mx-auto max-w-lg py-10">
       <h1 className="text-2xl font-semibold mb-6">Edit Profile</h1>

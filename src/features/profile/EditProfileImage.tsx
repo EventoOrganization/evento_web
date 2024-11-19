@@ -24,7 +24,7 @@ const EditProfileImage = ({
 }) => {
   const [openDialog, setOpenDialog] = useState(false);
   const [imageSrc, setImageSrc] = useState<string>(
-    userInfo?.profileImage || "/icon-384x384.png",
+    userInfo?.profileImage ? userInfo?.profileImage : "/icon-384x384.png",
   );
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);

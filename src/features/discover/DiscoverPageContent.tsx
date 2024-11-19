@@ -165,7 +165,7 @@ const DiscoverPageContent = () => {
                   </li>
                 ))
               ) : (
-                <li className="text-muted-foreground text-center space-y-4">
+                <li className="text-muted-foreground text-center space-y-4 min-h-screen">
                   <p>No events found.</p>
                   <Button
                     asChild

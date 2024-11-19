@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   },
   description:
     "Organize, plan, and discover events effortlessly with Evento. Simplify invitations, RSVPs, and event management—all in one intuitive platform.",
-  manifest: "/manifest.json",
+  // manifest: "/manifest.json",
   openGraph: {
     type: "website",
     url: "https://evento-app.io",
@@ -57,6 +57,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const session = getSessionSSR();
+
   return (
     <html lang="en" suppressHydrationWarning={true}>
       <head>
