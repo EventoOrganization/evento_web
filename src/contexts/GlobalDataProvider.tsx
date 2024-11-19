@@ -29,7 +29,7 @@ const GlobalDataProvider: React.FC<{ children: React.ReactNode }> = ({
     if (user?._id && token) {
       refreshUsers(user._id, token);
       refreshEvents(user);
-      // loadUser(token);
+      loadUser(token);
     } else {
       loadUsers("", "");
     }

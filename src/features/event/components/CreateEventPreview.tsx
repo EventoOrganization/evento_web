@@ -5,7 +5,6 @@ import TruncatedText from "@/components/TruncatedText";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { useAuthStore } from "@/store/useAuthStore";
 import { useEventStore } from "@/store/useEventStore";
 import { useGlobalStore } from "@/store/useGlobalStore";
 import Image from "next/image";
@@ -20,7 +19,6 @@ const CreateEventPreview = ({
   handleRemoveInterest?: (interestId: string) => void;
 }) => {
   const eventStore = useEventStore();
-  const { user } = useAuthStore();
   const { userInfo } = useGlobalStore();
 
   const renderDate = () => {
@@ -84,9 +82,9 @@ const CreateEventPreview = ({
           <div className="flex flex-col w-full">
             <div className="flex justify-between items-center mb-4">
               <div className="flex gap-2 items-center">
-                {user?.profileImage ? (
+                {userInfo?.profileImage ? (
                   <Image
-                    src={user?.profileImage || ""}
+                    src={userInfo?.profileImage || ""}
                     alt="user image"
                     width={30}
                     height={30}
@@ -102,8 +100,7 @@ const CreateEventPreview = ({
                   </Avatar>
                 )}
                 <h4 className="ml-2">
-                  {(user &&
-                    userInfo &&
+                  {(userInfo &&
                     userInfo?.username.charAt(0).toUpperCase() +
                       userInfo?.username.slice(1)) ||
                     "Username"}
