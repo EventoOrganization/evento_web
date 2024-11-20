@@ -155,13 +155,13 @@ const DiscoverPageContent = () => {
                 </span>
               </li>
               {filteredEvents.length > 0 ? (
-                filteredEvents.map((event) => (
+                filteredEvents.map((event, index) => (
                   <li
                     key={event._id}
                     onClick={() => handleEventClick(event)}
                     className="px-2 md:px-4"
                   >
-                    <Event event={event} />
+                    <Event event={event} index={index} />
                   </li>
                 ))
               ) : (

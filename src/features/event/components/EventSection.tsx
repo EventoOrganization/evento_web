@@ -28,7 +28,7 @@ const EventSection = ({
       >
         {events && events.length > 0 ? (
           events.map((event: any, index: number) => (
-            <EventPreview key={index} event={event} />
+            <EventPreview key={index} event={event} title={title} />
           ))
         ) : !pathname.startsWith("/profile/") ? (
           <Button

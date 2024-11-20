@@ -6,7 +6,13 @@ import { useRef, useState } from "react";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 
-const RenderMedia = ({ event }: { event: EventType }) => {
+const RenderMedia = ({
+  event,
+  index: eventIndex,
+}: {
+  event: EventType;
+  index?: number;
+}) => {
   const mediaItems: string[] = [];
   const initialMedias = event?.initialMedia || [];
   const [isSwiping, setIsSwiping] = useState(false);
@@ -66,6 +72,7 @@ const RenderMedia = ({ event }: { event: EventType }) => {
             >
               <video
                 controls
+                preload={eventIndex === 0 ? "auto" : "metadata"}
                 className="absolute top-0 left-0 w-full h-full object-cover"
                 onError={() => handleVideoError(item.url)}
               >
@@ -90,7 +97,8 @@ const RenderMedia = ({ event }: { event: EventType }) => {
                 height={300}
                 layout="responsive"
                 className="h-auto lg:max-h-screen"
-                priority
+                loading={eventIndex === 0 ? "eager" : "lazy"}
+                priority={eventIndex === 0}
               />
             </div>
           ),

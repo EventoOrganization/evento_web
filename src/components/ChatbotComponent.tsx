@@ -90,10 +90,14 @@ const ChatbotComponent = ({ className }: { className?: string }) => {
           <Image
             src="/chatbot-icon.png"
             alt="Chatbot Icon"
-            className={cn(isOpen ? "block" : "hidden md:block")}
+            className={cn(
+              isOpen ? "block" : "hidden md:block",
+              "object-contain w-20 h-20 md:w-24 md:h-24",
+            )}
             width={80}
             height={80}
           />
+
           {isOpen ? (
             <>
               <p className="">

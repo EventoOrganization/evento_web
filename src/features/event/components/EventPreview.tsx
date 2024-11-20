@@ -19,9 +19,11 @@ import EventModal from "./EventModal";
 const EventPreview = ({
   className,
   event,
+  title,
 }: {
   className?: string;
   event?: EventType;
+  title?: string;
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   // Adjusted function for correct DateTimeFormatOptions types
@@ -86,6 +88,8 @@ const EventPreview = ({
               width={245}
               height={245}
               className="w-full inset-0 h-full absolute object-cover aspect-square"
+              priority={title === "Upcoming Events" ? true : false}
+              loading={title === "Upcoming Events" ? "eager" : "lazy"}
             />
           ) : (
             <span></span>

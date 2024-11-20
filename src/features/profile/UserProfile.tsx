@@ -84,6 +84,7 @@ const UserProfile = ({
                     width={500}
                     height={500}
                     className="w-20 h-20 md:w-36 md:h-36 object-cover rounded-full"
+                    priority
                   />
                 ) : (
                   <div className="flex flex-col">

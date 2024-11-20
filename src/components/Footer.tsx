@@ -4,7 +4,14 @@ import InstagramIcon from "./icons/InstagramIcon";
 const Footer = () => {
   return (
     <footer className=" w-full flex flex-col justify-center items-center min-h-40 py-10 gap-10">
-      <Image src="/icon-512x512.png" alt="logo" width={138} height={45} />
+      <Image
+        src="/icon-128x128.png"
+        alt="logo"
+        width={128}
+        height={128}
+        className="object-contain"
+        priority
+      />
       <div className="grid grid-cols-1 md:flex gap-10 text-center">
         <Link href="/faq">FAQs</Link>
         <Link href="/privacy">Privacy Policy</Link>

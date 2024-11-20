@@ -15,7 +15,15 @@ import { usePathname } from "next/navigation";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import EventActionIcons from "./EventActionIcons";
 
-const Event = ({ className, event }: { className?: string; event?: any }) => {
+const Event = ({
+  className,
+  event,
+  index,
+}: {
+  className?: string;
+  event?: any;
+  index?: number;
+}) => {
   const pathname = usePathname();
 
   return (
@@ -41,6 +49,8 @@ const Event = ({ className, event }: { className?: string; event?: any }) => {
                   width={30}
                   height={30}
                   className="w-10 h-10 min-w-10  rounded-full"
+                  loading={index === 0 ? "eager" : "lazy"}
+                  priority={index === 0}
                 />
               ) : (
                 <Avatar>
@@ -86,7 +96,7 @@ const Event = ({ className, event }: { className?: string; event?: any }) => {
             {pathname === "/discover" ? (
               <DiscoverRenderMedia event={event} />
             ) : (
-              <RenderMedia event={event} />
+              <RenderMedia event={event} index={index} />
             )}
           </div>
         </div>

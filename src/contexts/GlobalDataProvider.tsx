@@ -6,7 +6,7 @@ import { useSession } from "./SessionProvider";
 const GlobalDataProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const { loadEvents, loadUser, loadInterests, refreshUsers } =
+  const { loadEvents, loadUsers, loadUser, loadInterests, refreshUsers } =
     useGlobalStore();
   const { user, token } = useSession();
 
@@ -18,12 +18,12 @@ const GlobalDataProvider: React.FC<{ children: React.ReactNode }> = ({
       refreshUsers(user._id, token);
       loadUser(token);
     } else {
-      // loadUsers("", "");
+      loadUsers("", "");
     }
   }, [
     loadInterests,
     loadEvents,
-    // loadUsers,
+    loadUsers,
     loadUser,
     refreshUsers,
     user,
