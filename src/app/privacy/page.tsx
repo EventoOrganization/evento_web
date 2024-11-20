@@ -4,7 +4,7 @@ const PrivacyPolicy = () => {
   return (
     <div className="bg-eventoPurpleDark text-white min-h-screen py-16 w-full">
       {/* Section principale */}
-      <Section className="max-w-4xl mx-auto space-y-10 px-6 md:px-12">
+      <Section className="max-w-4xl mx-auto space-y-10 px-6 md:px-12 items-start">
         <h1 className="text-4xl font-bold text-center">PRIVACY POLICY</h1>
         <p className="text-sm text-center">Last Updated November 15, 2024</p>
 
@@ -15,7 +15,7 @@ const PrivacyPolicy = () => {
           data when you use any of our services (collectively, “Services”), such
           as when you:
         </p>
-        <ul className="list-disc ml-5 space-y-3">
+        <ul className="list-disc ml-5 space-y-3 w-full">
           <li>
             Visit our website at{" "}
             <a href="http://www.evento-app.io" className="underline">
