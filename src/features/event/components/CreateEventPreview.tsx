@@ -100,6 +100,7 @@ const CreateEventPreview = ({
                 )}
                 <h4 className="ml-2">
                   {(eventStore &&
+                    eventStore?.username &&
                     eventStore?.username.charAt(0).toUpperCase() +
                       eventStore?.username.slice(1)) ||
                     "Username"}

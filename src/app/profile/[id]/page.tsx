@@ -42,7 +42,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function UserProfilePage({ params }: Props) {
   try {
     const profileData = await fetchProfileData(params.id);
-    console.log("Profile Data:", profileData.postEventsHosted);
     if (!profileData) {
       return (
         <>
