@@ -312,7 +312,7 @@ const EventSuccessPage = () => {
                   onClick={handleSend}
                   className="text-blue-500 underline"
                 >
-                  Share your private event
+                  Share link
                 </button>
                 <div className="flex gap-2 items-center">
                   <InfoIcon
