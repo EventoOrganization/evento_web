@@ -58,6 +58,9 @@ export type EventType = {
   description: string;
   includeChat: boolean;
   createRSVP: boolean;
+  restricted?: boolean;
+  visibility?: boolean;
+  showUsersLists?: boolean;
   latitude?: string;
   longitude?: string;
   location?: string;
