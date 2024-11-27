@@ -42,12 +42,12 @@ const EventSuccessPage = () => {
     ? event.favouritees.map((f) => f?._id || "")
     : [];
   const excludedUserIds = [...attendeeIds, ...favouriteIds];
-  const [isRestricted, setIsRestricted] = useState(event?.restricted || false);
+  const [isRestricted, setIsRestricted] = useState(false);
   useEffect(() => {
     const fetchEventData = async () => {
       try {
         const userQuery = user ? `?userId=${user._id}` : "";
-        const response = await fetchData(
+        const response = await fetchData<EventType>(
           `/events/getEvent/${eventId}${userQuery}`,
           HttpMethod.GET,
           null,
@@ -55,6 +55,8 @@ const EventSuccessPage = () => {
         );
         if (response.ok) {
           setEvent(response.data as EventType);
+          setIsGuestAllowed(response.data?.guestsAllowFriend || false);
+          setIsRestricted(response.data?.restricted || false);
         } else {
           toast({ description: "Event not found", variant: "destructive" });
         }
@@ -97,7 +99,39 @@ const EventSuccessPage = () => {
       });
     }
   };
-
+  const handleRestricted = async () => {
+    try {
+      const response = await fetchData(
+        `/events/updateEvent/${eventId}`,
+        HttpMethod.PATCH,
+        { field: "restricted", value: !isRestricted },
+        token,
+      );
+      if (response.ok) {
+        setIsRestricted(!isRestricted);
+        toast({
+          description: `Event ${!isRestricted ? "unrestricted" : "restricted"} successfully!`,
+          className: "bg-evento-gradient text-white",
+          duration: 3000,
+        });
+      }
+      if (response.error) {
+        console.error("Error updating event:", response.error);
+        toast({
+          description: response.error,
+          variant: "destructive",
+          duration: 3000,
+        });
+      }
+    } catch (error) {
+      console.error("Error updating event:", error);
+      toast({
+        description: "Error updating event",
+        variant: "destructive",
+        duration: 3000,
+      });
+    }
+  };
   // Ajout des invités à la liste des utilisateurs sélectionnés
   const addUser = (user: TempUserType) => {
     setCurrentSelectedUsers((prevUsers) => [...prevUsers, user]);
@@ -246,7 +280,6 @@ const EventSuccessPage = () => {
       });
     }
   };
-
   if (!event) {
     return <div>Loading...</div>;
   }
@@ -273,11 +306,14 @@ const EventSuccessPage = () => {
             </Link>
           </div>
           <div className="flex gap-2 justify-between  w-full">
-            <button onClick={handleSend} className="text-blue-500 underline">
-              Share your private event
-            </button>
             {event?.eventType === "private" && (
               <>
+                <button
+                  onClick={handleSend}
+                  className="text-blue-500 underline"
+                >
+                  Share your private event
+                </button>
                 <div className="flex gap-2 items-center">
                   <InfoIcon
                     className="w-4 text-gray-500 cursor-pointer"
@@ -294,7 +330,7 @@ const EventSuccessPage = () => {
                   <p className="text-sm text-muted-foreground">Restricted</p>
                   <Switch
                     checked={isRestricted}
-                    onCheckedChange={setIsRestricted}
+                    onCheckedChange={handleRestricted}
                   />
                 </div>
               </>
