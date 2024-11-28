@@ -103,7 +103,7 @@ const EventSuccessPage = () => {
     try {
       const response = await fetchData(
         `/events/updateEvent/${eventId}`,
-        HttpMethod.PATCH,
+        HttpMethod.PUT,
         { field: "restricted", value: !isRestricted },
         token,
       );

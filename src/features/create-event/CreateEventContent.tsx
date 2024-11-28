@@ -22,7 +22,7 @@ import { useGlobalStore } from "@/store/useGlobalStore";
 import { EventType, InterestType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
-import { XIcon } from "lucide-react";
+import { Check } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 const CreateEventContent = () => {
@@ -126,22 +126,6 @@ const CreateEventContent = () => {
       eventType: value as "public" | "private",
     }));
     handleFieldChange("eventType", value as "public" | "private");
-  };
-
-  const handleInterestsChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedInterestId = e.target.value;
-    const selectedInterest = interests.find(
-      (i) => i._id === selectedInterestId,
-    );
-
-    if (
-      selectedInterest &&
-      !selectedInterests.some((i) => i._id === selectedInterestId)
-    ) {
-      const updatedSelectedInterests = [...selectedInterests, selectedInterest];
-      setSelectedInterests(updatedSelectedInterests);
-      eventStore.setEventField("interests", updatedSelectedInterests);
-    }
   };
 
   const handleRemoveInterest = (interestId: string) => {
@@ -336,41 +320,49 @@ const CreateEventContent = () => {
               <div>
                 <Label htmlFor="interests">Interests Category</Label>
                 <ul className="flex flex-wrap gap-2 mt-2">
-                  {interests
-                    .filter(
-                      (i) => !selectedInterests.some((si) => si._id === i._id),
-                    )
-                    .map((interest) => (
+                  {interests.map((interest) => {
+                    const isSelected = selectedInterests.some(
+                      (i) => i._id === interest._id,
+                    );
+
+                    return (
                       <li
                         key={interest._id}
-                        className={`cursor-pointer px-4 py-2 rounded-md border text-sm w-fit ${
-                          selectedInterests.some((i) => i._id === interest._id)
+                        onClick={() => {
+                          if (isSelected) {
+                            setSelectedInterests((prev) =>
+                              prev.filter((i) => i._id !== interest._id),
+                            );
+                            eventStore.setEventField(
+                              "interests",
+                              selectedInterests.filter(
+                                (i) => i._id !== interest._id,
+                              ),
+                            );
+                          } else {
+                            const updatedInterests = [
+                              ...selectedInterests,
+                              interest,
+                            ];
+                            setSelectedInterests(updatedInterests);
+                            eventStore.setEventField(
+                              "interests",
+                              updatedInterests,
+                            );
+                          }
+                        }}
+                        className={`cursor-pointer px-2 py-2 rounded-md border text-sm w-fit flex items-center justify-center ${
+                          isSelected
                             ? "bg-black text-white"
-                            : "bg-gray-200 text-black hover:bg-gray-300"
+                            : "bg-gray-200 text-muted-foreground hover:bg-gray-300"
                         }`}
                       >
+                        {isSelected && <Check className="mr-2 w-4 h-4" />}
                         {interest.name}
                       </li>
-                    ))}
+                    );
+                  })}
                 </ul>
-                <select
-                  value=""
-                  onChange={handleInterestsChange}
-                  className="form-select w-full text-sm px-3 py-2 rounded-md border"
-                >
-                  <option value="" disabled>
-                    Choose interest...
-                  </option>
-                  {interests
-                    .filter(
-                      (i) => !selectedInterests.some((si) => si._id === i._id),
-                    )
-                    .map((interest) => (
-                      <option key={interest._id} value={interest._id}>
-                        {interest.name}
-                      </option>
-                    ))}
-                </select>
               </div>
             )}
             <div className="">
@@ -397,21 +389,6 @@ const CreateEventContent = () => {
               </RadioGroup>
             </div>
 
-            <ul className="flex gap-2 flex-wrap">
-              {eventStore.interests &&
-                eventStore.interests.map((interest: any, index: number) => (
-                  <li
-                    key={index}
-                    onClick={() =>
-                      handleRemoveInterest && handleRemoveInterest(interest._id)
-                    }
-                    className="bg-eventoPurpleLight/30 w-fit px-2 py-1 rounded-lg text-sm cursor-pointer flex items-center"
-                  >
-                    {interest.name}
-                    <XIcon className="w-4 h-4 ml-1" />
-                  </li>
-                ))}
-            </ul>
             {/* <div className="md:hidden">
               <Input
                 type="file"

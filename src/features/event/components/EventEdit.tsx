@@ -91,7 +91,7 @@ const EventEdit = ({
       };
       const response = await fetchData(
         `/events/updateEvent/${event._id}`,
-        HttpMethod.PATCH,
+        HttpMethod.PUT,
         body,
         token,
       );
