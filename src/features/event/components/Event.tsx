@@ -8,12 +8,12 @@ import { Button } from "@/components/ui/button";
 import DiscoverRenderMedia from "@/features/discover/DiscoverRenderMedia";
 import { cn } from "@/lib/utils";
 import { renderDate } from "@/utils/dateUtils";
-import { Loader } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import EventActionIcons from "./EventActionIcons";
+import EventoLoader from "@/components/EventoLoader";
 
 const Event = ({
   className,
@@ -89,7 +89,7 @@ const Event = ({
               </div>
             </Link>
             <span className="text-sm text-right col-span-2">
-              {renderDate(event) || <Loader />}
+              {renderDate(event) || <EventoLoader />}
             </span>
           </div>
           <div>

@@ -1,12 +1,12 @@
 import { handleUpload } from "@/app/create-event/action"; // Importing the upload function
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import Loader from "@/components/ui/Loader";
 import { useSession } from "@/contexts/SessionProvider";
 import { useToast } from "@/hooks/use-toast";
 import { EventType } from "@/types/EventType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { useState } from "react";
+import EventoLoader from "./EventoLoader";
 
 interface MediaUploadProps {
   event: EventType;
@@ -94,7 +94,7 @@ const MediaUpload: React.FC<MediaUploadProps> = ({ event }) => {
         onClick={handleUploadClick}
         disabled={isUploading || !files || files.length === 0}
       >
-        {isUploading ? <Loader /> : "Upload Media"}
+        {isUploading ? <EventoLoader /> : "Upload Media"}
       </Button>
     </div>
   );

@@ -2,7 +2,6 @@
 import Section from "@/components/layout/Section";
 import RenderMedia from "@/components/RenderMedia";
 import RequestModal from "@/components/RequestModal";
-import Loader from "@/components/ui/Loader";
 import { useSession } from "@/contexts/SessionProvider";
 import AuthModal from "@/features/auth/components/AuthModal";
 import TabSelector from "@/features/discover/TabSelector";
@@ -22,6 +21,7 @@ import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import DeleteEventButton from "./DeleteEventButton";
+import EventoLoader from "@/components/EventoLoader";
 export type EventStatusKeys = "isGoing" | "isFavourite" | "isRefused";
 
 const EventIdTabs = ({ evento }: { evento?: EventType }) => {
@@ -152,7 +152,7 @@ const EventIdTabs = ({ evento }: { evento?: EventType }) => {
   if (isLoading) {
     return (
       <div className="w-full h-full flex items-center justify-center">
-        <Loader />
+        <EventoLoader />
       </div>
     );
   }

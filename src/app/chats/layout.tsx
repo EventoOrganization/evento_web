@@ -23,6 +23,7 @@ export default function ChatLayout({
   const dev = true;
 
   if (dev) {
+    // return <EventoLoader />;
     return <ComingSoon message="This feature is currently under development" />;
   }
   return (

@@ -1,4 +1,5 @@
 "use client";
+import EventoLoader from "@/components/EventoLoader";
 import InstagramIcon from "@/components/icons/InstagramIcon";
 import LinkedinIcon from "@/components/icons/LinkedinIcon";
 import TiktokIcon from "@/components/icons/TiktokIcon";
@@ -6,7 +7,6 @@ import Section from "@/components/layout/Section";
 import TruncatedText from "@/components/TruncatedText";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import Loader from "@/components/ui/Loader";
 import UserListModal from "@/components/UserListModal";
 import EventSection from "@/features/event/components/EventSection";
 import { EventType } from "@/types/EventType";
@@ -36,43 +36,31 @@ const UserProfile = ({
   pastEventsHosted?: EventType[];
 }) => {
   const [isMounted, setIsMounted] = useState(false);
+  const [isFetching, setIsFetching] = useState(false);
   console.log("profile", profile);
-  // const router = useRouter();
   const pathname = usePathname();
   const [modalType, setModalType] = useState<ModalType | "">("");
-  // const { conversations, updateConversations, setActiveConversation } =
-  //   useSocket();
-  // const { user, token } = useSession();
   useEffect(() => {
     setIsMounted(true);
-  });
+    if (!profile || !upcomingEvents) {
+      setIsFetching(true);
+      setTimeout(() => {
+        setIsFetching(false);
+      }, 1500); // Simule une requête API
+    }
+  }, [profile, upcomingEvents]);
 
   const platformIcons: Record<string, JSX.Element> = {
     linkedin: <LinkedinIcon />,
     tiktok: <TiktokIcon />,
     instagram: <InstagramIcon />,
   };
-  // const conversationWithUser = conversations.find(
-  //   (conversation) => conversation.title === profile?.username,
-  // );
-  // const handleMessageIconClick = async () => {
-  //   if (conversationWithUser) {
-  //     setActiveConversation(conversationWithUser);
-  //     router.push(`/chats?conversationId=${conversationWithUser._id}`);
-  //   } else if (profile?._id && token) {
-  //     await startPrivateChat(
-  //       profile._id,
-  //       token,
-  //       updateConversations,
-  //       setActiveConversation,
-  //       router,
-  //     );
-  //   }
-  // };
   return (
     <>
-      {!isMounted ? (
-        <Loader />
+      {!isMounted || isFetching ? (
+        <div className="w-full min-h-screen flex justify-center items-center">
+          <EventoLoader />
+        </div>
       ) : (
         <Section className="gap-6 md:pt-20 md:px-20">
           <div className=" w-full lg:grid lg:grid-cols-4">

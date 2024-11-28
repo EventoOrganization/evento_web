@@ -10,10 +10,10 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import Loader from "@/components/ui/Loader";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { handleFieldChange } from "../eventActions";
+import EventoLoader from "@/components/EventoLoader";
 
 const MediaSelectionModal = ({
   isOpen,
@@ -211,7 +211,7 @@ const MediaSelectionModal = ({
             Cancel
           </Button>
           <Button onClick={handleSave} disabled={isUploading}>
-            {isUploading ? <Loader /> : "Save"}
+            {isUploading ? <EventoLoader /> : "Save"}
           </Button>
         </DialogFooter>
       </DialogContent>

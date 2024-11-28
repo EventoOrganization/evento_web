@@ -1,10 +1,10 @@
 "use client";
 
+import EventoLoader from "@/components/EventoLoader";
 import Section from "@/components/layout/Section";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
-import Loader from "@/components/ui/Loader";
 import {
   Popover,
   PopoverContent,
@@ -59,24 +59,39 @@ const DiscoverPageContent = () => {
   const [toggleSearch, setToggleSearch] = useState(false);
   const [SeeMoreCount, setSeeMoreCount] = useState<number>(10);
   const [filteredEvents, setFilteredEvents] = useState<EventType[]>([]);
+  const [isFetching, setIsFetching] = useState(false);
   useEffect(() => {
     if (!isHydrated && events) {
       setIsHydrated(true);
     }
   }, [events]);
   useEffect(() => {
-    if (isHydrated && events && events.length > 0) {
-      const filteredEvents = filterEvents(
-        events || [],
-        selectedInterests || [],
-        searchText || "",
-        selectedTab || "All events",
-        location || null,
-        startDate || null,
-        endDate || null,
-      );
-      setFilteredEvents(filteredEvents);
-    }
+    const fetchFilteredEvents = async () => {
+      if (isHydrated && events && events.length > 0) {
+        setIsFetching(true); // Active le loader
+        // Simule une requête ou un délai pour garantir la mise à jour
+        const filtered = await new Promise<EventType[]>(
+          (resolve) =>
+            setTimeout(() => {
+              resolve(
+                filterEvents(
+                  events || [],
+                  selectedInterests || [],
+                  searchText || "",
+                  selectedTab || "All events",
+                  location || null,
+                  startDate || null,
+                  endDate || null,
+                ),
+              );
+            }, 500), // Ajout d'un délai (500 ms pour tester)
+        );
+        setFilteredEvents(filtered);
+        setIsFetching(false); // Désactive le loader une fois que tout est prêt
+      }
+    };
+
+    fetchFilteredEvents();
   }, [
     selectedInterests,
     searchText,
@@ -133,7 +148,9 @@ const DiscoverPageContent = () => {
   return (
     <>
       {!isHydrated ? (
-        <Loader />
+        <div className="flex justify-center items-center min-h-screen">
+          <EventoLoader />
+        </div>
       ) : (
         <>
           {" "}
@@ -154,7 +171,11 @@ const DiscoverPageContent = () => {
                   <MenuIcon onClick={() => setToggleSearch(!toggleSearch)} />
                 </span>
               </li>
-              {filteredEvents.length > 0 ? (
+              {isFetching ? (
+                <div className="flex justify-center items-center h-96">
+                  <EventoLoader />
+                </div>
+              ) : filteredEvents.length > 0 ? (
                 filteredEvents.map((event, index) => (
                   <li
                     key={event._id}
