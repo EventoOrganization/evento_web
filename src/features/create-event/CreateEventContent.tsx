@@ -335,13 +335,20 @@ const CreateEventContent = () => {
             {eventStore.eventType === "public" && (
               <div>
                 <Label htmlFor="interests">Interests Category</Label>
-                <ul>
+                <ul className="flex flex-wrap gap-2 mt-2">
                   {interests
                     .filter(
                       (i) => !selectedInterests.some((si) => si._id === i._id),
                     )
                     .map((interest) => (
-                      <li key={interest._id} value={interest._id}>
+                      <li
+                        key={interest._id}
+                        className={`cursor-pointer px-4 py-2 rounded-md border text-sm w-fit ${
+                          selectedInterests.some((i) => i._id === interest._id)
+                            ? "bg-black text-white"
+                            : "bg-gray-200 text-black hover:bg-gray-300"
+                        }`}
+                      >
                         {interest.name}
                       </li>
                     ))}

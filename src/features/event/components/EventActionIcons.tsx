@@ -157,15 +157,7 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
   };
 
   const handleSend = async () => {
-    const env = process.env.VERCEL_ENV;
-    const baseUrl =
-      env === "production"
-        ? "https://www.evento-app.io"
-        : env === "preview"
-          ? `https://${process.env.VERCEL_URL}`
-          : "http://localhost:3000";
-
-    const eventUrl = `${baseUrl}/event/${event?._id}`;
+    const eventUrl = `${process.env.NEXT_PUBLIC_FRONTEND_URL}/event/${event?._id}`;
 
     const shareApiSupported = true; // to check if the share api is supported
 

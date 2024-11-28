@@ -236,15 +236,7 @@ const EventSuccessPage = () => {
         user.lastName?.toLowerCase().includes(filter)),
   );
   const handleSend = async () => {
-    const env = process.env.VERCEL_ENV;
-    const baseUrl =
-      env === "production"
-        ? "https://www.evento-app.io" // URL de production
-        : env === "preview"
-          ? `https://${process.env.VERCEL_URL}` // URL du déploiement actuel
-          : "http://localhost:3000"; // URL pour le développement local
-
-    const eventUrl = `${baseUrl}/event/${event?._id}`;
+    const eventUrl = `${process.env.NEXT_PUBLIC_FRONTEND_URL}/event/${event?._id}`;
 
     const shareApiSupported = true; // to check if the share api is supported
 
