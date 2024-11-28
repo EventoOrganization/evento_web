@@ -3,6 +3,7 @@ import Section from "@/components/layout/Section";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 import { useSession } from "@/contexts/SessionProvider";
 import AuthModal from "@/features/auth/components/AuthModal";
@@ -119,6 +120,14 @@ const CreateEventContent = () => {
     }));
     handleFieldChange(name, e.target.value);
   };
+  const handleRadioChange = (value: string) => {
+    setFormValues((prev) => ({
+      ...prev,
+      eventType: value as "public" | "private",
+    }));
+    handleFieldChange("eventType", value as "public" | "private");
+  };
+
   const handleInterestsChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedInterestId = e.target.value;
     const selectedInterest = interests.find(
@@ -271,26 +280,22 @@ const CreateEventContent = () => {
 
   return (
     <>
-      {" "}
-      <div className="relative flex justify-center items-center mt-10 text-eventoPurpleLight gap-2">
-        <h2 className="animate-slideInLeft font-black opacity-0">
-          <span>Create </span>
-          <span>Event</span>
-        </h2>
-      </div>
+      <h1 className="animate-slideInLeft font-black opacity-0 lg:text-5xl text-black w-full mt-10 px-4">
+        Create Event
+      </h1>
       <div className=" w-full flex">
         <Section className=" max-w-5xl w-full justify-start ">
           <form onSubmit={handleSubmit} className="space-y-4  w-full">
             <div>
-              <Label className="sr-only" htmlFor="title">
-                Title
+              <Label htmlFor="title">
+                Title<span className="text-red-500">*</span>
               </Label>
               <Input
                 id="title"
                 name="title"
                 value={eventStore.title}
                 onChange={handleChange}
-                placeholder="Enter event title"
+                placeholder="Enter"
               />
             </div>
             {(!user || (user && !user.username)) && (
@@ -308,44 +313,39 @@ const CreateEventContent = () => {
                 />
               </div>
             )}
-            <div className="grid grid-cols-2 gap-4">
-              <div className="">
-                <Label className="sr-only" htmlFor="eventType">
-                  Event Type
+            <div className="">
+              <Label htmlFor="eventType">
+                Event Format<span className="text-red-500">*</span>
+              </Label>
+              <RadioGroup
+                className="flex items-center gap-4 mt-2"
+                defaultValue={eventStore.eventType}
+                onValueChange={handleRadioChange}
+              >
+                <Label className="flex items-center gap-2">
+                  <RadioGroupItem value="public" id="public" />
+                  Public
                 </Label>
-                <select
-                  id="eventType"
-                  name="eventType"
-                  value={eventStore.eventType}
-                  onChange={handleChange}
-                  className="form-select w-full text-sm px-3 py-2 rounded-md border"
-                >
-                  <option value="public">Public</option>
-                  <option value="private">Private</option>
-                </select>
-              </div>
-              <div>
-                <Label className="sr-only" htmlFor="mode">
-                  Mode
+                <Label className="flex items-center gap-2">
+                  <RadioGroupItem value="private" id="private" />
+                  Private
                 </Label>
-                <select
-                  id="mode"
-                  name="mode"
-                  value={eventStore.mode}
-                  onChange={handleChange}
-                  className="form-select w-full text-sm px-3 py-2 rounded-md border"
-                >
-                  <option value="virtual">Virtual</option>
-                  <option value="in-person">In-person</option>
-                  <option value="both">Both</option>
-                </select>
-              </div>
+              </RadioGroup>
             </div>
             {eventStore.eventType === "public" && (
               <div>
-                <Label htmlFor="interests" className="sr-only">
-                  Select Interests
-                </Label>
+                <Label htmlFor="interests">Interests Category</Label>
+                <ul>
+                  {interests
+                    .filter(
+                      (i) => !selectedInterests.some((si) => si._id === i._id),
+                    )
+                    .map((interest) => (
+                      <li key={interest._id} value={interest._id}>
+                        {interest.name}
+                      </li>
+                    ))}
+                </ul>
                 <select
                   value=""
                   onChange={handleInterestsChange}
@@ -366,6 +366,30 @@ const CreateEventContent = () => {
                 </select>
               </div>
             )}
+            <div className="">
+              <Label htmlFor="mode">
+                Event Format<span className="text-red-500">*</span>
+              </Label>
+              <RadioGroup
+                className="flex items-center gap-4 mt-2"
+                defaultValue={eventStore.mode}
+                onValueChange={handleRadioChange}
+              >
+                <Label className="flex items-center gap-2">
+                  <RadioGroupItem value="virtual" id="virtual" />
+                  Public
+                </Label>
+                <Label className="flex items-center gap-2">
+                  <RadioGroupItem value="in-person" id="in-person" />
+                  Private
+                </Label>
+                <Label className="flex items-center gap-2">
+                  <RadioGroupItem value="both" id="both" />
+                  Both
+                </Label>
+              </RadioGroup>
+            </div>
+
             <ul className="flex gap-2 flex-wrap">
               {eventStore.interests &&
                 eventStore.interests.map((interest: any, index: number) => (

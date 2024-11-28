@@ -64,7 +64,7 @@ class ErrorBoundary extends React.Component<
       // Rendu d'une interface alternative en cas d'erreur
       return (
         <div style={{ padding: "20px", textAlign: "center" }}>
-          <h1>Une erreur s&apos;est produite</h1>
+          <h2>Une erreur s&apos;est produite</h2>
           <p>
             Veuillez réessayer plus tard. Si le problème persiste, contactez le
             support.
