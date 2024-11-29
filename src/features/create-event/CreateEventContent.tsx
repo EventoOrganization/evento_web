@@ -404,8 +404,8 @@ const CreateEventContent = () => {
             </div>
             <EventDateComponent />
             <div>
-              <Label className="sr-only" htmlFor="description">
-                Description
+              <Label htmlFor="description">
+                Description<span className="text-destructive">*</span>
               </Label>
               <Textarea
                 id="description"

@@ -49,15 +49,17 @@ const SelectTimeZone = ({
         disabled={!editMode}
       >
         <SelectTrigger
-          className={cn("border p-2 rounded text-left", className)}
+          className={cn("border p-2 rounded justify-start", className)}
         >
-          <SelectValue>{currentLabel}</SelectValue>
+          <SelectValue className="">{currentLabel}</SelectValue>
         </SelectTrigger>
         <SelectContent
-          style={{
-            width: "var(--radix-select-trigger-width)",
-            maxWidth: "100%",
-          }}
+          className={cn(
+            "max-w-full",
+            "w-[var(--radix-select-trigger-width)]",
+            "md:w-[calc(100vw-2rem)]",
+            "md:max-w-fit",
+          )}
         >
           {timeZonesMap.map((tz) => (
             <SelectItem
