@@ -14,7 +14,7 @@ import { Switch } from "@/components/ui/togglerbtn";
 import { useEventStore } from "@/store/useEventStore";
 import { TimeSlotType } from "@/types/EventType";
 import { isSameDay, setDateWithTime, updateTimeSlots } from "@/utils/dateUtils";
-import { timeZonesMap } from "@/utils/timezones";
+import { getUTCOffset, timeZonesMap } from "@/utils/timezones";
 import { format, startOfDay } from "date-fns";
 import { enGB } from "date-fns/locale";
 import { Calendar as CalendarIcon } from "lucide-react";
@@ -54,14 +54,13 @@ const EventDateComponent = ({
   const today = startOfDay(new Date());
   const eventStore = useEventStore();
   const isEditMode = !!handleUpdate;
-  const defaultTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const defaultTimeZone = getUTCOffset();
   const matchedTimeZone =
-    timeZonesMap.find((tz) => defaultTimeZone.includes(tz.value))?.value ||
+    timeZonesMap.find((tz) => defaultTimeZone.includes(tz.offset))?.offset ||
     defaultTimeZone;
   const [selectedTimeZone, setSelectedTimeZone] = useState(
     isEditMode ? initialTimeZone : eventStore.timeZone || matchedTimeZone,
   );
-
   const [localStartDate, setLocalStartDate] = useState<string>(
     isEditMode
       ? setDateWithTime(initialStartDate || "", initialStartTime || "00:00")
@@ -142,6 +141,7 @@ const EventDateComponent = ({
       handleFieldChange("timeZone", matchedTimeZone);
     }
   }, [matchedTimeZone]);
+
   const handleStartDateChange = (date: Date | undefined) => {
     if (date) {
       const formattedDate = format(date, "yyyy-MM-dd");
@@ -229,7 +229,9 @@ const EventDateComponent = ({
   return (
     <div>
       <div className="flex justify-between mb-2">
-        <h3 className="text-eventoPurpleLight">Date</h3>
+        <Label className="">
+          Date<span className="text-destructive">*</span>
+        </Label>
         {isEditMode &&
           (editMode ? (
             <div className="flex gap-2">
@@ -270,7 +272,7 @@ const EventDateComponent = ({
             </Button>
           ))}
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-2">
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-2">
         <Popover>
           <PopoverTrigger asChild>
             <Button variant="outline" disabled={!editMode && isEditMode}>
@@ -316,6 +318,7 @@ const EventDateComponent = ({
             !isEditMode && handleFieldChange("timeZone", value);
           }}
           editMode={isEditMode ? editMode : true}
+          className="col-span-2 lg:col-span-1"
         />
       </div>
       {!isSameDay(localStartDate, localEndDate) && (
@@ -342,7 +345,7 @@ const EventDateComponent = ({
             >
               <Input type="date" value={slot.date} readOnly disabled />
               <TimeSelect
-                value={slot.startTime}
+                value={`${slot.startTime}`}
                 onChange={(value) => {
                   handleTimeSlotChange(index, "startTime", value);
                   !isEditMode && handleFieldChange("timeSlots", localTimeSlots);

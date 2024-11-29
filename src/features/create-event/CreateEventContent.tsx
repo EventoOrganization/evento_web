@@ -120,12 +120,20 @@ const CreateEventContent = () => {
     }));
     handleFieldChange(name, e.target.value);
   };
-  const handleRadioChange = (value: string) => {
+  const handleEventTypeChange = (value: string) => {
     setFormValues((prev) => ({
       ...prev,
       eventType: value as "public" | "private",
     }));
     handleFieldChange("eventType", value as "public" | "private");
+  };
+
+  const handleModeChange = (value: string) => {
+    setFormValues((prev) => ({
+      ...prev,
+      mode: value as "virtual" | "in-person" | "both",
+    }));
+    handleFieldChange("mode", value as "virtual" | "in-person" | "both");
   };
 
   const handleRemoveInterest = (interestId: string) => {
@@ -264,7 +272,7 @@ const CreateEventContent = () => {
 
   return (
     <>
-      <h1 className="animate-slideInLeft font-black opacity-0 lg:text-5xl text-black w-full mt-10 px-4">
+      <h1 className="animate-slideInLeft opacity-0 lg:text-5xl flex justify-center md:justify-start md:font-black text-black w-full mt-10 px-4">
         Create Event
       </h1>
       <div className=" w-full flex">
@@ -304,7 +312,7 @@ const CreateEventContent = () => {
               <RadioGroup
                 className="flex items-center gap-4 mt-2"
                 defaultValue={eventStore.eventType}
-                onValueChange={handleRadioChange}
+                onValueChange={handleEventTypeChange}
               >
                 <Label className="flex items-center gap-2">
                   <RadioGroupItem value="public" id="public" />
@@ -372,15 +380,15 @@ const CreateEventContent = () => {
               <RadioGroup
                 className="flex items-center gap-4 mt-2"
                 defaultValue={eventStore.mode}
-                onValueChange={handleRadioChange}
+                onValueChange={handleModeChange}
               >
                 <Label className="flex items-center gap-2">
                   <RadioGroupItem value="virtual" id="virtual" />
-                  Public
+                  Virtual
                 </Label>
                 <Label className="flex items-center gap-2">
                   <RadioGroupItem value="in-person" id="in-person" />
-                  Private
+                  In person
                 </Label>
                 <Label className="flex items-center gap-2">
                   <RadioGroupItem value="both" id="both" />
@@ -388,22 +396,12 @@ const CreateEventContent = () => {
                 </Label>
               </RadioGroup>
             </div>
-
-            {/* <div className="md:hidden">
-              <Input
-                type="file"
-                accept="image/*,video/*"
-                multiple
-                onChange={handleUpload}
-              />
-            </div> */}
             <div className={`${eventStore.mode !== "virtual" ? "" : "hidden"}`}>
               <MyGoogleMapComponent
                 location={location || { lat: 0, lng: 0 }}
                 setLocation={setLocation}
               />
             </div>
-            {/* <EventDate /> */}
             <EventDateComponent />
             <div>
               <Label className="sr-only" htmlFor="description">

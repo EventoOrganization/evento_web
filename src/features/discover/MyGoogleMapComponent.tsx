@@ -1,8 +1,8 @@
 "use client";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { useEventStore } from "@/store/useEventStore";
-import { usePWAStore } from "@/store/usePWAStore";
 import { StandaloneSearchBox, useJsApiLoader } from "@react-google-maps/api";
 import { ChevronDown } from "lucide-react";
 import { usePathname } from "next/navigation";
@@ -33,7 +33,6 @@ const MyGoogleMapComponent = ({
     lat: 37.7749,
     lng: -122.4194,
   });
-  const { geolocationPermission } = usePWAStore();
   const searchBoxRef = useRef<google.maps.places.SearchBox | null>(null);
 
   const { isLoaded } = useJsApiLoader({
@@ -43,26 +42,25 @@ const MyGoogleMapComponent = ({
   });
 
   // Function to fetch timezone from Google Time Zone API
-  const fetchTimeZone = async (lat: number, lng: number) => {
-    const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
-    const url = `https://maps.googleapis.com/maps/api/timezone/json?location=${lat},${lng}&timestamp=${Math.floor(
-      Date.now() / 1000,
-    )}&key=${apiKey}`;
+  // const fetchTimeZone = async (lat: number, lng: number) => {
+  //   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+  //   const url = `https://maps.googleapis.com/maps/api/timezone/json?location=${lat},${lng}&timestamp=${Math.floor(
+  //     Date.now() / 1000,
+  //   )}&key=${apiKey}`;
 
-    try {
-      const response = await fetch(url);
-      const data = await response.json();
-      if (data.status === "OK") {
-        return data.timeZoneId;
-      }
-      console.error("Failed to fetch timezone data:", data.status);
-    } catch (error) {
-      console.error("Error fetching timezone:", error);
-    }
-    return null;
-  };
+  //   try {
+  //     const response = await fetch(url);
+  //     const data = await response.json();
+  //     if (data.status === "OK") {
+  //       return data.timeZoneId;
+  //     }
+  //     console.error("Failed to fetch timezone data:", data.status);
+  //   } catch (error) {
+  //     console.error("Error fetching timezone:", error);
+  //   }
+  //   return null;
+  // };
 
-  // Function to fetch address and timezone for the provided lat and lng
   const fetchAddressAndTimeZone = async (lat: number, lng: number) => {
     if (!isLoaded) return;
 
@@ -77,33 +75,30 @@ const MyGoogleMapComponent = ({
           eventStore.setEventField("longitude", location.lng.toString());
           eventStore.setEventField("location", results[0].formatted_address);
         }
-        const timeZone = await fetchTimeZone(lat, lng);
-        if (timeZone) {
-          eventStore.setEventField("timeZone", timeZone);
-        }
+        // const timeZone = await fetchTimeZone(lat, lng);
+        // if (timeZone) {
+        //   eventStore.setEventField("timeZone", timeZone);
+        // }
       } else {
         console.error("Geocoder failed:", status);
       }
     });
   };
 
-  // Fetch current location on component mount
   useEffect(() => {
-    if (geolocationPermission) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const currentLocation = {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          };
-          setLocation(currentLocation);
-          setMapCenter(currentLocation);
-          fetchAddressAndTimeZone(currentLocation.lat, currentLocation.lng);
-        },
-        (error) => console.error("Geolocation error:", error),
-      );
-    }
-  }, [isLoaded, geolocationPermission]);
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const currentLocation = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        };
+        setLocation(currentLocation);
+        setMapCenter(currentLocation);
+        fetchAddressAndTimeZone(currentLocation.lat, currentLocation.lng);
+      },
+      (error) => console.error("Geolocation error:", error),
+    );
+  }, [isLoaded]);
 
   const onLoad = useCallback((ref: google.maps.places.SearchBox) => {
     searchBoxRef.current = ref;
@@ -149,11 +144,16 @@ const MyGoogleMapComponent = ({
         className="flex items-center justify-between cursor-pointer"
         onClick={() => setIsMapVisible(!isMapVisible)}
       >
-        <h4 className="text-purple-600 font-bold">
-          {pathname === "/create-event"
-            ? "Choose Location"
-            : "Current Location"}
-        </h4>
+        <Label
+          className={cn(" ", {
+            "text-purple-600 font-bold": pathname != "/create-event",
+          })}
+        >
+          {pathname === "/create-event" ? "Location" : "Current Location"}
+          {pathname === "/create-event" && (
+            <span className="text-sm text-destructive">*</span>
+          )}
+        </Label>
         <ChevronDown
           className={cn("transition-transform duration-300", {
             "rotate-180": isMapVisible,
