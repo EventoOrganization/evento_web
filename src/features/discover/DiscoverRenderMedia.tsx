@@ -46,6 +46,7 @@ const RenderMedia = ({ event }: { event: EventType }) => {
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
       onClick={handleClick}
+      className=" h-full"
     >
       <Carousel
         showThumbs={false}
@@ -53,7 +54,7 @@ const RenderMedia = ({ event }: { event: EventType }) => {
         infiniteLoop={true}
         emulateTouch={true}
         useKeyboardArrows={true}
-        className=" relative"
+        className=" relative "
       >
         {initialMedias.map((item, index) =>
           item.type === "video" ? (
@@ -75,25 +76,20 @@ const RenderMedia = ({ event }: { event: EventType }) => {
               </video>
             </div>
           ) : (
-            <div
+            <Image
+              src={item.url}
+              alt={`Preview media ${index + 1}`}
               key={index}
-              className="relative w-full h-[340px]"
+              width={100}
+              height={100}
+              className="w-full h-full"
+              priority
               onClick={(e) => {
                 if (!isSwiping) {
                   e.stopPropagation();
                 }
               }}
-            >
-              <Image
-                src={item.url}
-                alt={`Preview media ${index + 1}`}
-                fill
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                style={{ objectFit: "contain" }}
-                className="w-full h-full"
-                priority
-              />
-            </div>
+            />
           ),
         )}
       </Carousel>

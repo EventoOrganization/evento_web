@@ -159,8 +159,8 @@ const DiscoverPageContent = () => {
               <span>Discover Events</span>
             </h2>
           </div>
-          <Section className="flex flex-col-reverse md:grid grid-cols-2 lg:grid-cols-3  md:gap-0 items-start justify-end px-0">
-            <ul className="w-full space-y-6 lg:col-span-2 ">
+          <Section className="flex flex-col-reverse md:grid  md:grid-cols-3  md:gap-0 items-start justify-end px-0">
+            <ul className="w-full space-y-6 md:col-span-2 ">
               <li className="flex items-center sticky top-0 z-20 bg-muted p-2 md:p-4 flex-col gap-2 border-b shadow md:shadow-none md:border-none">
                 <TabSelector
                   onChange={setSelectedTab}
@@ -317,7 +317,7 @@ const DiscoverPageContent = () => {
                   ))}
                 </ul>
               </div>{" "}
-              <div className="p-4 hidden md:block">
+              <div className="p-4 hidden lg:block">
                 <div className="space-y-4  mb-20">
                   {session.isAuthenticated ? (
                     <>

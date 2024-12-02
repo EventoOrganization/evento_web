@@ -1,5 +1,6 @@
 "use client";
 import AvatarStack from "@/components/AvatarStack";
+import EventoLoader from "@/components/EventoLoader";
 import MapPinIcon2 from "@/components/icons/MappPinIcon2";
 import RenderMedia from "@/components/RenderMedia";
 import TruncatedText from "@/components/TruncatedText";
@@ -13,7 +14,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import EventActionIcons from "./EventActionIcons";
-import EventoLoader from "@/components/EventoLoader";
 
 const Event = ({
   className,
@@ -30,7 +30,7 @@ const Event = ({
     <>
       <div
         className={cn(
-          "bg-white border maw-w-md shadow rounded p-4 w-full grid grid-cols-1 lg:grid-cols-2  h-fit gap-4 hover:shadow-xl hover:bg-slate-50 cursor-pointer relative",
+          " md:bg-white md:border maw-w-md md:shadow rounded md:p-4 w-full grid grid-cols-1 lg:grid-cols-2  h-fit gap-4 md:hover:shadow-xl md:hover:bg-slate-50 cursor-pointer relative",
           className,
           { "lg:grid-cols-1": pathname === "/discover" },
         )}

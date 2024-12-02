@@ -1,9 +1,6 @@
 "use client";
-import { handleDeleteMedia } from "@/app/create-event/action";
-import { Button } from "@/components/ui/button";
 import { useEventStore } from "@/store/useEventStore";
 import { cn } from "@nextui-org/theme";
-import { TrashIcon } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { Carousel } from "react-responsive-carousel";
@@ -41,28 +38,28 @@ const CreateEventCarousel = () => {
   const handleVideoError = (url: string) => {
     console.error(`Failed to load video from ${url}`);
   };
-  const deleteMedia = async (index: number, mediaItem: MediaItem) => {
-    const fileKey = new URL(mediaItem.url).pathname.substring(1);
-    try {
-      const success = await handleDeleteMedia(fileKey);
-      if (success) {
-        useEventStore.setState((state) => ({
-          mediaPreviews: state?.mediaPreviews?.filter((_, i) => i !== index),
-        }));
-        const updatedItems = mediaPreviews?.filter((_, i) => i !== index);
-        setCarouselItems(updatedItems);
-        console.log(`Successfully deleted file: ${fileKey}`);
-      } else {
-        console.error(`Failed to delete file: ${fileKey}`);
-      }
-    } catch (error) {
-      console.error("Error deleting media:", error);
-    }
-  };
+  // const deleteMedia = async (index: number, mediaItem: MediaItem) => {
+  //   const fileKey = new URL(mediaItem.url).pathname.substring(1);
+  //   try {
+  //     const success = await handleDeleteMedia(fileKey);
+  //     if (success) {
+  //       useEventStore.setState((state) => ({
+  //         mediaPreviews: state?.mediaPreviews?.filter((_, i) => i !== index),
+  //       }));
+  //       const updatedItems = mediaPreviews?.filter((_, i) => i !== index);
+  //       setCarouselItems(updatedItems);
+  //       console.log(`Successfully deleted file: ${fileKey}`);
+  //     } else {
+  //       console.error(`Failed to delete file: ${fileKey}`);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error deleting media:", error);
+  //   }
+  // };
   return (
     <div className="relative w-full">
       {mediaPreviews?.length === 0 ? (
-        <div className="relative w-full pb-[56.25%] bg-evento-gradient">
+        <div className="relative w-full aspect-video bg-evento-gradient rounded">
           {/* <div className=" absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full opacity-40  hover:opacity-80 z-10 transition-opacity duration-300 flex flex-col justify-center items-center">
             <PlusIcon onClick={openModal} className="w-36 h-36" />
             <p className="">Upload Evento Photo / Video</p>
@@ -71,11 +68,8 @@ const CreateEventCarousel = () => {
             src="https://evento-media-bucket.s3.ap-southeast-2.amazonaws.com/evento-bg.jpg"
             alt="Evento standard background"
             fill
-            sizes="(max-width: 768px) 100vw,
-                    (max-width: 1200px) 50vw,
-                    33vw"
             className={cn({
-              "opacity-20": !mediaPreviews?.length,
+              "opacity-20 ": !mediaPreviews?.length,
             })}
             priority
           />
@@ -110,24 +104,17 @@ const CreateEventCarousel = () => {
                 >
                   <video
                     controls
-                    className="absolute top-0 left-0 w-full h-full object-cover"
+                    className="absolute top-0 left-0 w-full h-full object-cover rounded "
                     onError={() => handleVideoError(item.url)}
                   >
                     <source src={item.url} type="video/mp4" />
                     Your browser does not support the video tag.
                   </video>
-                  <Button
-                    variant={"destructive"}
-                    className="absolute top-4 right-10 p-2 rounded-full"
-                    onClick={() => deleteMedia(index, item)}
-                  >
-                    <TrashIcon className="w-6 h-6" />
-                  </Button>
                 </div>
               ) : (
                 <div
                   key={index}
-                  className="relative w-full pb-[56.25%]"
+                  className="relative w-full aspect-video "
                   onClick={(e) => {
                     if (!isSwiping) {
                       e.stopPropagation();
@@ -137,18 +124,10 @@ const CreateEventCarousel = () => {
                   <Image
                     src={item.url}
                     alt={`Preview media ${index + 1}`}
-                    width={1920}
-                    height={1080}
-                    className="h-auto"
+                    fill
                     priority
+                    className="object-cover rounded"
                   />
-                  <Button
-                    variant={"destructive"}
-                    className="absolute top-4 right-10 p-2 rounded-full"
-                    onClick={() => deleteMedia(index, item)}
-                  >
-                    <TrashIcon className="w-6 h-6" />
-                  </Button>
                 </div>
               ),
             )}

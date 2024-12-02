@@ -1,9 +1,8 @@
 "use client";
 
-import MapPinIcon2 from "@/components/icons/MappPinIcon2";
 import TruncatedText from "@/components/TruncatedText";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 import { useSession } from "@/contexts/SessionProvider";
 import { cn } from "@/lib/utils";
 import { useEventStore } from "@/store/useEventStore";
@@ -98,13 +97,16 @@ const CreateEventPreview = ({
                     <AvatarFallback>CN</AvatarFallback>
                   </Avatar>
                 )}
-                <h4 className="ml-2">
-                  {(eventStore &&
-                    eventStore?.username &&
-                    eventStore?.username.charAt(0).toUpperCase() +
-                      eventStore?.username.slice(1)) ||
-                    "Username"}
-                </h4>
+                <div>
+                  <h4 className="text-sm">
+                    {(eventStore &&
+                      eventStore?.username &&
+                      eventStore?.username.charAt(0).toUpperCase() +
+                        eventStore?.username.slice(1)) ||
+                      "Username"}
+                  </h4>
+                  <span className="text-xs text-muted-foreground">Host</span>
+                </div>
               </div>
               <span className="text-sm">
                 {eventStore.date ? renderDate() : "Date"}
@@ -115,7 +117,26 @@ const CreateEventPreview = ({
         </div>
         <div className="flex flex-col gap-2">
           <h3>{eventStore.title ? eventStore.title : "Event Title"}</h3>
-          <ul className="flex gap-2 flex-wrap">
+
+          {/* <MapPinIcon2 className="w-5 h-5" /> */}
+          <span
+            className="truncate text-muted-foreground text-sm"
+            onClick={() =>
+              alert("In real event it will open google map with this location")
+            }
+          >
+            {eventStore.location}
+          </span>
+          <div className="flex gap-2 items-center">
+            <p className="whitespace-nowrap text-eventoPink font-bold">
+              {eventStore.startTime ? eventStore.startTime : "08:00"} -{" "}
+              {eventStore.endTime ? eventStore.endTime : "18:00"}
+            </p>
+            <span className="text-sm">
+              {eventStore.date ? renderDate() : "Date"}
+            </span>
+          </div>
+          <ul className="flex gap-2 flex-wrap my-4">
             {eventStore.interests &&
               eventStore.interests.map((interest: any, index: number) => (
                 <li
@@ -123,34 +144,23 @@ const CreateEventPreview = ({
                   onClick={() =>
                     handleRemoveInterest && handleRemoveInterest(interest._id)
                   }
-                  className="bg-eventoPurpleLight/30 w-fit px-2 py-1 rounded-lg text-sm"
+                  className="border  w-fit px-2 py-1 rounded-lg text-sm"
                 >
                   {interest.name}
                 </li>
               ))}
           </ul>
-          <div className="flex justify-between items-center">
-            <Button
-              variant={"ghost"}
-              className="flex gap-2 pl-0 max-w-xs truncate"
-              onClick={() =>
-                alert(
-                  "In real event it will open google map with this location",
-                )
-              }
-            >
-              <MapPinIcon2 className="w-5 h-5" />
-              <span className="truncate">{eventStore.location}</span>
-            </Button>
-            <p className="whitespace-nowrap">
-              {eventStore.startTime ? eventStore.startTime : "08:00"} -{" "}
-              {eventStore.endTime ? eventStore.endTime : "18:00"}
-            </p>
-            {/* <p className="whitespace-nowrap">{renderAverageTimes()}</p> */}
-            {/* <p className="whitespace-nowrap">{renderMinMaxTimes()}</p> */}
-          </div>
+
+          {/* <p className="whitespace-nowrap">{renderAverageTimes()}</p> */}
+          {/* <p className="whitespace-nowrap">{renderMinMaxTimes()}</p> */}
+
           {/* Placeholder for TruncatedText */}
-          <p className="whitespace-pre-wrap">{eventStore.description}</p>
+          {eventStore.description && (
+            <Label htmlFor="description">Description</Label>
+          )}
+          <p className="whitespace-pre-wrap text-sm text-muted-foreground">
+            {eventStore.description}
+          </p>
 
           <TruncatedText
             isLink

@@ -54,7 +54,10 @@ const CreateEventContent = () => {
   );
   const [location, setLocation] = useState({ lat: 0, lng: 0 });
   useEffect(() => {
-    handleFieldChange("username", user?.username);
+    console.log("isAuthenticated!!!!!!!!!!!!!!!!!!!!!!!!", isAuthenticated);
+    console.log("user", user);
+    console.log("username", eventStore?.username);
+    handleFieldChange("username", eventStore?.username);
   }, [isAuthenticated]);
   useEffect(() => {
     setFormValues({
@@ -168,7 +171,6 @@ const CreateEventContent = () => {
     }
   };
   useEffect(() => {
-    console.log("tempMediaPreviews", tempMediaPreviews);
     tempMediaPreviews.forEach((media, index) => {
       if (!uploadingMediaStatus[index]) {
         uploadMedia(media, index);
@@ -371,7 +373,7 @@ const CreateEventContent = () => {
 
   return (
     <>
-      <h1 className="animate-slideInLeft opacity-0 lg:text-5xl flex justify-center md:justify-start md:font-black text-black w-full mt-10 px-4">
+      <h1 className="animate-slideInLeft opacity-0 lg:text-5xl flex justify-center md:justify-start md:font-bold text-black w-full mt-10 px-4">
         Create Event
       </h1>
       <div className=" w-full grid grid-cols-1 md:grid-cols-2 ">
@@ -555,7 +557,7 @@ const CreateEventContent = () => {
               </div>
             </div>
 
-            <h4 className="text-eventoPurpleLight">More Options</h4>
+            <h4>More Options</h4>
             <div className="flex flex-wrap gap-2 flex-col">
               <EventCoHostsModal
                 allUsers={users as UserType[]}
