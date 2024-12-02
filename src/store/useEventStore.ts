@@ -1,7 +1,10 @@
 import { InterestType, QuestionType, TimeSlotType } from "@/types/EventType";
 import { create } from "zustand";
 import { persist } from "zustand/middleware"; // Ajout de PersistOptions
-
+export type MediaItem = {
+  url: string;
+  type: "image" | "video";
+};
 type EventFormState = {
   title: string;
   eventType: "public" | "private";
@@ -22,12 +25,12 @@ type EventFormState = {
   UrlLink?: string;
   UrlTitle?: string;
   coHosts?: string[];
-  interests?: InterestType[];
+  interests: InterestType[];
   isTimeSlotsEnabled: boolean;
   timeSlots: TimeSlotType[];
   privateEventLink?: string;
-  mediaPreviews?: string[];
-  tempMediaPreview?: string[];
+  mediaPreviews: MediaItem[];
+  tempMediaPreview: MediaItem[];
   questions: QuestionType[];
   uploadedMedia: { images: File[]; videos: File[] };
   predefinedMedia: { images: string[]; videos: string[] };

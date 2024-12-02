@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { UserType } from "@/types/UserType";
+import { Plus } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
@@ -93,19 +94,8 @@ const AddUserModal = ({
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button
-          variant="outline"
-          className={cn(
-            {
-              "bg-evento-gradient": currentSelectedUsers.length > 0,
-            },
-            "w-fit",
-          )}
-        >
-          {title}
-          {currentSelectedUsers.length > 0
-            ? ` (${currentSelectedUsers.length})`
-            : ""}
+        <Button variant="outline" className={cn("bg-gray-200 px-3")}>
+          <Plus className="w-4 h-4" strokeWidth={2.5} />
         </Button>
       </DialogTrigger>
       <DialogContent className="bg-background w-[95%] rounded-lg border-none">

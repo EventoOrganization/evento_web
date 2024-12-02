@@ -1,4 +1,7 @@
 "use client";
+import { handleDeleteMedia, handleUpload } from "@/app/create-event/action";
+import EventoLoader from "@/components/EventoLoader";
+import FileUploadButton from "@/components/FileUploadButton";
 import Section from "@/components/layout/Section";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,16 +20,20 @@ import EventQuestionsForm from "@/features/event/components/EventQuestionsForm";
 import EventURL from "@/features/event/components/EventURL";
 import { handleFieldChange } from "@/features/event/eventActions";
 import { useToast } from "@/hooks/use-toast";
-import { useEventStore } from "@/store/useEventStore";
+import { MediaItem, useEventStore } from "@/store/useEventStore";
 import { useGlobalStore } from "@/store/useGlobalStore";
 import { EventType, InterestType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
-import { Check } from "lucide-react";
+import { Check, Trash } from "lucide-react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+
 const CreateEventContent = () => {
   const eventStore = useEventStore();
+  // const mediaPreviews = useEventStore((state) => state.mediaPreviews || []);
+  // const [carouselItems, setCarouselItems] = useState<any>(mediaPreviews);
   const [isEventModalOpen, setIsEventModalOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const router = useRouter();
@@ -34,6 +41,13 @@ const CreateEventContent = () => {
   const { addEvent, users, interests, userInfo } = useGlobalStore(
     (state) => state,
   );
+  const [tempMediaPreviews, setTempMediaPreviews] = useState<
+    { url: string; type: string }[]
+  >(eventStore.tempMediaPreview || []);
+  const [uploadingMediaStatus, setUploadingMediaStatus] = useState<boolean[]>(
+    Array(tempMediaPreviews.length).fill(false),
+  );
+
   const { isAuthenticated, token, user } = useSession();
   const [selectedInterests, setSelectedInterests] = useState<InterestType[]>(
     eventStore.interests || [],
@@ -134,6 +148,91 @@ const CreateEventContent = () => {
       mode: value as "virtual" | "in-person" | "both",
     }));
     handleFieldChange("mode", value as "virtual" | "in-person" | "both");
+  };
+  // medias gestion
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files) {
+      const previews = Array.from(files).map((file) => ({
+        url: URL.createObjectURL(file),
+        type: file.type.startsWith("video/") ? "video" : "image",
+      }));
+
+      // Add the temporary previews to the state
+      setTempMediaPreviews((prev) => [...prev, ...previews]);
+      handleFieldChange("tempMediaPreview", [
+        ...tempMediaPreviews,
+        ...previews,
+      ]);
+    }
+  };
+  useEffect(() => {
+    console.log("tempMediaPreviews", tempMediaPreviews);
+    tempMediaPreviews.forEach((media, index) => {
+      if (!uploadingMediaStatus[index]) {
+        uploadMedia(media, index);
+        setTempMediaPreviews([]);
+      }
+    });
+  }, [tempMediaPreviews]);
+
+  const uploadMedia = async (
+    media: { url: string; type: string },
+    index: number,
+  ) => {
+    try {
+      setUploadingMediaStatus((prev) =>
+        prev.map((status, i) => (i === index ? true : status)),
+      );
+
+      const formData = new FormData();
+      const file = await fetch(media.url).then((r) => r.blob());
+      formData.append("file", file);
+
+      const urls = await handleUpload(formData, "events/initialMedia");
+      const s3Url = urls[0];
+
+      if (media.type === "image" || media.type === "video") {
+        const mediaItemType = media.type === "image" ? "image" : "video";
+        useEventStore.setState((state) => ({
+          tempMediaPreview: state.tempMediaPreview?.filter(
+            (_, i) => i !== index,
+          ),
+          mediaPreviews: [
+            ...state.mediaPreviews,
+            { url: s3Url, type: mediaItemType },
+          ],
+        }));
+      } else {
+        console.error("Invalid media type:", media.type);
+      }
+    } catch (error) {
+      console.error("Error uploading media:", error);
+    } finally {
+      setUploadingMediaStatus((prev) =>
+        prev.map((status, i) => (i === index ? false : status)),
+      );
+    }
+  };
+
+  const deleteMedia = async (index: number, mediaItem: MediaItem) => {
+    const isUploaded = mediaItem.url.startsWith(
+      "https://evento-media-bucket.s3.",
+    );
+    if (isUploaded) {
+      const fileKey = new URL(mediaItem.url).pathname.substring(1);
+      const success = await handleDeleteMedia(fileKey);
+      if (success) {
+        useEventStore.setState((state) => ({
+          mediaPreviews: state.mediaPreviews?.filter((_, i) => i !== index),
+        }));
+      }
+    } else {
+      useEventStore.setState((state) => ({
+        tempMediaPreview: state.tempMediaPreview?.filter((_, i) => i !== index),
+      }));
+    }
   };
 
   const handleRemoveInterest = (interestId: string) => {
@@ -275,8 +374,8 @@ const CreateEventContent = () => {
       <h1 className="animate-slideInLeft opacity-0 lg:text-5xl flex justify-center md:justify-start md:font-black text-black w-full mt-10 px-4">
         Create Event
       </h1>
-      <div className=" w-full flex">
-        <Section className=" max-w-5xl w-full justify-start ">
+      <div className=" w-full grid grid-cols-1 md:grid-cols-2 ">
+        <Section className="max-w-5xl w-full justify-start ">
           <form onSubmit={handleSubmit} className="space-y-4  w-full">
             <div>
               <Label htmlFor="title">
@@ -415,6 +514,47 @@ const CreateEventContent = () => {
                 placeholder="Enter event description"
               />
             </div>
+            <div className="">
+              <Label>Event Photos</Label>
+              <div className="flex mt-2 w-full">
+                <FileUploadButton onChange={handleFileSelect} />
+                {eventStore.mediaPreviews.length > 0 && (
+                  <ul className="flex gap-2 overflow-x-scroll max-w-full scroll-container p-2">
+                    {eventStore.mediaPreviews.map((media, index) => (
+                      <li
+                        key={index}
+                        className="cursor-pointer relative w-24 h-24 overflow-hidden aspect-square border rounded-md flex-shrink-0 ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 hover:ring-2 hover:ring-ring"
+                      >
+                        {/* Afficher l'image ou la vidéo selon le type */}
+                        {media.type === "image" ? (
+                          <Image
+                            src={media.url}
+                            alt={`Media ${index}`}
+                            width={96}
+                            height={96}
+                            className="object-cover"
+                          />
+                        ) : (
+                          <video
+                            src={media.url}
+                            controls
+                            className="object-cover w-full h-full"
+                          />
+                        )}
+
+                        {/* Bouton de suppression */}
+                        <Trash
+                          className="absolute top-2 right-2 w-10 h-10 cursor-pointer rounded bg-background p-2 border hover:bg-destructive hover:text-destructive-foreground"
+                          onClick={() => deleteMedia(index, media)}
+                        />
+                      </li>
+                    ))}
+                    {tempMediaPreviews.length > 0 && <EventoLoader />}
+                  </ul>
+                )}
+              </div>
+            </div>
+
             <h4 className="text-eventoPurpleLight">More Options</h4>
             <div className="flex flex-wrap gap-2 flex-col">
               <EventCoHostsModal
@@ -435,6 +575,7 @@ const CreateEventContent = () => {
           </form>
         </Section>
         <Section className="hidden md:block">
+          <h2 className="mb-4">Preview</h2>
           <CreateEventPreview handleRemoveInterest={handleRemoveInterest} />
           <Button
             variant={"outline"}
