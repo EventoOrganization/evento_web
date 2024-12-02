@@ -41,22 +41,20 @@ const CreateEventContent = () => {
   const { addEvent, users, interests, userInfo } = useGlobalStore(
     (state) => state,
   );
+  const [isUploading, setIsUploading] = useState(false);
   const [tempMediaPreviews, setTempMediaPreviews] = useState<
     { url: string; type: string }[]
   >(eventStore.tempMediaPreview || []);
   const [uploadingMediaStatus, setUploadingMediaStatus] = useState<boolean[]>(
     Array(tempMediaPreviews.length).fill(false),
   );
-
+  const [carouselIndex, setCarouselIndex] = useState(0);
   const { isAuthenticated, token, user } = useSession();
   const [selectedInterests, setSelectedInterests] = useState<InterestType[]>(
     eventStore.interests || [],
   );
   const [location, setLocation] = useState({ lat: 0, lng: 0 });
   useEffect(() => {
-    console.log("isAuthenticated!!!!!!!!!!!!!!!!!!!!!!!!", isAuthenticated);
-    console.log("user", user);
-    console.log("username", eventStore?.username);
     handleFieldChange("username", eventStore?.username);
   }, [isAuthenticated]);
   useEffect(() => {
@@ -118,6 +116,7 @@ const CreateEventContent = () => {
   });
   const handleAuthSuccess = () => {
     setIsAuthModalOpen(!isAuthModalOpen);
+    handleFieldChange("username", eventStore?.username);
     setIsEventModalOpen(true);
   };
   const handleCreateEvent = (e: React.FormEvent) => {
@@ -153,7 +152,11 @@ const CreateEventContent = () => {
     handleFieldChange("mode", value as "virtual" | "in-person" | "both");
   };
   // medias gestion
-
+  const handleSelectMedia = (index: number) => {
+    setCarouselIndex(index);
+  };
+  const selectedMedia =
+    eventStore.mediaPreviews[carouselIndex] || eventStore.mediaPreviews[0];
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files) {
@@ -184,6 +187,7 @@ const CreateEventContent = () => {
     index: number,
   ) => {
     try {
+      setIsUploading(true);
       setUploadingMediaStatus((prev) =>
         prev.map((status, i) => (i === index ? true : status)),
       );
@@ -215,6 +219,7 @@ const CreateEventContent = () => {
       setUploadingMediaStatus((prev) =>
         prev.map((status, i) => (i === index ? false : status)),
       );
+      setIsUploading(false);
     }
   };
 
@@ -518,13 +523,32 @@ const CreateEventContent = () => {
             </div>
             <div className="">
               <Label>Event Photos</Label>
+              {selectedMedia && (
+                <div className="relative w-full h-96 border rounded-md mt-4">
+                  {selectedMedia.type === "image" ? (
+                    <Image
+                      src={selectedMedia.url}
+                      alt="Selected Media"
+                      fill
+                      className="object-cover rounded"
+                    />
+                  ) : (
+                    <video
+                      src={selectedMedia.url}
+                      controls
+                      className="w-full h-full object-cover rounded"
+                    />
+                  )}
+                </div>
+              )}
               <div className="flex mt-2 w-full">
                 <FileUploadButton onChange={handleFileSelect} />
                 {eventStore.mediaPreviews.length > 0 && (
-                  <ul className="flex gap-2 overflow-x-scroll max-w-full scroll-container p-2">
+                  <ul className="flex gap-2 overflow-x-scroll max-w-full ml-2 scroll-container p-2">
                     {eventStore.mediaPreviews.map((media, index) => (
                       <li
                         key={index}
+                        onClick={() => handleSelectMedia(index)}
                         className="cursor-pointer relative w-24 h-24 overflow-hidden aspect-square border rounded-md flex-shrink-0 ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 hover:ring-2 hover:ring-ring"
                       >
                         {/* Afficher l'image ou la vidéo selon le type */}
@@ -551,7 +575,7 @@ const CreateEventContent = () => {
                         />
                       </li>
                     ))}
-                    {tempMediaPreviews.length > 0 && <EventoLoader />}
+                    {isUploading && <EventoLoader />}
                   </ul>
                 )}
               </div>
@@ -569,10 +593,13 @@ const CreateEventContent = () => {
             <EventQuestionsForm />
             <Button
               type="button"
-              className="bg-evento-gradient w-full text-white"
+              className="bg-evento-gradient w-full text-white md:hidden"
               onClick={() => setIsEventModalOpen(true)}
             >
               Preview
+            </Button>
+            <Button className="bg-evento-gradient w-full text-white hidden md:flex">
+              Create Event
             </Button>
           </form>
         </Section>

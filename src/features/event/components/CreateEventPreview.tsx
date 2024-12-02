@@ -71,7 +71,7 @@ const CreateEventPreview = ({
     <>
       <div
         className={cn(
-          "bg-white border shadow rounded p-4 w-full grid grid-cols-1 h-fit gap-4 hover:shadow-xl hover:bg-slate-50 cursor-pointer relative",
+          "bg-background md:border md:shadow rounded p-4 w-full grid grid-cols-1 h-fit gap-4 hover:shadow-xl hover:bg-slate-50 cursor-pointer relative",
           className,
           { "lg:grid-cols-2 items-start gap-10": inModal },
         )}
@@ -108,35 +108,13 @@ const CreateEventPreview = ({
                   <span className="text-xs text-muted-foreground">Host</span>
                 </div>
               </div>
-              <span className="text-sm">
-                {eventStore.date ? renderDate() : "Date"}
-              </span>
             </div>
             <CreateEventCarousel />
           </div>
         </div>
         <div className="flex flex-col gap-2">
           <h3>{eventStore.title ? eventStore.title : "Event Title"}</h3>
-
-          {/* <MapPinIcon2 className="w-5 h-5" /> */}
-          <span
-            className="truncate text-muted-foreground text-sm"
-            onClick={() =>
-              alert("In real event it will open google map with this location")
-            }
-          >
-            {eventStore.location}
-          </span>
-          <div className="flex gap-2 items-center">
-            <p className="whitespace-nowrap text-eventoPink font-bold">
-              {eventStore.startTime ? eventStore.startTime : "08:00"} -{" "}
-              {eventStore.endTime ? eventStore.endTime : "18:00"}
-            </p>
-            <span className="text-sm">
-              {eventStore.date ? renderDate() : "Date"}
-            </span>
-          </div>
-          <ul className="flex gap-2 flex-wrap my-4">
+          <ul className="flex gap-2 flex-wrap ">
             {eventStore.interests &&
               eventStore.interests.map((interest: any, index: number) => (
                 <li
@@ -150,6 +128,24 @@ const CreateEventPreview = ({
                 </li>
               ))}
           </ul>
+          <div className="flex gap-2 items-center">
+            <span className="whitespace-nowrap text-eventoPurpleDark font-bold">
+              {eventStore.date ? renderDate() : "Date"}
+            </span>
+            <p className="text-sm text-muted-foreground">
+              {eventStore.startTime ? eventStore.startTime : "08:00"} -{" "}
+              {eventStore.endTime ? eventStore.endTime : "18:00"}
+            </p>
+          </div>
+          {/* <MapPinIcon2 className="w-5 h-5" /> */}
+          <span
+            className="truncate text-muted-foreground text-sm"
+            onClick={() =>
+              alert("In real event it will open google map with this location")
+            }
+          >
+            {eventStore.location}
+          </span>
 
           {/* <p className="whitespace-nowrap">{renderAverageTimes()}</p> */}
           {/* <p className="whitespace-nowrap">{renderMinMaxTimes()}</p> */}
@@ -164,6 +160,7 @@ const CreateEventPreview = ({
 
           <TruncatedText
             isLink
+            className="text-eventoPink"
             text={eventStore.UrlTitle || eventStore.UrlLink || ""}
           />
         </div>

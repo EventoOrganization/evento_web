@@ -25,19 +25,26 @@ const CreateEventModal = ({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogHeader className="sr-only">
         <DialogTitle className="sr-only">
-          {event.title ? event.title : ""}
+          {event.title ? event.title : "Preview"}
         </DialogTitle>
         <DialogDescription className="sr-only">
           {event.description ? event.description : ""}
         </DialogDescription>
       </DialogHeader>
-      <DialogContent className="bg-transparent border-none max-w-[90vw]  md:max-w-screen-md lg:max-w-screen-lg max-h-[calc(100vh-64px)] p-0 w-full h-full">
+      <DialogContent className="bg-background p-0 py-0 w-full h-full">
         <ScrollArea className="rounded h-full">
+          <h1 className="animate-slideInLeft opacity-0 lg:text-5xl flex justify-center md:justify-start md:font-bold text-black w-full mt-10 px-4">
+            Preview
+          </h1>
           <CreateEventPreview inModal={true} />
         </ScrollArea>
-        <div className="grid grid-cols-2 gap-4 items-end">
-          <Button variant="ghost" className="bg-gray-200" onClick={onClose}>
-            Cancel
+        <div className="grid grid-cols-2 gap-4 items-end p-4 bg-background">
+          <Button
+            variant="ghost"
+            className="hover:bg-gray-200"
+            onClick={onClose}
+          >
+            Back
           </Button>
           <Button
             onClick={(e) => onSuccess && onSuccess(e)}

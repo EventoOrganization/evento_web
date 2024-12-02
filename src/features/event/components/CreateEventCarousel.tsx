@@ -59,15 +59,12 @@ const CreateEventCarousel = () => {
   return (
     <div className="relative w-full">
       {mediaPreviews?.length === 0 ? (
-        <div className="relative w-full aspect-video bg-evento-gradient rounded">
-          {/* <div className=" absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full opacity-40  hover:opacity-80 z-10 transition-opacity duration-300 flex flex-col justify-center items-center">
-            <PlusIcon onClick={openModal} className="w-36 h-36" />
-            <p className="">Upload Evento Photo / Video</p>
-          </div> */}
+        <div className="relative w-full h-full bg-evento-gradient rounded">
           <Image
             src="https://evento-media-bucket.s3.ap-southeast-2.amazonaws.com/evento-bg.jpg"
             alt="Evento standard background"
-            fill
+            height={500}
+            width={500}
             className={cn({
               "opacity-20 ": !mediaPreviews?.length,
             })}
@@ -80,10 +77,6 @@ const CreateEventCarousel = () => {
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
         >
-          {/* <PlusIcon
-            onClick={openModal}
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-40 h-40 opacity-20 hover:opacity-60 rounded-full transition-opacity z-10 duration-300"
-          /> */}
           <Carousel
             showThumbs={false}
             dynamicHeight={true}
@@ -114,7 +107,7 @@ const CreateEventCarousel = () => {
               ) : (
                 <div
                   key={index}
-                  className="relative w-full aspect-video "
+                  className="relative w-full aspect-auto "
                   onClick={(e) => {
                     if (!isSwiping) {
                       e.stopPropagation();
@@ -124,7 +117,8 @@ const CreateEventCarousel = () => {
                   <Image
                     src={item.url}
                     alt={`Preview media ${index + 1}`}
-                    fill
+                    height={500}
+                    width={500}
                     priority
                     className="object-cover rounded"
                   />

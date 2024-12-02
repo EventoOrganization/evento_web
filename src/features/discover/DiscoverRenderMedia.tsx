@@ -58,32 +58,25 @@ const RenderMedia = ({ event }: { event: EventType }) => {
       >
         {initialMedias.map((item, index) =>
           item.type === "video" ? (
-            <div
+            <video
               key={index}
-              className="relative w-full h-[340px]"
-              onClick={(e) => {
-                e.stopPropagation();
-              }}
+              controls
+              autoPlay
+              className="w-full h-full rounded"
+              onError={() => handleVideoError(item.url)}
             >
-              <video
-                controls
-                autoPlay
-                className="w-full h-full"
-                onError={() => handleVideoError(item.url)}
-              >
-                <source src={item.url} type="video/mp4" />
-                Your browser does not support the video tag.
-              </video>
-            </div>
+              <source src={item.url} type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
           ) : (
             <Image
               src={item.url}
               alt={`Preview media ${index + 1}`}
               key={index}
-              width={100}
-              height={100}
-              className="w-full h-full"
+              width={800}
+              height={0}
               priority
+              className="w-full object-cover md:rounded"
               onClick={(e) => {
                 if (!isSwiping) {
                   e.stopPropagation();
