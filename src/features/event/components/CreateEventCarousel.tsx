@@ -66,7 +66,7 @@ const CreateEventCarousel = () => {
             height={500}
             width={500}
             className={cn({
-              "opacity-20 ": !mediaPreviews?.length,
+              "opacity-20 w-full": !mediaPreviews?.length,
             })}
             priority
           />

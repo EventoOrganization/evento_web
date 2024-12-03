@@ -38,9 +38,7 @@ const CreateEventContent = () => {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
-  const { addEvent, users, interests, userInfo } = useGlobalStore(
-    (state) => state,
-  );
+  const { addEvent, users, interests } = useGlobalStore((state) => state);
   const [isUploading, setIsUploading] = useState(false);
   const [tempMediaPreviews, setTempMediaPreviews] = useState<
     { url: string; type: string }[]
@@ -61,7 +59,7 @@ const CreateEventContent = () => {
     setFormValues({
       title: eventStore.title || "",
       eventType: eventStore.eventType || "public",
-      username: userInfo?.username || "",
+      username: user?.username || "",
       date: eventStore.date || "",
       endDate: eventStore.endDate || eventStore.date || "",
       startTime: eventStore.startTime || "",
@@ -90,7 +88,7 @@ const CreateEventContent = () => {
   const [formValues, setFormValues] = useState({
     title: eventStore.title || "",
     eventType: eventStore.eventType || "public",
-    username: userInfo?.username || "",
+    username: user?.username || "",
     date: eventStore.date || "",
     endDate: eventStore.endDate || eventStore.date || "",
     startTime: eventStore.startTime || "",
@@ -378,7 +376,7 @@ const CreateEventContent = () => {
 
   return (
     <>
-      <h1 className="animate-slideInLeft opacity-0 lg:text-5xl flex justify-center md:justify-start md:font-bold text-black w-full mt-10 px-4">
+      <h1 className="animate-slideInLeft opacity-0 lg:text-5xl flex justify-center md:justify-start md:font-bold text-black w-full h-fit mt-10 px-4">
         Create Event
       </h1>
       <div className=" w-full grid grid-cols-1 md:grid-cols-2 ">
@@ -524,7 +522,7 @@ const CreateEventContent = () => {
             <div className="">
               <Label>Event Photos</Label>
               {selectedMedia && (
-                <div className="relative w-full h-96 border rounded-md mt-4">
+                <div className="relative w-full h-96 border rounded-md mt-4 md:hidden">
                   {selectedMedia.type === "image" ? (
                     <Image
                       src={selectedMedia.url}
