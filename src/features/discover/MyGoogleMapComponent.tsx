@@ -139,17 +139,13 @@ const MyGoogleMapComponent = ({
   };
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-2">
       <div
         className="flex items-center justify-between cursor-pointer"
         onClick={() => setIsMapVisible(!isMapVisible)}
       >
-        <Label
-          className={cn(" ", {
-            "text-purple-600 font-bold": pathname != "/create-event",
-          })}
-        >
-          {pathname === "/create-event" ? "Location" : "Current Location"}
+        <Label>
+          {pathname === "/create-event" ? "Location" : "Location"}
           {pathname === "/create-event" && (
             <span className="text-sm text-destructive">*</span>
           )}
@@ -169,6 +165,7 @@ const MyGoogleMapComponent = ({
           >
             <Input
               type="text"
+              className="text-xs md:text-sm"
               placeholder={address ? address : "Search for a location"}
             />
           </StandaloneSearchBox>

@@ -5,6 +5,7 @@ import Section from "@/components/layout/Section";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Popover,
   PopoverContent,
@@ -26,6 +27,7 @@ import { format, startOfDay } from "date-fns";
 import { enUS } from "date-fns/locale";
 import {
   Calendar as CalendarIcon,
+  Check,
   ChevronDownIcon,
   FilterIcon,
   Search,
@@ -106,13 +108,13 @@ const DiscoverPageContent = () => {
     isHydrated,
   ]);
 
-  const handleInterestToggle = (interest: InterestType) => {
-    setSelectedInterests((prev) =>
-      prev.some((i) => i._id === interest._id)
-        ? prev.filter((i) => i._id !== interest._id)
-        : [...prev, interest],
-    );
-  };
+  // const handleInterestToggle = (interest: InterestType) => {
+  //   setSelectedInterests((prev) =>
+  //     prev.some((i) => i._id === interest._id)
+  //       ? prev.filter((i) => i._id !== interest._id)
+  //       : [...prev, interest],
+  //   );
+  // };
 
   const handleEventClick = (event: EventType) => {
     const storedEvent = events.find((ev) => ev._id === event._id);
@@ -153,10 +155,16 @@ const DiscoverPageContent = () => {
         </div>
       ) : (
         <>
-          <h1 className="animate-slideInLeft opacity-0 text-3xl md:text-4xl lg:text-5xl flex justify-center md:justify-start md:font-bold text-black w-full mt-10 h-fit px-4">
-            Discover Events
-          </h1>
-          <Section className="flex flex-col-reverse md:grid  md:grid-cols-3  md:gap-0 items-start justify-end pt-4 px-0">
+          {!toggleSearch && (
+            <h1
+              className={
+                "animate-slideInLeft opacity-0 text-3xl md:text-4xl lg:text-5xl flex justify-center md:justify-start md:font-bold text-black w-full mb-6 mt-10 h-fit px-4"
+              }
+            >
+              Discover Events
+            </h1>
+          )}
+          <Section className="flex flex-col-reverse md:grid  md:grid-cols-3  md:gap-0 items-start justify-end pt-0 px-0">
             <ul className="w-full space-y-6 md:col-span-2 md:pl-4">
               <li className="flex items-center sticky top-0 z-20 bg-muted p-2 md:p-4 flex-col gap-2">
                 <TabSelector
@@ -201,30 +209,33 @@ const DiscoverPageContent = () => {
             </ul>
             <div
               className={cn(
-                "flex flex-col gap-2 w-full transition-all duration-300 bg-muted md:translate-x-0 md:max-h-fit md:opacity-100 px-4",
+                "text-xs flex flex-col gap-2 w-full transition-all duration-300 bg-muted px-4",
                 {
-                  "translate-x-[-100%] h-0 opacity-0": !toggleSearch,
-                  "translate-x-0 max-h-fit sticky opacity-100 z-20 top-0 pt-5":
+                  "translate-x-[-100%] md:translate-x-0 h-0 opacity-0 md:opacity-100":
+                    !toggleSearch,
+                  "translate-x-0 max-h-[80vh] sticky border-b-2 opacity-100 z-20 top-0 pt-5 overflow-y-auto":
                     toggleSearch,
                 },
               )}
             >
               <h2>Filters</h2>
-              <XIcon
-                className="md:hidden self-end"
+              <Button
                 onClick={() => setToggleSearch(!toggleSearch)}
-              />
+                className="md:hidden absolute bottom-20 right-4 p-2 bg-eventoPurpleDark"
+              >
+                <XIcon className=" w-6 h-6" />
+              </Button>
               <div className="relative flex items-center md:p-4">
                 <Search
-                  className="w-6 h-6 absolute left-3 md:left-6 text-eventoPurpleDark"
-                  strokeWidth={2.5}
+                  className="w-4 h-4 absolute left-3 md:left-6 text-muted-foreground"
+                  strokeWidth={2}
                 />
                 <Input
                   type="text"
                   placeholder="Search for events or organisers ..."
                   value={searchText}
                   onChange={(e) => setSearchText(e.target.value)}
-                  className="pl-12 border-none bg-white py-2 rounded-lg w-full"
+                  className="pl-10 border-none py-2 rounded-lg w-full text-xs md:text-sm"
                 />
               </div>
               <div className="flex flex-col gap-2 md:p-4 py-0 pt-0 rounded bg-muted">
@@ -235,7 +246,6 @@ const DiscoverPageContent = () => {
               </div>
               <div className="md:p-4  gap-4 ">
                 <div className="flex justify-between items-center ">
-                  <h4 className=" text-purple-600 font-bold">Select Date</h4>
                   {showReset && (
                     <button
                       onClick={resetDate}
@@ -245,18 +255,21 @@ const DiscoverPageContent = () => {
                     </button>
                   )}
                 </div>
-                <div className="relative flex flex-col gap-4">
+                <div className="relative grid grid-cols-2 gap-2">
+                  <Label htmlFor="start-date-filter">Start Date</Label>
+                  <Label htmlFor="end-date-filter">End Date</Label>
                   <Popover>
                     <PopoverTrigger asChild>
                       <Button
+                        id="start-date-filter"
                         variant="outline"
-                        className="w-full justify-start text-left font-normal"
+                        className=" text-muted-foreground w-full justify-start text-left text-xs md:text-sm"
                       >
                         <CalendarIcon className="mr-2 h-4 w-4" />
                         {startDate ? (
                           format(startDate, "dd/MM/yyyy")
                         ) : (
-                          <span>Select Start Date</span>
+                          <span>Pick a date</span>
                         )}
                       </Button>
                     </PopoverTrigger>
@@ -274,14 +287,15 @@ const DiscoverPageContent = () => {
                   <Popover>
                     <PopoverTrigger asChild>
                       <Button
+                        id="end-date-filter"
                         variant="outline"
-                        className="w-full justify-start text-left font-normal"
+                        className="text-muted-foreground w-full justify-start text-left text-xs md:text-sm"
                       >
                         <CalendarIcon className="mr-2 h-4 w-4" />
                         {endDate ? (
                           format(endDate, "dd/MM/yyyy")
                         ) : (
-                          <span>Select End Date</span>
+                          <span>Pick a date</span>
                         )}
                       </Button>
                     </PopoverTrigger>
@@ -301,23 +315,38 @@ const DiscoverPageContent = () => {
               <div className="p-4">
                 <h4 className="text-purple-600 font-bold">Select Interests</h4>
                 <ul className="flex flex-wrap gap-4 mt-4">
-                  {interests.map((interest) => (
-                    <Button
-                      key={interest._id}
-                      asChild
-                      className={cn(
-                        "cursor-pointer bg-gray-200 text-black hover:bg-eventoPurpleLight/60",
-                        {
-                          "bg-evento-gradient text-white":
-                            selectedInterests.includes(interest),
-                        },
-                      )}
-                    >
-                      <li onClick={() => handleInterestToggle(interest)}>
+                  {interests.map((interest) => {
+                    const isSelected = selectedInterests.some(
+                      (i) => i._id === interest._id,
+                    );
+
+                    return (
+                      <li
+                        key={interest._id}
+                        onClick={() => {
+                          if (isSelected) {
+                            setSelectedInterests((prev) =>
+                              prev.filter((i) => i._id !== interest._id),
+                            );
+                          } else {
+                            const updatedInterests = [
+                              ...selectedInterests,
+                              interest,
+                            ];
+                            setSelectedInterests(updatedInterests);
+                          }
+                        }}
+                        className={`cursor-pointer px-2 py-2 md:text-sm rounded-md border w-fit flex items-center justify-center ${
+                          isSelected
+                            ? "bg-black text-white"
+                            : "bg-gray-200 text-muted-foreground hover:bg-gray-300"
+                        }`}
+                      >
+                        {isSelected && <Check className="mr-2 w-4 h-4" />}
                         {interest.name}
                       </li>
-                    </Button>
-                  ))}
+                    );
+                  })}
                 </ul>
               </div>{" "}
               <div className="p-4 hidden lg:block">
