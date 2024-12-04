@@ -1,7 +1,6 @@
 import { handleUpload } from "@/app/create-event/action";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import Loader from "@/components/ui/Loader";
 import { useSession } from "@/contexts/SessionProvider";
 import { useToast } from "@/hooks/use-toast";
 import { EventType } from "@/types/EventType";
@@ -10,6 +9,7 @@ import { PlayCircleIcon } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 import PastEventModal from "./PastEventModal";
+import EventoLoader from "@/components/EventoLoader";
 
 // Define the MediaItem type
 interface MediaItem {
@@ -162,7 +162,7 @@ const PastEventGallery: React.FC<PastEventGalleryProps> = ({ event }) => {
                 onClick={handleUploadClick}
                 disabled={isUploading || !files || files.length === 0}
               >
-                {isUploading ? <Loader /> : "Upload Media"}
+                {isUploading ? <EventoLoader /> : "Upload Media"}
               </Button>
             </div>
           </>

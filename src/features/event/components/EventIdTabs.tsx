@@ -1,8 +1,8 @@
 "use client";
+import EventoLoader from "@/components/EventoLoader";
 import Section from "@/components/layout/Section";
 import RenderMedia from "@/components/RenderMedia";
 import RequestModal from "@/components/RequestModal";
-import Loader from "@/components/ui/Loader";
 import { useSession } from "@/contexts/SessionProvider";
 import AuthModal from "@/features/auth/components/AuthModal";
 import TabSelector from "@/features/discover/TabSelector";
@@ -31,14 +31,15 @@ const EventIdTabs = ({ evento }: { evento?: EventType }) => {
   const { token, user } = useSession();
   const { toast } = useToast();
   const { users } = useGlobalStore((state) => state);
-
   const [event, setEvent] = useState<EventType | null>(evento || null);
   const [selectedTab, setSelectedTab] = useState("Description");
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-
+  const [isLoading, setIsLoading] = useState(true);
   // Access control state
   const [accessControl, setAccessControl] = useState({
+    isPublic: false,
     isPrivate: false,
+    isRestricted: false,
     isAdmin: false,
     isGuest: false,
     isTempGuest: false,
@@ -129,146 +130,174 @@ const EventIdTabs = ({ evento }: { evento?: EventType }) => {
     };
     fetchEventData();
   }, [eventId, token, toast]);
+
   // Calculer les droits d'accès
   useEffect(() => {
+    setIsLoading(true);
+
     if (event) {
+      const isPublic = event.eventType === "public";
       const isPrivate = event.eventType === "private";
-      const isAdmin = event.user?._id === user?._id;
-      const isGuest =
-        event.guests?.some((guest) => guest._id === user?._id) || false;
-      const isTempGuest =
-        event.tempGuests?.some(
-          (guest) => guest.email === params.get("email"),
-        ) || false;
-      const hasAccess = !isPrivate || isAdmin || isGuest || isTempGuest;
+      const isRestricted = event.restricted || false;
 
-      setAccessControl({ isPrivate, isAdmin, isGuest, isTempGuest, hasAccess });
+      const isAdmin = user?._id === event.user?._id;
+      const isGuest = user
+        ? event.guests?.some((guest) => guest._id === user._id) || false
+        : false;
+      const isTempGuest = user
+        ? event.tempGuests?.some(
+            (guest) => guest.email === params.get("email"),
+          ) || false
+        : false;
 
-      // Log final pour débogage en une seule fois
-      // console.log("Access Control:", {
-      //   isPrivate,
-      //   isAdmin,
-      //   isGuest,
-      //   isTempGuest,
-      //   hasAccess,
-      // });
+      // La logique d'accès doit refléter les états décrits
+      const hasAccess =
+        isPublic ||
+        isAdmin ||
+        isGuest ||
+        isTempGuest ||
+        (!isRestricted && isPrivate);
+
+      setAccessControl({
+        isPublic,
+        isPrivate,
+        isRestricted,
+        isAdmin,
+        isGuest,
+        isTempGuest,
+        hasAccess,
+      });
+    } else {
+      setAccessControl((prev) => ({
+        ...prev,
+        hasAccess: false, // Si pas d'event ou user
+      }));
     }
+
+    setIsLoading(false);
   }, [event, user, params]);
 
   // Affichage de l'événement
-  if (!event) {
+  if (isLoading || !event || !accessControl.hasAccess) {
     return (
       <div className="w-full h-full flex items-center justify-center">
-        <Loader />
+        <EventoLoader />
       </div>
     );
   }
 
   return (
     <>
-      <StructuredData event={event} />
-      <div className="md:grid-cols-2 grid grid-cols-1 w-full max-w-7xl mx-auto">
-        {isAuthModalOpen && (
-          <AuthModal onAuthSuccess={() => setIsAuthModalOpen(false)} />
-        )}
+      {!accessControl.hasAccess && (
         <RequestModal
-          isOpen={accessControl.isPrivate && !accessControl.hasAccess}
+          isOpen={accessControl.isRestricted}
           onRequestToJoin={handleRequestToJoin}
           onAuthModalOpen={() => setIsAuthModalOpen(true)}
           hasToken={!!token}
         />
-        <div className="md:p-10 md:pl-0 p-4 h-full ">
-          <div className="flex items-center w-full justify-between mb-4">
-            <Link
-              className="flex items-center gap-2"
-              href={`/profile/${event?.user?._id}`}
-            >
-              {event?.user?.profileImage ? (
-                <Image
-                  src={event?.user.profileImage}
-                  alt="user image"
-                  width={30}
-                  height={30}
-                  className="w-10 h-10 rounded-full"
-                />
-              ) : (
-                <Avatar>
-                  <AvatarImage
-                    src={"/icon-384x384.png"}
-                    className="rounded-full w-10 h-10"
-                  />
-                  <AvatarFallback>CN</AvatarFallback>
-                </Avatar>
-              )}
-              <div className="flex flex-wrap overflow-hidden">
-                <h4 className="truncate text-sm md:text-base">
-                  {(event &&
-                    event?.user.username.charAt(0).toUpperCase() +
-                      event?.user.username.slice(1)) ||
-                    ""}
-                </h4>
-                {event.coHosts?.length === 1 &&
-                  event.coHosts.map((coHost: any) => (
-                    <h4
-                      className="truncate text-sm md:ml-1 md:text-base"
-                      key={coHost._id}
-                    >
-                      &{" "}
-                      {coHost?.userId?.username &&
-                        coHost?.userId?.username.charAt(0).toUpperCase() +
-                          coHost?.userId?.username.slice(1)}
+      )}
+      {event && (
+        <>
+          <StructuredData event={event} />
+          <div className="md:grid-cols-2 grid grid-cols-1 w-full max-w-7xl mx-auto">
+            {isAuthModalOpen && (
+              <AuthModal onAuthSuccess={() => setIsAuthModalOpen(false)} />
+            )}
+            <div className="md:p-10 md:pl-0 p-4 h-full ">
+              <div className="flex items-center w-full justify-between mb-4">
+                <Link
+                  className="flex items-center gap-2"
+                  href={`/profile/${event?.user?._id}`}
+                >
+                  {event?.user?.profileImage ? (
+                    <Image
+                      src={event?.user.profileImage}
+                      alt="user image"
+                      width={30}
+                      height={30}
+                      className="w-10 h-10 rounded-full"
+                    />
+                  ) : (
+                    <Avatar>
+                      <AvatarImage
+                        src={"/icon-384x384.png"}
+                        className="rounded-full w-10 h-10"
+                      />
+                      <AvatarFallback>CN</AvatarFallback>
+                    </Avatar>
+                  )}
+                  <div className="flex flex-wrap overflow-hidden">
+                    <h4 className="truncate text-sm md:text-base">
+                      {(event &&
+                        event?.user.username.charAt(0).toUpperCase() +
+                          event?.user.username.slice(1)) ||
+                        ""}
                     </h4>
-                  ))}
-                {event.coHosts && event.coHosts.length > 1 && (
-                  <h4 className="truncate text-sm md:text-base md:ml-1">
-                    & {event.coHosts?.length} more
-                  </h4>
-                )}
+                    {event.coHosts?.length === 1 &&
+                      event.coHosts.map((coHost: any) => (
+                        <h4
+                          className="truncate text-sm md:ml-1 md:text-base"
+                          key={coHost._id}
+                        >
+                          &{" "}
+                          {coHost?.userId?.username &&
+                            coHost?.userId?.username.charAt(0).toUpperCase() +
+                              coHost?.userId?.username.slice(1)}
+                        </h4>
+                      ))}
+                    {event.coHosts && event.coHosts.length > 1 && (
+                      <h4 className="truncate text-sm md:text-base md:ml-1">
+                        & {event.coHosts?.length} more
+                      </h4>
+                    )}
+                  </div>
+                </Link>
+                <span className="text-sm">{renderDate(event)}</span>
               </div>
-            </Link>
-            <span className="text-sm">{renderDate(event)}</span>
+              <RenderMedia event={event} />
+              <DeleteEventButton
+                eventId={event._id}
+                isHost={accessControl.isAdmin}
+              />
+            </div>
+            <Section className="justify-start py-10 w-full h-full">
+              <TabSelector
+                onChange={setSelectedTab}
+                tabs={
+                  [
+                    "Description",
+                    "Attendees",
+                    accessControl.isAdmin ? "Settings" : null,
+                  ].filter(Boolean) as string[]
+                }
+                className="mb-10"
+              />
+              {selectedTab === "Description" && (
+                <EventDescriptionTab
+                  event={event}
+                  updateEventStatusLocally={updateEventStatusLocally}
+                />
+              )}
+
+              {selectedTab === "Attendees" && accessControl.hasAccess && (
+                <EventAttendeesTab
+                  event={event}
+                  isAdmin={accessControl.isAdmin}
+                  isPrivate={accessControl.isPrivate}
+                  setEvent={setEvent}
+                />
+              )}
+              {selectedTab === "Settings" && (
+                <EventEdit
+                  event={event}
+                  allUsers={users}
+                  onUpdateField={handleUpdateField}
+                />
+              )}
+            </Section>
           </div>
-          <RenderMedia event={event} />
-          <DeleteEventButton
-            eventId={event._id}
-            isHost={accessControl.isAdmin}
-          />
-        </div>
-        <Section className="justify-start py-10 w-full h-full">
-          <TabSelector
-            onChange={setSelectedTab}
-            tabs={
-              [
-                "Description",
-                "Attendees",
-                accessControl.isAdmin ? "Settings" : null,
-              ].filter(Boolean) as string[]
-            }
-            className="mb-10"
-          />
-          {selectedTab === "Description" && (
-            <EventDescriptionTab
-              event={event}
-              updateEventStatusLocally={updateEventStatusLocally}
-            />
-          )}
-          {selectedTab === "Attendees" && accessControl.hasAccess && (
-            <EventAttendeesTab
-              event={event}
-              isAdmin={accessControl.isAdmin}
-              isPrivate={accessControl.isPrivate}
-              setEvent={setEvent}
-            />
-          )}
-          {selectedTab === "Settings" && (
-            <EventEdit
-              event={event}
-              allUsers={users}
-              onUpdateField={handleUpdateField}
-            />
-          )}
-        </Section>
-      </div>
+        </>
+      )}
     </>
   );
 };

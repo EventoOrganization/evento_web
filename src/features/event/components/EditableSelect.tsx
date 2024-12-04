@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { cn } from "@nextui-org/theme";
-
 interface EditableSelectProps {
   value: string;
   onChange: (value: string) => void;
@@ -32,6 +31,7 @@ const EditableSelect = ({
     <div className={cn("flex flex-col gap-2")}>
       <div className="flex justify-between">
         <h3 className="text-eventoPurpleLight">{field}</h3>
+
         {editMode ? (
           <div className="grid grid-cols-2 gap-2">
             <Button

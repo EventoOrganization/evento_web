@@ -95,7 +95,6 @@ const RenderMedia = ({
                 alt={`Preview media ${index + 1}`}
                 width={500}
                 height={300}
-                layout="responsive"
                 className="h-auto lg:max-h-screen"
                 loading={eventIndex === 0 ? "eager" : "lazy"}
                 priority={eventIndex === 0}

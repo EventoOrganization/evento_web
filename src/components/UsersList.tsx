@@ -244,7 +244,7 @@ const UsersList = ({
             </Button>
           )
         )}
-        {event?.user._id === session?.user?._id && (
+        {isAdmin && (
           <Button variant="outline" onClick={handleUnGuest} disabled={loading}>
             {loading ? "Processing..." : <XIcon />}
           </Button>

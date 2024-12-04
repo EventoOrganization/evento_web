@@ -1,3 +1,4 @@
+import { Label } from "@/components/ui/label";
 import { useEventStore } from "@/store/useEventStore";
 import { UserType } from "@/types/UserType";
 import { useState } from "react";
@@ -24,12 +25,15 @@ const EventCoHostsModal = ({
   const filteredUsers = allUsers.filter((user) => user._id !== currentUserId);
 
   return (
-    <AddCoHostsModal
-      title="Add Co-Hosts"
-      selectedUsers={coHosts}
-      allUsers={filteredUsers}
-      onSave={handleSave}
-    />
+    <div className="flex gap-2 items-center">
+      <Label>Add Co-Hosts</Label>
+      <AddCoHostsModal
+        title="Co-Hosts"
+        selectedUsers={coHosts}
+        allUsers={filteredUsers}
+        onSave={handleSave}
+      />
+    </div>
   );
 };
 

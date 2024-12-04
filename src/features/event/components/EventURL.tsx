@@ -1,5 +1,6 @@
 "use client";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/togglerbtn";
 import { useEventStore } from "@/store/useEventStore";
 import { useEffect, useState } from "react";
@@ -37,27 +38,28 @@ const EventURL = () => {
   };
 
   return (
-    <div className="flex items-center gap-2">
-      <Switch onClick={handleButtonClick} checked={isToggleOn} />
-      {isToggleOn ? (
+    <div className="flex flex-col  gap-2">
+      <div className="flex items-center gap-2">
+        <Switch onClick={handleButtonClick} checked={isToggleOn} />{" "}
+        <Label>Add URL</Label>
+      </div>
+      {isToggleOn && (
         <div className="flex items-center gap-2">
-          <Input
-            type="url"
-            value={eventStore.UrlLink || ""}
-            onChange={(e) => handleUrlLinkChange(e.target.value)}
-            placeholder="Enter your URL"
-            className="w-full"
-          />
           <Input
             type="url"
             value={eventStore.UrlTitle || ""}
             onChange={(e) => handleUrlTitleChange(e.target.value)}
-            placeholder="Enter a custom title (optional)"
+            placeholder="URL Title"
+            className="w-full"
+          />
+          <Input
+            type="url"
+            value={eventStore.UrlLink || ""}
+            onChange={(e) => handleUrlLinkChange(e.target.value)}
+            placeholder="URL Link"
             className="w-full"
           />
         </div>
-      ) : (
-        <h6 className="">Add URL Link</h6>
       )}
     </div>
   );

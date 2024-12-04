@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { UserType } from "@/types/UserType";
+import { Plus, Trash } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
@@ -93,19 +94,8 @@ const AddUserModal = ({
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button
-          variant="outline"
-          className={cn(
-            {
-              "bg-evento-gradient": currentSelectedUsers.length > 0,
-            },
-            "w-fit",
-          )}
-        >
-          {title}
-          {currentSelectedUsers.length > 0
-            ? ` (${currentSelectedUsers.length})`
-            : ""}
+        <Button variant="outline" className={cn("bg-gray-200 px-3")}>
+          <Plus className="w-4 h-4" strokeWidth={2.5} />
         </Button>
       </DialogTrigger>
       <DialogContent className="bg-background w-[95%] rounded-lg border-none">
@@ -170,27 +160,32 @@ const AddUserModal = ({
                       className="w-10 h-10 rounded-full"
                     />
                     <div>
-                      <p>{userId.username}</p>
-                      <p className="text-xs">{userId.email}</p>
+                      <p className="truncate whitespace-nowrap ">
+                        {userId.username}
+                      </p>
+                      <p className="text-xs hidden md:block">{userId.email}</p>
                     </div>
                   </div>
-                  <select
-                    value={status}
-                    onChange={(e) =>
-                      handleStatusChange(userId._id, e.target.value)
-                    }
-                    className="border rounded p-1"
-                  >
-                    <option value="read-only">Read-only</option>
-                    <option value="admin">Admin</option>
-                  </select>
-                  <Button
-                    variant="destructive"
-                    size="sm"
-                    onClick={() => removeUser(userId._id)}
-                  >
-                    Remove
-                  </Button>
+                  <div className="flex items-center gap-2">
+                    <select
+                      value={status}
+                      onChange={(e) =>
+                        handleStatusChange(userId._id, e.target.value)
+                      }
+                      className="border rounded p-1"
+                    >
+                      <option value="read-only">Read-only</option>
+                      <option value="admin">Admin</option>
+                    </select>
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => removeUser(userId._id)}
+                    >
+                      <Trash className="w-4 h-4" strokeWidth={2.5} />
+                      <span className="hidden md:inline">Remove</span>
+                    </Button>
+                  </div>
                 </div>
               ))}
             </ScrollArea>

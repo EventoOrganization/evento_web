@@ -1,8 +1,12 @@
 "use client";
+import { handleDeleteMedia, handleUpload } from "@/app/create-event/action";
+import EventoLoader from "@/components/EventoLoader";
+import FileUploadButton from "@/components/FileUploadButton";
 import Section from "@/components/layout/Section";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 import { useSession } from "@/contexts/SessionProvider";
 import AuthModal from "@/features/auth/components/AuthModal";
@@ -16,36 +20,46 @@ import EventQuestionsForm from "@/features/event/components/EventQuestionsForm";
 import EventURL from "@/features/event/components/EventURL";
 import { handleFieldChange } from "@/features/event/eventActions";
 import { useToast } from "@/hooks/use-toast";
-import { useEventStore } from "@/store/useEventStore";
+import { MediaItem, useEventStore } from "@/store/useEventStore";
 import { useGlobalStore } from "@/store/useGlobalStore";
 import { EventType, InterestType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
-import { XIcon } from "lucide-react";
+import { Check, Trash } from "lucide-react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+
 const CreateEventContent = () => {
   const eventStore = useEventStore();
+  // const mediaPreviews = useEventStore((state) => state.mediaPreviews || []);
+  // const [carouselItems, setCarouselItems] = useState<any>(mediaPreviews);
   const [isEventModalOpen, setIsEventModalOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
-  const { addEvent, users, interests, userInfo } = useGlobalStore(
-    (state) => state,
+  const { addEvent, users, interests } = useGlobalStore((state) => state);
+  const [isUploading, setIsUploading] = useState(false);
+  const [tempMediaPreviews, setTempMediaPreviews] = useState<
+    { url: string; type: string }[]
+  >(eventStore.tempMediaPreview || []);
+  const [uploadingMediaStatus, setUploadingMediaStatus] = useState<boolean[]>(
+    Array(tempMediaPreviews.length).fill(false),
   );
+  const [carouselIndex, setCarouselIndex] = useState(0);
   const { isAuthenticated, token, user } = useSession();
   const [selectedInterests, setSelectedInterests] = useState<InterestType[]>(
     eventStore.interests || [],
   );
   const [location, setLocation] = useState({ lat: 0, lng: 0 });
   useEffect(() => {
-    handleFieldChange("username", user?.username);
+    handleFieldChange("username", eventStore?.username);
   }, [isAuthenticated]);
   useEffect(() => {
     setFormValues({
       title: eventStore.title || "",
       eventType: eventStore.eventType || "public",
-      username: userInfo?.username || "",
+      username: user?.username || "",
       date: eventStore.date || "",
       endDate: eventStore.endDate || eventStore.date || "",
       startTime: eventStore.startTime || "",
@@ -74,7 +88,7 @@ const CreateEventContent = () => {
   const [formValues, setFormValues] = useState({
     title: eventStore.title || "",
     eventType: eventStore.eventType || "public",
-    username: userInfo?.username || "",
+    username: user?.username || "",
     date: eventStore.date || "",
     endDate: eventStore.endDate || eventStore.date || "",
     startTime: eventStore.startTime || "",
@@ -100,6 +114,7 @@ const CreateEventContent = () => {
   });
   const handleAuthSuccess = () => {
     setIsAuthModalOpen(!isAuthModalOpen);
+    handleFieldChange("username", eventStore?.username);
     setIsEventModalOpen(true);
   };
   const handleCreateEvent = (e: React.FormEvent) => {
@@ -119,19 +134,109 @@ const CreateEventContent = () => {
     }));
     handleFieldChange(name, e.target.value);
   };
-  const handleInterestsChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedInterestId = e.target.value;
-    const selectedInterest = interests.find(
-      (i) => i._id === selectedInterestId,
-    );
+  const handleEventTypeChange = (value: string) => {
+    setFormValues((prev) => ({
+      ...prev,
+      eventType: value as "public" | "private",
+    }));
+    handleFieldChange("eventType", value as "public" | "private");
+  };
 
-    if (
-      selectedInterest &&
-      !selectedInterests.some((i) => i._id === selectedInterestId)
-    ) {
-      const updatedSelectedInterests = [...selectedInterests, selectedInterest];
-      setSelectedInterests(updatedSelectedInterests);
-      eventStore.setEventField("interests", updatedSelectedInterests);
+  const handleModeChange = (value: string) => {
+    setFormValues((prev) => ({
+      ...prev,
+      mode: value as "virtual" | "in-person" | "both",
+    }));
+    handleFieldChange("mode", value as "virtual" | "in-person" | "both");
+  };
+  // medias gestion
+  const handleSelectMedia = (index: number) => {
+    setCarouselIndex(index);
+  };
+  const selectedMedia =
+    eventStore.mediaPreviews[carouselIndex] || eventStore.mediaPreviews[0];
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files) {
+      const previews = Array.from(files).map((file) => ({
+        url: URL.createObjectURL(file),
+        type: file.type.startsWith("video/") ? "video" : "image",
+      }));
+
+      // Add the temporary previews to the state
+      setTempMediaPreviews((prev) => [...prev, ...previews]);
+      handleFieldChange("tempMediaPreview", [
+        ...tempMediaPreviews,
+        ...previews,
+      ]);
+    }
+  };
+  useEffect(() => {
+    tempMediaPreviews.forEach((media, index) => {
+      if (!uploadingMediaStatus[index]) {
+        uploadMedia(media, index);
+        setTempMediaPreviews([]);
+      }
+    });
+  }, [tempMediaPreviews]);
+
+  const uploadMedia = async (
+    media: { url: string; type: string },
+    index: number,
+  ) => {
+    try {
+      setIsUploading(true);
+      setUploadingMediaStatus((prev) =>
+        prev.map((status, i) => (i === index ? true : status)),
+      );
+
+      const formData = new FormData();
+      const file = await fetch(media.url).then((r) => r.blob());
+      formData.append("file", file);
+
+      const urls = await handleUpload(formData, "events/initialMedia");
+      const s3Url = urls[0];
+
+      if (media.type === "image" || media.type === "video") {
+        const mediaItemType = media.type === "image" ? "image" : "video";
+        useEventStore.setState((state) => ({
+          tempMediaPreview: state.tempMediaPreview?.filter(
+            (_, i) => i !== index,
+          ),
+          mediaPreviews: [
+            ...state.mediaPreviews,
+            { url: s3Url, type: mediaItemType },
+          ],
+        }));
+      } else {
+        console.error("Invalid media type:", media.type);
+      }
+    } catch (error) {
+      console.error("Error uploading media:", error);
+    } finally {
+      setUploadingMediaStatus((prev) =>
+        prev.map((status, i) => (i === index ? false : status)),
+      );
+      setIsUploading(false);
+    }
+  };
+
+  const deleteMedia = async (index: number, mediaItem: MediaItem) => {
+    const isUploaded = mediaItem.url.startsWith(
+      "https://evento-media-bucket.s3.",
+    );
+    if (isUploaded) {
+      const fileKey = new URL(mediaItem.url).pathname.substring(1);
+      const success = await handleDeleteMedia(fileKey);
+      if (success) {
+        useEventStore.setState((state) => ({
+          mediaPreviews: state.mediaPreviews?.filter((_, i) => i !== index),
+        }));
+      }
+    } else {
+      useEventStore.setState((state) => ({
+        tempMediaPreview: state.tempMediaPreview?.filter((_, i) => i !== index),
+      }));
     }
   };
 
@@ -271,26 +376,22 @@ const CreateEventContent = () => {
 
   return (
     <>
-      {" "}
-      <div className="relative flex justify-center items-center mt-10 text-eventoPurpleLight gap-2">
-        <h2 className="animate-slideInLeft font-black opacity-0">
-          <span>Create </span>
-          <span>Event</span>
-        </h2>
-      </div>
-      <div className=" w-full flex">
-        <Section className=" max-w-5xl w-full justify-start ">
+      <h1 className="animate-slideInLeft opacity-0 lg:text-5xl flex justify-center md:justify-start md:font-bold text-black w-full h-fit mt-10 px-4">
+        Create Event
+      </h1>
+      <div className=" w-full grid grid-cols-1 md:grid-cols-2 ">
+        <Section className="max-w-5xl w-full justify-start ">
           <form onSubmit={handleSubmit} className="space-y-4  w-full">
             <div>
-              <Label className="sr-only" htmlFor="title">
-                Title
+              <Label htmlFor="title">
+                Title<span className="text-red-500">*</span>
               </Label>
               <Input
                 id="title"
                 name="title"
                 value={eventStore.title}
                 onChange={handleChange}
-                placeholder="Enter event title"
+                placeholder="Enter"
               />
             </div>
             {(!user || (user && !user.username)) && (
@@ -308,98 +409,107 @@ const CreateEventContent = () => {
                 />
               </div>
             )}
-            <div className="grid grid-cols-2 gap-4">
-              <div className="">
-                <Label className="sr-only" htmlFor="eventType">
-                  Event Type
+            <div className="">
+              <Label htmlFor="eventType">
+                Event Format<span className="text-red-500">*</span>
+              </Label>
+              <RadioGroup
+                className="flex items-center gap-4 mt-2"
+                defaultValue={eventStore.eventType}
+                onValueChange={handleEventTypeChange}
+              >
+                <Label className="flex items-center gap-2">
+                  <RadioGroupItem value="public" id="public" />
+                  Public
                 </Label>
-                <select
-                  id="eventType"
-                  name="eventType"
-                  value={eventStore.eventType}
-                  onChange={handleChange}
-                  className="form-select w-full text-sm px-3 py-2 rounded-md border"
-                >
-                  <option value="public">Public</option>
-                  <option value="private">Private</option>
-                </select>
-              </div>
-              <div>
-                <Label className="sr-only" htmlFor="mode">
-                  Mode
+                <Label className="flex items-center gap-2">
+                  <RadioGroupItem value="private" id="private" />
+                  Private
                 </Label>
-                <select
-                  id="mode"
-                  name="mode"
-                  value={eventStore.mode}
-                  onChange={handleChange}
-                  className="form-select w-full text-sm px-3 py-2 rounded-md border"
-                >
-                  <option value="virtual">Virtual</option>
-                  <option value="in-person">In-person</option>
-                  <option value="both">Both</option>
-                </select>
-              </div>
+              </RadioGroup>
             </div>
             {eventStore.eventType === "public" && (
               <div>
-                <Label htmlFor="interests" className="sr-only">
-                  Select Interests
-                </Label>
-                <select
-                  value=""
-                  onChange={handleInterestsChange}
-                  className="form-select w-full text-sm px-3 py-2 rounded-md border"
-                >
-                  <option value="" disabled>
-                    Choose interest...
-                  </option>
-                  {interests
-                    .filter(
-                      (i) => !selectedInterests.some((si) => si._id === i._id),
-                    )
-                    .map((interest) => (
-                      <option key={interest._id} value={interest._id}>
+                <Label htmlFor="interests">Interests Category</Label>
+                <ul className="flex flex-wrap gap-2 mt-2">
+                  {interests.map((interest) => {
+                    const isSelected = selectedInterests.some(
+                      (i) => i._id === interest._id,
+                    );
+
+                    return (
+                      <li
+                        key={interest._id}
+                        onClick={() => {
+                          if (isSelected) {
+                            setSelectedInterests((prev) =>
+                              prev.filter((i) => i._id !== interest._id),
+                            );
+                            eventStore.setEventField(
+                              "interests",
+                              selectedInterests.filter(
+                                (i) => i._id !== interest._id,
+                              ),
+                            );
+                          } else {
+                            const updatedInterests = [
+                              ...selectedInterests,
+                              interest,
+                            ];
+                            setSelectedInterests(updatedInterests);
+                            eventStore.setEventField(
+                              "interests",
+                              updatedInterests,
+                            );
+                          }
+                        }}
+                        className={`cursor-pointer px-2 py-2 rounded-md border text-sm w-fit flex items-center justify-center ${
+                          isSelected
+                            ? "bg-black text-white"
+                            : "bg-gray-200 text-muted-foreground hover:bg-gray-300"
+                        }`}
+                      >
+                        {isSelected && <Check className="mr-2 w-4 h-4" />}
                         {interest.name}
-                      </option>
-                    ))}
-                </select>
+                      </li>
+                    );
+                  })}
+                </ul>
               </div>
             )}
-            <ul className="flex gap-2 flex-wrap">
-              {eventStore.interests &&
-                eventStore.interests.map((interest: any, index: number) => (
-                  <li
-                    key={index}
-                    onClick={() =>
-                      handleRemoveInterest && handleRemoveInterest(interest._id)
-                    }
-                    className="bg-eventoPurpleLight/30 w-fit px-2 py-1 rounded-lg text-sm cursor-pointer flex items-center"
-                  >
-                    {interest.name}
-                    <XIcon className="w-4 h-4 ml-1" />
-                  </li>
-                ))}
-            </ul>
-            {/* <div className="md:hidden">
-              <Input
-                type="file"
-                accept="image/*,video/*"
-                multiple
-                onChange={handleUpload}
-              />
-            </div> */}
+            <div className="">
+              <Label htmlFor="mode">
+                Event Format<span className="text-red-500">*</span>
+              </Label>
+              <RadioGroup
+                className="flex items-center gap-4 mt-2"
+                defaultValue={eventStore.mode}
+                onValueChange={handleModeChange}
+              >
+                <Label className="flex items-center gap-2">
+                  <RadioGroupItem value="virtual" id="virtual" />
+                  Virtual
+                </Label>
+                <Label className="flex items-center gap-2">
+                  <RadioGroupItem value="in-person" id="in-person" />
+                  In person
+                </Label>
+                <Label className="flex items-center gap-2">
+                  <RadioGroupItem value="both" id="both" />
+                  Both
+                </Label>
+              </RadioGroup>
+            </div>
             <div className={`${eventStore.mode !== "virtual" ? "" : "hidden"}`}>
               <MyGoogleMapComponent
                 location={location || { lat: 0, lng: 0 }}
                 setLocation={setLocation}
               />
             </div>
-            {/* <EventDate /> */}
             <EventDateComponent />
             <div>
-              <Label className="sr-only" htmlFor="description">
-                Description
+              <Label htmlFor="description">
+                Description<span className="text-destructive">*</span>
               </Label>
               <Textarea
                 id="description"
@@ -409,7 +519,67 @@ const CreateEventContent = () => {
                 placeholder="Enter event description"
               />
             </div>
-            <h4 className="text-eventoPurpleLight">More Options</h4>
+            <div className="">
+              <Label>Event Photos</Label>
+              {selectedMedia && (
+                <div className="relative w-full h-96 border rounded-md mt-4 md:hidden">
+                  {selectedMedia.type === "image" ? (
+                    <Image
+                      src={selectedMedia.url}
+                      alt="Selected Media"
+                      fill
+                      className="object-cover rounded"
+                    />
+                  ) : (
+                    <video
+                      src={selectedMedia.url}
+                      controls
+                      className="w-full h-full object-cover rounded"
+                    />
+                  )}
+                </div>
+              )}
+              <div className="flex mt-2 w-full">
+                <FileUploadButton onChange={handleFileSelect} />
+                {eventStore.mediaPreviews.length > 0 && (
+                  <ul className="flex gap-2 overflow-x-scroll max-w-full ml-2 scroll-container p-2">
+                    {eventStore.mediaPreviews.map((media, index) => (
+                      <li
+                        key={index}
+                        onClick={() => handleSelectMedia(index)}
+                        className="cursor-pointer relative w-24 h-24 overflow-hidden aspect-square border rounded-md flex-shrink-0 ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 hover:ring-2 hover:ring-ring"
+                      >
+                        {/* Afficher l'image ou la vidéo selon le type */}
+                        {media.type === "image" ? (
+                          <Image
+                            src={media.url}
+                            alt={`Media ${index}`}
+                            width={96}
+                            height={96}
+                            className="object-cover"
+                          />
+                        ) : (
+                          <video
+                            src={media.url}
+                            controls
+                            className="object-cover w-full h-full"
+                          />
+                        )}
+
+                        {/* Bouton de suppression */}
+                        <Trash
+                          className="absolute top-2 right-2 w-10 h-10 cursor-pointer rounded bg-background p-2 border hover:bg-destructive hover:text-destructive-foreground"
+                          onClick={() => deleteMedia(index, media)}
+                        />
+                      </li>
+                    ))}
+                    {isUploading && <EventoLoader />}
+                  </ul>
+                )}
+              </div>
+            </div>
+
+            <h4>More Options</h4>
             <div className="flex flex-wrap gap-2 flex-col">
               <EventCoHostsModal
                 allUsers={users as UserType[]}
@@ -421,14 +591,18 @@ const CreateEventContent = () => {
             <EventQuestionsForm />
             <Button
               type="button"
-              className="bg-evento-gradient w-full text-white"
+              className="bg-evento-gradient w-full text-white md:hidden"
               onClick={() => setIsEventModalOpen(true)}
             >
               Preview
             </Button>
+            <Button className="bg-evento-gradient w-full text-white hidden md:flex">
+              Create Event
+            </Button>
           </form>
         </Section>
         <Section className="hidden md:block">
+          <h2 className="mb-4">Preview</h2>
           <CreateEventPreview handleRemoveInterest={handleRemoveInterest} />
           <Button
             variant={"outline"}

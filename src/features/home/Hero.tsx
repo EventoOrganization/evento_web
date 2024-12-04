@@ -9,7 +9,7 @@ const Hero = () => {
       {/* Texte de la section */}
       <div className="grid grid-cols-2">
         <div className="space-y-5 pl-4 md:px-6 flex flex-col justify-center">
-          <h1 className="text-4xl sm:text-5xl lg:text-8xl font-bold text-eventoPurpleDark flex flex-wrap">
+          <h1>
             Create,
             <br /> Discover,
             <br /> Connect

@@ -7,6 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { cn } from "@/lib/utils";
 import { useEventStore } from "@/store/useEventStore";
 import { timeZonesMap } from "@/utils/timezones";
 import { useEffect, useState } from "react";
@@ -16,22 +17,24 @@ interface SelectTimeZoneProps {
   selectedTimeZone: string;
   setSelectedTimeZone: (value: string) => void;
   editMode?: boolean;
+  className?: string;
 }
 
 const SelectTimeZone = ({
   selectedTimeZone,
   setSelectedTimeZone,
   editMode,
+  className,
 }: SelectTimeZoneProps) => {
   const [currentLabel, setCurrentLabel] = useState("Timezone");
   const eventoStore = useEventStore();
   useEffect(() => {
+    console.log("changed timezone", eventoStore.timeZone);
     setCurrentLabel(
-      eventoStore.timeZone ||
-        timeZonesMap.find((tz) => tz.value === selectedTimeZone)?.label ||
+      timeZonesMap.find((tz) => tz.offset === selectedTimeZone)?.label ||
         "Timezone",
     );
-  }, []);
+  }, [eventoStore.timeZone]);
   return (
     <>
       <Label htmlFor="timeZoneSelect" className="sr-only">
@@ -45,12 +48,25 @@ const SelectTimeZone = ({
         }}
         disabled={!editMode}
       >
-        <SelectTrigger className="border p-2 rounded">
-          <SelectValue>{currentLabel}</SelectValue>
+        <SelectTrigger
+          className={cn("border p-2 rounded justify-start", className)}
+        >
+          <SelectValue className="">{currentLabel}</SelectValue>
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent
+          className={cn(
+            "max-w-full",
+            "w-[var(--radix-select-trigger-width)]",
+            "md:w-[calc(100vw-2rem)]",
+            "md:max-w-fit",
+          )}
+        >
           {timeZonesMap.map((tz) => (
-            <SelectItem key={tz.value} value={tz.value}>
+            <SelectItem
+              key={tz.offset}
+              value={tz.offset}
+              className=" truncate text-ellipsis overflow-hidden"
+            >
               {tz.label}
             </SelectItem>
           ))}

@@ -35,7 +35,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   return {
-    title: `${event.title} - Evento`,
+    title: `${event.title}`,
     description:
       event.details?.description || "Join this amazing event on Evento",
     openGraph: {

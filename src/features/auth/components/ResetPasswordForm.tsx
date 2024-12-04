@@ -1,4 +1,5 @@
 "use client";
+import EventoLoader from "@/components/EventoLoader";
 import PasswordInput from "@/components/PasswordInput";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,7 +12,6 @@ import { cn } from "@/lib/utils";
 import { newPasswordSchema } from "@/lib/zod";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader } from "lucide-react";
 import { useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
@@ -111,7 +111,7 @@ const ResetPasswordModal = ({
           className={cn("bg-evento-gradient-button rounded-full w-fit px-6")}
           disabled={isFetching}
         >
-          {isFetching ? <Loader /> : "Reset Password"}
+          {isFetching ? <EventoLoader /> : "Reset Password"}
         </Button>
         {error && (
           <div className="flex gap-1 items-center mt-2">

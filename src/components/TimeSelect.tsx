@@ -6,6 +6,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { generateTimeOptions } from "@/utils/dateUtils";
+import { Clock } from "lucide-react";
 import { useEffect, useState } from "react";
 
 const timeOptions = generateTimeOptions();
@@ -37,7 +38,12 @@ export const TimeSelect = ({
 
   return (
     <Select value={value} onValueChange={onChange}>
-      <SelectTrigger className="border p-2 rounded" disabled={disabled}>
+      <SelectTrigger
+        className="border flex p-2 rounded justify-start"
+        disabled={disabled}
+      >
+        {" "}
+        <Clock className="mr-2 h-4 w-4" />
         {value === "" ? (
           <span className="text-gray-400">End Time?</span>
         ) : (

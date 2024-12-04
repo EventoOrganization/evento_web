@@ -1,10 +1,10 @@
 "use client";
 
+import EventoLoader from "@/components/EventoLoader";
 import Section from "@/components/layout/Section";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
-import Loader from "@/components/ui/Loader";
 import {
   Popover,
   PopoverContent,
@@ -59,24 +59,39 @@ const DiscoverPageContent = () => {
   const [toggleSearch, setToggleSearch] = useState(false);
   const [SeeMoreCount, setSeeMoreCount] = useState<number>(10);
   const [filteredEvents, setFilteredEvents] = useState<EventType[]>([]);
+  const [isFetching, setIsFetching] = useState(false);
   useEffect(() => {
     if (!isHydrated && events) {
       setIsHydrated(true);
     }
   }, [events]);
   useEffect(() => {
-    if (isHydrated && events && events.length > 0) {
-      const filteredEvents = filterEvents(
-        events || [],
-        selectedInterests || [],
-        searchText || "",
-        selectedTab || "All events",
-        location || null,
-        startDate || null,
-        endDate || null,
-      );
-      setFilteredEvents(filteredEvents);
-    }
+    const fetchFilteredEvents = async () => {
+      if (isHydrated && events && events.length > 0) {
+        setIsFetching(true); // Active le loader
+        // Simule une requête ou un délai pour garantir la mise à jour
+        const filtered = await new Promise<EventType[]>(
+          (resolve) =>
+            setTimeout(() => {
+              resolve(
+                filterEvents(
+                  events || [],
+                  selectedInterests || [],
+                  searchText || "",
+                  selectedTab || "All events",
+                  location || null,
+                  startDate || null,
+                  endDate || null,
+                ),
+              );
+            }, 500), // Ajout d'un délai (500 ms pour tester)
+        );
+        setFilteredEvents(filtered);
+        setIsFetching(false); // Désactive le loader une fois que tout est prêt
+      }
+    };
+
+    fetchFilteredEvents();
   }, [
     selectedInterests,
     searchText,
@@ -133,17 +148,18 @@ const DiscoverPageContent = () => {
   return (
     <>
       {!isHydrated ? (
-        <Loader />
+        <div className="flex justify-center items-center min-h-screen">
+          <EventoLoader />
+        </div>
       ) : (
         <>
-          {" "}
           <div className="relative flex justify-center items-center mt-10 text-eventoPurpleLight gap-2">
             <h2 className="animate-slideInLeft font-black opacity-0">
               <span>Discover Events</span>
             </h2>
           </div>
-          <Section className="flex flex-col-reverse md:grid grid-cols-2 lg:grid-cols-3  md:gap-0 items-start justify-end px-0">
-            <ul className="w-full space-y-6 lg:col-span-2 ">
+          <Section className="flex flex-col-reverse md:grid  md:grid-cols-3  md:gap-0 items-start justify-end px-0">
+            <ul className="w-full space-y-6 md:col-span-2 md:pl-4">
               <li className="flex items-center sticky top-0 z-20 bg-muted p-2 md:p-4 flex-col gap-2 border-b shadow md:shadow-none md:border-none">
                 <TabSelector
                   onChange={setSelectedTab}
@@ -154,12 +170,16 @@ const DiscoverPageContent = () => {
                   <MenuIcon onClick={() => setToggleSearch(!toggleSearch)} />
                 </span>
               </li>
-              {filteredEvents.length > 0 ? (
+              {isFetching ? (
+                <div className="flex justify-center items-center h-96">
+                  <EventoLoader />
+                </div>
+              ) : filteredEvents.length > 0 ? (
                 filteredEvents.map((event, index) => (
                   <li
                     key={event._id}
                     onClick={() => handleEventClick(event)}
-                    className="px-2 md:px-4"
+                    className="border-b-2 pb-6 md:border-none md:pb-0"
                   >
                     <Event event={event} index={index} />
                   </li>
@@ -296,7 +316,7 @@ const DiscoverPageContent = () => {
                   ))}
                 </ul>
               </div>{" "}
-              <div className="p-4 hidden md:block">
+              <div className="p-4 hidden lg:block">
                 <div className="space-y-4  mb-20">
                   {session.isAuthenticated ? (
                     <>

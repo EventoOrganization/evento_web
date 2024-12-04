@@ -5,7 +5,11 @@ export const metadata: Metadata = {
   description: "Create an event on Evento",
 };
 const page = () => {
-  return <CreateEventContent />;
+  return (
+    <div className="max-w-7xl">
+      <CreateEventContent />
+    </div>
+  );
 };
 
 export default page;

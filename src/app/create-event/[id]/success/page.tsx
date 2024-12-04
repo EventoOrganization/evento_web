@@ -5,6 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Switch } from "@/components/ui/togglerbtn";
 import { useSession } from "@/contexts/SessionProvider";
 import CSVImport from "@/features/event/components/CSVImport";
 import EventAddTempGuest from "@/features/event/components/EventAddTempGuest";
@@ -13,6 +14,7 @@ import { useGlobalStore } from "@/store/useGlobalStore";
 import { EventType } from "@/types/EventType";
 import { TempUserType, UserType } from "@/types/UserType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
+import { InfoIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -25,6 +27,8 @@ const EventSuccessPage = () => {
   const { users } = useGlobalStore((state) => state);
   const [isGuestAllowed, setIsGuestAllowed] = useState<boolean | null>(null);
   const { user, token } = useSession();
+  const [showTooltip, setShowTooltip] = useState(false);
+
   const { toast } = useToast();
   const [currentSelectedUsers, setCurrentSelectedUsers] = useState<
     SelectedUser[]
@@ -38,11 +42,12 @@ const EventSuccessPage = () => {
     ? event.favouritees.map((f) => f?._id || "")
     : [];
   const excludedUserIds = [...attendeeIds, ...favouriteIds];
+  const [isRestricted, setIsRestricted] = useState(false);
   useEffect(() => {
     const fetchEventData = async () => {
       try {
         const userQuery = user ? `?userId=${user._id}` : "";
-        const response = await fetchData(
+        const response = await fetchData<EventType>(
           `/events/getEvent/${eventId}${userQuery}`,
           HttpMethod.GET,
           null,
@@ -50,6 +55,8 @@ const EventSuccessPage = () => {
         );
         if (response.ok) {
           setEvent(response.data as EventType);
+          setIsGuestAllowed(response.data?.guestsAllowFriend || false);
+          setIsRestricted(response.data?.restricted || false);
         } else {
           toast({ description: "Event not found", variant: "destructive" });
         }
@@ -92,7 +99,39 @@ const EventSuccessPage = () => {
       });
     }
   };
-
+  const handleRestricted = async () => {
+    try {
+      const response = await fetchData(
+        `/events/updateEvent/${eventId}`,
+        HttpMethod.PUT,
+        { field: "restricted", value: !isRestricted },
+        token,
+      );
+      if (response.ok) {
+        setIsRestricted(!isRestricted);
+        toast({
+          description: `Event ${!isRestricted ? "unrestricted" : "restricted"} successfully!`,
+          className: "bg-evento-gradient text-white",
+          duration: 3000,
+        });
+      }
+      if (response.error) {
+        console.error("Error updating event:", response.error);
+        toast({
+          description: response.error,
+          variant: "destructive",
+          duration: 3000,
+        });
+      }
+    } catch (error) {
+      console.error("Error updating event:", error);
+      toast({
+        description: "Error updating event",
+        variant: "destructive",
+        duration: 3000,
+      });
+    }
+  };
   // Ajout des invités à la liste des utilisateurs sélectionnés
   const addUser = (user: TempUserType) => {
     setCurrentSelectedUsers((prevUsers) => [...prevUsers, user]);
@@ -196,10 +235,55 @@ const EventSuccessPage = () => {
         user.firstName?.toLowerCase().includes(filter) ||
         user.lastName?.toLowerCase().includes(filter)),
   );
+  const handleSend = async () => {
+    const eventUrl = `${process.env.NEXT_PUBLIC_FRONTEND_URL}/event/${event?._id}`;
 
+    const shareApiSupported = true; // to check if the share api is supported
+
+    if (shareApiSupported && navigator.share) {
+      try {
+        await navigator.share({
+          title: "Check out this event",
+          text: "Check out this event I found!",
+          url: eventUrl,
+        });
+        console.log("Successful share");
+      } catch (error) {
+        console.error("Error sharing:", error);
+      }
+    } else if (navigator.clipboard) {
+      // Utiliser le presse-papier si le partage n'est pas supporté
+      try {
+        await navigator.clipboard.writeText(eventUrl);
+        toast({
+          title: "Link copied to clipboard!",
+          description: "The event link has been copied. You can share it now.",
+          className: "bg-evento-gradient text-white",
+          duration: 3000,
+        });
+      } catch (error) {
+        console.error("Failed to copy link:", error);
+        toast({
+          title: "Failed to copy",
+          description: "Unable to copy the link to the clipboard.",
+          variant: "destructive",
+          duration: 3000,
+        });
+      }
+    } else {
+      console.log("Clipboard API is not supported in this browser.");
+      toast({
+        title: "Sharing not supported",
+        description: "Your browser does not support sharing or copying links.",
+        variant: "destructive",
+        duration: 3000,
+      });
+    }
+  };
   if (!event) {
     return <div>Loading...</div>;
   }
+
   console.log("event", event);
   return (
     <>
@@ -220,6 +304,37 @@ const EventSuccessPage = () => {
             >
               See your event!
             </Link>
+          </div>
+          <div className="flex gap-2 justify-between  w-full">
+            {event?.eventType === "private" && (
+              <>
+                <button
+                  onClick={handleSend}
+                  className="text-blue-500 underline"
+                >
+                  Share link
+                </button>
+                <div className="flex gap-2 items-center">
+                  <InfoIcon
+                    className="w-4 text-gray-500 cursor-pointer"
+                    onMouseEnter={() => setShowTooltip(true)}
+                    onMouseLeave={() => setShowTooltip(false)}
+                  />
+                  {showTooltip && (
+                    <span className="absolute bg-gray-800 text-white text-xs rounded py-1 px-2 -mt-10 ml-4 z-10">
+                      When <b>Restricted</b> is enabled, users accessing the
+                      event through the link will need to send a request to the
+                      host to join, unless they are explicitly invited.
+                    </span>
+                  )}
+                  <p className="text-sm text-muted-foreground">Restricted</p>
+                  <Switch
+                    checked={isRestricted}
+                    onCheckedChange={handleRestricted}
+                  />
+                </div>
+              </>
+            )}
           </div>
           <h2>Add your guests on Evento</h2>
           <Input

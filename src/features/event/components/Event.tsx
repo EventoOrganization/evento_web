@@ -1,5 +1,6 @@
 "use client";
 import AvatarStack from "@/components/AvatarStack";
+import EventoLoader from "@/components/EventoLoader";
 import MapPinIcon2 from "@/components/icons/MappPinIcon2";
 import RenderMedia from "@/components/RenderMedia";
 import TruncatedText from "@/components/TruncatedText";
@@ -8,7 +9,6 @@ import { Button } from "@/components/ui/button";
 import DiscoverRenderMedia from "@/features/discover/DiscoverRenderMedia";
 import { cn } from "@/lib/utils";
 import { renderDate } from "@/utils/dateUtils";
-import { Loader } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -30,13 +30,13 @@ const Event = ({
     <>
       <div
         className={cn(
-          "bg-white border maw-w-md shadow rounded p-4 w-full grid grid-cols-1 lg:grid-cols-2  h-fit gap-4 hover:shadow-xl hover:bg-slate-50 cursor-pointer relative",
+          " md:bg-white md:border maw-w-md md:shadow rounded md:p-4 w-full grid grid-cols-1 lg:grid-cols-2  h-fit gap-4 md:hover:shadow-xl md:hover:bg-slate-50 cursor-pointer relative",
           className,
           { "lg:grid-cols-1": pathname === "/discover" },
         )}
       >
         <div className=" ">
-          <div className="grid grid-cols-4 items-center justify-between gap-4 mb-4 ">
+          <div className="grid grid-cols-4 items-center justify-between gap-4 mb-4 px-2 md:px-0">
             <Link
               href={`/profile/${event?.user?._id}`}
               onClick={(e) => e.stopPropagation()}
@@ -89,7 +89,7 @@ const Event = ({
               </div>
             </Link>
             <span className="text-sm text-right col-span-2">
-              {renderDate(event) || <Loader />}
+              {renderDate(event) || <EventoLoader />}
             </span>
           </div>
           <div>
@@ -101,7 +101,7 @@ const Event = ({
           </div>
         </div>
         <div>
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2 px-2 md:px-0">
             <h3>{event && event?.title}</h3>
             <ul className="flex gap-2 flex-wrap">
               {event &&
@@ -153,7 +153,7 @@ const Event = ({
               text={event?.details?.description}
             />
           </div>
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center px-2 md:px-0">
             <div>
               <AvatarStack event={event} />
             </div>

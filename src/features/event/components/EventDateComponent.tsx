@@ -1,20 +1,18 @@
 "use client";
+import { TimeSelect } from "@/components/TimeSelect";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-
-import { TimeSelect } from "@/components/TimeSelect";
 import { Switch } from "@/components/ui/togglerbtn";
 import { useEventStore } from "@/store/useEventStore";
 import { TimeSlotType } from "@/types/EventType";
 import { isSameDay, setDateWithTime, updateTimeSlots } from "@/utils/dateUtils";
-import { timeZonesMap } from "@/utils/timezones";
+import { getUTCOffset, timeZonesMap } from "@/utils/timezones";
 import { format, startOfDay } from "date-fns";
 import { enGB } from "date-fns/locale";
 import { Calendar as CalendarIcon } from "lucide-react";
@@ -54,14 +52,13 @@ const EventDateComponent = ({
   const today = startOfDay(new Date());
   const eventStore = useEventStore();
   const isEditMode = !!handleUpdate;
-  const defaultTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const defaultTimeZone = getUTCOffset();
   const matchedTimeZone =
-    timeZonesMap.find((tz) => defaultTimeZone.includes(tz.value))?.value ||
+    timeZonesMap.find((tz) => defaultTimeZone.includes(tz.offset))?.offset ||
     defaultTimeZone;
   const [selectedTimeZone, setSelectedTimeZone] = useState(
     isEditMode ? initialTimeZone : eventStore.timeZone || matchedTimeZone,
   );
-
   const [localStartDate, setLocalStartDate] = useState<string>(
     isEditMode
       ? setDateWithTime(initialStartDate || "", initialStartTime || "00:00")
@@ -142,6 +139,7 @@ const EventDateComponent = ({
       handleFieldChange("timeZone", matchedTimeZone);
     }
   }, [matchedTimeZone]);
+
   const handleStartDateChange = (date: Date | undefined) => {
     if (date) {
       const formattedDate = format(date, "yyyy-MM-dd");
@@ -191,11 +189,18 @@ const EventDateComponent = ({
     if (isValidTime) {
       if (field === "startTime") {
         setLocalStartTime(value);
-        !isEditMode && handleFieldChange("startTime", value);
-        if (localEndTime && value >= localEndTime) {
+
+        // Réinitialiser endTime si elle devient invalide
+        const isSingleDay =
+          format(new Date(localStartDate), "yyyy-MM-dd") ===
+          format(new Date(localEndDate), "yyyy-MM-dd");
+
+        if (isSingleDay && localEndTime && value >= localEndTime) {
           setLocalEndTime("");
           !isEditMode && handleFieldChange("endTime", "");
         }
+
+        !isEditMode && handleFieldChange("startTime", value);
       } else if (field === "endTime") {
         setLocalEndTime(value);
         !isEditMode && handleFieldChange("endTime", value);
@@ -229,7 +234,9 @@ const EventDateComponent = ({
   return (
     <div>
       <div className="flex justify-between mb-2">
-        <h3 className="text-eventoPurpleLight">Date</h3>
+        <Label className="">
+          Date<span className="text-destructive">*</span>
+        </Label>
         {isEditMode &&
           (editMode ? (
             <div className="flex gap-2">
@@ -270,10 +277,14 @@ const EventDateComponent = ({
             </Button>
           ))}
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-2">
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-2">
         <Popover>
           <PopoverTrigger asChild>
-            <Button variant="outline" disabled={!editMode && isEditMode}>
+            <Button
+              variant="outline"
+              disabled={!editMode && isEditMode}
+              className="justify-start p-2"
+            >
               <CalendarIcon className="mr-2 h-4 w-4" />
               {localStartDate
                 ? format(new Date(localStartDate), "dd/MM/yyyy")
@@ -292,7 +303,11 @@ const EventDateComponent = ({
         </Popover>
         <Popover>
           <PopoverTrigger asChild>
-            <Button variant="outline" disabled={!editMode && isEditMode}>
+            <Button
+              variant="outline"
+              disabled={!editMode && isEditMode}
+              className="justify-start p-2"
+            >
               <CalendarIcon className="mr-2 h-4 w-4" />
               {localEndDate
                 ? format(new Date(localEndDate), "dd/MM/yyyy")
@@ -316,6 +331,7 @@ const EventDateComponent = ({
             !isEditMode && handleFieldChange("timeZone", value);
           }}
           editMode={isEditMode ? editMode : true}
+          className="col-span-2 lg:col-span-1"
         />
       </div>
       {!isSameDay(localStartDate, localEndDate) && (
@@ -336,13 +352,12 @@ const EventDateComponent = ({
       {useMultipleTimes ? (
         <div className="mt-4">
           {localTimeSlots.map((slot, index) => (
-            <div
-              key={index}
-              className="grid grid-cols-3 gap-4 items-center mb-2"
-            >
-              <Input type="date" value={slot.date} readOnly disabled />
+            <div key={index} className="flex gap-4 items-center mb-2">
+              <p className="text-sm whitespace-nowrap text-black">
+                {format(new Date(slot.date), "dd MMM yyyy", { locale: enGB })}
+              </p>
               <TimeSelect
-                value={slot.startTime}
+                value={`${slot.startTime}`}
                 onChange={(value) => {
                   handleTimeSlotChange(index, "startTime", value);
                   !isEditMode && handleFieldChange("timeSlots", localTimeSlots);
@@ -366,12 +381,25 @@ const EventDateComponent = ({
           <TimeSelect
             value={localStartTime}
             onChange={(value) => handleTimeChange("startTime", value)}
+            filterOptions={(time) => {
+              const isSingleDay =
+                format(new Date(localStartDate), "yyyy-MM-dd") ===
+                format(new Date(localEndDate), "yyyy-MM-dd");
+
+              return isSingleDay && localEndTime ? time < localEndTime : true;
+            }}
             disabled={!editMode && isEditMode}
           />
           <TimeSelect
             value={localEndTime}
             onChange={(value) => handleTimeChange("endTime", value)}
-            filterOptions={(time) => time > localStartTime}
+            filterOptions={(time) => {
+              const isSingleDay =
+                format(new Date(localStartDate), "yyyy-MM-dd") ===
+                format(new Date(localEndDate), "yyyy-MM-dd");
+
+              return isSingleDay ? time > localStartTime : true;
+            }}
             disabled={!editMode && isEditMode}
           />
         </div>

@@ -75,6 +75,9 @@
   body {
     @apply bg-background text-foreground;
   }
+  h1 {
+    @apply text-4xl sm:text-5xl lg:text-8xl font-bold text-eventoPurpleDark flex flex-wrap;
+  }
   h2 {
     @apply text-2xl font-bold;
   }
@@ -92,6 +95,32 @@
   .landscape {
     width: 100%;
     height: auto;
+  }
+  .scroll-container {
+    overflow-x: auto;
+    white-space: nowrap;
+    max-width: 100%;
+    scrollbar-width: thin; /* Pour Firefox */
+    scrollbar-color: #6322a3 #f4f4f4; /* Pour Firefox : couleur de la barre et du fond */
+  }
+
+  .scroll-container::-webkit-scrollbar {
+    height: 8px; /* Taille de la barre (horizontal) */
+  }
+
+  .scroll-container::-webkit-scrollbar-track {
+    background: #f4f4f4; /* Couleur de l'arrière-plan */
+    border-radius: 10px; /* Optionnel : arrondi */
+  }
+
+  .scroll-container::-webkit-scrollbar-thumb {
+    background-color: #6322a3; /* Couleur de la barre de défilement */
+    border-radius: 10px; /* Arrondi */
+    border: 2px solid #f4f4f4; /* Espace autour pour créer un effet de marge */
+  }
+
+  .scroll-container::-webkit-scrollbar-thumb:hover {
+    background-color: #6322a3; /* Couleur de la barre au survol */
   }
 
   @media (min-width: 1024px) {
