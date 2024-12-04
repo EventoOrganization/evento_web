@@ -5,7 +5,11 @@ export const metadata: Metadata = {
   description: "Find and join amazing events on Evento",
 };
 const page = () => {
-  return <DiscoverPageContent />;
+  return (
+    <div className="max-w-7xl">
+      <DiscoverPageContent />;
+    </div>
+  );
 };
 
 export default page;

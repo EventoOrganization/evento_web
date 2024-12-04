@@ -27,7 +27,7 @@ import { enUS } from "date-fns/locale";
 import {
   Calendar as CalendarIcon,
   ChevronDownIcon,
-  MenuIcon,
+  FilterIcon,
   Search,
   XIcon,
 } from "lucide-react";
@@ -153,22 +153,25 @@ const DiscoverPageContent = () => {
         </div>
       ) : (
         <>
-          <div className="relative flex justify-center items-center mt-10 text-eventoPurpleLight gap-2">
-            <h2 className="animate-slideInLeft font-black opacity-0">
-              <span>Discover Events</span>
-            </h2>
-          </div>
-          <Section className="flex flex-col-reverse md:grid  md:grid-cols-3  md:gap-0 items-start justify-end px-0">
+          <h1 className="animate-slideInLeft opacity-0 text-3xl md:text-4xl lg:text-5xl flex justify-center md:justify-start md:font-bold text-black w-full mt-10 h-fit px-4">
+            Discover Events
+          </h1>
+          <Section className="flex flex-col-reverse md:grid  md:grid-cols-3  md:gap-0 items-start justify-end pt-4 px-0">
             <ul className="w-full space-y-6 md:col-span-2 md:pl-4">
-              <li className="flex items-center sticky top-0 z-20 bg-muted p-2 md:p-4 flex-col gap-2 border-b shadow md:shadow-none md:border-none">
+              <li className="flex items-center sticky top-0 z-20 bg-muted p-2 md:p-4 flex-col gap-2">
                 <TabSelector
                   onChange={setSelectedTab}
                   tabs={["All events", "Near me", "Virtual"]}
                 />
-                <span className="flex gap-2 md:hidden self-end">
-                  Show filters
-                  <MenuIcon onClick={() => setToggleSearch(!toggleSearch)} />
-                </span>
+                <Button
+                  className="absolute bottom-[-50px] md:hidden self-end p-2 bg-muted"
+                  variant={"outline"}
+                >
+                  <FilterIcon
+                    className="w-5 h-5"
+                    onClick={() => setToggleSearch(!toggleSearch)}
+                  />
+                </Button>
               </li>
               {isFetching ? (
                 <div className="flex justify-center items-center h-96">
@@ -206,6 +209,7 @@ const DiscoverPageContent = () => {
                 },
               )}
             >
+              <h2>Filters</h2>
               <XIcon
                 className="md:hidden self-end"
                 onClick={() => setToggleSearch(!toggleSearch)}

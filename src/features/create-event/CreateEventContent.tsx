@@ -376,7 +376,7 @@ const CreateEventContent = () => {
 
   return (
     <>
-      <h1 className="animate-slideInLeft opacity-0 lg:text-5xl flex justify-center md:justify-start md:font-bold text-black w-full h-fit mt-10 px-4">
+      <h1 className="animate-slideInLeft opacity-0 text-3xl md:text-4xl lg:text-5xl flex justify-center md:justify-start md:font-bold text-black w-full h-fit mt-10 px-4">
         Create Event
       </h1>
       <div className=" w-full grid grid-cols-1 md:grid-cols-2 ">
