@@ -164,8 +164,8 @@ const DiscoverPageContent = () => {
               Discover Events
             </h1>
           )}
-          <Section className="flex flex-col-reverse md:grid  md:grid-cols-3  md:gap-0 items-start justify-end pt-0 px-0">
-            <ul className="w-full space-y-6 md:col-span-2 md:pl-4">
+          <Section className="flex flex-col-reverse md:grid  md:grid-cols-3  md:gap-0 items-start justify-end pt-0 px-0 ">
+            <ul className="w-full md:col-span-2 md:pl-4">
               <li className="flex items-center sticky top-0 z-20 bg-muted p-2 md:p-4 flex-col gap-2">
                 <TabSelector
                   onChange={setSelectedTab}
@@ -180,12 +180,13 @@ const DiscoverPageContent = () => {
                     onClick={() => setToggleSearch(!toggleSearch)}
                   />
                 </Button>
-              </li>
-              {isFetching ? (
+              </li>{" "}
+              {isFetching && (
                 <div className="flex justify-center items-center h-96">
                   <EventoLoader />
                 </div>
-              ) : filteredEvents.length > 0 ? (
+              )}
+              {filteredEvents.length > 0 ? (
                 filteredEvents.map((event, index) => (
                   <li
                     key={event._id}
@@ -213,7 +214,7 @@ const DiscoverPageContent = () => {
                 {
                   "translate-x-[-100%] md:translate-x-0 h-0 opacity-0 md:opacity-100":
                     !toggleSearch,
-                  "translate-x-0 max-h-[80vh] sticky border-b-2 opacity-100 z-20 top-0 pt-5 overflow-y-auto":
+                  "translate-x-0 max-h-[80vh] sticky border-b-2 opacity-100 z-20 top-0 pt-5 overflow-y-auto pb-20":
                     toggleSearch,
                 },
               )}
@@ -221,7 +222,7 @@ const DiscoverPageContent = () => {
               <h2>Filters</h2>
               <Button
                 onClick={() => setToggleSearch(!toggleSearch)}
-                className="md:hidden absolute bottom-20 right-4 p-2 bg-eventoPurpleDark"
+                className="md:hidden absolute bottom-4 right-4 p-2 bg-eventoPurpleDark"
               >
                 <XIcon className=" w-6 h-6" />
               </Button>

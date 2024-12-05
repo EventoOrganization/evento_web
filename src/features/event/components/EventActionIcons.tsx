@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { useSession } from "@/contexts/SessionProvider";
 import AuthModal from "@/features/auth/components/AuthModal";
 import { useToast } from "@/hooks/use-toast";
@@ -10,6 +11,7 @@ import { startOfDay } from "date-fns";
 import {
   Bookmark,
   BookmarkCheck,
+  CalendarCheck2,
   Circle,
   CircleCheck,
   CircleCheckBig,
@@ -38,6 +40,7 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
   updateEventStatusLocally,
   isLocal = false,
 }) => {
+  const newVersion = true;
   const { toast } = useToast();
   const { token, user } = useSession();
   const updateEventStatusInStore = useGlobalStore(
@@ -207,31 +210,52 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
     handleGoing(answers);
   };
   return (
-    <div className={`flex gap-2 ${className}`}>
+    <div
+      className={cn(`flex gap-2 ${className}`, {
+        "w-full": newVersion,
+      })}
+    >
       {/* Action to mark as Going */}
-      <button
+      <Button
         onClick={(e) => {
+          e.stopPropagation();
           handleGoing([]);
           e.stopPropagation();
         }}
-        className="relative flex items-center justify-center w-10 h-10 hover:opacity-80"
+        variant={"outline"}
+        className={cn(
+          "relative flex items-center justify-center bg-muted w-full  hover:opacity-80 text-sm border-2 border-eventoPurpleLight  text-eventoPurpleLight hover:bg-background hover:text-eventoPurpleLight",
+          { "w-10 h-10": !newVersion },
+        )}
       >
         {loading === "isGoing" ? (
           <Spinner className="animate-spin text-eventoPurpleLight w-full h-full" />
         ) : !event.isGoing ? (
-          <CircleCheck
-            strokeWidth={1.5}
-            className={cn("text-eventoPurpleLight w-full h-full")}
-          />
-        ) : (
-          <CircleCheckBig
-            strokeWidth={1.5}
-            className={cn(
-              "text-white bg-evento-gradient rounded-full w-full h-full",
+          <>
+            {newVersion ? (
+              <>Click to Join</>
+            ) : (
+              <CircleCheck
+                strokeWidth={1.5}
+                className={cn("text-eventoPurpleLight w-full h-full")}
+              />
             )}
-          />
+          </>
+        ) : (
+          <>
+            {newVersion ? (
+              <CalendarCheck2 />
+            ) : (
+              <CircleCheckBig
+                strokeWidth={1.5}
+                className={cn(
+                  "text-white bg-evento-gradient rounded-full w-full h-full",
+                )}
+              />
+            )}
+          </>
         )}
-      </button>
+      </Button>
 
       {/* Action to mark as Favourite */}
       <button
