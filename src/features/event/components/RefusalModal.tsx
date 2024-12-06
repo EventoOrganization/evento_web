@@ -26,7 +26,7 @@ const RefusalModal = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent>
+      <DialogContent onClick={(e) => e.stopPropagation()}>
         <DialogHeader>
           <DialogTitle>Refuse Event</DialogTitle>
           <DialogDescription>

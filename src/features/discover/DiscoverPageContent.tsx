@@ -191,7 +191,7 @@ const DiscoverPageContent = () => {
                   <li
                     key={event._id}
                     onClick={() => handleEventClick(event)}
-                    className="border-b-2 pb-6 md:border-none md:pb-0"
+                    className="border-b-2 pb-6 md:border-none"
                   >
                     <Event event={event} index={index} />
                   </li>

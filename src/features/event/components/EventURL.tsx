@@ -46,7 +46,7 @@ const EventURL = () => {
       {isToggleOn && (
         <div className="flex items-center gap-2">
           <Input
-            type="url"
+            type="text"
             value={eventStore.UrlTitle || ""}
             onChange={(e) => handleUrlTitleChange(e.target.value)}
             placeholder="URL Title"

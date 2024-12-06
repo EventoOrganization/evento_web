@@ -81,12 +81,12 @@ const TruncatedText = ({
                 toggleText();
                 e.stopPropagation();
               }}
-              className="absolute bottom-0 right-0 bg-muted "
+              className="absolute bottom-0 right-0 bg-muted md:bg-transparent"
               style={{
                 WebkitBoxOrient: "vertical",
               }}
             >
-              ... <span className="text-eventoPink underline">Read More</span>
+              <span className="text-eventoPink underline ">Read More</span>
             </button>
           )}
         </div>
