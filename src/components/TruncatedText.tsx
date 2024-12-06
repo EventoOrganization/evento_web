@@ -78,7 +78,7 @@ const TruncatedText = ({
                 toggleText();
                 e.stopPropagation();
               }}
-              className="absolute bottom-0 right-0 bg-muted md:bg-transparent"
+              className="absolute bottom-0 right-0 bg-muted md:bg-white"
               style={{
                 WebkitBoxOrient: "vertical",
               }}
@@ -88,7 +88,7 @@ const TruncatedText = ({
           )}
         </div>
       )}
-      {isExpanded && (
+      {isExpanded && !expand && (
         <div className="flex justify-end">
           <button
             onClick={(e) => {
