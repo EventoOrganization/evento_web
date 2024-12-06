@@ -1,6 +1,5 @@
 "use client";
 import { cn } from "@/lib/utils";
-import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 interface TruncatedTextProps {
@@ -47,9 +46,7 @@ const TruncatedText = ({
   return (
     <div className="text-sm w-full mb-2">
       {isLink ? (
-        <Link
-          href={text}
-          target="_blank"
+        <span
           className={cn(
             `${isExpanded ? "" : "line-clamp-1"} break-words w-full text-blue-500 underline`,
             className,
@@ -57,7 +54,7 @@ const TruncatedText = ({
           onClick={(e) => e.stopPropagation()}
         >
           {formatURL(text)}
-        </Link>
+        </span>
       ) : (
         <div
           ref={textRef}

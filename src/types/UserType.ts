@@ -8,7 +8,7 @@ export type UserType = {
   firstName?: string;
   lastName?: string;
   email: string;
-  userId?: string;
+  userId?: UserType;
   URL?: string;
   countryCode?: string;
   createdAt?: string;

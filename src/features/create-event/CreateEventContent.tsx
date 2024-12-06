@@ -53,8 +53,12 @@ const CreateEventContent = () => {
   );
   const [location, setLocation] = useState({ lat: 0, lng: 0 });
   useEffect(() => {
-    handleFieldChange("username", eventStore?.username);
-  }, [isAuthenticated]);
+    console.log("user", user);
+    if (isAuthenticated && user?.username) {
+      handleFieldChange("username", user.username);
+    }
+  }, [isAuthenticated, user?.username]);
+
   useEffect(() => {
     setFormValues({
       title: eventStore.title || "",
@@ -113,10 +117,13 @@ const CreateEventContent = () => {
     interests: eventStore.interests || [],
   });
   const handleAuthSuccess = () => {
-    setIsAuthModalOpen(!isAuthModalOpen);
-    handleFieldChange("username", eventStore?.username);
+    setIsAuthModalOpen(false);
+    if (user?.username) {
+      handleFieldChange("username", user.username);
+    }
     setIsEventModalOpen(true);
   };
+
   const handleCreateEvent = (e: React.FormEvent) => {
     e.preventDefault();
     setIsEventModalOpen(!isEventModalOpen);

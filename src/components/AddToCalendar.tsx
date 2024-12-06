@@ -11,13 +11,7 @@ type AddToCalendarProps = {
 const AddToCalendar: React.FC<AddToCalendarProps> = ({ event }) => {
   const details = event?.details;
 
-  if (
-    !details ||
-    !details.date ||
-    !details.endDate ||
-    !details.startTime ||
-    !details.endTime
-  ) {
+  if (!details || !details.date || !details.endDate || !details.startTime) {
     console.warn("Missing event details:", details);
     return null;
   }
@@ -26,8 +20,11 @@ const AddToCalendar: React.FC<AddToCalendarProps> = ({ event }) => {
   const startDateTime = new Date(
     `${details.date.split("T")[0]}T${details.startTime}`,
   );
+
   const endDateTime = new Date(
-    `${details.endDate.split("T")[0]}T${details.endTime}`,
+    `${details.endDate.split("T")[0]}T${
+      details.endTime || "23:59" // Par défaut à 23:59 si endTime est vide
+    }`,
   );
 
   const formatDateForCalendar = (date: Date) =>

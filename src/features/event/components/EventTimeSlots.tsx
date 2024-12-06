@@ -40,7 +40,6 @@ const EventTimeSlots: React.FC<Props> = ({ event }) => {
 
     return `${formattedDate}\n${startTime} - ${endTime}`;
   };
-  console.log("event", event);
   return (
     <div>
       {event?.details?.timeSlots && event?.details?.timeSlots?.length > 1 ? (

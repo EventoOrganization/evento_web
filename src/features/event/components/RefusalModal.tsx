@@ -49,9 +49,6 @@ const RefusalModal = ({
           >
             {refusalReason.length === 0 ? "Skip" : "Submit"}
           </Button>
-          <Button variant="secondary" onClick={onClose}>
-            Cancel
-          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

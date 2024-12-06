@@ -40,6 +40,7 @@ const EventIdTabs = ({ evento }: { evento?: EventType }) => {
     isPublic: false,
     isPrivate: false,
     isRestricted: false,
+    isCoHost: false,
     isAdmin: false,
     isGuest: false,
     isTempGuest: false,
@@ -50,7 +51,6 @@ const EventIdTabs = ({ evento }: { evento?: EventType }) => {
     if (event) {
       const updateFunction = createUpdateEventField(event);
       const updatedEvent = updateFunction(field, value);
-      console.log("Updated event finally:", updatedEvent);
       setEvent(updatedEvent);
     }
   };
@@ -61,7 +61,7 @@ const EventIdTabs = ({ evento }: { evento?: EventType }) => {
     value: boolean,
   ) => {
     setEvent((prevEvent) => {
-      if (!prevEvent) return prevEvent;
+      if (!prevEvent || !user) return prevEvent;
 
       const resetStatus = {
         isGoing: false,
@@ -69,10 +69,29 @@ const EventIdTabs = ({ evento }: { evento?: EventType }) => {
         isRefused: false,
       };
 
+      // Nouveaux tableaux
+      const updatedAttendees =
+        statusKey === "isGoing" && value
+          ? [...(prevEvent.attendees || []), user]
+          : (prevEvent.attendees || []).filter((u) => u._id !== user._id);
+
+      const updatedFavouritees =
+        statusKey === "isFavourite" && value
+          ? [...(prevEvent.favouritees || []), user]
+          : (prevEvent.favouritees || []).filter((u) => u._id !== user._id);
+
+      const updatedRefused =
+        statusKey === "isRefused" && value
+          ? [...(prevEvent.refused || []), user]
+          : (prevEvent.refused || []).filter((u) => u._id !== user._id);
+
       return {
         ...prevEvent,
         ...resetStatus,
         [statusKey]: value,
+        attendees: updatedAttendees,
+        favouritees: updatedFavouritees,
+        refused: updatedRefused,
       };
     });
   };
@@ -133,28 +152,28 @@ const EventIdTabs = ({ evento }: { evento?: EventType }) => {
 
   // Calculer les droits d'accès
   useEffect(() => {
+    const emailParam = params.get("email");
     setIsLoading(true);
-
     if (event) {
       const isPublic = event.eventType === "public";
       const isPrivate = event.eventType === "private";
       const isRestricted = event.restricted || false;
-
       const isAdmin = user?._id === event.user?._id;
       const isGuest = user
         ? event.guests?.some((guest) => guest._id === user._id) || false
         : false;
-      const isTempGuest = user
-        ? event.tempGuests?.some(
-            (guest) => guest.email === params.get("email"),
-          ) || false
+      const isCoHost = user
+        ? event.coHosts?.some((coHost) => coHost.userId?._id === user._id)
         : false;
+      const isTempGuest =
+        event.tempGuests?.some((guest) => guest.email === emailParam) || false;
 
       // La logique d'accès doit refléter les états décrits
       const hasAccess =
         isPublic ||
         isAdmin ||
         isGuest ||
+        isCoHost ||
         isTempGuest ||
         (!isRestricted && isPrivate);
 
@@ -163,6 +182,7 @@ const EventIdTabs = ({ evento }: { evento?: EventType }) => {
         isPrivate,
         isRestricted,
         isAdmin,
+        isCoHost: isCoHost ?? false,
         isGuest,
         isTempGuest,
         hasAccess,
@@ -178,7 +198,7 @@ const EventIdTabs = ({ evento }: { evento?: EventType }) => {
   }, [event, user, params]);
 
   // Affichage de l'événement
-  if (isLoading || !event || !accessControl.hasAccess) {
+  if (isLoading) {
     return (
       <div className="w-full h-full flex items-center justify-center">
         <EventoLoader />
