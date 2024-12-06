@@ -41,9 +41,10 @@ const RefusalModal = ({
         />
         <DialogFooter className="space-x-2">
           <Button
-            onClick={() => {
+            onClick={(e) => {
               onSubmit(refusalReason);
               onClose();
+              e.stopPropagation();
             }}
             variant="ghost"
           >
