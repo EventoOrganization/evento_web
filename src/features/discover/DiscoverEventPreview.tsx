@@ -138,7 +138,7 @@ const DiscoverEventPreview = ({
             </Link>
             <TruncatedText text={event?.details?.description} expand={true} />
           </div>
-          <div className="flex justify-between items-center">
+          <div className="flex flex-col justify-between gap-2 md:grid md:grid-cols-2">
             {eventEndDate && eventEndDate > currentDate && (
               <>
                 <AvatarStack event={event} />

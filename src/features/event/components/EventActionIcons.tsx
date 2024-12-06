@@ -218,8 +218,8 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
   };
   return (
     <div
-      className={cn(`flex gap-2 ${className}`, {
-        "w-full": newVersion,
+      className={cn(`flex gap-2  ${className}`, {
+        "w-full ": newVersion,
       })}
     >
       {event.eventType === "public" ? (

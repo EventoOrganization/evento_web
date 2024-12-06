@@ -132,7 +132,7 @@ const Event = ({
               text={event?.details?.description}
             />
           </div>
-          <div className="grid md:grid-cols-2 md:flex-row justify-between md:items-center gap-2 px-4 md:px-0">
+          <div className=" flex flex-col md:grid md:grid-cols-2 w-full justify-between md:items-center gap-2 px-4 md:px-0">
             <AvatarStack event={event} />
             <EventActionIcons event={event} />
           </div>
