@@ -13,7 +13,6 @@ import StructuredData from "@/features/SEO/StructuredEventData";
 import { useToast } from "@/hooks/use-toast";
 import { useGlobalStore } from "@/store/useGlobalStore";
 import { EventType } from "@/types/EventType";
-import { renderDate } from "@/utils/dateUtils";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { createUpdateEventField } from "@/utils/updateEventHelper";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
@@ -272,7 +271,7 @@ const EventIdTabs = ({ evento }: { evento?: EventType }) => {
                     )}
                   </div>
                 </Link>
-                <span className="text-sm">{renderDate(event)}</span>
+                {/* <span className="text-sm">{renderDate(event)}</span> */}
               </div>
               <RenderMedia event={event} />
               <DeleteEventButton
