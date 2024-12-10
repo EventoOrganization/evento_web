@@ -527,7 +527,9 @@ const CreateEventContent = () => {
               />
             </div>
             <div className="">
-              <Label>Event Photos</Label>
+              <Label>
+                Event Photos<span className="text-red-500">*</span>
+              </Label>
               {selectedMedia && (
                 <div className="relative w-full h-96 border rounded-md mt-4 md:hidden">
                   {selectedMedia.type === "image" ? (
