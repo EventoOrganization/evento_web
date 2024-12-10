@@ -50,7 +50,7 @@ const CSVImport = ({ onAddTempGuests }: CSVImportProps) => {
 
   return (
     <>
-      <h4 className="flex gap-2">
+      <h4 className="flex gap-2 pt-4 pb-2 w-full">
         Import in bulk!{" "}
         <InfoIcon
           className="w-4 text-gray-500 cursor-pointer"
@@ -63,7 +63,7 @@ const CSVImport = ({ onAddTempGuests }: CSVImportProps) => {
           </span>
         )}
       </h4>
-      <div className="flex gap-2">
+      <div className="flex gap-2 w-full">
         <Input
           type="file"
           accept=".csv"
@@ -73,7 +73,7 @@ const CSVImport = ({ onAddTempGuests }: CSVImportProps) => {
         <Button
           type="button"
           onClick={handleImportCSV}
-          className="bg-eventoBlue hover:bg-eventoBlue/80 border shadow"
+          className="bg-evento-gradient-button hover:bg-evento-gradient-button/80 border shadow"
         >
           Import CSV
         </Button>

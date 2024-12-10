@@ -16,12 +16,19 @@ const EventAddTempGuest = ({ onAddTempGuest }: { onAddTempGuest: any }) => {
 
   return (
     <>
-      <h4>
-        Add friends who are not yet on Evento by adding their name and email
+      <h4 className="pt-4 pb-2 w-full">
+        Invite friends who are not yet on Evento by adding their name and email
         address
       </h4>
-      <form onSubmit={handleAddGuest} className="flex gap-2">
-        <div className="grid grid-cols-2 gap-2">
+      <form onSubmit={handleAddGuest} className="flex gap-2 w-full">
+        <div className="grid grid-cols-2 gap-2 w-full">
+          <Input
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            placeholder="Name"
+            required
+          />{" "}
           <Input
             type="email"
             value={email}
@@ -29,17 +36,10 @@ const EventAddTempGuest = ({ onAddTempGuest }: { onAddTempGuest: any }) => {
             placeholder="Email"
             required
           />
-          <Input
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            placeholder="Name"
-            required
-          />
         </div>
         <Button
           type="submit"
-          className="w-fit bg-eventoBlue hover:bg-eventoBlue/80"
+          className="w-fit bg-evento-gradient-button hover:bg-evento-gradient-button/80"
         >
           Add
         </Button>

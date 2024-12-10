@@ -14,7 +14,7 @@ import { useGlobalStore } from "@/store/useGlobalStore";
 import { EventType } from "@/types/EventType";
 import { TempUserType, UserType } from "@/types/UserType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
-import { InfoIcon } from "lucide-react";
+import { ExternalLink, InfoIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -287,33 +287,21 @@ const EventSuccessPage = () => {
   console.log("event", event);
   return (
     <>
-      <Section className="text-center h-full">
-        <h1 className="text-3xl font-bold text-eventoPurpleLight h-full">
-          Congratulations on creating your event!
+      <Section className="md:px-0 px-4 text-left h-full">
+        <h1 className="text-3xl font-bold w-full h-full">
+          Congratulations
+          <span className="md:hidden  ml-2">!</span>
+          <span className="hidden md:inline ml-2">on creating your event!</span>
         </h1>
-        <p className="text-xl">Next step, invite your guests</p>
+        <p className="text-xl w-full">Next step, invite your guests</p>
       </Section>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Section className="justify-start gap-2 items-start">
-          <div className="flex items-center justify-between w-full">
-            <h1 className="text-xl font-bold">{event?.title}</h1>
-            <Link
-              href={`/event/${event?._id}`}
-              className="underline text-blue-500"
-            >
-              See your event!
-            </Link>
-          </div>
+        <Section className="justify-start gap-2 pt-0 md:pt-10 items-start pb-0">
+          <h4 className="pb-4">Send your event link to your guests!</h4>
           <div className="flex gap-2 justify-between  w-full">
             {event?.eventType === "private" && (
               <>
-                <button
-                  onClick={handleSend}
-                  className="text-blue-500 underline"
-                >
-                  Share link
-                </button>
                 <div className="flex gap-2 items-center">
                   <InfoIcon
                     className="w-4 text-gray-500 cursor-pointer"
@@ -333,16 +321,21 @@ const EventSuccessPage = () => {
                     onCheckedChange={handleRestricted}
                   />
                 </div>
+                <Button
+                  onClick={handleSend}
+                  className="bg-evento-gradient flex gap-2"
+                >
+                  <ExternalLink /> Share link
+                </Button>
               </>
             )}
           </div>
-          <h2>Add your guests on Evento</h2>
+          <h4 className="pb-2 pt-4">Invite your guests on Evento</h4>{" "}
           <Input
             type="text"
             placeholder="Search by username, first name, or last name"
             value={filter}
             onChange={(e) => setFilter(e.target.value.toLowerCase())}
-            className="mb-4"
           />
           <ScrollArea className="h-48 border rounded bg-white w-full">
             {filteredUsers.length > 0 ? (
@@ -382,27 +375,31 @@ const EventSuccessPage = () => {
             ) : (
               <div className="p-2 opacity-80">No users available</div>
             )}
-          </ScrollArea>
+          </ScrollArea>{" "}
+          {event.isHosted && (
+            <div className="flex items-center gap-2 pt-4">
+              {/* <input
+                type="checkbox"
+                id="guestsAllowFriend"
+                onChange={handleGuestsAllowFriendChange}
+                checked={isGuestAllowed ?? false}
+              /> */}
+              <Switch
+                checked={isGuestAllowed ?? false}
+                onCheckedChange={handleGuestsAllowFriendChange}
+              />
+              <label htmlFor="guestsAllowFriend">
+                Allow guests to bring friends
+              </label>
+            </div>
+          )}
           <EventAddTempGuest onAddTempGuest={handleAddTempGuest} />
           <CSVImport onAddTempGuests={handleAddTempGuestsFromCSV} />
         </Section>
 
-        <Section className="justify-start">
-          <div className="space-y-4 pb-20 w-full">
-            {event.isHosted && (
-              <div className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  id="guestsAllowFriend"
-                  onChange={handleGuestsAllowFriendChange}
-                  checked={isGuestAllowed ?? false}
-                />
-                <label htmlFor="guestsAllowFriend">
-                  Allow guests to bring friends
-                </label>
-              </div>
-            )}
-            <h3 className="flex justify-between items-center text-eventoPurpleLight font-bold p-2 rounded-md w-fit text-base">
+        <Section className="justify-start pt-0">
+          <div className="space-y-4 pb-20 w-full pt-4 md:pt-10  border-t-2 md:border-none">
+            <h3 className="flex justify-between items-center font-bold rounded-md w-fit text-base">
               Selected ({currentSelectedUsers.length})
             </h3>
             <ScrollArea className="h-fit border rounded bg-white w-full">
@@ -464,6 +461,9 @@ const EventSuccessPage = () => {
               event={event}
               setEvent={setEvent}
             />
+            <Button className="bg-evento-gradient-button w-full">
+              <Link href={`/event/${event._id}`}>See your event</Link>
+            </Button>
           </div>
         </Section>
       </div>

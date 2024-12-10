@@ -20,7 +20,9 @@ const CollapsibleList = ({
   isAdmin?: boolean;
   setEvent?: (event: EventType) => void;
 }) => {
-  const [isOpen, setIsOpen] = useState(title === "Going" ? true : false);
+  const [isOpen, setIsOpen] = useState(
+    title === "Going" || title === "Invited" ? true : false,
+  );
   const removeUserLocally = (userId: string) => {
     if (!setEvent || !event) return;
 
@@ -40,9 +42,9 @@ const CollapsibleList = ({
       <div className="flex justify-between">
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="flex justify-between items-center text-eventoPurpleLight font-bold p-2 rounded-md  w-fit"
+          className="flex justify-between items-center  font-bold rounded-md  w-fit"
         >
-          {title} ( {count} )
+          {title} ({count})
           <span>
             <ChevronDownIcon
               className={cn(
