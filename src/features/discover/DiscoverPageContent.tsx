@@ -314,8 +314,11 @@ const DiscoverPageContent = () => {
                 </div>
               </div>
               <div className="p-4">
-                <h4 className="text-purple-600 font-bold">Select Interests</h4>
-                <ul className="flex flex-wrap gap-4 mt-4">
+                <Label htmlFor="interests-category">Interests category</Label>
+                <ul
+                  id="interests-category"
+                  className="flex flex-wrap gap-4 mt-4"
+                >
                   {interests.map((interest) => {
                     const isSelected = selectedInterests.some(
                       (i) => i._id === interest._id,
@@ -358,9 +361,7 @@ const DiscoverPageContent = () => {
                         (user) => !user.isIFollowingHim && user.isFollowingMe,
                       ).length > 0 && (
                         <>
-                          <h4 className="text-purple-600 font-bold">
-                            You may know them
-                          </h4>
+                          <Label className="text-sm">You may know them</Label>
                           <ul className="space-y-2">
                             {users
                               .filter(
@@ -386,9 +387,10 @@ const DiscoverPageContent = () => {
                           user.matchingInterests > 0,
                       ).length > 0 && (
                         <>
-                          <h4 className="text-purple-600 font-bold">
+                          <Label className="text-sm">
+                            {" "}
                             They share your interests
-                          </h4>
+                          </Label>
                           <ul className="space-y-2">
                             {users
                               .filter(
@@ -418,9 +420,8 @@ const DiscoverPageContent = () => {
                             user.matchingInterests === 0),
                       ).length > 0 && (
                         <>
-                          <h4 className="text-purple-600 font-bold">
-                            Other users
-                          </h4>
+                          <Label className="text-sm">Other users</Label>
+
                           <ul className="space-y-2">
                             {users
                               .filter(
@@ -451,9 +452,7 @@ const DiscoverPageContent = () => {
                     </>
                   ) : (
                     <>
-                      <h4 className="text-purple-600 font-bold">
-                        Follow Suggestions
-                      </h4>
+                      <Label className="text-sm">Follow Suggestions</Label>
                       <p>
                         Log in to find friends who have the same interests as
                         you!
