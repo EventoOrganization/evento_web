@@ -111,7 +111,7 @@ const Event = ({
                 ))}
             </ul>
             <div className="flex flex-wrap text-sm justify-between text-muted-foreground">
-              <p className=" text-left">
+              <p className="whitespace-nowrap text-eventoPurpleDark font-bold">
                 {renderDate(event) || <EventoLoader />}
               </p>
               <p className="whitespace-nowrap">
