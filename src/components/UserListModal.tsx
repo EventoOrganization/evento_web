@@ -154,9 +154,9 @@ const UserListModal = ({
                       className={`
                       px-5 py-2 rounded-lg font-semibold text-white transition-all hover:scale-105 duration-300 hover:text-white
                       ${user.isIFollowingHim && !user.isFollowingMe ? "bg-gray-400 hover:bg-gray-500 " : ""}
-                      ${user.isFollowingMe && !user.isIFollowingHim ? "bg-green-600 hover:bg-green-600/80 " : ""}
+                      ${user.isFollowingMe && !user.isIFollowingHim ? "bg-eventoBlue hover:bg-eventoBlue/80" : ""}
                       ${user.isFollowingMe && user.isIFollowingHim ? " bg-evento-gradient " : ""}
-                      ${!user.isFollowingMe && !user.isIFollowingHim ? "bg-eventoBlue hover:bg-eventoBlue/80 " : ""}
+                      ${!user.isFollowingMe && !user.isIFollowingHim ? "bg-eventoPurpleDark hover:bg-eventoPurpleDark/80 " : ""}
                       `}
                       onClick={() => handleFollow(user)}
                       disabled={loadingUsers[user._id] ?? false} // Désactiver le bouton uniquement pour cet utilisateur

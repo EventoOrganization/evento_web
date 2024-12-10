@@ -1,6 +1,7 @@
 "use client";
 import CollapsibleList from "@/components/CollapsibleList";
 import Section from "@/components/layout/Section";
+import ShareModal from "@/components/ShareModal";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,7 +15,8 @@ import { useGlobalStore } from "@/store/useGlobalStore";
 import { EventType } from "@/types/EventType";
 import { TempUserType, UserType } from "@/types/UserType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
-import { ExternalLink, InfoIcon } from "lucide-react";
+import { cn } from "@nextui-org/theme";
+import { InfoIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -235,51 +237,7 @@ const EventSuccessPage = () => {
         user.firstName?.toLowerCase().includes(filter) ||
         user.lastName?.toLowerCase().includes(filter)),
   );
-  const handleSend = async () => {
-    const eventUrl = `${process.env.NEXT_PUBLIC_FRONTEND_URL}/event/${event?._id}`;
 
-    const shareApiSupported = true; // to check if the share api is supported
-
-    if (shareApiSupported && navigator.share) {
-      try {
-        await navigator.share({
-          title: "Check out this event",
-          text: "Check out this event I found!",
-          url: eventUrl,
-        });
-        console.log("Successful share");
-      } catch (error) {
-        console.error("Error sharing:", error);
-      }
-    } else if (navigator.clipboard) {
-      // Utiliser le presse-papier si le partage n'est pas supporté
-      try {
-        await navigator.clipboard.writeText(eventUrl);
-        toast({
-          title: "Link copied to clipboard!",
-          description: "The event link has been copied. You can share it now.",
-          className: "bg-evento-gradient text-white",
-          duration: 3000,
-        });
-      } catch (error) {
-        console.error("Failed to copy link:", error);
-        toast({
-          title: "Failed to copy",
-          description: "Unable to copy the link to the clipboard.",
-          variant: "destructive",
-          duration: 3000,
-        });
-      }
-    } else {
-      console.log("Clipboard API is not supported in this browser.");
-      toast({
-        title: "Sharing not supported",
-        description: "Your browser does not support sharing or copying links.",
-        variant: "destructive",
-        duration: 3000,
-      });
-    }
-  };
   if (!event) {
     return <div>Loading...</div>;
   }
@@ -298,37 +256,51 @@ const EventSuccessPage = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Section className="justify-start gap-2 pt-0 md:pt-10 items-start pb-0">
-          <h4 className="pb-4">Send your event link to your guests!</h4>
-          <div className="flex gap-2 justify-between  w-full">
-            {event?.eventType === "private" && (
-              <>
-                <div className="flex gap-2 items-center">
-                  <InfoIcon
-                    className="w-4 text-gray-500 cursor-pointer"
-                    onMouseEnter={() => setShowTooltip(true)}
-                    onMouseLeave={() => setShowTooltip(false)}
-                  />
-                  {showTooltip && (
-                    <span className="absolute bg-gray-800 text-white text-xs rounded py-1 px-2 -mt-10 ml-4 z-10">
-                      When <b>Restricted</b> is enabled, users accessing the
-                      event through the link will need to send a request to the
-                      host to join, unless they are explicitly invited.
-                    </span>
-                  )}
-                  <p className="text-sm text-muted-foreground">Restricted</p>
-                  <Switch
-                    checked={isRestricted}
-                    onCheckedChange={handleRestricted}
-                  />
-                </div>
-                <Button
-                  onClick={handleSend}
-                  className="bg-evento-gradient flex gap-2"
-                >
-                  <ExternalLink /> Share link
-                </Button>
-              </>
+          <div
+            className={cn(
+              "flex flex-col  justify-between gap-2 items-center w-full",
+              {
+                "flex-col": event?.eventType === "private",
+                "md:flex-row": event?.eventType !== "private",
+              },
             )}
+          >
+            <h4 className=" w-full block">
+              Send your event link to your guests!
+            </h4>
+
+            <div
+              className={cn("flex gap-2 justify-between w-full ", {
+                "md:w-fit": event?.eventType !== "private",
+              })}
+            >
+              {event?.eventType === "private" && (
+                <>
+                  <div className="flex gap-2 items-center">
+                    <InfoIcon
+                      className="w-4 text-gray-500 cursor-pointer"
+                      onMouseEnter={() => setShowTooltip(true)}
+                      onMouseLeave={() => setShowTooltip(false)}
+                    />
+                    {showTooltip && (
+                      <span className="absolute bg-gray-800 text-white text-xs rounded py-1 px-2 -mt-10 ml-4 z-10">
+                        When <b>Restricted</b> is enabled, users accessing the
+                        event through the link will need to send a request to
+                        the host to join, unless they are explicitly invited.
+                      </span>
+                    )}
+                    <p className="text-sm text-muted-foreground">Restricted</p>
+                    <Switch
+                      checked={isRestricted}
+                      onCheckedChange={handleRestricted}
+                    />
+                  </div>{" "}
+                </>
+              )}
+              <ShareModal
+                eventUrl={`${process.env.NEXT_PUBLIC_FRONTEND_URL}/event/${event?._id}`}
+              />
+            </div>
           </div>
           <h4 className="pb-2 pt-4">Invite your guests on Evento</h4>{" "}
           <Input

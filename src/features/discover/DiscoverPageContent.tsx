@@ -361,8 +361,8 @@ const DiscoverPageContent = () => {
                         (user) => !user.isIFollowingHim && user.isFollowingMe,
                       ).length > 0 && (
                         <>
-                          <Label className="text-sm">You may know them</Label>
                           <ul className="space-y-2">
+                            <Label className="text-sm">You may know them</Label>
                             {users
                               .filter(
                                 (user) =>
@@ -387,11 +387,10 @@ const DiscoverPageContent = () => {
                           user.matchingInterests > 0,
                       ).length > 0 && (
                         <>
-                          <Label className="text-sm">
-                            {" "}
-                            They share your interests
-                          </Label>
                           <ul className="space-y-2">
+                            <Label className="text-sm">
+                              They share your interests
+                            </Label>
                             {users
                               .filter(
                                 (user) =>
@@ -420,9 +419,8 @@ const DiscoverPageContent = () => {
                             user.matchingInterests === 0),
                       ).length > 0 && (
                         <>
-                          <Label className="text-sm">Other users</Label>
-
                           <ul className="space-y-2">
+                            <Label className="text-sm">Other users</Label>
                             {users
                               .filter(
                                 (user) =>
@@ -431,7 +429,7 @@ const DiscoverPageContent = () => {
                                   (!user.matchingInterests ||
                                     user.matchingInterests === 0),
                               )
-                              .slice(0, SeeMoreCount) // Limiter à un maximum de 10 utilisateurs
+                              .slice(0, SeeMoreCount)
                               .map((user: UserType) => (
                                 <li
                                   key={user._id}
