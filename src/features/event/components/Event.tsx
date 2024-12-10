@@ -123,7 +123,8 @@ const Event = ({
               <AddressModal address={event?.details?.location} />
             </div>
             <TruncatedText
-              text={event?.details?.URLtitle || event?.details?.URLlink || ""}
+              text={event?.details?.URLtitle || ""}
+              url={event?.details?.URLlink || ""}
               isLink
               className="text-eventoPurpleLight"
             />
