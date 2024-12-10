@@ -111,10 +111,10 @@ const AddUserModal = ({
           className="mb-4"
         />
 
-        <div className="flex flex-col-reverse gap-4">
+        <div className="flex flex-col gap-4">
           {/* Liste des utilisateurs disponibles */}
           <div>
-            <h3 className="mb-2">All Users ({availableUsers.length})</h3>
+            <h4 className="mb-2">All Users ({availableUsers.length})</h4>
             <ScrollArea className="h-48 border rounded">
               {availableUsers.length > 0 ? (
                 availableUsers.map((user) => (
@@ -144,7 +144,7 @@ const AddUserModal = ({
 
           {/* Liste des utilisateurs sélectionnés */}
           <div>
-            <h3 className="mb-2">Selected ({currentSelectedUsers.length})</h3>
+            <h4 className="mb-2">Selected ({currentSelectedUsers.length})</h4>
             <ScrollArea className="h-48 border rounded">
               {currentSelectedUsers.map(({ userId, status }) => (
                 <div
