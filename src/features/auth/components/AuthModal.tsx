@@ -42,7 +42,7 @@ const AuthModal = ({
     | "reset-password"
     | "verify"
     | "user-info"
-  >("login");
+  >("signup");
 
   const handleLoginSuccess = (token: string) => {
     if (token) onAuthSuccess(token);
