@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "build:sitemap": "next-sitemap",
     "prepare": "husky install",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "test": "jest",
@@ -64,6 +65,7 @@
     "next-auth": "5.0.0-beta.4",
     "next-connect": "^1.0.0",
     "next-pwa": "^5.6.0",
+    "next-sitemap": "^4.2.3",
     "papaparse": "^5.4.1",
     "react": "^18",
     "react-datepicker": "^7.3.0",
@@ -140,5 +142,5 @@
       "prettier --write"
     ]
   },
-  "packageManager": "yarn@4.5.3+sha512.3003a14012e2987072d244c720506549c1aab73ee728208f1b2580a9fd67b92d61ba6b08fe93f6dce68fd771e3af1e59a0afa28dd242dd0940d73b95fedd4e90"
+  "packageManager": "pnpm@9.15.0+sha512.76e2379760a4328ec4415815bcd6628dee727af3779aaa4c914e3944156c4299921a89f976381ee107d41f12cfa4b66681ca9c718f0668fa0831ed4c6d8ba56c"
 }
