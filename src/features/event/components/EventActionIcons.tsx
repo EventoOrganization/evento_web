@@ -441,6 +441,7 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
         <AuthModal
           onClose={() => setIsAuthModalOpen(false)}
           onAuthSuccess={() => setIsAuthModalOpen(false)}
+          quickSignup
         />
       )}
 

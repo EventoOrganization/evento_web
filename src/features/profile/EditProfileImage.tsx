@@ -1,4 +1,3 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -23,8 +22,8 @@ const EditProfileImage = ({
   onUpdateImage: (image: string) => void;
 }) => {
   const [openDialog, setOpenDialog] = useState(false);
-  const [imageSrc, setImageSrc] = useState<string>(
-    userInfo?.profileImage ? userInfo?.profileImage : "/icon-384x384.png",
+  const [imageSrc, setImageSrc] = useState<string | null>(
+    userInfo?.profileImage ? userInfo?.profileImage : "",
   );
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
@@ -91,6 +90,14 @@ const EditProfileImage = ({
       >
         {userInfo?.profileImage ? (
           <Image
+            src={imageSrc || userInfo?.profileImage}
+            alt="user image"
+            width={500}
+            height={500}
+            className="w-20 h-20 md:w-36 md:h-36 object-cover rounded-full"
+          />
+        ) : imageSrc ? (
+          <Image
             src={imageSrc}
             alt="user image"
             width={500}
@@ -98,10 +105,36 @@ const EditProfileImage = ({
             className="w-20 h-20 md:w-36 md:h-36 object-cover rounded-full"
           />
         ) : (
-          <Avatar className="w-20 h-20 md:w-36 md:h-36">
-            <AvatarImage src={imageSrc || "/icon-384x384.png"} />
-            <AvatarFallback>CN</AvatarFallback>
-          </Avatar>
+          <div className="rounded-full w-20 h-20 md:w-24 md:h-24 bg-gray-100 flex justify-center items-center hover:scale-105 hover:opacity-80 transition-transform duration-200 ease-in-out">
+            <div className="w-10 h-10 md:w-14 md:h-14 -translate-y-1 ">
+              <svg
+                width="13"
+                height="14"
+                viewBox="0 0 13 14"
+                fill="none"
+                className={"w-full h-full "}
+              >
+                <path
+                  d="M6 6.90002C7.9 6.90002 9.5 5.4 9.5 3.5C9.5 1.5 7.9 0 6 0C4.1 0 2.6001 1.5 2.6001 3.5C2.6001 5.4 4.1 6.90002 6 6.90002ZM8.5 7.80005H8C7.4 8.06672 6.73333 8.19995 6 8.19995C5.33333 8.19995 4.7001 8.06672 4.1001 7.80005H3.6001C1.6001 7.80005 0 9.40002 0 11.4V12.5C0 13.2 0.600049 13.8 1.30005 13.8H10.8C11.5 13.8 12.1001 13.2 12.1001 12.5V11.4C12.1001 9.40002 10.5 7.80005 8.5 7.80005Z"
+                  fill="url(#paint0_linear_edit)"
+                />
+
+                <defs>
+                  <linearGradient
+                    id="paint0_linear_edit"
+                    x1="1.43954e-07"
+                    y1="-5.01002"
+                    x2="7.60166"
+                    y2="13.1579"
+                    gradientUnits="userSpaceOnUse"
+                  >
+                    <stop stopColor={"#B127A6"} />
+                    <stop offset="1" stopColor={"#5973D3"} />
+                  </linearGradient>
+                </defs>
+              </svg>
+            </div>
+          </div>
         )}
         <Input
           type="file"
@@ -124,7 +157,7 @@ const EditProfileImage = ({
             </DialogHeader>
             <div className="relative min-h-40">
               <Cropper
-                image={imageSrc}
+                image={imageSrc || userInfo?.profileImage}
                 crop={crop}
                 zoom={zoom}
                 aspect={1}

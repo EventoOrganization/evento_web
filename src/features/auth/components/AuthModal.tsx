@@ -14,6 +14,7 @@ import { useState } from "react";
 import ForgotForm from "./ForgotForm";
 import LoginForm from "./LoginForm";
 import OTPVerifyForm from "./OTPVerifyForm";
+import QuickSignUpForm from "./QuickSignUpForm";
 import ResetPasswordForm from "./ResetPasswordForm";
 import SignUpForm from "./SignupForm";
 import UserInfoForm from "./UserInfoForm";
@@ -21,9 +22,11 @@ import UserInfoForm from "./UserInfoForm";
 const AuthModal = ({
   onAuthSuccess,
   onClose,
+  quickSignup,
 }: {
   onAuthSuccess: (token?: string) => void;
   onClose?: () => void;
+  quickSignup?: boolean;
 }) => {
   const { toast } = useToast();
   const [flowType, setFlowType] = useState<"signup" | "forgot-password">(
@@ -38,11 +41,12 @@ const AuthModal = ({
   const [currentForm, setCurrentForm] = useState<
     | "login"
     | "signup"
+    | "quick-signup"
     | "forgot-password"
     | "reset-password"
     | "verify"
     | "user-info"
-  >("signup");
+  >(quickSignup ? "quick-signup" : "signup");
 
   const handleLoginSuccess = (token: string) => {
     if (token) onAuthSuccess(token);
@@ -66,13 +70,14 @@ const AuthModal = ({
     setUser(loginRes.data);
     console.log("loginRes.data", loginRes.data);
     startSession(loginRes.data, loginRes.data.token);
-    switchForm("verify");
+    // switchForm("verify");
   };
 
   const switchForm = (
     form:
       | "login"
       | "signup"
+      | "quick-signup"
       | "forgot-password"
       | "reset-password"
       | "verify"
@@ -92,6 +97,17 @@ const AuthModal = ({
 
   const renderForm = () => {
     switch (currentForm) {
+      case "quick-signup":
+        return (
+          <QuickSignUpForm
+            onAuthSuccess={(email, password) => {
+              handleOnSignUpSuccess(email, password);
+            }}
+            // onSwitchToVerify={() => switchForm("verify")}
+            onSwitchToVerify={onClose}
+            onSignInClick={() => switchForm("login")}
+          />
+        );
       case "signup":
         return (
           <SignUpForm
@@ -150,37 +166,41 @@ const AuthModal = ({
       }}
     >
       <DialogContent
-        className="rounded-xl"
+        className="rounded-xl max-w-[95%] md:max-w-fit"
         onClick={(e) => e.stopPropagation()}
       >
         <DialogHeader className="flex-row items-center gap-4 ">
           <div className="space-y-1">
             <DialogTitle>
-              {currentForm === "signup"
-                ? "Sign Up"
-                : currentForm === "forgot-password"
-                  ? "Forgot Password"
-                  : currentForm === "reset-password"
-                    ? "Reset Password"
-                    : currentForm === "verify"
-                      ? "Verify Code"
-                      : currentForm === "user-info"
-                        ? "User Info"
-                        : "Sign In"}{" "}
+              {currentForm === "quick-signup"
+                ? "To join the event, please enter your details"
+                : currentForm === "signup"
+                  ? "Sign Up"
+                  : currentForm === "forgot-password"
+                    ? "Forgot Password"
+                    : currentForm === "reset-password"
+                      ? "Reset Password"
+                      : currentForm === "verify"
+                        ? "Verify Code"
+                        : currentForm === "user-info"
+                          ? "User Info"
+                          : "Sign In"}{" "}
               to Continue
             </DialogTitle>
             <DialogDescription>
-              {currentForm === "signup"
-                ? "Hello, welcome to Evento! Create your account now."
-                : currentForm === "forgot-password"
-                  ? "Enter your email address and we will send you a code to reset your password."
-                  : currentForm === "reset-password"
-                    ? "Reset Password"
-                    : currentForm === "verify"
-                      ? "Enter the code that was sent to your email."
-                      : currentForm === "user-info"
-                        ? "Enter your username and profile image."
-                        : "Welcome back! Please sign in to continue."}
+              {currentForm === "quick-signup"
+                ? "This requirment will ask only one time."
+                : currentForm === "signup"
+                  ? "Hello, welcome to Evento! Create your account now."
+                  : currentForm === "forgot-password"
+                    ? "Enter your email address and we will send you a code to reset your password."
+                    : currentForm === "reset-password"
+                      ? "Reset Password"
+                      : currentForm === "verify"
+                        ? "Enter the code that was sent to your email."
+                        : currentForm === "user-info"
+                          ? "Enter your username and profile image."
+                          : "Welcome back! Please sign in to continue."}
             </DialogDescription>
           </div>
         </DialogHeader>
