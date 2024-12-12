@@ -14,6 +14,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
+import { formStyle } from "./AuthModal";
 
 const SignUpForm = ({
   onSignInClick,
@@ -78,10 +79,7 @@ const SignUpForm = ({
 
   return (
     <FormProvider {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className=" justify-between flex flex-col rounded-md p-4 h-full sm:h-auto  max-w-[400px] w-full mx-auto"
-      >
+      <form onSubmit={form.handleSubmit(onSubmit)} className={formStyle}>
         <div className="justify-center flex flex-col gap-4">
           <FormField
             control={form.control}

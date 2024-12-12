@@ -19,6 +19,9 @@ import ResetPasswordForm from "./ResetPasswordForm";
 import SignUpForm from "./SignupForm";
 import UserInfoForm from "./UserInfoForm";
 
+export const formStyle =
+  "justify-between flex flex-col rounded-md p-2  h-full sm:h-auto  max-w-[400px] w-full mx-auto";
+
 const AuthModal = ({
   onAuthSuccess,
   onClose,
@@ -166,7 +169,7 @@ const AuthModal = ({
       }}
     >
       <DialogContent
-        className="rounded-xl max-w-[95%] md:max-w-fit"
+        className="rounded-xl max-w-[95%] md:max-w-fit px-2 py-4 md:p-6"
         onClick={(e) => e.stopPropagation()}
       >
         <DialogHeader className="flex-row items-center gap-4 ">

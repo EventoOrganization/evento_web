@@ -20,6 +20,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
+import { formStyle } from "./AuthModal";
 const extendedSignInSchema = signInSchema.extend({
   rememberMe: z.boolean().optional(),
 });
@@ -50,8 +51,6 @@ const LoginForm = ({
   );
   const { startSession } = useSession();
   const { toast } = useToast();
-  const formStyle =
-    "justify-between flex flex-col rounded-md p-4 h-full sm:h-auto max-w-[400px] w-full mx-auto";
   const onSubmit: SubmitHandler<z.infer<typeof extendedSignInSchema>> = async (
     data,
   ) => {
