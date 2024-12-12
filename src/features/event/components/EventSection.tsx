@@ -18,12 +18,12 @@ const EventSection = ({
   const pathname = usePathname();
   return (
     <Section className={sectionStyle}>
-      <h3 className="font-bold text-lg">
+      <h4 className="font-medium">
         {title} ({events?.length || 0})
-      </h3>
+      </h4>
       <div
         className={cn(
-          "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 w-full ",
+          "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 w-full gap-2",
         )}
       >
         {events && events.length > 0 ? (

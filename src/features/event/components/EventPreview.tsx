@@ -1,6 +1,4 @@
 "use client";
-import CalendarIcon from "@/components/icons/CalendarIcon";
-import MapPinIcon from "@/components/icons/MapPinIcon";
 import {
   Card,
   CardContent,
@@ -11,6 +9,7 @@ import {
 } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { EventType } from "@/types/EventType";
+import { renderDate } from "@/utils/dateUtils";
 import { BookmarkCheck, Circle, CircleCheckBig } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
@@ -27,16 +26,6 @@ const EventPreview = ({
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   // Adjusted function for correct DateTimeFormatOptions types
-  const formatDateResponsive = (dateString: string | undefined) => {
-    if (!dateString) return "Invalid Date";
-    const date = new Date(dateString);
-    const options: Intl.DateTimeFormatOptions = {
-      day: "2-digit",
-      month: "2-digit",
-      year: "2-digit",
-    };
-    return date.toLocaleDateString("en-UK", options);
-  };
 
   const handleCardClick = () => {
     setIsModalOpen(true);
@@ -51,13 +40,13 @@ const EventPreview = ({
     <>
       <Card
         className={cn(
-          "cursor-pointer relative flex flex-col justify-between aspect-square bg-evento-gradient hover:opacity-90",
+          "cursor-pointer relative flex flex-col justify-between aspect-square  hover:opacity-90 border-2 rounded-2xl",
           className,
         )}
         onClick={handleCardClick}
       >
-        <CardHeader className="p-0">
-          <CardTitle className="z-10 w-10 h-10 self-end space-y-2 absolute right-2 top-2">
+        <CardHeader className="p-0 absolute right-2 top-2">
+          <CardTitle className="z-10 w-10 h-10 self-end space-y-2 ">
             {event?.isGoing && (
               <CircleCheckBig
                 strokeWidth={1.5}
@@ -80,31 +69,37 @@ const EventPreview = ({
           </CardTitle>
           <CardDescription></CardDescription>
         </CardHeader>
-        <CardContent>
-          {event?.initialMedia && event?.initialMedia[0]?.url ? (
+        <CardContent className="w-full h-full p-0 rounded-t-xl overflow-hidden">
+          {event?.initialMedia && event?.initialMedia[0]?.url && (
             <Image
               src={event?.initialMedia[0].url}
               alt="Event Image"
-              width={245}
-              height={245}
-              className="w-full inset-0 h-full absolute object-cover aspect-square"
+              width={200}
+              height={200}
+              className="h-full w-full object-cover"
               priority={title === "Upcoming Events" ? true : false}
               loading={title === "Upcoming Events" ? "eager" : "lazy"}
             />
-          ) : (
-            <span></span>
           )}
         </CardContent>
-        <CardFooter className="p-0 text-sm bg-black/60 font-bold text-white z-10">
-          <ul className="p-2 md:p-5 flex flex-col justify-center w-full h-full">
-            <li className="flex gap-5 items-center ">
+        <CardFooter className="p-0 bg-background rounded-b-xl h-full">
+          <ul className="p-2 md:p-5 flex flex-col text-sm w-full h-full gap-2 ">
+            <li className="line-clamp-2 font-bold">{event?.title}</li>
+            <li className="line-clamp-1 text-xs">{renderDate(event)}</li>
+            <li className="line-clamp-1 text-xs">
+              <p className="whitespace-nowrap">
+                {event?.details?.startTime}
+                {event?.details?.endTime ? ` - ${event?.details?.endTime}` : ""}
+              </p>
+            </li>
+            {/* <li className="flex gap-5 items-center ">
               <CalendarIcon strokeWidth={3} className="w-5" />
               {formatDateResponsive(event?.details?.date)}
             </li>
             <li className="flex gap-5 items-center">
               <MapPinIcon strokeWidth={1.5} className="min-w-5 w-5" />
               <p className="truncate">{event?.details?.location}</p>
-            </li>
+            </li> */}
           </ul>
         </CardFooter>
       </Card>

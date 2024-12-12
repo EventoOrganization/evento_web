@@ -247,7 +247,7 @@ const ProfileEditContent = () => {
   }, [isLoaded, inputRef.current, autocomplete]);
 
   return (
-    <div className="container mx-auto max-w-lg py-10">
+    <div className="px-4 mx-auto max-w-lg py-10">
       <h1 className="text-2xl font-semibold mb-6">Edit Profile</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Profile Image */}
@@ -370,9 +370,10 @@ const ProfileEditContent = () => {
           <Label htmlFor="socialLinks">Social Links</Label>
           {formData.socialLinks.map(
             (link: { platform: string; url: string }, index: number) => (
-              <div key={index} className="flex gap-2">
+              <div key={index} className="flex flex-col md:flex-row gap-2">
                 <select
                   value={link.platform}
+                  className="p-2 border border-gray-300 rounded"
                   onChange={(e) =>
                     handleSocialLinkChange(index, "platform", e.target.value)
                   }
