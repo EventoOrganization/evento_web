@@ -2,7 +2,7 @@ import RSVPSubmissionsList from "@/features/event/components/RSVPSubmissionsList
 import { cn } from "@/lib/utils";
 import { EventType } from "@/types/EventType";
 import { TempUserType, UserType } from "@/types/UserType";
-import { ChevronDownIcon } from "lucide-react";
+import { ChevronRightIcon } from "lucide-react";
 import { useState } from "react";
 import UsersList from "./UsersList";
 const CollapsibleList = ({
@@ -44,15 +44,15 @@ const CollapsibleList = ({
           onClick={() => setIsOpen(!isOpen)}
           className="flex justify-between items-center  font-bold rounded-md  w-fit"
         >
-          {title} ({count})
           <span>
-            <ChevronDownIcon
+            <ChevronRightIcon
               className={cn(
                 "transition-transform duration-300",
-                isOpen ? "rotate-180" : "rotate-0",
+                isOpen ? "rotate-90" : "rotate-0",
               )}
             />
           </span>
+          {title} ({count})
         </button>
         {title === "Going" && isAdmin && <RSVPSubmissionsList rsvp={users} />}
       </div>

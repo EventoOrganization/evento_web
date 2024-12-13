@@ -1,6 +1,9 @@
 import { handleUpload } from "@/app/create-event/action";
+import EventoLoader from "@/components/EventoLoader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/togglerbtn";
 import { useSession } from "@/contexts/SessionProvider";
 import { useToast } from "@/hooks/use-toast";
 import { EventType } from "@/types/EventType";
@@ -8,8 +11,6 @@ import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { PlayCircleIcon } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
-import PastEventModal from "./PastEventModal";
-import EventoLoader from "@/components/EventoLoader";
 
 // Define the MediaItem type
 interface MediaItem {
@@ -92,16 +93,17 @@ const PastEventGallery: React.FC<PastEventGalleryProps> = ({ event }) => {
       setIsUploading(false);
     }
   };
-  const handleMediaDelete = (index: number) => {
-    setMediaItems((prevItems) => prevItems.filter((_, i) => i !== index)); // Remove the deleted media from state
-  };
+  console.log("selectedMediaIndex", selectedMediaIndex);
+  // const handleMediaDelete = (index: number) => {
+  //   setMediaItems((prevItems) => prevItems.filter((_, i) => i !== index)); // Remove the deleted media from state
+  // };
   const openModal = (index: number) => {
     setSelectedMediaIndex(index);
   };
 
-  const closeModal = () => {
-    setSelectedMediaIndex(null);
-  };
+  // const closeModal = () => {
+  //   setSelectedMediaIndex(null);
+  // };
   const handleAllUploadPhotoVideo = async () => {
     try {
       const body = {
@@ -116,7 +118,7 @@ const PastEventGallery: React.FC<PastEventGalleryProps> = ({ event }) => {
       );
       if (response.ok) {
         toast({
-          description: "Files uploaded successfully.",
+          description: `Files uploaded ${allUploadPhotoVideo ? "disallowed" : "allowed"} successfully.`,
           className: "bg-evento-gradient text-white",
           duration: 3000,
         });
@@ -139,40 +141,45 @@ const PastEventGallery: React.FC<PastEventGalleryProps> = ({ event }) => {
   };
   return (
     <div className="w-full md:p-4 pb-20 md:pb-32">
-      <div className="flex flex-col space-y-2">
-        {(event.isAdmin || event.isHosted || event.allUploadPhotoVideo) && (
-          <>
-            <div className="flex justify-between">
-              <h4>This Event is past. Add media!</h4>
-              {event.isHosted && (
-                <Button onClick={handleAllUploadPhotoVideo}>
-                  {allUploadPhotoVideo ? "unAllow" : "Allow"}
-                </Button>
-              )}
-            </div>
-            <div className="flex justify-between gap-2">
+      {event.isHosted && (
+        <div className="flex items-center gap-2 justify-between ">
+          <Switch
+            checked={allUploadPhotoVideo}
+            onCheckedChange={handleAllUploadPhotoVideo}
+          />
+          {(allUploadPhotoVideo || event.isHosted) && (
+            <div>
               <Input
+                id="gallery-file-upload"
                 type="file"
                 onChange={handleFileChange}
                 multiple
                 accept="image/*,video/*"
-                className="cursor-pointer"
+                className="sr-only"
               />
-              <Button
-                onClick={handleUploadClick}
-                disabled={isUploading || !files || files.length === 0}
-              >
-                {isUploading ? <EventoLoader /> : "Upload Media"}
-              </Button>
-            </div>
-          </>
-        )}
-      </div>
 
+              {isUploading ? (
+                <EventoLoader />
+              ) : (
+                <Button
+                  className="bg-eventoPurpleDark hover:bg-eventoPurpleDark/80"
+                  onClick={() => files && handleUploadClick()}
+                >
+                  <Label
+                    htmlFor="gallery-file-upload"
+                    className="cursor-pointer"
+                  >
+                    {files ? ` Upload ${files.length} Files` : "Select Media"}
+                  </Label>
+                </Button>
+              )}
+            </div>
+          )}
+        </div>
+      )}
       {mediaItems.length > 0 && (
         <>
-          <h3 className="text-eventoPurpleLight pt-4">Remember this event!</h3>
-          <div className="grid grid-cols-3 gap-1 bg-evento-gradient/20">
+          <div className="grid grid-cols-2 gap-1 bg-evento-gradient/20">
             {mediaItems.map((media, index) => (
               <div
                 key={index}
@@ -206,7 +213,7 @@ const PastEventGallery: React.FC<PastEventGalleryProps> = ({ event }) => {
           </div>{" "}
         </>
       )}
-      {selectedMediaIndex !== null && (
+      {/* {selectedMediaIndex !== null && (
         <PastEventModal
           mediaItems={mediaItems}
           selectedMediaIndex={selectedMediaIndex}
@@ -214,7 +221,7 @@ const PastEventGallery: React.FC<PastEventGalleryProps> = ({ event }) => {
           eventId={event._id}
           onMediaDelete={handleMediaDelete} // Pass the callback to the modal
         />
-      )}
+      )} */}
     </div>
   );
 };

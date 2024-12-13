@@ -40,7 +40,7 @@ const EventPreview = ({
     <>
       <Card
         className={cn(
-          "cursor-pointer relative flex flex-col justify-between aspect-square  hover:opacity-90 border-2 rounded-2xl",
+          "cursor-pointer relative flex flex-col justify-between  hover:opacity-90 border-2 rounded-2xl",
           className,
         )}
         onClick={handleCardClick}
@@ -69,7 +69,7 @@ const EventPreview = ({
           </CardTitle>
           <CardDescription></CardDescription>
         </CardHeader>
-        <CardContent className="w-full h-full p-0 rounded-t-xl overflow-hidden">
+        <CardContent className="w-full h-full p-0 rounded-t-xl overflow-hidden aspect-square ">
           {event?.initialMedia && event?.initialMedia[0]?.url && (
             <Image
               src={event?.initialMedia[0].url}
@@ -82,7 +82,7 @@ const EventPreview = ({
             />
           )}
         </CardContent>
-        <CardFooter className="p-0 bg-background rounded-b-xl h-full">
+        <CardFooter className="p-0 bg-background rounded-b-xl flew-grow min-h-[104px] md:min-h-32">
           <ul className="p-2 md:p-5 flex flex-col text-sm w-full h-full gap-2 ">
             <li className="line-clamp-2 font-bold">{event?.title}</li>
             <li className="line-clamp-1 text-xs">{renderDate(event)}</li>
@@ -92,14 +92,6 @@ const EventPreview = ({
                 {event?.details?.endTime ? ` - ${event?.details?.endTime}` : ""}
               </p>
             </li>
-            {/* <li className="flex gap-5 items-center ">
-              <CalendarIcon strokeWidth={3} className="w-5" />
-              {formatDateResponsive(event?.details?.date)}
-            </li>
-            <li className="flex gap-5 items-center">
-              <MapPinIcon strokeWidth={1.5} className="min-w-5 w-5" />
-              <p className="truncate">{event?.details?.location}</p>
-            </li> */}
           </ul>
         </CardFooter>
       </Card>

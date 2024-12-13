@@ -4,6 +4,7 @@ import { useToast } from "@/hooks/use-toast";
 import { EventType } from "@/types/EventType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { useState } from "react";
+import { Label } from "./ui/label";
 import { Switch } from "./ui/togglerbtn";
 
 type Props = {
@@ -63,9 +64,9 @@ const GuestAllowFriendToggle = ({ event, onStatusChange }: Props) => {
         checked={isGuestAllowed}
         onCheckedChange={handleToggle}
       />
-      <label htmlFor="guestsAllowFriend" className="cursor-pointer">
+      <Label htmlFor="guestsAllowFriend" className="cursor-pointer">
         Allow guests to bring friends
-      </label>
+      </Label>
     </div>
   );
 };

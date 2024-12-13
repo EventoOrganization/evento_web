@@ -16,16 +16,13 @@ const EventSection = ({
   noEventsMessage?: string;
 }) => {
   const pathname = usePathname();
+  console.log("events", events);
   return (
     <Section className={sectionStyle}>
       <h4 className="font-medium">
         {title} ({events?.length || 0})
       </h4>
-      <div
-        className={cn(
-          "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 w-full gap-2",
-        )}
-      >
+      <div className={cn("grid grid-cols-2 sm:grid-cols-3  w-full gap-2")}>
         {events && events.length > 0 ? (
           events.map((event: any, index: number) => (
             <EventPreview key={index} event={event} title={title} />

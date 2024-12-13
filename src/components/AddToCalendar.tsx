@@ -93,11 +93,11 @@ END:VCALENDAR
           Add to Calendar
         </button>
       </DialogTrigger>
-      <DialogContent className="grid grid-cols-2 items-center gap-4 p-6 bg-white rounded-md shadow-md max-w-[90%] w-fit">
+      <DialogContent className="grid grid-cols-1 md:grid-cols-2 items-center gap-4 p-6 bg-white rounded-md shadow-md w-[90%] max-w-2xl">
         <Button
           variant={"outline"}
           onClick={handleGoogleCalendar}
-          className="flex items-center gap-2 text-blue-500"
+          className="flex items-center gap-2  text-blue-500"
         >
           <Globe size={24} />
           Google Calendar

@@ -11,7 +11,6 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useSession } from "@/contexts/SessionProvider";
 import { useToast } from "@/hooks/use-toast";
-import { cn } from "@/lib/utils";
 import { useGlobalStore } from "@/store/useGlobalStore";
 import { EventType } from "@/types/EventType";
 import { TempUserType, UserType } from "@/types/UserType";
@@ -171,13 +170,7 @@ const EventGuestModal: React.FC<EventGuestModalProps> = ({
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button
-          variant="default"
-          type="button"
-          className={cn("bg-eventoBlue hover:bg-eventoBlue/80", {
-            "bg-evento-gradient text-white": currentSelectedUsers.length > 0,
-          })}
-        >
+        <Button variant="outline" className="text-sm" type="button">
           Add Guests
           {currentSelectedUsers.length > 0
             ? ` (${currentSelectedUsers.length})`

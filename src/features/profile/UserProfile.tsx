@@ -36,7 +36,7 @@ const UserProfile = ({
     }
   }, [profile, upcomingEvents]);
 
-  console.log("profile", profile);
+  console.log("profile", profile?.pastEventsHosted);
   return (
     <>
       {!isMounted || isFetching ? (
@@ -46,7 +46,7 @@ const UserProfile = ({
       ) : (
         <>
           <ProfileHeader profile={profile} />
-          <Section className="gap-6 md:pt-20 md:px-20 pt-6">
+          <Section className="gap-6 max-w-2xl">
             <EventSection
               title="Upcoming Events"
               events={upcomingEvents}

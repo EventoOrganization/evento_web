@@ -166,7 +166,7 @@ const DiscoverPageContent = () => {
           )}
           <Section className="flex flex-col-reverse md:grid  md:grid-cols-3  md:gap-0 items-start justify-end pt-0 px-0 ">
             <ul className="w-full md:col-span-2 md:pl-4">
-              <li className="flex items-center sticky top-0 z-20 bg-muted p-2 md:p-4 flex-col gap-2">
+              <li className="flex items-center sticky top-0 z-20 bg-muted p-2 md:mb-2 md:px-0 md:py-0 flex-col gap-2">
                 <TabSelector
                   onChange={setSelectedTab}
                   tabs={["All events", "Near me", "Virtual"]}
@@ -219,7 +219,7 @@ const DiscoverPageContent = () => {
                 },
               )}
             >
-              <h2>Filters</h2>
+              <h2 className="pl-4">Filters</h2>
               <Button
                 onClick={() => setToggleSearch(!toggleSearch)}
                 className="md:hidden absolute bottom-4 right-4 p-2 bg-eventoPurpleDark"

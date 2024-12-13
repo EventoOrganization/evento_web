@@ -42,7 +42,7 @@ const EventAttendeesTab: React.FC<EventAttendeesTabProps> = ({
   return (
     <div className="w-full">
       {isAdmin && (
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-2">
           <GuestAllowFriendToggle event={event} />
           <EventGuestModal event={event} setEvent={setEvent} />
         </div>

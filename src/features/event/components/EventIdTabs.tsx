@@ -16,11 +16,13 @@ import { EventType } from "@/types/EventType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { createUpdateEventField } from "@/utils/updateEventHelper";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
+import { Pencil } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import DeleteEventButton from "./DeleteEventButton";
+import PastEventGallery from "./PastEventGallery";
 export type EventStatusKeys = "isGoing" | "isFavourite" | "isRefused";
 
 const EventIdTabs = ({ evento }: { evento?: EventType }) => {
@@ -204,7 +206,7 @@ const EventIdTabs = ({ evento }: { evento?: EventType }) => {
       </div>
     );
   }
-
+  console.log("event", event);
   return (
     <>
       {!accessControl.hasAccess && (
@@ -222,8 +224,8 @@ const EventIdTabs = ({ evento }: { evento?: EventType }) => {
             {isAuthModalOpen && (
               <AuthModal onAuthSuccess={() => setIsAuthModalOpen(false)} />
             )}
-            <div className="md:p-10 md:pl-0 p-4 h-full ">
-              <div className="flex items-center w-full justify-between mb-4">
+            <div className="md:p-10 md:pl-0 h-full ">
+              <div className="flex items-center w-full justify-between p-4">
                 <Link
                   className="flex items-center gap-2"
                   href={`/profile/${event?.user?._id}`}
@@ -271,26 +273,27 @@ const EventIdTabs = ({ evento }: { evento?: EventType }) => {
                     )}
                   </div>
                 </Link>
+                {accessControl.isAdmin && (
+                  <Pencil
+                    className="text-muted-foreground"
+                    onClick={() => setSelectedTab("Settings")}
+                  />
+                )}
                 {/* <span className="text-sm">{renderDate(event)}</span> */}
               </div>
-              <RenderMedia event={event} />
-              <DeleteEventButton
-                eventId={event._id}
-                isHost={accessControl.isAdmin}
-              />
+              {selectedTab !== "Settings" && <RenderMedia event={event} />}
             </div>
-            <Section className="justify-start py-10 w-full h-full">
-              <TabSelector
-                onChange={setSelectedTab}
-                tabs={
-                  [
-                    "Description",
-                    "Attendees",
-                    accessControl.isAdmin ? "Settings" : null,
-                  ].filter(Boolean) as string[]
-                }
-                className="mb-10"
-              />
+            <Section className="justify-start gap-2 pt-2 w-full h-full px-2">
+              <div className=" sticky top-0 w-full z-10">
+                <TabSelector
+                  onChange={setSelectedTab}
+                  tabs={
+                    ["Description", "Attendees", "Gallery"].filter(
+                      Boolean,
+                    ) as string[]
+                  }
+                />
+              </div>
               {selectedTab === "Description" && (
                 <EventDescriptionTab
                   event={event}
@@ -306,12 +309,19 @@ const EventIdTabs = ({ evento }: { evento?: EventType }) => {
                   setEvent={setEvent}
                 />
               )}
+              {selectedTab === "Gallery" && <PastEventGallery event={event} />}
               {selectedTab === "Settings" && (
-                <EventEdit
-                  event={event}
-                  allUsers={users}
-                  onUpdateField={handleUpdateField}
-                />
+                <>
+                  <EventEdit
+                    event={event}
+                    allUsers={users}
+                    onUpdateField={handleUpdateField}
+                  />
+                  <DeleteEventButton
+                    eventId={event._id}
+                    isHost={accessControl.isAdmin}
+                  />
+                </>
               )}
             </Section>
           </div>
