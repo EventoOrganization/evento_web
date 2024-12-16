@@ -29,7 +29,6 @@ import {
 import React, { useState } from "react";
 import QuestionModal from "./QuestionModal";
 import RefusalModal from "./RefusalModal";
-import AddToCalendar from "@/components/AddToCalendar";
 
 type EventActionIconsProps = {
   event: EventType;
@@ -219,7 +218,6 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
   };
   return (
     <>
-      <AddToCalendar event={event} />
       <div
         className={cn(`flex gap-2  ${className}`, {
           "w-full ": newVersion,

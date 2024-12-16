@@ -1,5 +1,6 @@
 "use client";
 import AddressModal from "@/components/AddressModal";
+import AddToCalendar from "@/components/AddToCalendar";
 import AvatarStack from "@/components/AvatarStack";
 import EventoLoader from "@/components/EventoLoader";
 import RenderMedia from "@/components/RenderMedia";
@@ -132,6 +133,9 @@ const Event = ({
               className="px-0"
               text={event?.details?.description}
             />
+          </div>
+          <div onClick={(e) => e.stopPropagation()}>
+            {event.isGoing && <AddToCalendar event={event} />}
           </div>
           <div className=" flex flex-col md:grid md:grid-cols-2 w-full justify-between md:items-center gap-2 px-4 md:px-0">
             <AvatarStack event={event} />
