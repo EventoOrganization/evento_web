@@ -13,7 +13,6 @@ import { renderDate } from "@/utils/dateUtils";
 import Image from "next/image";
 import Link from "next/link";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-import PastEventGallery from "../event/components/PastEventGallery";
 
 const DiscoverEventPreview = ({
   className,
@@ -144,9 +143,6 @@ const DiscoverEventPreview = ({
                 <AvatarStack event={event} />
                 <EventActionIcons event={currentEvent || event} />
               </>
-            )}
-            {eventEndDate && eventEndDate < currentDate && (
-              <PastEventGallery event={event} />
             )}
           </div>
         </div>
