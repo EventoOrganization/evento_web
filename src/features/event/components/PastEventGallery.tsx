@@ -48,25 +48,25 @@ const PastEventGallery: React.FC<PastEventGalleryProps> = ({ event }) => {
   const closeModal = () => {
     setSelectedMediaIndex(null);
   };
-  const userMediaStats = useMemo(() => {
-    const userStats = new Map(); // Utiliser un Map pour un accès rapide
+  const groupedMedia = useMemo(() => {
+    const userMediaMap = new Map();
 
     mediaItems.forEach((media) => {
-      const user = media.userId; // Ici, userId doit être un objet utilisateur peuplé
+      const user = media.userId; // userId doit contenir username et profileImage
       if (user) {
-        if (!userStats.has(user._id)) {
-          userStats.set(user._id, {
+        if (!userMediaMap.has(user._id)) {
+          userMediaMap.set(user._id, {
             username: user.username,
             profileImage: user.profileImage,
-            mediaCount: 1,
+            mediaFiles: [media],
           });
         } else {
-          userStats.get(user._id).mediaCount += 1;
+          userMediaMap.get(user._id).mediaFiles.push(media);
         }
       }
     });
 
-    return Array.from(userStats.values()); // Convertir en tableau pour affichage
+    return Array.from(userMediaMap.values());
   }, [mediaItems]);
 
   const handleUploadClick = async () => {
@@ -129,9 +129,6 @@ const PastEventGallery: React.FC<PastEventGalleryProps> = ({ event }) => {
       setIsUploading(false);
     }
   };
-  const openModal = (index: number) => {
-    setSelectedMediaIndex(index);
-  };
 
   const handleAllUploadPhotoVideo = async () => {
     try {
@@ -170,13 +167,18 @@ const PastEventGallery: React.FC<PastEventGalleryProps> = ({ event }) => {
   };
   return (
     <div className="w-full md:p-4 pb-20 md:pb-32">
-      {event.isHosted && (
-        <div className="flex items-center gap-2 justify-between ">
-          <Switch
-            checked={allUploadPhotoVideo}
-            onCheckedChange={handleAllUploadPhotoVideo}
-          />
-          {((allUploadPhotoVideo && event.isGoing) || event.isHosted) && (
+      <div className="flex items-center gap-2 justify-between border-b-2 pb-4 mb-4">
+        {event.isHosted && (
+          <div className="flex items-center gap-2 justify-between ">
+            <Switch
+              checked={allUploadPhotoVideo}
+              onCheckedChange={handleAllUploadPhotoVideo}
+            />
+          </div>
+        )}
+        {((allUploadPhotoVideo && event.isGoing) || event.isHosted) && (
+          <>
+            <p className="text-sm">You are allowed to upload media</p>
             <div>
               <Input
                 id="gallery-file-upload"
@@ -204,46 +206,47 @@ const PastEventGallery: React.FC<PastEventGalleryProps> = ({ event }) => {
                 </Button>
               )}
             </div>
-          )}
-        </div>
-      )}
-      {userMediaStats.length > 0 ? (
-        <>
-          {userMediaStats.map((user, index) => (
-            <div key={index} className="flex items-center gap-2 p-2">
-              <Image
-                src={user.profileImage || "/default-avatar.png"}
-                alt={`${user.username}'s profile`}
-                width={40}
-                height={40}
-                className="rounded-full"
-              />
-              <div>
-                <p className="font-bold">{user.username}</p>
-                <p className="text-sm text-gray-500">
-                  {user.mediaCount}{" "}
-                  {user.mediaCount > 1 ? "media files" : "media file"}
-                </p>
-              </div>
+          </>
+        )}
+      </div>
+      {groupedMedia.map((user, index) => (
+        <div key={index} className="mb-4">
+          {/* Profil utilisateur */}
+          <div className="flex items-center gap-2 p-2">
+            <Image
+              src={user.profileImage || "/default-avatar.png"}
+              alt={`${user.username}'s profile`}
+              width={40}
+              height={40}
+              className="rounded-full"
+            />
+            <div>
+              <p className="font-bold">{user.username}</p>
+              <p className="text-sm text-gray-500">
+                {user.mediaFiles.length}{" "}
+                {user.mediaFiles.length > 1 ? "media files" : "media file"}
+              </p>
             </div>
-          ))}
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mt-2 bg-evento-gradient/20 ">
-            {mediaItems.map((media, index) => (
+          </div>
+
+          {/* Médias de l'utilisateur */}
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mt-2">
+            {user.mediaFiles.map((media: MediaItem, mediaIndex: number) => (
               <div
-                key={index}
+                key={mediaIndex}
                 className="relative cursor-pointer h-52 shadow border rounded-xl"
-                onClick={() => openModal(index)}
+                onClick={() => setSelectedMediaIndex(mediaIndex)}
               >
                 {media.type === "image" ? (
                   <Image
                     src={media.url}
-                    alt={`Gallery image ${index + 1}`}
+                    alt={`Media file ${mediaIndex + 1}`}
                     width={100}
                     height={100}
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <div className="relative w-full h-full object-cover">
+                  <div className="relative w-full h-full">
                     <video
                       width={100}
                       height={100}
@@ -260,11 +263,16 @@ const PastEventGallery: React.FC<PastEventGalleryProps> = ({ event }) => {
               </div>
             ))}
           </div>
-        </>
-      ) : (
-        <p className="text-gray-500 text-center mt-4">No media uploaded yet.</p>
+        </div>
+      ))}
+      {mediaItems.length === 0 && (
+        <p>
+          No media uploaded yet.{" "}
+          {allUploadPhotoVideo && event.isGoing
+            ? "upload the first media!"
+            : "Sorry You are not allowed to upload media."}
+        </p>
       )}
-
       {selectedMediaIndex !== null && (
         <PastEventModal
           mediaItems={mediaItems}
