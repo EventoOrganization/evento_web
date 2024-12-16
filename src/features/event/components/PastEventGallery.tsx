@@ -167,7 +167,7 @@ const PastEventGallery: React.FC<PastEventGalleryProps> = ({ event }) => {
   };
   return (
     <div className="w-full md:p-4 pb-20 md:pb-32">
-      <div className="flex items-center gap-2 justify-between border-b-2 pb-4 mb-4">
+      <div className="flex w-full items-center gap-2 justify-between border-b-2 pb-4 mb-4">
         {event.isHosted && (
           <div className="flex items-center gap-2 justify-between ">
             <Switch
@@ -186,7 +186,7 @@ const PastEventGallery: React.FC<PastEventGalleryProps> = ({ event }) => {
                 onChange={handleFileChange}
                 multiple
                 accept="image/*,video/*"
-                className="sr-only"
+                className="hidden"
                 ref={fileInputRef}
               />
 
@@ -194,12 +194,12 @@ const PastEventGallery: React.FC<PastEventGalleryProps> = ({ event }) => {
                 <EventoLoader />
               ) : (
                 <Button
-                  className="bg-eventoPurpleDark hover:bg-eventoPurpleDark/80"
+                  className="bg-eventoPurpleDark hover:bg-eventoPurpleDark/80 p-0"
                   onClick={() => files && handleUploadClick()}
                 >
                   <Label
                     htmlFor="gallery-file-upload"
-                    className="cursor-pointer"
+                    className="cursor-pointer w-full h-full flex justify-center items-center px-2"
                   >
                     {files ? ` Upload ${files.length} Files` : "Select Media"}
                   </Label>

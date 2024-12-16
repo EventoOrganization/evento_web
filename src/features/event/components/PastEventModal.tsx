@@ -81,7 +81,7 @@ const PastEventModal = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center p-4 z-50">
+    <div className="fixed inset-0 bg-black w-screen bg-opacity-90 flex items-center justify-center p-4 z-50 ">
       <Button
         onClick={onClose}
         variant={"outline"}
@@ -89,7 +89,7 @@ const PastEventModal = ({
       >
         Close
       </Button>
-      <div className="w-full h-full">
+      <div className=" h-full">
         <Carousel
           selectedItem={selectedMediaIndex}
           onChange={(index) => setCurrentMediaIndex(index)}
@@ -104,7 +104,7 @@ const PastEventModal = ({
           {mediaItems.map((item, index) => (
             <div
               key={index}
-              className="flex justify-center items-center w-full h-[95.5vh] "
+              className="flex justify-center items-center h-[95.5vh] "
             >
               {item.type === "image" ? (
                 <Image
@@ -114,7 +114,7 @@ const PastEventModal = ({
                   objectFit="contain"
                 />
               ) : (
-                <video controls autoPlay className="w-full h-full">
+                <video controls autoPlay className=" h-full">
                   <source src={item.url} type="video/mp4" />
                   Your browser does not support the video tag.
                 </video>
