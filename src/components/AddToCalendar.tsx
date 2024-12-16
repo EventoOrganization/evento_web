@@ -10,6 +10,7 @@ type AddToCalendarProps = {
 
 const AddToCalendar: React.FC<AddToCalendarProps> = ({ event }) => {
   const details = event?.details;
+  const isPastEvent = new Date(details?.date || "") < new Date();
 
   if (!details || !details.date || !details.endDate || !details.startTime) {
     console.warn("Missing event details:", details);
@@ -84,7 +85,7 @@ END:VCALENDAR
     link.click();
     document.body.removeChild(link);
   };
-
+  if (isPastEvent) return;
   return (
     <Dialog>
       <DialogTrigger asChild>

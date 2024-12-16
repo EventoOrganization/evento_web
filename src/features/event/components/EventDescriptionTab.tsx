@@ -1,6 +1,7 @@
 // components/EventDescriptionTab.tsx
 
 import AddressModal from "@/components/AddressModal";
+import AddToCalendar from "@/components/AddToCalendar";
 import EventoLoader from "@/components/EventoLoader";
 import {
   default as TruncatedText,
@@ -61,7 +62,7 @@ const EventDescriptionTab: React.FC<EventDescriptionTabProps> = ({
           isLink
         />
       </Link>
-
+      <AddToCalendar event={event} />
       <EventActionIcons
         event={event}
         updateEventStatusLocally={updateEventStatusLocally}

@@ -283,7 +283,7 @@ const EventIdTabs = ({ evento }: { evento?: EventType }) => {
               </div>
               {selectedTab !== "Settings" && <RenderMedia event={event} />}
             </div>
-            <Section className="justify-start gap-2 pt-2 w-full h-full px-2">
+            <Section className="justify-start gap-2 pt-2 md:pt-14 w-full h-full px-2">
               <div className=" sticky top-0 w-full z-10">
                 <TabSelector
                   onChange={setSelectedTab}
