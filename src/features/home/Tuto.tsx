@@ -26,14 +26,14 @@ const Tuto = () => {
             Your next gathering is just a few clicks away!
           </h2>
           <p className="text-lg md:text-xl leading-relaxed text-center lg:text-left">
-            Plan your event effortlessly with customizable options for date,
-            time, location, and privacy. Add co-hosts to share the spotlight,
-            import guest lists in bulk or send personalized invites for a
-            seamless setup. Set RSVP options and track responses in real-time,
-            while fostering excitement with a built-in chat feature for
-            attendees. After the event, relive the magic by creating a media
-            gallery to share the memorable moments with your guests. Hosting has
-            never been this simple—or this fun!
+            Effortlessly customize your event with options for date, time,
+            location, and privacy. Invite co-hosts to share the spotlight and
+            enhance your planning. Import guest lists in bulk or send
+            personalized invites to make your outreach seamless. Set RSVP
+            options and track responses in real-time, while enabling a chat
+            feature to foster communication and excitement among attendees.
+            After the event, create a gallery by adding photos to relive the
+            memorable moments with your guests!
           </p>
           <Button className="bg-evento-gradient text-white hover:opacity-80 py-8 md:text-xl w-fit self-center">
             <Link href="/create-event">CREATE AN EVENT</Link>
@@ -59,7 +59,7 @@ const Tuto = () => {
             learn, and have fun!
           </p>
           <Button className="bg-evento-gradient text-white hover:opacity-80 py-8 md:text-xl w-fit self-center">
-            <Link href="/discover">DISCOVER EVENTS</Link>
+            <Link href="/discover">DISCOVER AN EVENT</Link>
           </Button>
         </div>
 
@@ -81,7 +81,6 @@ const Tuto = () => {
         id="tuto-profile"
         className="grid grid-cols-1 lg:grid-cols-2 gap-10"
       >
-        {" "}
         <div className="flex justify-center">
           <Image
             src={
@@ -105,7 +104,7 @@ const Tuto = () => {
             events that resonate with you.
           </p>
           <Button className="bg-evento-gradient text-white hover:opacity-80 py-8 md:text-xl w-fit self-center">
-            <Link href="/profile">CREATE A PROFILE</Link>
+            <Link href="/profile">CONNECT</Link>
           </Button>
         </div>
       </Section>
