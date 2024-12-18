@@ -16,7 +16,6 @@ const EventSection = ({
   noEventsMessage?: string;
 }) => {
   const pathname = usePathname();
-  console.log("events", events);
   return (
     <Section className={sectionStyle}>
       <h4 className="font-medium">

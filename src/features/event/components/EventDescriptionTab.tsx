@@ -24,6 +24,7 @@ const EventDescriptionTab: React.FC<EventDescriptionTabProps> = ({
   event,
   updateEventStatusLocally,
 }) => {
+  console.log("event", event.details?.URLlink);
   return (
     <div className="space-y-2 w-full">
       <h2 className="text-xl font-bold">{event?.title}</h2>
@@ -56,10 +57,13 @@ const EventDescriptionTab: React.FC<EventDescriptionTabProps> = ({
             );
           })}
       </ul>
-      <Link href={event?.details?.URLlink || ""} target="_blank">
+      <Link
+        href={event?.details?.URLlink || ""}
+        target="_blank"
+        className="underline text-blue-500"
+      >
         <TruncateText
           text={event?.details?.URLtitle || event?.details?.URLlink || ""}
-          isLink
         />
       </Link>
       <AddToCalendar event={event} />

@@ -242,7 +242,6 @@ const EventSuccessPage = () => {
     return <div>Loading...</div>;
   }
 
-  console.log("event", event);
   return (
     <>
       <Section className="md:px-0 px-4 text-left h-full">

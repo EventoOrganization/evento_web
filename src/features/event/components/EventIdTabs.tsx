@@ -206,7 +206,6 @@ const EventIdTabs = ({ evento }: { evento?: EventType }) => {
       </div>
     );
   }
-  console.log("event", event);
   return (
     <>
       {!accessControl.hasAccess && (

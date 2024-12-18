@@ -18,8 +18,6 @@ const EventAttendeesTab: React.FC<EventAttendeesTabProps> = ({
   isPrivate,
   setEvent,
 }) => {
-  // console.log("eventAttendeesTab", event);
-
   const goingIds = new Set(
     (event?.attendees || []).map((user) => user._id!).filter((id) => id),
   );
