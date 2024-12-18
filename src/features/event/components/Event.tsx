@@ -123,12 +123,16 @@ const Event = ({
             <div className="flex justify-between items-center text-sm">
               <AddressModal address={event?.details?.location} />
             </div>
-            <TruncatedText
-              text={event?.details?.URLtitle || ""}
-              url={event?.details?.URLlink || ""}
-              isLink
-              className="text-eventoPurpleLight"
-            />
+            <Link
+              href={event?.details?.URLlink || ""}
+              target="_blank"
+              className="underline text-blue-500"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <TruncatedText
+                text={event?.details?.URLtitle || event?.details?.URLlink || ""}
+              />
+            </Link>
             <TruncatedText
               className="px-0"
               text={event?.details?.description}

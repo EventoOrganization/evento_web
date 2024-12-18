@@ -129,10 +129,13 @@ const DiscoverEventPreview = ({
                 {event?.details?.endTime ? ` - ${event?.details?.endTime}` : ""}
               </p>
             </div>
-            <Link href={event?.details?.URLlink} target="_blank">
+            <Link
+              href={event?.details?.URLlink}
+              target="_blank"
+              className="text-blue-500 underline"
+            >
               <TruncatedText
                 text={event?.details?.URLtitle || event?.details?.URLlink || ""}
-                isLink
               />
             </Link>
             <TruncatedText text={event?.details?.description} expand={true} />
