@@ -146,9 +146,7 @@ const Faq = () => {
         />
 
         {/* Inviting Guests */}
-        <h2 className="text-4xl font-bold text-center text-eventoPurple mt-12">
-          Inviting guests
-        </h2>
+        <h2>Inviting guests</h2>
 
         <Accordion
           title="📩 How can I invite guests to my event?"
@@ -212,9 +210,7 @@ const Faq = () => {
         />
 
         {/* Managing and Editing Events */}
-        <h2 className="text-4xl font-bold text-center text-eventoPurple mt-12">
-          Managing and editing your event
-        </h2>
+        <h2>Managing and editing your event</h2>
 
         <Accordion
           title="🔒 Can I make my event private?"
@@ -260,9 +256,7 @@ const Faq = () => {
         />
 
         {/* Discovering Events */}
-        <h2 className="text-4xl font-bold text-center text-eventoPurple mt-12">
-          Discovering events
-        </h2>
+        <h2>Discovering events</h2>
 
         <Accordion
           title="🔍 How do I find events to join?"
@@ -304,9 +298,7 @@ const Faq = () => {
         />
 
         {/* Community Guidelines */}
-        <h2 className="text-4xl font-bold text-center text-eventoPurple mt-12">
-          Community and Content Guidelines
-        </h2>
+        <h2>Community and Content Guidelines</h2>
 
         <Accordion
           title="✅ Are there any guidelines for creating events on Evento?"
@@ -327,9 +319,7 @@ const Faq = () => {
 "
         />
         {/* Troubleshooting and Support */}
-        <h2 className="text-4xl font-bold text-center text-eventoPurple mt-12">
-          Troubleshooting and Support
-        </h2>
+        <h2>Troubleshooting and Support</h2>
 
         <Accordion
           title="📍 What if the event location isn’t displaying correctly?"
@@ -379,9 +369,7 @@ const Faq = () => {
         />
 
         {/* Feedback */}
-        <h2 className="text-4xl font-bold text-center text-eventoPurple mt-12">
-          Feedback and Suggestions
-        </h2>
+        <h2>Feedback and Suggestions</h2>
 
         <Accordion
           title="💬 How can I provide feedback about my experience with Evento?"

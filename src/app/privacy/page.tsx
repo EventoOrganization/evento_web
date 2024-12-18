@@ -53,7 +53,7 @@ const PrivacyPolicy = () => {
           .
         </p>
         {/* Section 1 - Information We Collect */}
-        <h2 className="text-2xl font-bold">1. Information We Collect</h2>
+        <h2 className="self-center">1. Information We Collect</h2>
         <p>In short: We collect personal information that you provide to us.</p>
         <p>
           We collect different types of information for various purposes to
@@ -131,7 +131,7 @@ const PrivacyPolicy = () => {
             typically derived from your device settings or IP address.
           </li>
         </ul>
-        <h2 className="text-2xl font-bold">2. How We Use Your Data</h2>
+        <h2 className="self-center">2. How We Use Your Data</h2>
         <p>We use the collected data for several purposes, including:</p>
         <ul className="list-disc ml-5 space-y-2">
           <li>
@@ -181,7 +181,7 @@ const PrivacyPolicy = () => {
           </li>
         </ul>
         {/* Section 3 - GDPR Compliance */}
-        <h2 className="text-2xl font-bold">
+        <h2 className="self-center">
           3. Legal Basis for Processing Your Data (GDPR Compliance)
         </h2>
         <p>
@@ -225,7 +225,7 @@ const PrivacyPolicy = () => {
           </li>
         </ul>
         {/* Section 4 - Data Sharing */}
-        <h2 className="text-2xl font-bold">4. How We Share Your Data</h2>
+        <h2 className="self-center">4. How We Share Your Data</h2>
         <p>
           We do not sell, rent, or trade your personal information to third
           parties. However, we may share your data with the following entities:
@@ -255,7 +255,7 @@ const PrivacyPolicy = () => {
           </li>
         </ul>
         {/* Section 5 - Data Retention */}
-        <h2 className="text-2xl font-bold">5. Data Retention</h2>
+        <h2 className="self-center">5. Data Retention</h2>
         <p>
           We will retain your personal data for as long as necessary to fulfill
           the purposes outlined in this Privacy Policy unless otherwise required
@@ -282,7 +282,7 @@ const PrivacyPolicy = () => {
           legal terms, and/or comply with applicable legal requirements.
         </p>
         {/* Section 6 - Security of Your Data */}
-        <h2 className="text-2xl font-bold">6. Security of Your Data</h2>
+        <h2 className="self-center">6. Security of Your Data</h2>
         <p>
           We take the security of your personal data seriously and use
           commercially acceptable means to protect it.{" "}
@@ -298,7 +298,7 @@ const PrivacyPolicy = () => {
           only access the Services within a secure environment.
         </p>
         {/* Section 7 - Your Data Protection Rights */}
-        <h2 className="text-2xl font-bold">7. Your Data Protection Rights</h2>
+        <h2 className="self-center">7. Your Data Protection Rights</h2>
         <p>As a user, you have the following rights under GDPR:</p>
         <ul className="list-disc ml-5 space-y-2">
           <li>
@@ -352,7 +352,7 @@ const PrivacyPolicy = () => {
           rights described above free from discrimination.
         </p>
         {/* Section 8 - Third-Party Websites */}
-        <h2 className="text-2xl font-bold">8. Third-Party Websites</h2>
+        <h2 className="self-center">8. Third-Party Websites</h2>
         <p>
           Our Site may contain links to third-party websites or services that
           are not operated by us. If you click on a third-party link, you will
@@ -362,7 +362,7 @@ const PrivacyPolicy = () => {
           or practices of third-party sites or services.
         </p>
         {/* Section 9 - Children’s Privacy */}
-        <h2 className="text-2xl font-bold">9. Children’s Privacy</h2>
+        <h2 className="self-center">9. Children’s Privacy</h2>
         <p>
           We do not knowingly solicit data from or market to children under 18
           years of age. By using the Services, you represent that you are at
@@ -384,9 +384,7 @@ const PrivacyPolicy = () => {
           .
         </p>
         {/* Section 10 - Changes to Privacy Policy */}
-        <h2 className="text-2xl font-bold">
-          10. Changes to This Privacy Policy
-        </h2>
+        <h2 className="self-center">10. Changes to This Privacy Policy</h2>
         <p>
           We may update our Privacy Policy from time to time. Any changes will
           be posted on this page with an updated “Last Updated” date. We
@@ -394,7 +392,7 @@ const PrivacyPolicy = () => {
           updates or changes.
         </p>
         {/* Section 11 - Contact Us */}
-        <h2 className="text-2xl font-bold">11. Contact Us</h2>
+        <h2 className="self-center">11. Contact Us</h2>
         <p>
           If you have any questions or comments about this Privacy Policy or the
           way we handle your personal data, please email us at{" "}
@@ -406,7 +404,6 @@ const PrivacyPolicy = () => {
           </Link>
           or by post to: Evento 1, boulevard de Belgique 98000 Monaco
         </p>
-        <p className="mt-5">Evento, 1 boulevard de Belgique, 98000 Monaco</p>
       </Section>
     </div>
   );
