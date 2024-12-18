@@ -33,7 +33,7 @@ const ShareModal = ({ eventUrl }: { eventUrl: string }) => {
       try {
         await navigator.share({
           title: "Check out this event",
-          text: "Check out this event I found!",
+          text: "Check out this event!",
           url: eventUrl,
         });
         console.log("Successful share");
