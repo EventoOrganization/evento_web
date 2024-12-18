@@ -5,7 +5,7 @@ const PrivacyPolicy = () => {
   return (
     <div className="min-h-screen py-16 w-full">
       {/* Section principale */}
-      <Section className="max-w-4xl mx-auto space-y-6 px-6 md:px-12 items-start  ">
+      <Section className="max-w-4xl mx-auto space-y-6 px-4 md:px-12 items-start  ">
         <h1 className="text-4xl font-bold text-center self-center">
           PRIVACY POLICY
         </h1>
@@ -42,7 +42,7 @@ const PrivacyPolicy = () => {
           Reading this privacy notice will help you understand our privacy
           practices. If you do not agree with our policies and practices, we
           kindly ask that you do not use our services. If you still have
-          questions or concerns, please contact us at
+          questions or concerns, please contact us at{" "}
           <Link
             href={"mailto:evento_app@outlook.com"}
             target="_blank"

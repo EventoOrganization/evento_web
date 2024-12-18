@@ -5,7 +5,7 @@ const Terms = () => {
   return (
     <div className="min-h-screen w-full py-16">
       {/* Section principale */}
-      <Section className="max-w-4xl mx-auto space-y-10 px-6 md:px-12">
+      <Section className="max-w-4xl mx-auto space-y-10 px-4 md:px-12">
         <h1 className="text-4xl font-bold text-center">
           TERMS &amp; CONDITIONS
         </h1>

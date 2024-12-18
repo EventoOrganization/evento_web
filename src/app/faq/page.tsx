@@ -29,10 +29,13 @@ const Accordion = ({
 const Faq = () => {
   return (
     <div className="min-h-screen py-16 w-full">
-      <Section className="max-w-4xl mx-auto space-y-10 px-6 md:px-12">
+      <Section className="max-w-4xl mx-auto space-y-10 px-4 md:px-12">
         {/* Getting Started */}
         <h1 className="text-4xl font-bold text-center text-eventoPurple">
-          FAQs - Frequently Asked Questions
+          FAQs
+          <span className="hidden md:block ml-2">
+            - Frequently Asked Questions
+          </span>
         </h1>
         <h2>Getting started</h2>
         <Accordion
