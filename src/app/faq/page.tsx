@@ -32,9 +32,9 @@ const Faq = () => {
       <Section className="max-w-4xl mx-auto space-y-10 px-6 md:px-12">
         {/* Getting Started */}
         <h1 className="text-4xl font-bold text-center text-eventoPurple">
-          FAQs - Getting Started
+          FAQs - Frequently Asked Questions
         </h1>
-
+        <h2>Getting started</h2>
         <Accordion
           title="🎉 How do I create an event?"
           content={
@@ -105,7 +105,7 @@ const Faq = () => {
         />
 
         <Accordion
-          title="What is a PWA, and how does it work?"
+          title="❓ What is a PWA, and how does it work?"
           content={
             <>
               A PWA, or Progressive Web App, is a type of web application that
@@ -146,9 +146,9 @@ const Faq = () => {
         />
 
         {/* Inviting Guests */}
-        <h1 className="text-4xl font-bold text-center text-eventoPurple mt-12">
-          Inviting Guests
-        </h1>
+        <h2 className="text-4xl font-bold text-center text-eventoPurple mt-12">
+          Inviting guests
+        </h2>
 
         <Accordion
           title="📩 How can I invite guests to my event?"
@@ -212,40 +212,63 @@ const Faq = () => {
         />
 
         {/* Managing and Editing Events */}
-        <h1 className="text-4xl font-bold text-center text-eventoPurple mt-12">
+        <h2 className="text-4xl font-bold text-center text-eventoPurple mt-12">
           Managing and editing your event
-        </h1>
+        </h2>
 
         <Accordion
-          title="Can I make my event private?"
-          content='Yes, select "Private" in the event type when creating it. Only invited guests will see private events.'
+          title="🔒 Can I make my event private?"
+          content="Yes! When creating an event, you can choose between “Public” and “Private” in event type. Private events are only visible to those who receive a direct invitation."
         />
 
         <Accordion
-          title="Can I edit my event after creating it?"
-          content="Yes, go to 'Edit Event' on your event page. Guests will be notified of major changes."
+          title="📝 Can I edit my event after creating it?"
+          content="Yes, you can edit your event details anytime before it starts. Just go to your event page, select 'Edit Event,' (📝) make your changes, and save. Keep in mind that guests will be notified of any major updates."
         />
 
         <Accordion
-          title="Can I add a co-host?"
-          content="Yes! Add co-hosts under 'Edit Event' by entering their email or username."
+          title="👥 Can I add a co-host to help manage the event?"
+          content="Yes, you can add co-hosts to assist in managing guest lists, sending invites, and communicating with attendees. Just go to your event, then 'Edit Event' and add a co-host by entering their email or username on Evento."
         />
 
         <Accordion
-          title="Can I add an RSVP?"
-          content="Enable 'Add an RSVP' during event creation to track attendees in real-time. Customize RSVP questions with text, multiple-choice, or checkboxes."
+          title="✅ Can I add an RSVP?"
+          content="With Evento, keeping track of attendees is a breeze! When you create an event, simply enable the RSVP feature to see who’s coming in real time. This tool gives you a clear view of your guest list, making it easy to plan. Just go to the event setup and toggle on 'Add an RSVP' to get started!"
+        />
+        <Accordion
+          title="📋 How does the RSVP work?"
+          content={
+            <>
+              Design your RSVP to suit your needs. Click on &quot;Add a
+              Question&quot; and choose a format:
+              <ul className="list-disc ml-5 my-4 space-y-2">
+                <li>
+                  <b>Text Answer:</b> Guests can type a response.
+                </li>
+                <li>
+                  <b>Multiple Choice:</b> Give guests options to choose one
+                  response.
+                </li>
+                <li>
+                  <b>Checkboxes:</b> Let guests select multiple answers.
+                </li>
+              </ul>
+              Want a response from everyone? Switch on the toggle &quot;Answer
+              Required.&quot;
+            </>
+          }
         />
 
         {/* Discovering Events */}
-        <h1 className="text-4xl font-bold text-center text-eventoPurple mt-12">
-          Discovering Events
-        </h1>
+        <h2 className="text-4xl font-bold text-center text-eventoPurple mt-12">
+          Discovering events
+        </h2>
 
         <Accordion
-          title="How do I find events to join?"
+          title="🔍 How do I find events to join?"
           content={
             <>
-              Browse the &quot;Discover Events&quot; section at&nbsp;
+              To get started, go to:{" "}
               <Link
                 href="https://www.evento-app.io/discover"
                 target="_blank"
@@ -254,54 +277,115 @@ const Faq = () => {
               >
                 https://www.evento-app.io/discover
               </Link>
-              .
+              . In the Evento app, browse through our “Discover events” section,
+              where you can view available events based on your interests,
+              location, and connections. You’ll only see events that are public
+              and open to you, so every option will be a fit for your network
+              and interests.
             </>
           }
         />
 
         <Accordion
-          title="How can I find events that match my interests?"
-          content="Search by interest, location, or keywords in the 'Discover Events' section."
+          title="💜 How can I find events that match my interests?"
+          content={
+            <>
+              On the &quot;Discover events page&quot;, you can search by{" "}
+              <b>interest, location, or keyword</b> to find events that suit
+              your preferences. This makes it easy to browse events in specific
+              genres or nearby locations.
+            </>
+          }
         />
 
         <Accordion
-          title="Can I save events to view later?"
-          content="Yes, bookmark events to revisit them later."
+          title="⭐️ Can I save events to view later?"
+          content="Yes, you can bookmark or save events you’re interested in. This feature allows you to revisit and keep track of upcoming events that you may want to join. "
         />
 
         {/* Community Guidelines */}
-        <h1 className="text-4xl font-bold text-center text-eventoPurple mt-12">
+        <h2 className="text-4xl font-bold text-center text-eventoPurple mt-12">
           Community and Content Guidelines
-        </h1>
+        </h2>
 
         <Accordion
-          title="Are there guidelines for creating events?"
-          content="Yes, events must adhere to community standards. Illegal activities, harassment, or offensive content are prohibited."
+          title="✅ Are there any guidelines for creating events on Evento?"
+          content="Yes, Evento aims to create a safe and welcoming space for everyone. We encourage hosts to create inclusive, respectful gatherings. Events that involve illegal activities, harassment, or otherwise violate our community standards are strictly prohibited."
         />
-
+        <h2>Account and Payment</h2>
+        <Accordion
+          title="🆓 Is Evento free to use?"
+          content="Yes, Evento offers a free version with essential features for creating and managing events."
+        />
+        <Accordion
+          title="🔐 How do I reset my password?"
+          content="If you need to reset your password, go to the login page, click on 'Settings' and follow the instructions sent to your email. If you encounter any issues, reach out to our support team for assistance."
+        />
+        <Accordion
+          title="🗑 Can I delete my account?"
+          content="If you’d like to delete your account, please go to your profile, click on 'Settings,'' and select 'Delete Account.' Note that this action is permanent and will erase all your event history and data.
+"
+        />
         {/* Troubleshooting and Support */}
-        <h1 className="text-4xl font-bold text-center text-eventoPurple mt-12">
+        <h2 className="text-4xl font-bold text-center text-eventoPurple mt-12">
           Troubleshooting and Support
-        </h1>
+        </h2>
 
         <Accordion
-          title="What if the event location isn’t displaying correctly?"
-          content="Refresh your browser, enable location services, and verify the address. Contact support if the issue persists."
+          title="📍 What if the event location isn’t displaying correctly?"
+          content={
+            <>
+              If you experience issues with location settings, try refreshing
+              your browser or app. Ensure your device’s location services are
+              enabled, and that you&apos;ve entered the address accurately. If
+              issues persist, contact Evento support for assistance. You can
+              reach out to our support team via the &quot;Help&quot; section in
+              the app. You can also email us at:{" "}
+              <Link
+                href="mailto:evento_app@outlook.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-400 underline"
+              >
+                evento_app@outlook.com.
+              </Link>
+            </>
+          }
+        />
+        <Accordion
+          title="🔧 I’m having trouble with the app. What should I do?"
+          content={
+            <>
+              We&apos;re here to help! Start by checking your internet
+              connection and making sure you’re using the latest version of the
+              app. If the issue persists, you can reach out to our support team
+              via the &quot;Help&quot; section in the app. You can also email us
+              at:{" "}
+              <Link
+                href="mailto:evento_app@outlook.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-400 underline"
+              >
+                evento_app@outlook.com.
+              </Link>
+            </>
+          }
         />
 
         <Accordion
-          title="How can I contact support?"
-          content="Submit a request via the 'Help' section in the app or email evento_app@outlook.com."
+          title="📞 How can I contact support?"
+          content="You can contact support directly through the Evento app by going to 'Help' and submitting a support request. Our team typically responds within 24 hours."
         />
 
         {/* Feedback */}
-        <h1 className="text-4xl font-bold text-center text-eventoPurple mt-12">
+        <h2 className="text-4xl font-bold text-center text-eventoPurple mt-12">
           Feedback and Suggestions
-        </h1>
+        </h2>
 
         <Accordion
-          title="How can I provide feedback?"
-          content="Share your feedback via 'Send Feedback' under Settings in the app. We value your input to improve Evento!"
+          title="💬 How can I provide feedback about my experience with Evento?"
+          content="We love hearing from our users! You can share feedback directly within the app by navigating to 'Settings' and selecting 'Send Feedback.' We’re always looking for ways to improve and appreciate your insights."
         />
       </Section>
     </div>

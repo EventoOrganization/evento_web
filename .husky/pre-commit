@@ -6,4 +6,5 @@
 
 # run lint-staged
 npx tsc --noEmit
-npx lint-staged --debug
+# npx lint-staged --debug
+npx lint-staged 
