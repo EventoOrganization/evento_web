@@ -17,7 +17,6 @@ import OTPVerifyForm from "./OTPVerifyForm";
 import QuickSignUpForm from "./QuickSignUpForm";
 import ResetPasswordForm from "./ResetPasswordForm";
 import SignUpForm from "./SignupForm";
-import UserInfoForm from "./UserInfoForm";
 
 export const formStyle =
   "justify-between flex flex-col rounded-md p-2  h-full sm:h-auto  max-w-[400px] w-full mx-auto";
@@ -57,7 +56,7 @@ const AuthModal = ({
     setIsModalOpen(false);
   };
 
-  const handleOnSignUpSuccess = async (email?: string, password?: string) => {
+  const handleOnSignUpSuccess = async (email: string, password?: string) => {
     const loginRes = await fetchData<any>("/auth/login", HttpMethod.POST, {
       email: email,
       password: password,
@@ -106,8 +105,7 @@ const AuthModal = ({
             onAuthSuccess={(email, password) => {
               handleOnSignUpSuccess(email, password);
             }}
-            // onSwitchToVerify={() => switchForm("verify")}
-            onSwitchToVerify={onClose}
+            onSwitchToVerify={() => switchForm("verify")}
             onSignInClick={() => switchForm("login")}
           />
         );
@@ -147,14 +145,12 @@ const AuthModal = ({
           <OTPVerifyForm
             onAuthSuccess={(token) =>
               flowType === "signup"
-                ? switchForm("user-info")
+                ? onClose && onClose()
                 : switchForm("reset-password", token)
             }
             flowType={flowType}
           />
         );
-      case "user-info":
-        return <UserInfoForm onAuthSuccess={() => setIsModalOpen(false)} />;
       default:
         return null;
     }
@@ -169,7 +165,7 @@ const AuthModal = ({
       }}
     >
       <DialogContent
-        className="rounded-xl max-w-[95%] md:max-w-fit px-2 py-4 md:p-6"
+        className="rounded-xl max-w-[95%] max-h-[95%] md:max-w-lg overflow-y-auto  px-4 pt-10 md:pt-4 pb-4 "
         onClick={(e) => e.stopPropagation()}
       >
         <DialogHeader className="flex-row items-center gap-4 ">
@@ -185,14 +181,12 @@ const AuthModal = ({
                       ? "Reset Password"
                       : currentForm === "verify"
                         ? "Verify Code"
-                        : currentForm === "user-info"
-                          ? "User Info"
-                          : "Sign In"}{" "}
+                        : "Sign In"}{" "}
               to Continue
             </DialogTitle>
             <DialogDescription>
               {currentForm === "quick-signup"
-                ? "This requirment will ask only one time."
+                ? "This requirement will be asked only once."
                 : currentForm === "signup"
                   ? "Hello, welcome to Evento! Create your account now."
                   : currentForm === "forgot-password"
@@ -201,9 +195,7 @@ const AuthModal = ({
                       ? "Reset Password"
                       : currentForm === "verify"
                         ? "Enter the code that was sent to your email."
-                        : currentForm === "user-info"
-                          ? "Enter your username and profile image."
-                          : "Welcome back! Please sign in to continue."}
+                        : "Welcome back! Please sign in to continue."}
             </DialogDescription>
           </div>
         </DialogHeader>

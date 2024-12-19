@@ -10,7 +10,6 @@ import { useState } from "react";
 const QuickSignUpForm = ({
   onAuthSuccess,
   onSwitchToVerify,
-  onSignInClick,
 }: {
   onAuthSuccess: (email: string, password: string) => void;
   onSwitchToVerify?: () => void;
@@ -138,19 +137,7 @@ const QuickSignUpForm = ({
         disabled={isSubmitting}
       >
         {isSubmitting ? "Connecting..." : "Continue"}
-      </Button>{" "}
-      <div className="mt-4 text-center w-full text-xs">
-        <p className="text-sm sm:text-muted-foreground w-full flex justify-center sm:justify-between gap-2">
-          Already have an account?
-          <button
-            type="button"
-            className="underline text-eventoPurple"
-            onClick={onSignInClick}
-          >
-            Sign In
-          </button>
-        </p>
-      </div>
+      </Button>
     </form>
   );
 };

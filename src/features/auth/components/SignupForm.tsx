@@ -7,10 +7,13 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import EditProfileImage from "@/features/profile/EditProfileImage";
 import { useToast } from "@/hooks/use-toast";
 import { signUpSchema } from "@/lib/zod";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { CameraIcon } from "lucide-react";
 import { useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
@@ -28,7 +31,9 @@ const SignUpForm = ({
   const form = useForm<z.infer<typeof signUpSchema>>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
+      username: "",
       email: "",
+      profileImage: "",
       password: "",
       confirmPassword: "",
     },
@@ -39,12 +44,24 @@ const SignUpForm = ({
   ) => {
     setIsFetching(true);
     try {
-      const signUpRes = await fetchData<any>("/auth/signup", HttpMethod.POST, {
-        email: data.email,
-        password: data.password,
-      });
+      const formData = new FormData();
+      formData.append("username", data.username);
+      formData.append("email", data.email);
+      formData.append("password", data.password);
+      if (data.profileImage) {
+        const response = await fetch(data.profileImage);
+        const blob = await response.blob();
+        const file = new File([blob], "profile.jpg", { type: "image/jpeg" });
+        formData.append("profileImage", file);
+      }
+      const signUpRes = await fetchData<any>(
+        "/auth/new-signup",
+        HttpMethod.POST,
+        formData,
+        null,
+      );
 
-      if (signUpRes.error) {
+      if (!signUpRes.ok) {
         toast({
           description: signUpRes.error,
           variant: "destructive",
@@ -58,7 +75,7 @@ const SignUpForm = ({
         className: "bg-evento-gradient-button text-white",
         duration: 3000,
       });
-
+      console.log("res", signUpRes.data);
       onAuthSuccess(data.email, data.password);
     } catch (error: unknown) {
       toast({
@@ -83,10 +100,33 @@ const SignUpForm = ({
         <div className="justify-center flex flex-col gap-4">
           <FormField
             control={form.control}
+            name="username"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                  Name<span className="text-destructive">*</span>
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    className="rounded-xl bg-muted sm:bg-background placeholder:opacity-50 placeholder:text-muted-foreground"
+                    placeholder={"Name"}
+                    {...field}
+                  />
+                </FormControl>
+                <p className="text-destructive text-sm">
+                  {form.formState.errors.username?.message}
+                </p>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="sr-only">Email</FormLabel>
+                <FormLabel>
+                  Email<span className="text-destructive">*</span>
+                </FormLabel>
                 <FormControl>
                   <Input
                     className="rounded-xl bg-muted sm:bg-background placeholder:opacity-50 placeholder:text-muted-foreground"
@@ -105,7 +145,9 @@ const SignUpForm = ({
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="sr-only">Password</FormLabel>
+                <FormLabel>
+                  Password<span className="text-destructive">*</span>
+                </FormLabel>
                 <FormControl>
                   <PasswordInput
                     field={field}
@@ -124,7 +166,9 @@ const SignUpForm = ({
             name="confirmPassword"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="sr-only">Confirm Password</FormLabel>
+                <FormLabel>
+                  Confirm Password<span className="text-destructive">*</span>
+                </FormLabel>
                 <FormControl>
                   <PasswordInput
                     field={field}
@@ -138,6 +182,35 @@ const SignUpForm = ({
               </FormItem>
             )}
           />
+          <FormField
+            control={form.control}
+            name="profileImage"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Profile Picture (Optional)</FormLabel>
+                <FormControl>
+                  <div className="flex flex-col gap-2 relative w-fit">
+                    <EditProfileImage
+                      userInfo={undefined}
+                      onUpdateImage={(croppedImage: string | null) => {
+                        field.onChange(croppedImage);
+                      }}
+                    />
+                    <Label
+                      htmlFor="profileImage"
+                      className="p-2 border rounded absolute bottom-0 -right-5 bg-background"
+                    >
+                      <CameraIcon />
+                    </Label>
+                  </div>
+                </FormControl>
+                <p className="text-destructive text-sm">
+                  {form.formState.errors.profileImage?.message}
+                </p>
+              </FormItem>
+            )}
+          />
+
           <Button
             className="bg-evento-gradient-button rounded-full  self-center px-8 py-2 mt-6 text-white hover:shadow-lg hover:scale-105 transition-all duration-300"
             disabled={isFetching}
