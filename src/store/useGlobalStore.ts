@@ -97,7 +97,6 @@ export const useGlobalStore = create<GlobalStoreState>()((set, get) => ({
   },
   updateEvent: (updatedEvent: Partial<EventType>) => {
     set((state) => {
-      console.log("Updating event:", updatedEvent); // Log l'événement mis à jour
       const newEvents = state.events.map((event) =>
         event._id === updatedEvent._id ? { ...event, ...updatedEvent } : event,
       );
@@ -218,7 +217,6 @@ export const useGlobalStore = create<GlobalStoreState>()((set, get) => ({
         `/events/getUpcomingEvents${userIdQuery}`,
       );
       if (upcomingEventRes && !upcomingEventRes.error) {
-        console.log("Upcoming Events !", upcomingEventRes.data);
         set({ events: upcomingEventRes.data as EventType[] });
       } else {
         console.error(
@@ -319,7 +317,6 @@ export const useGlobalStore = create<GlobalStoreState>()((set, get) => ({
 
         // Met à jour le store si de nouveaux utilisateurs sont trouvés
         if (JSON.stringify(currentUsers) !== JSON.stringify(newUsers)) {
-          console.log("New Users !", currentUsers, newUsers);
           set({ users: newUsers });
         }
       }

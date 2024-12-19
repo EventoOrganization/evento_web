@@ -47,8 +47,6 @@ export default function ProfilePageContent() {
         <UserProfile
           profile={userInfo}
           upcomingEvents={upcomingFilteredEvents}
-          pastEventsGoing={userInfo?.pastEventsGoing || []}
-          pastEventsHosted={userInfo?.pastEventsHosted || []}
           hostingEvents={userInfo?.hostedEvents}
         />
       ) : (

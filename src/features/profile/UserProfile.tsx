@@ -12,19 +12,14 @@ import ProfileHeader from "./ProfileHeader";
 const UserProfile = ({
   profile,
   upcomingEvents,
-  pastEventsHosted,
-  pastEventsGoing,
   hostingEvents,
 }: {
   profile?: UserType | null;
   upcomingEvents?: EventType[];
   hostingEvents?: EventType[];
-  pastEventsGoing?: EventType[];
-  pastEventsHosted?: EventType[];
 }) => {
   const [isMounted, setIsMounted] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
-  console.log("profile", profile);
   const pathname = usePathname();
   useEffect(() => {
     setIsMounted(true);
@@ -36,7 +31,6 @@ const UserProfile = ({
     }
   }, [profile, upcomingEvents]);
 
-  console.log("profile", profile?.pastEventsHosted);
   return (
     <>
       {!isMounted || isFetching ? (
@@ -67,22 +61,24 @@ const UserProfile = ({
                   : "There are no events at the moment. Explore Evento and create or host an event easily."
               }
             />
-            {pastEventsGoing && pastEventsGoing?.length > 0 && (
-              <EventSection
-                title="Past Events Attended"
-                events={pastEventsGoing}
-                sectionStyle="flex flex-col items-start gap-4 p-0  lg: max-w-7xl"
-                noEventsMessage="There are no events at the moment. Explore Evento and create or host an event easily."
-              />
-            )}
-            {pastEventsHosted && pastEventsHosted?.length > 0 && (
-              <EventSection
-                title="Past Events Hosted"
-                events={pastEventsHosted}
-                sectionStyle="flex flex-col items-start gap-4 p-0  lg: max-w-7xl"
-                noEventsMessage="There are no events at the moment. Explore Evento and create or host an event easily."
-              />
-            )}
+            {profile?.pastEventsGoing &&
+              profile?.pastEventsGoing?.length > 0 && (
+                <EventSection
+                  title="Past Events Attended"
+                  events={profile?.pastEventsGoing}
+                  sectionStyle="flex flex-col items-start gap-4 p-0  lg: max-w-7xl"
+                  noEventsMessage="There are no events at the moment. Explore Evento and create or host an event easily."
+                />
+              )}
+            {profile?.pastEventsHosted &&
+              profile?.pastEventsHosted?.length > 0 && (
+                <EventSection
+                  title="Past Events Hosted"
+                  events={profile?.pastEventsHosted}
+                  sectionStyle="flex flex-col items-start gap-4 p-0  lg: max-w-7xl"
+                  noEventsMessage="There are no events at the moment. Explore Evento and create or host an event easily."
+                />
+              )}
             {/* <UserListModal
               isOpen={!!modalType}
               closeModal={() => setModalType("")}

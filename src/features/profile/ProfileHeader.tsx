@@ -28,7 +28,6 @@ const ProfileHeader = ({ profile }: Props) => {
   const [modalType, setModalType] = useState<ModalType | "">("");
   const interests: InterestType[] = profile?.interests || [];
   const socialLinks = profile?.socialLinks || [];
-  console.log("INTERESTS", socialLinks);
   return (
     <>
       <Section className="text-sm gap-2 border-b-2 py-6 max-w-2xl">

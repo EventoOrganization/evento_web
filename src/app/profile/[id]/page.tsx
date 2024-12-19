@@ -59,8 +59,6 @@ export default async function UserProfilePage({ params }: Props) {
       <UserProfile
         profile={profileData}
         upcomingEvents={profileData.upcomingEvents || []}
-        pastEventsGoing={profileData.pastEventsGoing || []}
-        pastEventsHosted={profileData.pastHostedEvents || []}
         hostingEvents={profileData.hostedEvents || []}
       />
     );
