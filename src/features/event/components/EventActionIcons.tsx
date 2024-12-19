@@ -1,3 +1,4 @@
+import ShareEventModal from "@/components/ShareEventModal";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -163,52 +164,6 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
     } catch (error) {
       console.error("Error marking event as refused:", error);
       alert("Failed to mark as refused. Please try again.");
-    }
-  };
-
-  const handleSend = async () => {
-    const eventUrl = `${process.env.NEXT_PUBLIC_FRONTEND_URL}/event/${event?._id}`;
-
-    const shareApiSupported = true; // to check if the share api is supported
-
-    if (shareApiSupported && navigator.share) {
-      try {
-        await navigator.share({
-          title: "Check out this event",
-          text: "Check out this event!",
-          url: eventUrl,
-        });
-        console.log("Successful share");
-      } catch (error) {
-        console.error("Error sharing:", error);
-      }
-    } else if (navigator.clipboard) {
-      // Utiliser le presse-papier si le partage n'est pas supporté
-      try {
-        await navigator.clipboard.writeText(eventUrl);
-        toast({
-          title: "Link copied to clipboard!",
-          description: "The event link has been copied. You can share it now.",
-          className: "bg-evento-gradient text-white",
-          duration: 3000,
-        });
-      } catch (error) {
-        console.error("Failed to copy link:", error);
-        toast({
-          title: "Failed to copy",
-          description: "Unable to copy the link to the clipboard.",
-          variant: "destructive",
-          duration: 3000,
-        });
-      }
-    } else {
-      console.log("Clipboard API is not supported in this browser.");
-      toast({
-        title: "Sharing not supported",
-        description: "Your browser does not support sharing or copying links.",
-        variant: "destructive",
-        duration: 3000,
-      });
     }
   };
 
@@ -407,36 +362,7 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
             </Select>
           </>
         )}
-
-        <Button
-          onClick={(e) => {
-            handleSend();
-            e.stopPropagation();
-          }}
-          variant={"outline"}
-          className={cn(
-            "relative flex items-center justify-center bg-muted px-3 hover:opacity-80 text-sm  border-black",
-            {
-              "w-10 h-10": !newVersion,
-            },
-          )}
-        >
-          <svg
-            width="18"
-            height="20"
-            viewBox="0 0 18 20"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M6.15841 11.2584L11.8501 14.5751M11.8417 5.42509L6.15841 8.74176M16.5 4.16675C16.5 5.54746 15.3807 6.66675 14 6.66675C12.6193 6.66675 11.5 5.54746 11.5 4.16675C11.5 2.78604 12.6193 1.66675 14 1.66675C15.3807 1.66675 16.5 2.78604 16.5 4.16675ZM6.5 10.0001C6.5 11.3808 5.38071 12.5001 4 12.5001C2.61929 12.5001 1.5 11.3808 1.5 10.0001C1.5 8.61937 2.61929 7.50008 4 7.50008C5.38071 7.50008 6.5 8.61937 6.5 10.0001ZM16.5 15.8334C16.5 17.2141 15.3807 18.3334 14 18.3334C12.6193 18.3334 11.5 17.2141 11.5 15.8334C11.5 14.4527 12.6193 13.3334 14 13.3334C15.3807 13.3334 16.5 14.4527 16.5 15.8334Z"
-              stroke="#18181B"
-              stroke-width="1.67"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-          </svg>
-        </Button>
+        <ShareEventModal eventId={event._id} />
 
         {/* Modals for authentication, questions, and refusal */}
         {isAuthModalOpen && (
