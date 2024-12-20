@@ -54,7 +54,7 @@ export default async function UserProfilePage({ params }: Props) {
         </>
       );
     }
-
+    console.log("671e4a34515dd75b553650be");
     return (
       <UserProfile
         profile={profileData}
