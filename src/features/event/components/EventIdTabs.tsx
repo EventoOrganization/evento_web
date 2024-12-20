@@ -3,6 +3,12 @@ import EventoLoader from "@/components/EventoLoader";
 import Section from "@/components/layout/Section";
 import RenderMedia from "@/components/RenderMedia";
 import RequestModal from "@/components/RequestModal";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useSession } from "@/contexts/SessionProvider";
 import AuthModal from "@/features/auth/components/AuthModal";
 import TabSelector from "@/features/discover/TabSelector";
@@ -273,10 +279,17 @@ const EventIdTabs = ({ evento }: { evento?: EventType }) => {
                   </div>
                 </Link>
                 {accessControl.isAdmin && (
-                  <Pencil
-                    className="text-muted-foreground"
-                    onClick={() => setSelectedTab("Settings")}
-                  />
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <Pencil
+                          className="text-muted-foreground"
+                          onClick={() => setSelectedTab("Settings")}
+                        />
+                      </TooltipTrigger>
+                      <TooltipContent>Edit Event</TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 )}
                 {/* <span className="text-sm">{renderDate(event)}</span> */}
               </div>

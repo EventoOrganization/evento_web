@@ -2,7 +2,8 @@ import CreateEventContent from "@/features/create-event/CreateEventContent";
 import { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Create Event",
-  description: "Create an event on Evento",
+  description:
+    "Effortlessly create events tailored to your needs with Evento. Set details, invite guests, track RSVPs, and engage via integrated chat, ensuring seamless event hosting and stress-free management",
 };
 const page = () => {
   return (
