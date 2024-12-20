@@ -1,11 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
-import InstagramIcon from "./icons/InstagramIcon";
 const Footer = () => {
   return (
     <footer className=" w-full flex flex-col justify-center items-center min-h-40 py-10 gap-10">
       <Image
-        src="/icon-128x128.png"
+        src="/evento-logo.png"
         alt="logo"
         width={128}
         height={128}
@@ -19,7 +18,12 @@ const Footer = () => {
       </div>
       <div>
         <Link href={"https://www.instagram.com/eventoapp.io/"}>
-          <InstagramIcon />
+          <Image
+            src={"/Instagram_logo_2022.png"}
+            alt="Instagram_logo_2022"
+            width={50}
+            height={50}
+          />
         </Link>
       </div>
     </footer>
