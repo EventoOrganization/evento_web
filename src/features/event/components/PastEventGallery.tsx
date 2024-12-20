@@ -52,7 +52,7 @@ const PastEventGallery: React.FC<PastEventGalleryProps> = ({ event }) => {
     const userMediaMap = new Map();
 
     mediaItems.forEach((media) => {
-      const user = media.userId; // userId doit contenir username et profileImage
+      const user = media.userId;
       if (user) {
         if (!userMediaMap.has(user._id)) {
           userMediaMap.set(user._id, {
@@ -178,7 +178,11 @@ const PastEventGallery: React.FC<PastEventGalleryProps> = ({ event }) => {
         )}
         {((allUploadPhotoVideo && event.isGoing) || event.isHosted) && (
           <>
-            <p className="text-sm">You are allowed to upload media</p>
+            <p className="text-sm">
+              {event.isHosted
+                ? "Your guests are allowed to upload media"
+                : "You are allowed to upload media"}
+            </p>
             <div>
               <Input
                 id="gallery-file-upload"
