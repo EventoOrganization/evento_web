@@ -10,6 +10,7 @@ import { useState } from "react";
 const QuickSignUpForm = ({
   onAuthSuccess,
   onSwitchToVerify,
+  onSignInClick,
 }: {
   onAuthSuccess: (email: string, password: string) => void;
   onSwitchToVerify?: () => void;
@@ -83,62 +84,76 @@ const QuickSignUpForm = ({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-4 space-y-4">
-      {/* Champ de saisie pour le nom d'utilisateur */}
-      <div className="w-full flex flex-col gap-2">
-        <Label htmlFor="username" className="">
-          Name<span className="text-red-500">*</span>
-        </Label>
-        <Input
-          id="username"
-          name="username"
-          type="text"
-          value={formData.username}
-          onChange={handleChange}
-          className="w-full border rounded-md p-2"
-          required
-        />
-      </div>
-      {/* Champ de saisie pour l'email */}
-      <div className="w-full flex flex-col gap-2">
-        <Label htmlFor="email" className="block text-sm font-medium">
-          Email<span className="text-red-500">*</span>
-        </Label>
-        <Input
-          id="email"
-          name="email"
-          type="email"
-          value={formData.email}
-          onChange={handleChange}
-          className="w-full border rounded-md p-2"
-          required
-        />
-      </div>
-      {/* Image de profil avec recadrage */}
-      <div className=" flex flex-col gap-2 relative w-fit">
-        <Label htmlFor="profileImage">
-          Profile Picture {"("}Optional{")"}
-        </Label>
-        <EditProfileImage
-          userInfo={undefined}
-          onUpdateImage={handleUpdateCroppedImage}
-        />
-        <Label
-          htmlFor="profileImage"
-          className="p-2 border rounded absolute bottom-0 right-14 md:right-12 bg-background"
+    <div className="justify-center flex flex-col p-10 ">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4 space-y-4">
+        {/* Champ de saisie pour le nom d'utilisateur */}
+        <div className="w-full flex flex-col gap-2">
+          <Label htmlFor="username" className="">
+            Name<span className="text-red-500">*</span>
+          </Label>
+          <Input
+            id="username"
+            name="username"
+            type="text"
+            value={formData.username}
+            onChange={handleChange}
+            className="w-full border rounded-md p-2"
+            required
+          />
+        </div>
+        {/* Champ de saisie pour l'email */}
+        <div className="w-full flex flex-col gap-2">
+          <Label htmlFor="email" className="block text-sm font-medium">
+            Email<span className="text-red-500">*</span>
+          </Label>
+          <Input
+            id="email"
+            name="email"
+            type="email"
+            value={formData.email}
+            onChange={handleChange}
+            className="w-full border rounded-md p-2"
+            required
+          />
+        </div>
+        {/* Image de profil avec recadrage */}
+        <div className=" flex flex-col gap-2 relative w-fit">
+          <Label htmlFor="profileImage">
+            Profile Picture {"("}Optional{")"}
+          </Label>
+          <EditProfileImage
+            userInfo={undefined}
+            onUpdateImage={handleUpdateCroppedImage}
+          />
+          <Label
+            htmlFor="profileImage"
+            className="p-2 border rounded absolute bottom-0 right-14 md:right-12 bg-background"
+          >
+            <CameraIcon />
+          </Label>
+        </div>
+        {/* Bouton de soumission */}
+        <Button
+          type="submit"
+          className="w-full bg-evento-gradient text-white p-2 rounded-md"
+          disabled={isSubmitting}
         >
-          <CameraIcon />
-        </Label>
-      </div>
-      {/* Bouton de soumission */}
-      <Button
-        type="submit"
-        className="w-full bg-evento-gradient text-white p-2 rounded-md"
-        disabled={isSubmitting}
-      >
-        {isSubmitting ? "Connecting..." : "Continue"}
-      </Button>
-    </form>
+          {isSubmitting ? "Connecting..." : "Continue"}
+        </Button>{" "}
+        <div className="mt-4 text-center w-full text-xs">
+          <p className="text-sm sm:text-muted-foreground w-full flex justify-center sm:justify-between gap-2">
+            Already have an account?
+            <button
+              type="button"
+              className="underline text-eventoPurple"
+              onClick={onSignInClick}
+            >
+              Sign In
+            </button>
+          </p>
+        </div>
+      </form>
+    </div>
   );
 };
 
