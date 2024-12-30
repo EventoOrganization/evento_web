@@ -28,6 +28,7 @@ const EventEdit = ({
   allUsers: UserType[];
   onUpdateField: (field: string, value: any) => void;
 }) => {
+  console.log("event", event);
   const { toast } = useToast();
   const [showTooltip, setShowTooltip] = useState(false);
   const today = startOfDay(new Date());
@@ -199,7 +200,6 @@ const EventEdit = ({
 
   const handleUpdateRSVP = () => {
     handleUpdate("questions", questions);
-    handleUpdate("createRSVP", createRSVP);
   };
 
   const handleCancelRSVP = () => {

@@ -10,8 +10,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { QuestionType } from "@/types/EventType";
-import { cn } from "@nextui-org/theme";
-import { ChevronDown } from "lucide-react";
 import { useState } from "react";
 
 interface EditableQuestionsFormProps {
@@ -52,82 +50,68 @@ const EditableQuestionsForm = ({
   handleReset,
   isUpdating,
 }: EditableQuestionsFormProps) => {
-  const [expanded, setExpanded] = useState(false);
   const [editMode, setEditMode] = useState(false);
-  const handleExpandCollapse = () => {
-    setExpanded(!expanded);
-  };
-
   return (
     <div className="space-y-4">
       <div className="flex justify-between">
         <h3 className="text-eventoPurpleLight">RSVP</h3>
-        <div className="flex items-center gap-4">
-          {createRSVP && (
+        <div className="flex justify-end gap-2 items-center">
+          {createRSVP ? (
             <>
-              <span
-                className="flex items-center pl-2 cursor-pointer"
-                onClick={handleExpandCollapse}
-              >
-                <p>{expanded ? "Hide RSVP" : "Show RSVP"}</p>
-                <ChevronDown
-                  className={cn("transition-transform duration-300", {
-                    "rotate-180": expanded,
-                  })}
-                />
-              </span>
+              {editMode ? (
+                <>
+                  <Button
+                    onClick={() => {
+                      handleUpdate();
+                      setEditMode(false);
+                    }}
+                    disabled={isUpdating}
+                    className="bg-evento-gradient text-white"
+                  >
+                    {isUpdating ? "Updating..." : "Update"}
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      handleCancel();
+                      setEditMode(false);
+                    }}
+                    variant="outline"
+                    className="text-gray-600"
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    onClick={handleReset}
+                    variant="outline"
+                    className="text-red-600"
+                  >
+                    Reset
+                  </Button>
+                </>
+              ) : (
+                <Button onClick={() => setEditMode(true)} variant="outline">
+                  Edit RSVP
+                </Button>
+              )}
             </>
+          ) : (
+            <Button
+              type="button"
+              variant="outline"
+              className={!createRSVP ? "bg-evento-gradient text-white" : ""}
+              onClick={() => {
+                onToggleRSVP();
+                setEditMode(true);
+              }}
+            >
+              {createRSVP ? "Remove RSVP" : "Add an RSVP"}
+            </Button>
           )}
-          <Button
-            type="button"
-            variant="outline"
-            className={!createRSVP ? "bg-evento-gradient text-white" : ""}
-            onClick={onToggleRSVP}
-          >
-            {createRSVP ? "Remove RSVP" : "Add an RSVP"}
-          </Button>
         </div>
       </div>
 
-      {expanded && createRSVP && (
+      {createRSVP && (
         <>
-          <div className="flex justify-end mt-4 gap-2">
-            {editMode ? (
-              <>
-                <Button
-                  onClick={() => {
-                    handleUpdate();
-                    setEditMode(false);
-                  }}
-                  disabled={isUpdating}
-                  className="bg-evento-gradient text-white"
-                >
-                  {isUpdating ? "Updating..." : "Update"}
-                </Button>
-                <Button
-                  onClick={() => {
-                    handleCancel();
-                    setEditMode(false);
-                  }}
-                  variant="outline"
-                  className="text-gray-600"
-                >
-                  Cancel
-                </Button>
-                <Button
-                  onClick={handleReset}
-                  variant="outline"
-                  className="text-red-600"
-                >
-                  Reset
-                </Button>
-              </>
-            ) : (
-              <Button onClick={() => setEditMode(true)} variant="outline">
-                Edit RSVP
-              </Button>
-            )}
-          </div>
           <h4 className="text-eventoPurpleLight font-bold">Create Your RSVP</h4>
           {questions.map((question, questionIndex) => (
             <div key={question.id} className="space-y-2">
@@ -227,43 +211,6 @@ const EditableQuestionsForm = ({
           <Button disabled={!editMode} type="button" onClick={onAddQuestion}>
             Add Question
           </Button>
-          <div className="flex justify-end mt-4 gap-2">
-            {editMode ? (
-              <>
-                <Button
-                  onClick={() => {
-                    handleUpdate();
-                    setEditMode(false);
-                  }}
-                  disabled={isUpdating}
-                  className="bg-evento-gradient text-white"
-                >
-                  {isUpdating ? "Updating..." : "Update"}
-                </Button>
-                <Button
-                  onClick={() => {
-                    handleCancel();
-                    setEditMode(false);
-                  }}
-                  variant="outline"
-                  className="text-gray-600"
-                >
-                  Cancel
-                </Button>
-                <Button
-                  onClick={handleReset}
-                  variant="outline"
-                  className="text-red-600"
-                >
-                  Reset
-                </Button>
-              </>
-            ) : (
-              <Button onClick={() => setEditMode(true)} variant="outline">
-                Edit RSVP
-              </Button>
-            )}
-          </div>
         </>
       )}
     </div>
