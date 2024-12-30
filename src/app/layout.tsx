@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   },
   description:
     "Evento is your go-to platform to create, discover events and connect with others. Whether you’re hosting intimate gatherings or exploring unique experiences, Evento simplifies RSVPs, chats, and event planning. With our user-friendly app, you have everything you need to organize memorable events and build lasting connections.",
-  manifest: "/manifest.json",
+  // manifest: "/manifest.json",
   openGraph: {
     type: "website",
     url: "https://evento-app.io",
