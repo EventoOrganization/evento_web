@@ -10,6 +10,8 @@ export type UserType = {
   email: string;
   userId?: UserType;
   URL?: string;
+  preferences?: PreferencesType;
+  unsubscribeToken?: string;
   countryCode?: string;
   createdAt?: string;
   updatedAt?: string;
@@ -120,4 +122,10 @@ interface RSVPSubmissionType {
   additionalFieldAnswers: AdditionalFieldAnswerType[];
   createdAt: string;
   updatedAt: string;
+}
+
+export interface PreferencesType {
+  receiveEventUpdates: { type: boolean; default: true };
+  receiveReminders: { type: boolean; default: true };
+  receiveInvites: { type: boolean; default: true };
 }
