@@ -46,12 +46,12 @@ const EventAttendeesTab: React.FC<EventAttendeesTabProps> = ({
         </div>
       )}
       <CollapsibleList
-        isAdmin={isAdmin}
         title="Going"
         count={event?.attendees?.length || 0}
         users={event?.attendees || []}
       />
       <CollapsibleList
+        isAdmin={isAdmin}
         title="Invited"
         count={invitedUsers?.length || 0}
         users={invitedUsers || []}
