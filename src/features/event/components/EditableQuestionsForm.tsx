@@ -45,7 +45,7 @@ const EditableQuestionsForm = ({
   onUpdateOption,
   onRemoveOption,
   onToggleRSVP,
-  // handleUpdate,
+  handleUpdate,
   handleCancel,
   handleReset,
   isUpdating,
@@ -62,10 +62,7 @@ const EditableQuestionsForm = ({
                 <>
                   <Button
                     onClick={() => {
-                      alert(
-                        "Sorry, this feature is not available at the moment",
-                      );
-                      // handleUpdate();
+                      handleUpdate();
                       setEditMode(false);
                     }}
                     disabled={isUpdating}
