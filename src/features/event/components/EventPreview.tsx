@@ -76,13 +76,13 @@ const EventPreview = ({
               alt="Event Image"
               width={200}
               height={200}
-              className="h-full w-full object-cover aspect-square md:max-w-[204px] md:max-h-[204px]"
+              className="w-full object-cover aspect-square md:max-w-[204px] h-[204px]"
               priority={title === "Upcoming Events" ? true : false}
               loading={title === "Upcoming Events" ? "eager" : "lazy"}
             />
           )}
         </CardContent>
-        <CardFooter className="p-0 bg-background rounded-b-xl min-h-[104px] md:min-h-32">
+        <CardFooter className="p-0 bg-background rounded-b-xl h-[104px] md:min-h-32">
           <ul className="p-2 md:p-5 flex flex-col text-sm w-full h-full gap-2 ">
             <li className="line-clamp-2 font-bold">{event?.title}</li>
             <li className="line-clamp-1 text-xs">{renderDate(event)}</li>
