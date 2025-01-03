@@ -40,7 +40,7 @@ const EventPreview = ({
     <>
       <Card
         className={cn(
-          "cursor-pointer relative flex flex-col justify-between  hover:opacity-90 border-2 rounded-2xl",
+          "cursor-pointer relative flex flex-col justify-between  hover:opacity-90 border-2 rounded-2xl max-h-[336px]",
           className,
         )}
         onClick={handleCardClick}
