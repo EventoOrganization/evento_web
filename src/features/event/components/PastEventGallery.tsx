@@ -179,9 +179,9 @@ const PastEventGallery: React.FC<PastEventGalleryProps> = ({ event }) => {
         {((allUploadPhotoVideo && event.isGoing) || event.isHosted) && (
           <>
             <p className="text-sm">
-              {event.isHosted
+              {allUploadPhotoVideo
                 ? "Your guests are allowed to upload media"
-                : "You are allowed to upload media"}
+                : "You only are allowed to upload media"}
             </p>
             <div>
               <Input
@@ -271,12 +271,14 @@ const PastEventGallery: React.FC<PastEventGalleryProps> = ({ event }) => {
       ))}
       {mediaItems.length === 0 && (
         <p>
-          No media uploaded yet.{" "}
-          {allUploadPhotoVideo && event.isGoing
-            ? "upload the first media!"
-            : "Sorry You are not allowed to upload media."}
+          {allUploadPhotoVideo
+            ? event.isGoing
+              ? "No media uploaded yet. Upload the first media!"
+              : "No media uploaded yet. You need to be going to post media."
+            : "Sorry, you are not allowed to upload media."}
         </p>
       )}
+
       {selectedMediaIndex !== null && (
         <PastEventModal
           mediaItems={mediaItems}

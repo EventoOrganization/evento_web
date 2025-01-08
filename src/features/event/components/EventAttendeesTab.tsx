@@ -78,6 +78,7 @@ const EventAttendeesTab: React.FC<EventAttendeesTabProps> = ({
             count={event?.favouritees?.length || 0}
             users={event?.favouritees || []}
           />
+          x
         </>
       )}
     </div>
