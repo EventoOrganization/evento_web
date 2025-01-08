@@ -172,7 +172,7 @@ const AuthModal = ({
           <div className="space-y-1">
             <DialogTitle>
               {currentForm === "quick-signup"
-                ? "To join the event, please enter your details"
+                ? "To join event, please add your info below."
                 : currentForm === "signup"
                   ? "Sign Up"
                   : currentForm === "forgot-password"
@@ -181,8 +181,7 @@ const AuthModal = ({
                       ? "Reset Password"
                       : currentForm === "verify"
                         ? "Verify Code"
-                        : "Sign In"}{" "}
-              to Continue
+                        : "Sign In"}
             </DialogTitle>
             <DialogDescription>
               {currentForm === "quick-signup"
@@ -195,7 +194,7 @@ const AuthModal = ({
                       ? "Reset Password"
                       : currentForm === "verify"
                         ? "Enter the code that was sent to your email."
-                        : "Welcome back! Please sign in to continue."}
+                        : "Welcome back! Please sign in."}
             </DialogDescription>
           </div>
         </DialogHeader>
