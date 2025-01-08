@@ -123,9 +123,9 @@ const ProfileHeader = ({ profile }: Props) => {
         </div>
         <div className="flex flex-col w-full mt-2">
           <h3>{profile?.username}</h3>
-          <p className="text-xs ">{profile?.bio}</p>
-          <p className="text-xs text-muted-foreground">{profile?.address}</p>
-          <p className="text-xs text-eventoPurpleLight">{profile?.URL}</p>
+          <p>{profile?.bio}</p>
+          <p className="text-muted-foreground">{profile?.address}</p>
+          <p className="text-eventoPurpleLight">{profile?.URL}</p>
         </div>
         {interests && interests.length > 0 && (
           <div className="flex flex-wrap gap-2 w-full">
