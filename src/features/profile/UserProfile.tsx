@@ -30,7 +30,7 @@ const UserProfile = ({
       }, 1500); // Simule une requête API
     }
   }, [profile, upcomingEvents]);
-
+  console.log("profileData", profile);
   return (
     <>
       {!isMounted || isFetching ? (

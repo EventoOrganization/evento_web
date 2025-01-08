@@ -185,7 +185,7 @@ const AuthModal = ({
             </DialogTitle>
             <DialogDescription>
               {currentForm === "quick-signup"
-                ? "This requirement will be asked only once."
+                ? ""
                 : currentForm === "signup"
                   ? "Hello, welcome to Evento! Create your account now."
                   : currentForm === "forgot-password"

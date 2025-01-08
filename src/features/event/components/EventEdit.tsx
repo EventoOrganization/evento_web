@@ -289,6 +289,7 @@ const EventEdit = ({
     };
     await handleUpdate("locationData", locationData);
   };
+  console.log("event", event);
   return (
     <div className="space-y-4 pb-20 w-full">
       <h2>Edit Event</h2>

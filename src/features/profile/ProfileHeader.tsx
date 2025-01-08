@@ -4,6 +4,9 @@ import TiktokIcon from "@/components/icons/TiktokIcon";
 import Section from "@/components/layout/Section";
 import { Button } from "@/components/ui/button";
 import UserListModal from "@/components/UserListModal";
+import { useSession } from "@/contexts/SessionProvider";
+import { toast } from "@/hooks/use-toast";
+import { useGlobalStore } from "@/store/useGlobalStore";
 import { InterestType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
 import { Pencil, Settings, UserRoundPlus } from "lucide-react";
@@ -11,6 +14,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import AuthModal from "../auth/components/AuthModal";
 interface Props {
   profile: UserType | null | undefined;
 }
@@ -25,9 +29,61 @@ const platformIcons: Record<string, JSX.Element> = {
 };
 const ProfileHeader = ({ profile }: Props) => {
   const pathname = usePathname();
+  const { token, user } = useSession();
+  const { updateUser } = useGlobalStore((state) => ({
+    updateUser: state.updateUser,
+    users: state.users,
+  }));
+  const [loading, setLoading] = useState<boolean>(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
+  const [isIFollowingHim, setIsIFollowingHim] = useState<boolean | null>(
+    profile?.followerUserIds?.includes(user?._id ?? "") ?? null,
+  );
+  const isFollowingMe = profile?.followingUserIds?.includes(
+    (user && user._id) || "",
+  );
   const [modalType, setModalType] = useState<ModalType | "">("");
   const interests: InterestType[] = profile?.interests || [];
   const socialLinks = profile?.socialLinks || [];
+  const handleFollow = async () => {
+    if (!token) {
+      setIsAuthModalOpen(true);
+      return;
+    }
+    setLoading(true);
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/users/follow`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ followingId: profile?._id }),
+        },
+      );
+
+      if (response.ok) {
+        setIsIFollowingHim((prevIsFollowing) => !prevIsFollowing);
+        const updatedStatus = !isIFollowingHim;
+        updateUser({ _id: profile?._id, isIFollowingHim: updatedStatus });
+        toast({
+          title: "Success",
+          description: `You are now ${!isIFollowingHim ? "following" : "unfollowing"} this user`,
+          duration: 2000,
+          className: "bg-evento-gradient text-white",
+        });
+      } else {
+        const errorData = await response.json();
+        console.error("Error:", errorData.message);
+      }
+    } catch (error) {
+      console.error("An error occurred:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <>
       <Section className="text-sm gap-2 border-b-2 py-6 max-w-2xl">
@@ -65,9 +121,11 @@ const ProfileHeader = ({ profile }: Props) => {
             </Button>
           </div>
         </div>
-        <div className="flex flex-col w-full mt-2 gap-2">
+        <div className="flex flex-col w-full mt-2">
           <h3>{profile?.username}</h3>
+          <p className="text-xs ">{profile?.bio}</p>
           <p className="text-xs text-muted-foreground">{profile?.address}</p>
+          <p className="text-xs text-eventoPurpleLight">{profile?.URL}</p>
         </div>
         {interests && interests.length > 0 && (
           <div className="flex flex-wrap gap-2 w-full">
@@ -81,26 +139,52 @@ const ProfileHeader = ({ profile }: Props) => {
             ))}
           </div>
         )}
-        {socialLinks && socialLinks?.length > 0 && (
-          <div className="flex flex-col items-start w-full">
-            {socialLinks?.length > 0 && (
-              <ul className="flex ">
-                {socialLinks.map((link, index) => (
-                  <li key={index} className="">
-                    <Link
-                      className=""
-                      href={link.url}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      {platformIcons[link.platform.toLowerCase()]}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-        )}
+        <div className="flex justify-between items-center w-full ">
+          {socialLinks && socialLinks?.length > 0 ? (
+            <div className="flex flex-col items-start w-full">
+              {socialLinks?.length > 0 && (
+                <ul className="flex ">
+                  {socialLinks.map((link, index) => (
+                    <li key={index} className="">
+                      <Link
+                        className=""
+                        href={link.url}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        {platformIcons[link.platform.toLowerCase()]}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          ) : (
+            <div></div>
+          )}{" "}
+          {user?._id !== profile?._id && (
+            <Button
+              variant={"ghost"}
+              className={` px-5 py-2 rounded-lg font-semibold text-white transition-all hover:scale-105 duration-300 hover:text-white
+        ${isIFollowingHim && !isFollowingMe ? "bg-gray-400 hover:bg-gray-500 " : ""}
+        ${isFollowingMe && !isIFollowingHim ? "bg-eventoBlue hover:bg-eventoBlue/80 " : ""}
+        ${isFollowingMe && isIFollowingHim ? " bg-evento-gradient " : ""}
+        ${!isFollowingMe && !isIFollowingHim ? "bg-eventoPurpleDark hover:bg-eventoPurpleDark/80 " : ""}`}
+              onClick={handleFollow}
+              disabled={loading}
+            >
+              {loading
+                ? "Processing..."
+                : isFollowingMe && !isIFollowingHim
+                  ? "Follow Back"
+                  : isFollowingMe && isIFollowingHim
+                    ? "Friends"
+                    : !isFollowingMe && isIFollowingHim
+                      ? "Unfollow"
+                      : "Follow"}
+            </Button>
+          )}
+        </div>
         <div className="w-full">
           {pathname == "/profile" && (
             <ul className="flex  ">
@@ -150,6 +234,14 @@ const ProfileHeader = ({ profile }: Props) => {
             : profile?.followerUserIds || []
         }
       />
+      {isAuthModalOpen && (
+        <AuthModal
+          onAuthSuccess={() => {
+            setIsAuthModalOpen(false);
+          }}
+          onClose={() => setIsAuthModalOpen(false)}
+        />
+      )}
     </>
   );
 };
