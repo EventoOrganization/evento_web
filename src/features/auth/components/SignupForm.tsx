@@ -71,7 +71,9 @@ const SignUpForm = ({
       }
 
       toast({
-        description: "Account created successfully",
+        title: "Account created successfully",
+        description:
+          "Your OTP code might be in your spam folder. Please check there if you don’t see it in your inbox!",
         className: "bg-evento-gradient-button text-white",
         duration: 3000,
       });

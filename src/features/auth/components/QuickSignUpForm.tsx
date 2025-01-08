@@ -60,8 +60,9 @@ const QuickSignUpForm = ({
 
       if (response.ok) {
         toast({
+          title: "Information added successfully.",
           description:
-            "Information added successfully. Check your email for the OTP!",
+            "Your OTP code might be in your spam folder. Please check there if you don’t see it in your inbox!",
           className: "bg-evento-gradient text-white",
         });
         onAuthSuccess(formData.email, response?.data?.password);
