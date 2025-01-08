@@ -132,7 +132,7 @@ const ProfileHeader = ({ profile }: Props) => {
             {interests.map((interest) => (
               <span
                 key={interest._id}
-                className={`px-2 py-1 rounded-md border text-xs w-fit flex items-center justify-center bg-muted text-black`}
+                className={`px-2 py-1 rounded-md border text-sm w-fit flex items-center justify-center bg-muted text-black`}
               >
                 {interest.name}
               </span>
