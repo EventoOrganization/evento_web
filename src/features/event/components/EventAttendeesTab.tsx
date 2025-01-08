@@ -37,10 +37,11 @@ const EventAttendeesTab: React.FC<EventAttendeesTabProps> = ({
       !favouritedIds.has(user._id) &&
       !refusedIds.has(user._id),
   );
+  console.log("event", event);
   return (
     <div className="w-full">
       {isAdmin && (
-        <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center justify-between gap-2 mb-2">
           <GuestAllowFriendToggle event={event} />
           <EventGuestModal event={event} setEvent={setEvent} />
         </div>
@@ -49,6 +50,8 @@ const EventAttendeesTab: React.FC<EventAttendeesTabProps> = ({
         title="Going"
         count={event?.attendees?.length || 0}
         users={event?.attendees || []}
+        event={event}
+        isAdmin={isAdmin}
       />
       <CollapsibleList
         isAdmin={isAdmin}
@@ -63,6 +66,7 @@ const EventAttendeesTab: React.FC<EventAttendeesTabProps> = ({
           title="Refused"
           count={event?.refused?.length || 0}
           users={event?.refused || []}
+          isAdmin={isAdmin}
         />
       )}
       {isAdmin && (
@@ -78,7 +82,6 @@ const EventAttendeesTab: React.FC<EventAttendeesTabProps> = ({
             count={event?.favouritees?.length || 0}
             users={event?.favouritees || []}
           />
-          x
         </>
       )}
     </div>

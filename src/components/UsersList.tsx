@@ -184,7 +184,7 @@ const UsersList = ({
   };
   if (user?.username === "anonymous") return;
   const isSuccessPage = pathname.includes(`/create-event/${eventId}/success`);
-
+  console.log("user reason", user.reason);
   return (
     <div className="flex justify-between w-full items-center">
       <Link href={`/profile/${user?._id}`} className="flex items-center gap-4">
@@ -217,7 +217,7 @@ const UsersList = ({
       </Link>
       <div className="flex gap-2">
         {user.reason && isAdmin ? (
-          <span className="text-red-500 font-semibold">{user.reason}</span>
+          <span className="text-destructive font-semibold">{user.reason}</span>
         ) : (
           !isLoggedUser &&
           !isTempGuest &&
@@ -244,7 +244,7 @@ const UsersList = ({
             </Button>
           )
         )}
-        {isAdmin && (
+        {isAdmin && title === "Invited" && (
           <Button variant="outline" onClick={handleUnGuest} disabled={loading}>
             {loading ? "Processing..." : <XIcon />}
           </Button>
