@@ -29,7 +29,7 @@ const SelectTimeZone = ({
   const [currentLabel, setCurrentLabel] = useState("Timezone");
   const eventoStore = useEventStore();
   useEffect(() => {
-    console.log("changed timezone", eventoStore.timeZone);
+    // console.log("changed timezone", eventoStore.timeZone);
     setCurrentLabel(
       timeZonesMap.find((tz) => tz.offset === selectedTimeZone)?.label ||
         "Timezone",

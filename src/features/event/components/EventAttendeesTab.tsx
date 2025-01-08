@@ -37,7 +37,6 @@ const EventAttendeesTab: React.FC<EventAttendeesTabProps> = ({
       !favouritedIds.has(user._id) &&
       !refusedIds.has(user._id),
   );
-  console.log("event", event);
   return (
     <div className="w-full">
       {isAdmin && (

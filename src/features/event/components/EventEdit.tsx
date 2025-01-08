@@ -28,7 +28,6 @@ const EventEdit = ({
   allUsers: UserType[];
   onUpdateField: (field: string, value: any) => void;
 }) => {
-  console.log("event", event);
   const { toast } = useToast();
   const [showTooltip, setShowTooltip] = useState(false);
   const today = startOfDay(new Date());
@@ -77,7 +76,7 @@ const EventEdit = ({
   const [startTime, setStartTime] = useState(
     event.details?.startTime || "08:00",
   );
-  const [endTime, setEndTime] = useState(event.details?.endTime || "18:00");
+  const [endTime, setEndTime] = useState(event.details?.endTime || "");
   const [timeSlots, setTimeSlots] = useState(event.details?.timeSlots || []);
   const [coHosts, setCoHosts] = useState(event.coHosts || []);
   const { token } = useSession();
@@ -231,7 +230,7 @@ const EventEdit = ({
         setStartDate(event.details?.date || "");
         setEndDate(event.details?.endDate || "");
         setStartTime(event.details?.startTime || "08:00");
-        setEndTime(event.details?.endTime || "18:00");
+        setEndTime(event.details?.endTime || "");
         setTimeSlots(event.details?.timeSlots || []);
         setTimeZone(event.details?.timeZone || "");
         break;

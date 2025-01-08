@@ -29,7 +29,7 @@ const EventPreview = ({
 
   const handleCardClick = () => {
     setIsModalOpen(true);
-    console.log("eventprev modal open", event);
+    // console.log("eventprev modal open", event);
   };
 
   const handleCloseModal = () => {

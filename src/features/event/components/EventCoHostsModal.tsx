@@ -24,7 +24,7 @@ const EventCoHostsModal = ({
   };
 
   const filteredUsers = allUsers.filter((user) => user._id !== currentUserId);
-  console.log("filteredUsers", coHosts);
+  // console.log("filteredUsers", coHosts);
   return (
     <div className="flex gap-2 items-center">
       <Label>Add Co-Hosts</Label>

@@ -44,7 +44,7 @@ const EventDateComponent = ({
   timeSlots: initialTimeSlots = [],
   handleUpdate,
   handleCancel,
-  handleReset,
+  // handleReset,
   isUpdating = false,
   editMode = false,
   toggleEditMode,
@@ -263,13 +263,13 @@ const EventDateComponent = ({
               >
                 Cancel
               </Button>
-              <Button
+              {/* <Button
                 onClick={() => handleReset && handleReset()}
                 variant="outline"
                 className="text-red-600"
               >
                 Reset
-              </Button>
+              </Button> */}
             </div>
           ) : (
             <Button onClick={toggleEditMode} variant="outline">

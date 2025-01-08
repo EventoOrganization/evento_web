@@ -184,7 +184,7 @@ const UsersList = ({
   };
   if (user?.username === "anonymous") return;
   const isSuccessPage = pathname.includes(`/create-event/${eventId}/success`);
-  console.log("user reason", user.reason);
+  // console.log("user reason", user.reason);
   return (
     <div className="flex justify-between w-full items-center">
       <Link href={`/profile/${user?._id}`} className="flex items-center gap-4">
