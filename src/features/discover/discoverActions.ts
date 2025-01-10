@@ -44,14 +44,13 @@ export const filterEvents = (
           }) ?? false
         );
       });
-    const matchesSearchText =
+    const matchesTextOrLocation =
+      event.user?.username?.toLowerCase().includes(searchLower) ||
       event.title?.toLowerCase().includes(searchLower) ||
-      event.details?.description?.toLowerCase().includes(searchLower);
-    const matchLocation =
-      searchText &&
-      event.details?.location?.toLowerCase().includes(searchLower);
+      event.details?.description?.toLowerCase().includes(searchLower) ||
+      (searchText &&
+        event.details?.location?.toLowerCase().includes(searchLower));
 
-    const matchesTextOrLocation = matchesSearchText || matchLocation;
     const eventStartDate = event.details?.date
       ? new Date(event.details.date)
       : null;

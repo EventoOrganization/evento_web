@@ -11,7 +11,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import UsersList from "@/components/UsersList";
 import { useSession } from "@/contexts/SessionProvider";
 import AuthModal from "@/features/auth/components/AuthModal";
 import { filterEvents } from "@/features/discover/discoverActions";
@@ -28,13 +27,14 @@ import { enUS } from "date-fns/locale";
 import {
   Calendar as CalendarIcon,
   Check,
-  ChevronDownIcon,
   FilterIcon,
   Search,
   XIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { filterUsers } from "./discoverActions";
+import DiscoverUserList from "./DiscoverUserList";
 
 interface Location {
   lat: number;
@@ -67,7 +67,6 @@ const DiscoverPageContent = () => {
   const [isUserFetching, setIsUserFetching] = useState(false);
   const [isHydrated, setIsHydrated] = useState(false);
   const [toggleSearch, setToggleSearch] = useState(false);
-  const [SeeMoreCount, setSeeMoreCount] = useState<number>(10);
   const [filteredEvents, setFilteredEvents] = useState<EventType[]>([]);
   const [isFetching, setIsFetching] = useState(false);
   useEffect(() => {
@@ -215,10 +214,6 @@ const DiscoverPageContent = () => {
     setEndDate(date || null);
     setShowReset(true);
   };
-  const handleSeeMore = () => {
-    setSeeMoreCount(SeeMoreCount + 10);
-    console.log("see more");
-  };
   return (
     <>
       {!isHydrated ? (
@@ -251,7 +246,7 @@ const DiscoverPageContent = () => {
                     />
                     <Input
                       type="text"
-                      placeholder="Search for events or organisers ..."
+                      placeholder="Search for events or users ..."
                       value={searchText}
                       onChange={(e) => setSearchText(e.target.value)}
                       className="pl-10 border-none py-2 rounded-lg  text-xs md:text-sm w-full"
@@ -264,11 +259,23 @@ const DiscoverPageContent = () => {
                     />
                   </Button>
                 </div>
-              </li>{" "}
+              </li>
               {isFetching && (
                 <div className="flex justify-center items-center h-96">
                   <EventoLoader />
                 </div>
+              )}
+              {searchText.length > 2 && filterUsers.length > 0 && (
+                <li className="px-4">
+                  <DiscoverUserList
+                    searchText={searchText.length > 2}
+                    friends={friends}
+                    isUserFetching={isUserFetching}
+                    usersYouMayKnow={usersYouMayKnow}
+                    usersWithSharedInterests={usersWithSharedInterests}
+                    generalSuggestions={generalSuggestions}
+                  />
+                </li>
               )}
               {filteredEvents.length > 0 ? (
                 filteredEvents.map((event, index) => (
@@ -317,7 +324,7 @@ const DiscoverPageContent = () => {
                 />
                 <Input
                   type="text"
-                  placeholder="Search for events or organisers ..."
+                  placeholder="Search for events or users ..."
                   value={searchText}
                   onChange={(e) => setSearchText(e.target.value)}
                   className="pl-10 border-none py-2 rounded-lg w-full text-xs md:text-sm"
@@ -440,94 +447,14 @@ const DiscoverPageContent = () => {
               <div className="p-4 hidden lg:block">
                 <div className="space-y-4 mb-20">
                   {session.isAuthenticated ? (
-                    isUserFetching ? (
-                      <div className="flex justify-center items-center h-96">
-                        <EventoLoader />
-                      </div>
-                    ) : (
-                      <>
-                        {/* 1. Friends*/}
-                        {searchText && friends.length > 0 && (
-                          <div>
-                            <Label className="text-sm">Your friends</Label>
-                            <ul className="space-y-2">
-                              {friends.map((user: UserType) => (
-                                <li
-                                  key={user._id}
-                                  className="flex justify-between"
-                                >
-                                  <UsersList user={user} />
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        )}
-                        {/* 1. Utilisateurs que l'on peut connaître */}
-                        {usersYouMayKnow.length > 0 && (
-                          <div>
-                            <Label className="text-sm">You may know them</Label>
-                            <ul className="space-y-2">
-                              {usersYouMayKnow.map((user: UserType) => (
-                                <li
-                                  key={user._id}
-                                  className="flex justify-between"
-                                >
-                                  <UsersList user={user} />
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        )}
-
-                        {/* 2. Utilisateurs avec des intérêts communs */}
-                        {usersWithSharedInterests.length > 0 && (
-                          <div>
-                            <Label className="text-sm">
-                              They share your interests
-                            </Label>
-                            <ul className="space-y-2">
-                              {usersWithSharedInterests.map(
-                                (user: UserType) => (
-                                  <li
-                                    key={user._id}
-                                    className="flex justify-between"
-                                  >
-                                    <UsersList user={user} />
-                                  </li>
-                                ),
-                              )}
-                            </ul>
-                          </div>
-                        )}
-
-                        {/* 3. Suggestions générales */}
-                        {generalSuggestions.length > 0 && (
-                          <div>
-                            <Label className="text-sm">Other users</Label>
-                            <ul className="space-y-2">
-                              {generalSuggestions
-                                .slice(0, SeeMoreCount)
-                                .map((user: UserType) => (
-                                  <li
-                                    key={user._id}
-                                    className="flex justify-between"
-                                  >
-                                    <UsersList user={user} />
-                                  </li>
-                                ))}
-                            </ul>
-                            {generalSuggestions.length > SeeMoreCount && (
-                              <p
-                                className="text-sm text-blue-400 underline cursor-pointer flex gap-2"
-                                onClick={handleSeeMore}
-                              >
-                                <ChevronDownIcon /> See more
-                              </p>
-                            )}
-                          </div>
-                        )}
-                      </>
-                    )
+                    <DiscoverUserList
+                      searchText={searchText.length > 2}
+                      friends={friends}
+                      isUserFetching={isUserFetching}
+                      usersYouMayKnow={usersYouMayKnow}
+                      usersWithSharedInterests={usersWithSharedInterests}
+                      generalSuggestions={generalSuggestions}
+                    />
                   ) : (
                     <>
                       <Label className="text-sm">Follow Suggestions</Label>
