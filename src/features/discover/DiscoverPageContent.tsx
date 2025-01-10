@@ -171,15 +171,27 @@ const DiscoverPageContent = () => {
                   onChange={setSelectedTab}
                   tabs={["All events", "Near me", "Virtual"]}
                 />
-                <Button
-                  className="absolute bottom-[-50px] md:hidden self-end p-2 bg-muted"
-                  variant={"outline"}
-                >
-                  <FilterIcon
-                    className="w-5 h-5"
-                    onClick={() => setToggleSearch(!toggleSearch)}
-                  />
-                </Button>
+                <div className="flex justify-between w-full items-center md:hidden gap-2">
+                  <div className="relative flex items-center w-full">
+                    <Search
+                      className="w-4 h-4 absolute left-3 md:left-6 text-muted-foreground "
+                      strokeWidth={2}
+                    />
+                    <Input
+                      type="text"
+                      placeholder="Search for events or organisers ..."
+                      value={searchText}
+                      onChange={(e) => setSearchText(e.target.value)}
+                      className="pl-10 border-none py-2 rounded-lg  text-xs md:text-sm w-full"
+                    />
+                  </div>
+                  <Button className=" p-2 bg-muted" variant={"outline"}>
+                    <FilterIcon
+                      className="w-5 h-5"
+                      onClick={() => setToggleSearch(!toggleSearch)}
+                    />
+                  </Button>
+                </div>
               </li>{" "}
               {isFetching && (
                 <div className="flex justify-center items-center h-96">
