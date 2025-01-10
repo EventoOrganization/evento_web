@@ -103,6 +103,7 @@ const EventGuestModal: React.FC<EventGuestModalProps> = ({
 
       if (response.ok) {
         const updatedEvent = response.data?.event as EventType | undefined;
+        console.log("updatedEvent", updatedEvent);
         if (setEvent && updatedEvent && event) {
           setEvent({
             ...event,
@@ -110,7 +111,6 @@ const EventGuestModal: React.FC<EventGuestModalProps> = ({
             tempGuests: updatedEvent.tempGuests,
           });
         }
-
         toast({
           description: "Guests and preference updated successfully!",
           className: "bg-evento-gradient text-white",

@@ -9,6 +9,7 @@ const EventAddTempGuest = ({ onAddTempGuest }: { onAddTempGuest: any }) => {
   const handleAddGuest = (e: React.FormEvent) => {
     e.preventDefault();
     const newGuest = { email, username };
+    console.log("newGuest", newGuest);
     onAddTempGuest(newGuest);
     setEmail("");
     setUsername("");

@@ -163,7 +163,8 @@ const EventSuccessPage = () => {
     const newTempGuests = currentSelectedUsers.filter(
       (user): user is TempUserType => !user._id,
     );
-
+    console.log("newGuests", newGuests);
+    console.log("newTempGuests", newTempGuests);
     const updateData = {
       guests: newGuests.map((user) => ({
         _id: user._id,
@@ -432,8 +433,13 @@ const EventSuccessPage = () => {
               event={event}
               setEvent={setEvent}
             />
-            <Button className="bg-evento-gradient-button w-full">
-              <Link href={`/event/${event._id}`}>See your event</Link>
+            <Button className="bg-evento-gradient-button w-full p-0">
+              <Link
+                href={`/event/${event._id}`}
+                className=" w-full h-full flex justify-center items-center"
+              >
+                See your event
+              </Link>
             </Button>
           </div>
         </Section>

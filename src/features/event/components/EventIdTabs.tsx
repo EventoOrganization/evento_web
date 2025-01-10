@@ -147,6 +147,7 @@ const EventIdTabs = ({ evento }: { evento?: EventType }) => {
         );
         if (response.ok) {
           setEvent(response.data as EventType);
+          console.log("event", response.data);
         } else {
           toast({ description: "Event not found", variant: "destructive" });
         }
@@ -160,7 +161,9 @@ const EventIdTabs = ({ evento }: { evento?: EventType }) => {
   // Calculer les droits d'accès
   useEffect(() => {
     const emailParam = params.get("email");
+    console.log("emailParam", emailParam);
     setIsLoading(true);
+
     if (event) {
       const isPublic = event.eventType === "public";
       const isPrivate = event.eventType === "private";
@@ -169,31 +172,50 @@ const EventIdTabs = ({ evento }: { evento?: EventType }) => {
       const isGuest = user
         ? event.guests?.some((guest) => guest._id === user._id) || false
         : false;
+      const isUnconnectedGuest =
+        event.guests?.some((guest) => guest.email === emailParam) || false;
+      const isAttendee =
+        event.attendees?.some((attendee) => attendee._id === user?._id) ||
+        false;
       const isCoHost = user
-        ? event.coHosts?.some((coHost) => coHost.userId?._id === user._id)
+        ? (event.coHosts?.some((coHost) => coHost.userId?._id === user._id) ??
+          false)
         : false;
+      const isUnconnectedCoHost =
+        event.coHosts?.some((coHost) => coHost.email === emailParam) || false;
       const isTempGuest =
         event.tempGuests?.some((guest) => guest.email === emailParam) || false;
 
-      // La logique d'accès doit refléter les états décrits
+      // Log des états d'accès
+      const accessStates = {
+        isPublic,
+        isPrivate,
+        isRestricted,
+        isAdmin,
+        isCoHost,
+        isGuest,
+        isTempGuest,
+        isAttendee,
+        isUnconnectedGuest,
+        isUnconnectedCoHost,
+        hasAccess: null, // Calculé après
+      };
+      console.log("Access states:", accessStates);
+
+      // Calculer l'accès
       const hasAccess =
         isPublic ||
         isAdmin ||
         isGuest ||
         isCoHost ||
         isTempGuest ||
+        isAttendee ||
+        isUnconnectedGuest ||
+        isUnconnectedCoHost ||
         (!isRestricted && isPrivate);
 
-      setAccessControl({
-        isPublic,
-        isPrivate,
-        isRestricted,
-        isAdmin,
-        isCoHost: isCoHost ?? false,
-        isGuest,
-        isTempGuest,
-        hasAccess,
-      });
+      const updatedAccessStates = { ...accessStates, hasAccess };
+      setAccessControl(updatedAccessStates);
     } else {
       setAccessControl((prev) => ({
         ...prev,

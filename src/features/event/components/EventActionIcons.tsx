@@ -75,6 +75,17 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
       setIsAuthModalOpen(true);
       return;
     }
+
+    if (!event || !event._id) {
+      console.error("Event is null or does not have an _id");
+      return;
+    }
+
+    if (!user || !user._id) {
+      console.error("User is null or does not have an _id");
+      return;
+    }
+
     console.log("token", token);
     const isCurrentlySet = event[status];
 
@@ -82,7 +93,7 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
       setLoading(status);
       const body = {
         eventId: event._id,
-        userId: user?._id,
+        userId: user._id,
         status: isCurrentlySet ? null : status,
         rsvpAnswers,
         reason,
@@ -110,6 +121,7 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
         className: "bg-evento-gradient text-white",
         duration: 1000,
       });
+
       if (isLocal && updateEventStatusLocally) {
         updateEventStatusLocally(status, !isCurrentlySet);
         updateEventStatusInStore(
@@ -278,88 +290,98 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
           </>
         ) : (
           <>
-            <Select
-              onValueChange={(value) => {
-                if (value === "going") handleGoing([]);
-                if (value === "favourite") handleFavourite();
-                if (value === "refuse") setIsRefusalModalOpen(true);
-              }}
-            >
-              <SelectTrigger
-                className={cn(
-                  "border flex p-2 rounded justify-center items-center w-full",
-                  {
-                    "bg-evento-gradient-button text-white": event.isGoing,
-                    "bg-eventoPurpleDark text-white":
-                      event.isFavourite || event.isRefused,
-                  },
-                )}
-                onClick={(e) => {
-                  e.stopPropagation();
+            {!token ? (
+              <Button
+                variant={"outline"}
+                className="border flex p-2 rounded justify-center items-center w-full"
+                onClick={() => setIsAuthModalOpen(true)}
+              >
+                Respond
+              </Button>
+            ) : (
+              <Select
+                onValueChange={(value) => {
+                  if (value === "going") handleGoing([]);
+                  if (value === "favourite") handleFavourite();
+                  if (value === "refuse") setIsRefusalModalOpen(true);
                 }}
               >
-                <SelectValue
-                  className={cn()}
-                  placeholder={
-                    event.isGoing ? (
-                      <div className="flex ">
-                        <CalendarCheck2 className="w-5 h-5 text-white mr-2" />{" "}
-                        Going
-                      </div>
-                    ) : event.isFavourite ? (
-                      <div className="flex ">
-                        <CalendarHeart className="w-5 h-5 text-white mr-2" />
-                        Maybe
-                      </div>
-                    ) : event.isRefused ? (
-                      <div className="flex ">
-                        <CalendarX2 className="w-5 h-5 text-white mr-2" />
-                        Declined
-                      </div>
-                    ) : (
-                      "Respond"
-                    )
-                  }
-                />
-              </SelectTrigger>
-              <SelectContent className="z-50 text-black">
-                <SelectItem value="going">
-                  <div className="flex">
-                    {loading === "isGoing" ? (
-                      <Spinner className="animate-spin w-5 h-5" />
-                    ) : (
-                      <>
-                        <CalendarCheck2 className="w-5 h-5  mr-2" /> Going{" "}
-                      </>
-                    )}
-                  </div>
-                </SelectItem>
-                <SelectItem value="favourite">
-                  <div className="flex ">
-                    {loading === "isFavourite" ? (
-                      <Spinner className="animate-spin w-5 h-5" />
-                    ) : (
-                      <>
-                        <CalendarHeart className="w-5 h-5  mr-2" />
-                        Maybe
-                      </>
-                    )}
-                  </div>
-                </SelectItem>
-                <SelectItem value="refuse">
-                  <div className="flex ">
-                    {loading === "isRefused" ? (
-                      <Spinner className="animate-spin w-5 h-5" />
-                    ) : (
-                      <>
-                        <CalendarX2 className="w-5 h-5  mr-2" />
-                        Declined
-                      </>
-                    )}
-                  </div>
-                </SelectItem>
-              </SelectContent>
-            </Select>
+                <SelectTrigger
+                  className={cn(
+                    "border flex p-2 rounded justify-center items-center w-full",
+                    {
+                      "bg-evento-gradient-button text-white": event.isGoing,
+                      "bg-eventoPurpleDark text-white":
+                        event.isFavourite || event.isRefused,
+                    },
+                  )}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                >
+                  <SelectValue
+                    className={cn()}
+                    placeholder={
+                      event.isGoing ? (
+                        <div className="flex ">
+                          <CalendarCheck2 className="w-5 h-5 text-white mr-2" />{" "}
+                          Going
+                        </div>
+                      ) : event.isFavourite ? (
+                        <div className="flex ">
+                          <CalendarHeart className="w-5 h-5 text-white mr-2" />
+                          Maybe
+                        </div>
+                      ) : event.isRefused ? (
+                        <div className="flex ">
+                          <CalendarX2 className="w-5 h-5 text-white mr-2" />
+                          Declined
+                        </div>
+                      ) : (
+                        "Respond"
+                      )
+                    }
+                  />
+                </SelectTrigger>
+                <SelectContent className="z-50 text-black">
+                  <SelectItem value="going">
+                    <div className="flex">
+                      {loading === "isGoing" ? (
+                        <Spinner className="animate-spin w-5 h-5" />
+                      ) : (
+                        <>
+                          <CalendarCheck2 className="w-5 h-5  mr-2" /> Going{" "}
+                        </>
+                      )}
+                    </div>
+                  </SelectItem>
+                  <SelectItem value="favourite">
+                    <div className="flex ">
+                      {loading === "isFavourite" ? (
+                        <Spinner className="animate-spin w-5 h-5" />
+                      ) : (
+                        <>
+                          <CalendarHeart className="w-5 h-5  mr-2" />
+                          Maybe
+                        </>
+                      )}
+                    </div>
+                  </SelectItem>
+                  <SelectItem value="refuse">
+                    <div className="flex ">
+                      {loading === "isRefused" ? (
+                        <Spinner className="animate-spin w-5 h-5" />
+                      ) : (
+                        <>
+                          <CalendarX2 className="w-5 h-5  mr-2" />
+                          Declined
+                        </>
+                      )}
+                    </div>
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            )}
           </>
         )}
         <ShareEventModal eventId={event._id} />
