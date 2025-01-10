@@ -32,18 +32,24 @@ export const filterEvents = (
   location: Location | null,
   startDate: Date | null,
   endDate: Date | null,
-) => {
+): EventType[] => {
+  const todayMidnight = new Date().setHours(0, 0, 0, 0);
+  const tomorrowMidnight = todayMidnight + 24 * 60 * 60 * 1000; // +1 jour
+  const nextWeekMidnight = todayMidnight + 7 * 24 * 60 * 60 * 1000; // +7 jours
   const searchLower = searchText.toLowerCase();
-  return events.filter((event) => {
+
+  // Filtrage des événements
+  const filteredEvents = events.filter((event) => {
+    // Vérifie les intérêts
     const matchesInterest =
       selectedInterests.length === 0 ||
-      selectedInterests.some((selectedInterest) => {
-        return (
-          event.interests?.some((interest) => {
-            return interest._id === selectedInterest._id;
-          }) ?? false
-        );
-      });
+      selectedInterests.some((selectedInterest) =>
+        event.interests?.some(
+          (interest) => interest._id === selectedInterest._id,
+        ),
+      );
+
+    // Vérifie si le texte de recherche correspond (titre, description, lieu, utilisateur, etc.)
     const matchesTextOrLocation =
       event.user?.username?.toLowerCase().includes(searchLower) ||
       event.coHosts?.some((coHost) =>
@@ -57,35 +63,25 @@ export const filterEvents = (
       (searchText &&
         event.details?.location?.toLowerCase().includes(searchLower));
 
+    // Dates de l'événement
     const eventStartDate = event.details?.date
-      ? new Date(event.details.date)
+      ? new Date(event.details.date).getTime()
       : null;
     const eventEndDate = event.details?.endDate
-      ? new Date(event.details.endDate)
-      : null;
+      ? new Date(event.details.endDate).getTime()
+      : eventStartDate;
 
-    const startDay = startDate
-      ? new Date(startDate).setHours(0, 0, 0, 0)
-      : null;
-    const endDay = endDate ? new Date(endDate).setHours(0, 0, 0, 0) : startDay;
-
-    const eventStartDay = eventStartDate
-      ? eventStartDate.setHours(0, 0, 0, 0)
-      : null;
-    const eventEndDay = eventEndDate
-      ? eventEndDate.setHours(0, 0, 0, 0)
-      : eventStartDay;
+    // Vérifie les dates
+    const startDay = startDate ? startDate.setHours(0, 0, 0, 0) : null;
+    const endDay = endDate ? endDate.setHours(0, 0, 0, 0) : startDay;
 
     const matchesDate =
       !startDay ||
-      !eventStartDay ||
-      !eventEndDay ||
-      (typeof eventStartDay === "number" &&
-        typeof eventEndDay === "number" &&
-        typeof startDay === "number" &&
-        typeof endDay === "number" &&
-        eventStartDay <= endDay &&
-        eventEndDay >= startDay);
+      !eventStartDate ||
+      !eventEndDate ||
+      (endDay !== null && eventStartDate <= endDay && eventEndDate >= startDay);
+
+    // Vérifie le type d'événement (proche, virtuel)
     const isNearMe =
       selectedTab === "Near me" &&
       location &&
@@ -107,7 +103,53 @@ export const filterEvents = (
       matchesInterest && matchesTextOrLocation && matchesDate && matchesTab
     );
   });
+
+  // Tri des événements
+  const sortedEvents = filteredEvents.sort((a, b) => {
+    const aStartDate = a.details?.date
+      ? new Date(a.details.date).getTime()
+      : Infinity;
+    const aEndDate = a.details?.endDate
+      ? new Date(a.details.endDate).getTime()
+      : aStartDate;
+
+    const bStartDate = b.details?.date
+      ? new Date(b.details.date).getTime()
+      : Infinity;
+    const bEndDate = b.details?.endDate
+      ? new Date(b.details.endDate).getTime()
+      : bStartDate;
+
+    const aMidpoint = (aStartDate + aEndDate) / 2;
+    const bMidpoint = (bStartDate + bEndDate) / 2;
+
+    // Classement par priorité
+    if (aStartDate <= todayMidnight && aEndDate >= todayMidnight) {
+      return -1; // Événements aujourd'hui
+    }
+    if (bStartDate <= todayMidnight && bEndDate >= todayMidnight) {
+      return 1;
+    }
+    if (aStartDate <= tomorrowMidnight && aEndDate >= tomorrowMidnight) {
+      return -1; // Événements demain
+    }
+    if (bStartDate <= tomorrowMidnight && bEndDate >= tomorrowMidnight) {
+      return 1;
+    }
+    if (aStartDate <= nextWeekMidnight && aEndDate >= nextWeekMidnight) {
+      return -1; // Événements cette semaine
+    }
+    if (bStartDate <= nextWeekMidnight && bEndDate >= nextWeekMidnight) {
+      return 1;
+    }
+
+    // Sinon, trier par la moyenne des dates
+    return aMidpoint - bMidpoint;
+  });
+
+  return sortedEvents;
 };
+
 export const filterUsers = (
   users: UserType[],
   selectedInterests: InterestType[],
