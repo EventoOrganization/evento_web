@@ -73,7 +73,7 @@ const ChatbotComponent = ({ className }: { className?: string }) => {
   return (
     <div
       className={cn(
-        "z-20  fixed bottom-0 right-0 w-fit md:bottom-6 md:right-6",
+        "z-30  fixed bottom-0 right-0 w-fit md:bottom-6 md:right-6",
         className,
         { "w-full md:w-fit": isOpen, hidden: !token },
       )}
