@@ -46,6 +46,12 @@ export const filterEvents = (
       });
     const matchesTextOrLocation =
       event.user?.username?.toLowerCase().includes(searchLower) ||
+      event.coHosts?.some((coHost) =>
+        coHost?.username?.toLowerCase().includes(searchLower),
+      ) ||
+      event.attendees?.some((attendee) =>
+        attendee?.username?.toLowerCase().includes(searchLower),
+      ) ||
       event.title?.toLowerCase().includes(searchLower) ||
       event.details?.description?.toLowerCase().includes(searchLower) ||
       (searchText &&
