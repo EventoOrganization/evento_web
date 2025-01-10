@@ -1,4 +1,5 @@
 import { EventType, InterestType } from "@/types/EventType";
+import { UserType } from "@/types/UserType";
 interface Location {
   lat: number;
   lng: number;
@@ -100,5 +101,34 @@ export const filterEvents = (
     return (
       matchesInterest && matchesTextOrLocation && matchesDate && matchesTab
     );
+  });
+};
+export const filterUsers = (
+  users: UserType[],
+  selectedInterests: InterestType[],
+  searchText: string,
+): UserType[] => {
+  const searchLower = searchText.toLowerCase();
+
+  return users.filter((user) => {
+    // Vérifie si l'utilisateur correspond aux intérêts sélectionnés
+    const matchesInterests =
+      selectedInterests.length === 0 ||
+      (user.interests &&
+        user.interests.some((interestId) =>
+          selectedInterests.some(
+            (selectedInterest) => selectedInterest._id === interestId,
+          ),
+        ));
+
+    // Vérifie si l'utilisateur correspond au texte de recherche
+    const matchesSearchText =
+      user.username.toLowerCase().includes(searchLower) ||
+      user.firstName?.toLowerCase().includes(searchLower) ||
+      user.lastName?.toLowerCase().includes(searchLower) ||
+      user.email.toLowerCase().includes(searchLower);
+
+    // Inclut l'utilisateur uniquement s'il correspond à l'un des critères
+    return matchesInterests || matchesSearchText;
   });
 };

@@ -57,6 +57,14 @@ const DiscoverPageContent = () => {
   const [selectedTab, setSelectedTab] = useState("All events");
   const [location, setLocation] = useState<Location | null>(null);
   const session = useSession();
+  const [usersYouMayKnow, setUsersYouMayKnow] = useState<UserType[]>([]);
+  const [usersWithSharedInterests, setUsersWithSharedInterests] = useState<
+    UserType[]
+  >([]);
+  const [generalSuggestions, setGeneralSuggestions] = useState<UserType[]>([]);
+  const [friends, setFriends] = useState<UserType[]>([]);
+  const [filteredUsers, setFilteredUsers] = useState<UserType[]>([]);
+  const [isUserFetching, setIsUserFetching] = useState(false);
   const [isHydrated, setIsHydrated] = useState(false);
   const [toggleSearch, setToggleSearch] = useState(false);
   const [SeeMoreCount, setSeeMoreCount] = useState<number>(10);
@@ -107,14 +115,78 @@ const DiscoverPageContent = () => {
     endDate,
     isHydrated,
   ]);
+  useEffect(() => {
+    if (filteredUsers && filteredUsers.length > 0) {
+      // 1. Filtrer les utilisateurs que l'on "peut connaître"
+      const mayKnow = filteredUsers.filter(
+        (user) => !user.isIFollowingHim && user.isFollowingMe,
+      );
 
-  // const handleInterestToggle = (interest: InterestType) => {
-  //   setSelectedInterests((prev) =>
-  //     prev.some((i) => i._id === interest._id)
-  //       ? prev.filter((i) => i._id !== interest._id)
-  //       : [...prev, interest],
-  //   );
-  // };
+      // 2. Filtrer les utilisateurs avec des intérêts communs
+      const sharedInterests = filteredUsers.filter(
+        (user) =>
+          typeof user.matchingInterests === "number" &&
+          user.matchingInterests > 0 &&
+          !user.isIFollowingHim,
+      );
+
+      // 3. Filtrer les suggestions générales
+      const suggestions = filteredUsers.filter(
+        (user) =>
+          !user.isIFollowingHim &&
+          !user.isFollowingMe &&
+          (!user.matchingInterests || user.matchingInterests === 0),
+      );
+      const friends = filteredUsers.filter(
+        (user) => user.isIFollowingHim && user.isFollowingMe,
+      );
+      setFriends(friends);
+      setUsersYouMayKnow(mayKnow);
+      setUsersWithSharedInterests(sharedInterests);
+      setGeneralSuggestions(suggestions);
+    } else {
+      // Réinitialiser si aucun utilisateur filtré
+      setFriends([]);
+      setUsersYouMayKnow([]);
+      setUsersWithSharedInterests([]);
+      setGeneralSuggestions([]);
+    }
+  }, [filteredUsers]);
+
+  useEffect(() => {
+    const fetchFilteredUsers = async () => {
+      if (users && users.length > 0) {
+        setIsUserFetching(true); // Active le loader pour les utilisateurs
+
+        const filtered = users.filter((user) => {
+          // Vérifie si l'utilisateur correspond aux critères
+          const matchesInterests =
+            selectedInterests.length === 0 ||
+            (user.interests &&
+              user.interests.some((interestId) =>
+                selectedInterests.some(
+                  (selectedInterest) => selectedInterest._id === interestId,
+                ),
+              ));
+
+          const matchesSearchText = searchText
+            ? user.username.toLowerCase().includes(searchText.toLowerCase()) ||
+              user.firstName
+                ?.toLowerCase()
+                .includes(searchText.toLowerCase()) ||
+              user.lastName?.toLowerCase().includes(searchText.toLowerCase())
+            : true;
+
+          return matchesInterests && matchesSearchText;
+        });
+
+        setFilteredUsers(filtered);
+        setIsUserFetching(false); // Désactive le loader
+      }
+    };
+
+    fetchFilteredUsers();
+  }, [users, selectedInterests, searchText]);
 
   const handleEventClick = (event: EventType) => {
     const storedEvent = events.find((ev) => ev._id === event._id);
@@ -366,21 +438,20 @@ const DiscoverPageContent = () => {
                 </ul>
               </div>{" "}
               <div className="p-4 hidden lg:block">
-                <div className="space-y-4  mb-20">
+                <div className="space-y-4 mb-20">
                   {session.isAuthenticated ? (
-                    <>
-                      {users.filter(
-                        (user) => !user.isIFollowingHim && user.isFollowingMe,
-                      ).length > 0 && (
-                        <>
-                          <ul className="space-y-2">
-                            <Label className="text-sm">You may know them</Label>
-                            {users
-                              .filter(
-                                (user) =>
-                                  !user.isIFollowingHim && user.isFollowingMe,
-                              )
-                              .map((user: UserType) => (
+                    isUserFetching ? (
+                      <div className="flex justify-center items-center h-96">
+                        <EventoLoader />
+                      </div>
+                    ) : (
+                      <>
+                        {/* 1. Friends*/}
+                        {searchText && friends.length > 0 && (
+                          <div>
+                            <Label className="text-sm">Your friends</Label>
+                            <ul className="space-y-2">
+                              {friends.map((user: UserType) => (
                                 <li
                                   key={user._id}
                                   className="flex justify-between"
@@ -388,78 +459,75 @@ const DiscoverPageContent = () => {
                                   <UsersList user={user} />
                                 </li>
                               ))}
-                          </ul>
-                        </>
-                      )}
+                            </ul>
+                          </div>
+                        )}
+                        {/* 1. Utilisateurs que l'on peut connaître */}
+                        {usersYouMayKnow.length > 0 && (
+                          <div>
+                            <Label className="text-sm">You may know them</Label>
+                            <ul className="space-y-2">
+                              {usersYouMayKnow.map((user: UserType) => (
+                                <li
+                                  key={user._id}
+                                  className="flex justify-between"
+                                >
+                                  <UsersList user={user} />
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
 
-                      {/* 2. Utilisateurs avec des intérêts communs */}
-                      {users.filter(
-                        (user) =>
-                          typeof user.matchingInterests === "number" &&
-                          user.matchingInterests > 0,
-                      ).length > 0 && (
-                        <>
-                          <ul className="space-y-2">
+                        {/* 2. Utilisateurs avec des intérêts communs */}
+                        {usersWithSharedInterests.length > 0 && (
+                          <div>
                             <Label className="text-sm">
                               They share your interests
                             </Label>
-                            {users
-                              .filter(
-                                (user) =>
-                                  user.matchingInterests &&
-                                  user.matchingInterests > 0 &&
-                                  !user.isIFollowingHim,
-                              )
-                              .map((user: UserType) => (
-                                <li
-                                  key={user._id}
-                                  className="flex justify-between"
-                                >
-                                  <UsersList user={user} />
-                                </li>
-                              ))}
-                          </ul>
-                        </>
-                      )}
+                            <ul className="space-y-2">
+                              {usersWithSharedInterests.map(
+                                (user: UserType) => (
+                                  <li
+                                    key={user._id}
+                                    className="flex justify-between"
+                                  >
+                                    <UsersList user={user} />
+                                  </li>
+                                ),
+                              )}
+                            </ul>
+                          </div>
+                        )}
 
-                      {/* 3. Suggestions générales si aucune autre suggestion n'est disponible */}
-                      {users.filter(
-                        (user) =>
-                          !user.isIFollowingHim &&
-                          !user.isFollowingMe &&
-                          (!user.matchingInterests ||
-                            user.matchingInterests === 0),
-                      ).length > 0 && (
-                        <>
-                          <ul className="space-y-2">
+                        {/* 3. Suggestions générales */}
+                        {generalSuggestions.length > 0 && (
+                          <div>
                             <Label className="text-sm">Other users</Label>
-                            {users
-                              .filter(
-                                (user) =>
-                                  !user.isIFollowingHim &&
-                                  !user.isFollowingMe &&
-                                  (!user.matchingInterests ||
-                                    user.matchingInterests === 0),
-                              )
-                              .slice(0, SeeMoreCount)
-                              .map((user: UserType) => (
-                                <li
-                                  key={user._id}
-                                  className="flex justify-between"
-                                >
-                                  <UsersList user={user} />
-                                </li>
-                              ))}
-                          </ul>
-                          <p
-                            className="text-sm text-blue-400 underline cursor-pointer flex gap-2"
-                            onClick={() => handleSeeMore()}
-                          >
-                            <ChevronDownIcon /> See more
-                          </p>
-                        </>
-                      )}
-                    </>
+                            <ul className="space-y-2">
+                              {generalSuggestions
+                                .slice(0, SeeMoreCount)
+                                .map((user: UserType) => (
+                                  <li
+                                    key={user._id}
+                                    className="flex justify-between"
+                                  >
+                                    <UsersList user={user} />
+                                  </li>
+                                ))}
+                            </ul>
+                            {generalSuggestions.length > SeeMoreCount && (
+                              <p
+                                className="text-sm text-blue-400 underline cursor-pointer flex gap-2"
+                                onClick={handleSeeMore}
+                              >
+                                <ChevronDownIcon /> See more
+                              </p>
+                            )}
+                          </div>
+                        )}
+                      </>
+                    )
                   ) : (
                     <>
                       <Label className="text-sm">Follow Suggestions</Label>
