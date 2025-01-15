@@ -8,11 +8,21 @@ import "react-responsive-carousel/lib/styles/carousel.min.css";
 
 const RenderMedia = ({ event }: { event: EventType }) => {
   const [processedMedia, setProcessedMedia] = useState<
-    { url: string; type: string }[]
+    { url: string; type: string; isValid: boolean }[]
   >([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSwiping, setIsSwiping] = useState(false);
   const touchStartX = useRef(0);
+
+  const validateUrl = async (url: string): Promise<boolean> => {
+    try {
+      const response = await fetch(url, { method: "HEAD" });
+      return response.ok;
+    } catch (error) {
+      console.error("Error validating URL:", error);
+      return false;
+    }
+  };
 
   const convertHeicToJpeg = async (url: string) => {
     try {
@@ -39,14 +49,20 @@ const RenderMedia = ({ event }: { event: EventType }) => {
       const initialMedias = event?.initialMedia || [];
       const processed = await Promise.all(
         initialMedias.map(async (item) => {
+          const isValid = await validateUrl(item.url);
+          if (!isValid) {
+            console.warn(`Invalid media URL: ${item.url}`);
+            return { ...item, isValid: false };
+          }
+
           if (
             item.type === "image" &&
             item.url.toLowerCase().endsWith(".heic")
           ) {
             const convertedUrl = await convertHeicToJpeg(item.url);
-            return { url: convertedUrl, type: "image" };
+            return { url: convertedUrl, type: "image", isValid: true };
           }
-          return item;
+          return { ...item, isValid: true };
         }),
       );
       setProcessedMedia(processed);
@@ -100,31 +116,40 @@ const RenderMedia = ({ event }: { event: EventType }) => {
         className="relative"
       >
         {processedMedia.map((item, index) =>
-          item.type === "video" ? (
-            <video
-              key={index}
-              controls
-              autoPlay
-              className="w-full h-auto max-h-screen rounded"
-            >
-              <source src={item.url} type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
+          item.isValid ? (
+            item.type === "video" ? (
+              <video
+                key={index}
+                controls
+                autoPlay
+                className="w-full h-auto max-h-screen rounded"
+              >
+                <source src={item.url} type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            ) : (
+              <Image
+                src={item.url}
+                alt={`Preview media ${index + 1}`}
+                key={index}
+                width={800}
+                height={0}
+                priority
+                className="w-full object-cover max-h-screen md:rounded"
+                onClick={(e) => {
+                  if (!isSwiping) {
+                    e.stopPropagation();
+                  }
+                }}
+              />
+            )
           ) : (
-            <Image
-              src={item.url}
-              alt={`Preview media ${index + 1}`}
+            <div
               key={index}
-              width={800}
-              height={0}
-              priority
-              className="w-full object-cover max-h-screen md:rounded"
-              onClick={(e) => {
-                if (!isSwiping) {
-                  e.stopPropagation();
-                }
-              }}
-            />
+              className="w-full h-auto max-h-screen flex items-center justify-center bg-gray-200"
+            >
+              <p className="text-gray-500">Media unavailable</p>
+            </div>
           ),
         )}
       </Carousel>
