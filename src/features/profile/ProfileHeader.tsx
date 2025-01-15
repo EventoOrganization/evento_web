@@ -1,4 +1,3 @@
-import InstagramIcon from "@/components/icons/InstagramIcon";
 import LinkedinIcon from "@/components/icons/LinkedinIcon";
 import TiktokIcon from "@/components/icons/TiktokIcon";
 import Section from "@/components/layout/Section";
@@ -25,7 +24,14 @@ enum ModalType {
 const platformIcons: Record<string, JSX.Element> = {
   linkedin: <LinkedinIcon />,
   tiktok: <TiktokIcon />,
-  instagram: <InstagramIcon />,
+  instagram: (
+    <Image
+      src={"/Instagram_logo_2022.png"}
+      alt="Instagram_logo_2022"
+      width={40}
+      height={40}
+    />
+  ),
 };
 const ProfileHeader = ({ profile }: Props) => {
   const pathname = usePathname();

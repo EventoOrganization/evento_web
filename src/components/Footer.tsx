@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 const Footer = () => {
   return (
-    <footer className=" w-full flex flex-col justify-center items-center min-h-40 py-10 gap-10">
+    <footer className=" w-full flex flex-col justify-center items-center min-h-40 pt-10 pb-20 gap-10">
       <Image
         src="/evento-logo.png"
         alt="logo"
