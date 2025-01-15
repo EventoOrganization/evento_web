@@ -105,7 +105,7 @@ const RenderMedia = ({ event }: { event: EventType }) => {
               key={index}
               controls
               autoPlay
-              className="w-full h-full rounded"
+              className="w-full h-auto max-h-screen rounded"
             >
               <source src={item.url} type="video/mp4" />
               Your browser does not support the video tag.
@@ -118,7 +118,7 @@ const RenderMedia = ({ event }: { event: EventType }) => {
               width={800}
               height={0}
               priority
-              className="w-full object-cover md:rounded"
+              className="w-full object-cover max-h-screen md:rounded"
               onClick={(e) => {
                 if (!isSwiping) {
                   e.stopPropagation();
