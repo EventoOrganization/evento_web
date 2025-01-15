@@ -30,6 +30,7 @@ const platformIcons: Record<string, JSX.Element> = {
       alt="Instagram_logo_2022"
       width={40}
       height={40}
+      className="w-full h-full"
     />
   ),
 };
@@ -149,9 +150,12 @@ const ProfileHeader = ({ profile }: Props) => {
           {socialLinks && socialLinks?.length > 0 ? (
             <div className="flex flex-col items-start w-full">
               {socialLinks?.length > 0 && (
-                <ul className="flex ">
+                <ul className="flex gap-2">
                   {socialLinks.map((link, index) => (
-                    <li key={index} className="">
+                    <li
+                      key={index}
+                      className="flex items-center justify-center w-10 h-10"
+                    >
                       <Link
                         className=""
                         href={link.url}
