@@ -6,7 +6,6 @@ import EventoLoader from "@/components/EventoLoader";
 import RenderMedia from "@/components/RenderMedia";
 import TruncatedText from "@/components/TruncatedText";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import DiscoverRenderMedia from "@/features/discover/DiscoverRenderMedia";
 import { cn } from "@/lib/utils";
 import { renderDate } from "@/utils/dateUtils";
 import Image from "next/image";
@@ -90,11 +89,7 @@ const Event = ({
             </Link>
           </div>
           <div>
-            {pathname === "/discover" ? (
-              <DiscoverRenderMedia event={event} />
-            ) : (
-              <RenderMedia event={event} index={index} />
-            )}
+            <RenderMedia event={event} />
           </div>
         </div>
         <div>
