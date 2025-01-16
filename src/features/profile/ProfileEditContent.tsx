@@ -241,9 +241,6 @@ const ProfileEditContent = () => {
       console.error("Error updating profile:", error);
     }
   };
-  useEffect(() => {
-    console.log("FormData updated:", formData);
-  }, [formData]);
 
   useEffect(() => {
     if (isLoaded && window.google && inputRef.current && !autocomplete) {
