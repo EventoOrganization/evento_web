@@ -14,16 +14,6 @@ const RenderMedia = ({ event }: { event: EventType }) => {
   const [isSwiping, setIsSwiping] = useState(false);
   const touchStartX = useRef(0);
 
-  const validateUrl = async (url: string): Promise<boolean> => {
-    try {
-      const response = await fetch(url, { method: "HEAD" });
-      return response.ok;
-    } catch (error) {
-      console.error("Error validating URL:", error);
-      return false;
-    }
-  };
-
   const convertHeicToJpeg = async (url: string) => {
     try {
       const response = await fetch(url);
@@ -49,12 +39,6 @@ const RenderMedia = ({ event }: { event: EventType }) => {
       const initialMedias = event?.initialMedia || [];
       const processed = await Promise.all(
         initialMedias.map(async (item) => {
-          const isValid = await validateUrl(item.url);
-          if (!isValid) {
-            console.warn(`Invalid media URL: ${item.url}`);
-            return { ...item, isValid: false };
-          }
-
           if (
             item.type === "image" &&
             item.url.toLowerCase().endsWith(".heic")
@@ -62,7 +46,7 @@ const RenderMedia = ({ event }: { event: EventType }) => {
             const convertedUrl = await convertHeicToJpeg(item.url);
             return { url: convertedUrl, type: "image", isValid: true };
           }
-          return { ...item, isValid: true };
+          return { ...item, isValid: true }; // Toujours valide par défaut
         }),
       );
       setProcessedMedia(processed);
@@ -116,40 +100,31 @@ const RenderMedia = ({ event }: { event: EventType }) => {
         className="relative"
       >
         {processedMedia.map((item, index) =>
-          item.isValid ? (
-            item.type === "video" ? (
-              <video
-                key={index}
-                controls
-                autoPlay
-                className="w-full h-auto max-h-screen rounded"
-              >
-                <source src={item.url} type="video/mp4" />
-                Your browser does not support the video tag.
-              </video>
-            ) : (
-              <Image
-                src={item.url}
-                alt={`Preview media ${index + 1}`}
-                key={index}
-                width={800}
-                height={0}
-                priority
-                className="w-full object-cover max-h-screen md:rounded"
-                onClick={(e) => {
-                  if (!isSwiping) {
-                    e.stopPropagation();
-                  }
-                }}
-              />
-            )
-          ) : (
-            <div
+          item.type === "video" ? (
+            <video
               key={index}
-              className="w-full h-auto max-h-screen flex items-center justify-center bg-gray-200"
+              controls
+              autoPlay
+              className="w-full h-auto max-h-screen rounded"
             >
-              <p className="text-gray-500">Media unavailable</p>
-            </div>
+              <source src={item.url} type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+          ) : (
+            <Image
+              src={item.url}
+              alt={`Preview media ${index + 1}`}
+              key={index}
+              width={800}
+              height={0}
+              priority
+              className="w-full object-cover max-h-screen md:rounded"
+              onClick={(e) => {
+                if (!isSwiping) {
+                  e.stopPropagation();
+                }
+              }}
+            />
           ),
         )}
       </Carousel>
