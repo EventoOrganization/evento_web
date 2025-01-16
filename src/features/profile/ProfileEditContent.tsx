@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { countryCodes } from "@/constantes/countryCode";
 import { useSession } from "@/contexts/SessionProvider";
 import EditProfileImage from "@/features/profile/EditProfileImage";
 import { useToast } from "@/hooks/use-toast";
@@ -47,6 +48,8 @@ const ProfileEditContent = () => {
     bio: userInfo?.bio || "",
     URL: userInfo?.URL || "",
     DOB: userInfo?.DOB || "",
+    countryCode: userInfo?.countryCode || "",
+    phoneNumber: userInfo?.phoneNumber || "",
     interests: userInfo?.interests || [],
     socialLinks: userInfo?.socialLinks || [{ platform: "", url: "" }],
     profileImage: userInfo?.profileImage || "",
@@ -60,7 +63,7 @@ const ProfileEditContent = () => {
   // Sync userInfo into formData when userInfo changes (if needed)
   useEffect(() => {
     if (userInfo) {
-      setFormData({
+      setFormData(() => ({
         username: userInfo.username || "",
         firstName: userInfo.firstName || "",
         lastName: userInfo.lastName || "",
@@ -68,10 +71,12 @@ const ProfileEditContent = () => {
         bio: userInfo.bio || "",
         URL: userInfo.URL || "",
         DOB: userInfo.DOB || "",
+        countryCode: userInfo.countryCode || "",
+        phoneNumber: userInfo.phoneNumber || "",
         interests: userInfo.interests || [],
         socialLinks: userInfo.socialLinks || [],
         profileImage: userInfo.profileImage || "",
-      });
+      }));
     }
   }, [userInfo]);
 
@@ -83,6 +88,20 @@ const ProfileEditContent = () => {
       ...formData,
       [e.target.name]: e.target.value,
     });
+  };
+  const handleChangePhone = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+
+    let formattedValue = value.replace(/\D/g, "");
+
+    if (formattedValue.startsWith("0")) {
+      formattedValue = formattedValue.substring(1);
+    }
+
+    setFormData((prev: any) => ({
+      ...prev,
+      [name]: formattedValue,
+    }));
   };
   // Handle changes for social links
   const handleSocialLinkChange = (
@@ -136,6 +155,34 @@ const ProfileEditContent = () => {
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    // verify country code and phone number
+    const selectedCountry = countryCodes.find(
+      (c) => c.dial_code === formData.countryCode,
+    );
+
+    if (!formData.countryCode || !formData.phoneNumber || !selectedCountry) {
+      toast({
+        description: "Both Country Code and Phone Number are required.",
+        variant: "destructive",
+        duration: 3000,
+      });
+      return;
+    }
+
+    const { minLength, maxLength } = selectedCountry;
+
+    if (
+      formData.phoneNumber.length < minLength ||
+      formData.phoneNumber.length > maxLength
+    ) {
+      toast({
+        description: `Phone number must be between ${minLength} and ${maxLength} digits.`,
+        variant: "destructive",
+        duration: 3000,
+      });
+      return;
+    }
+
     const dataToSend = new FormData();
 
     // Add text data
@@ -149,6 +196,7 @@ const ProfileEditContent = () => {
     if (formData.socialLinks.length > 0) {
       dataToSend.append("socialLinks", JSON.stringify(formData.socialLinks));
     }
+
     // add ProfileImage
     if (croppedProfileImage) {
       const response = await fetch(croppedProfileImage);
@@ -193,6 +241,10 @@ const ProfileEditContent = () => {
       console.error("Error updating profile:", error);
     }
   };
+  useEffect(() => {
+    console.log("FormData updated:", formData);
+  }, [formData]);
+
   useEffect(() => {
     if (isLoaded && window.google && inputRef.current && !autocomplete) {
       try {
@@ -277,6 +329,39 @@ const ProfileEditContent = () => {
             value={formData.address}
             onChange={handleChange}
           />
+        </div>
+
+        {/* Phone Number */}
+        <div>
+          <Label htmlFor="phone">Phone Number</Label>
+          <div>
+            <Label htmlFor="countryCode">Country Code</Label>
+            <select
+              name="countryCode"
+              value={formData.countryCode}
+              onChange={(e) => {
+                setFormData((prevData) => ({
+                  ...prevData,
+                  countryCode: e.target.value,
+                }));
+              }}
+              className="p-2 border border-gray-300 rounded w-full"
+            >
+              <option value="">Select a country code</option>
+              {countryCodes.map((code, index) => (
+                <option key={index} value={code.dial_code}>
+                  {code.name} {code.dial_code}
+                </option>
+              ))}
+            </select>
+            <Label htmlFor="phoneNumber">Phone Number</Label>
+            <Input
+              type="tel"
+              name="phoneNumber"
+              value={formData.phoneNumber}
+              onChange={(e) => handleChangePhone(e)}
+            />
+          </div>
         </div>
         {/* Bio */}
         <div>
