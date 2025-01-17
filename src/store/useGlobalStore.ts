@@ -232,7 +232,7 @@ export const useGlobalStore = create<GlobalStoreState>()(
       },
 
       loadInterests: async () => {
-        if (get().interests.length > 0) return;
+        // if (get().interests.length > 0) return;
 
         try {
           const interestRes = await fetchData("/users/getInterestsListing");
@@ -250,7 +250,7 @@ export const useGlobalStore = create<GlobalStoreState>()(
       },
 
       loadEvents: async (user?: UserType) => {
-        if (get().events.length > 0) return;
+        // if (get().events.length > 0) return;
         const userIdQuery = user && user._id ? `?userId=${user._id}` : "";
         console.log("Fetching events with:", userIdQuery); // DEBUG
 
@@ -258,8 +258,8 @@ export const useGlobalStore = create<GlobalStoreState>()(
           const upcomingEventRes = await fetchData(
             `/events/getUpcomingEvents${userIdQuery}`,
           );
+          console.log("Raw API response:", upcomingEventRes);
           if (upcomingEventRes && !upcomingEventRes.error) {
-            console.log("Raw API response:", upcomingEventRes);
             set({ events: upcomingEventRes.data as EventType[] });
           } else {
             console.error(
@@ -272,7 +272,7 @@ export const useGlobalStore = create<GlobalStoreState>()(
         }
       },
       loadUsers: async (userId: string, token: string) => {
-        if (get().users.length > 0) return;
+        // if (get().users.length > 0) return;
         const endpoint =
           userId && token
             ? `/users/followStatusForUsersYouFollow/${userId}`
