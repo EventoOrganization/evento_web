@@ -9,6 +9,17 @@ const GlobalDataProvider: React.FC<{ children: React.ReactNode }> = ({
   const { loadEvents, loadUsers, loadUser, loadInterests, refreshUsers } =
     useGlobalStore();
   const { user, token } = useSession();
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const hasCleared = sessionStorage.getItem("hasClearedStorage");
+
+      if (!hasCleared) {
+        console.log("Clearing localStorage...");
+        localStorage.clear();
+        sessionStorage.setItem("hasClearedStorage", "true");
+      }
+    }
+  }, []);
 
   useEffect(() => {
     loadInterests();

@@ -3,11 +3,11 @@ import AddressModal from "@/components/AddressModal";
 import AddToCalendar from "@/components/AddToCalendar";
 import AvatarStack from "@/components/AvatarStack";
 import EventoLoader from "@/components/EventoLoader";
-import RenderMedia from "@/components/RenderMedia";
 import TruncatedText from "@/components/TruncatedText";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 import { renderDate } from "@/utils/dateUtils";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -24,7 +24,9 @@ const Event = ({
   index?: number;
 }) => {
   const pathname = usePathname();
-
+  const RenderMedia = dynamic(() => import("@/components/RenderMedia"), {
+    ssr: false,
+  });
   return (
     <>
       <div

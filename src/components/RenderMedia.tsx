@@ -1,6 +1,5 @@
 "use client";
 import { EventType } from "@/types/EventType";
-import heic2any from "heic2any";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { Carousel } from "react-responsive-carousel";
@@ -13,47 +12,61 @@ const RenderMedia = ({ event }: { event: EventType }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [isSwiping, setIsSwiping] = useState(false);
   const touchStartX = useRef(0);
-
-  const convertHeicToJpeg = async (url: string) => {
-    try {
-      const response = await fetch(url);
-      if (!response.ok) {
-        throw new Error(`Failed to fetch the file. Status: ${response.status}`);
-      }
-
-      const blob = await response.blob();
-      if (blob.type === "image/heic" || url.toLowerCase().endsWith(".heic")) {
-        const jpegBlob = await heic2any({ blob, toType: "image/jpeg" });
-        const convertedBlob = Array.isArray(jpegBlob) ? jpegBlob[0] : jpegBlob;
-        return URL.createObjectURL(convertedBlob);
-      }
-
-      return url;
-    } catch {
-      return url; // Retourne l'URL d'origine en cas d'erreur
-    }
-  };
+  let heic2any: any = null;
+  if (typeof window !== "undefined") {
+    import("heic2any").then((mod) => (heic2any = mod.default));
+  }
 
   useEffect(() => {
-    const processMedia = async () => {
-      const initialMedias = event?.initialMedia || [];
-      const processed = await Promise.all(
-        initialMedias.map(async (item) => {
-          if (
-            item.type === "image" &&
-            item.url.toLowerCase().endsWith(".heic")
-          ) {
-            const convertedUrl = await convertHeicToJpeg(item.url);
-            return { url: convertedUrl, type: "image", isValid: true };
+    if (typeof window !== "undefined") {
+      const convertHeicToJpeg = async (url: string) => {
+        try {
+          const response = await fetch(url);
+          if (!response.ok) {
+            throw new Error(
+              `Failed to fetch the file. Status: ${response.status}`,
+            );
           }
-          return { ...item, isValid: true }; // Toujours valide par défaut
-        }),
-      );
-      setProcessedMedia(processed);
-      setIsLoading(false);
-    };
 
-    processMedia();
+          const blob = await response.blob();
+          if (
+            blob.type === "image/heic" ||
+            url.toLowerCase().endsWith(".heic")
+          ) {
+            const jpegBlob = await heic2any({ blob, toType: "image/jpeg" });
+            const convertedBlob = Array.isArray(jpegBlob)
+              ? jpegBlob[0]
+              : jpegBlob;
+            return URL.createObjectURL(convertedBlob);
+          }
+
+          return url;
+        } catch {
+          return url; // Retourne l'URL d'origine en cas d'erreur
+        }
+      };
+      const processMedia = async () => {
+        if (!heic2any) return;
+
+        const initialMedias = event?.initialMedia || [];
+        const processed = await Promise.all(
+          initialMedias.map(async (item) => {
+            if (
+              item.type === "image" &&
+              item.url.toLowerCase().endsWith(".heic")
+            ) {
+              const convertedUrl = await convertHeicToJpeg(item.url);
+              return { url: convertedUrl, type: "image", isValid: true };
+            }
+            return { ...item, isValid: true };
+          }),
+        );
+        setProcessedMedia(processed);
+        setIsLoading(false);
+      };
+
+      processMedia();
+    }
   }, [event]);
 
   const handleTouchStart = (e: React.TouchEvent) => {
