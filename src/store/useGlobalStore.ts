@@ -250,9 +250,10 @@ export const useGlobalStore = create<GlobalStoreState>()(
       },
 
       loadEvents: async (user?: UserType) => {
-        console.log("loadEvents called with user:", user);
         if (get().events.length > 0) return;
         const userIdQuery = user && user._id ? `?userId=${user._id}` : "";
+        console.log("Fetching events with:", userIdQuery); // DEBUG
+
         try {
           const upcomingEventRes = await fetchData(
             `/events/getUpcomingEvents${userIdQuery}`,
