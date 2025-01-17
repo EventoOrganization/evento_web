@@ -6,7 +6,7 @@ import UserProfile from "@/features/profile/UserProfile";
 import { useGlobalStore } from "@/store/useGlobalStore";
 import { UserType } from "@/types/UserType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function ProfilePageContent() {
   const session = useSession();
@@ -14,9 +14,9 @@ export default function ProfilePageContent() {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const globalStore = useGlobalStore();
   const { events } = useGlobalStore((state) => state);
-  const upcomingFilteredEvents = useMemo(() => {
-    return events.filter((event) => event.isGoing || event.isFavourite);
-  }, [events]);
+  const upcomingFilteredEvents = events.filter(
+    (event) => event.isGoing || event.isFavourite,
+  );
   const loadUser = async (token: string) => {
     try {
       const userRes = await fetchData(
