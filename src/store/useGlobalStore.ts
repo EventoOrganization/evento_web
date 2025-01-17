@@ -259,6 +259,7 @@ export const useGlobalStore = create<GlobalStoreState>()(
             `/events/getUpcomingEvents${userIdQuery}`,
           );
           if (upcomingEventRes && !upcomingEventRes.error) {
+            console.log("Raw API response:", upcomingEventRes);
             set({ events: upcomingEventRes.data as EventType[] });
           } else {
             console.error(
