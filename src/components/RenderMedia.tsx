@@ -1,73 +1,13 @@
 "use client";
 import { EventType } from "@/types/EventType";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 
 const RenderMedia = ({ event }: { event: EventType }) => {
-  const [processedMedia, setProcessedMedia] = useState<
-    { url: string; type: string; isValid: boolean }[]
-  >([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [isSwiping, setIsSwiping] = useState(false);
   const touchStartX = useRef(0);
-  let heic2any: any = null;
-  if (typeof window !== "undefined") {
-    import("heic2any").then((mod) => (heic2any = mod.default));
-  }
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const convertHeicToJpeg = async (url: string) => {
-        try {
-          const response = await fetch(url);
-          if (!response.ok) {
-            throw new Error(
-              `Failed to fetch the file. Status: ${response.status}`,
-            );
-          }
-
-          const blob = await response.blob();
-          if (
-            blob.type === "image/heic" ||
-            url.toLowerCase().endsWith(".heic")
-          ) {
-            const jpegBlob = await heic2any({ blob, toType: "image/jpeg" });
-            const convertedBlob = Array.isArray(jpegBlob)
-              ? jpegBlob[0]
-              : jpegBlob;
-            return URL.createObjectURL(convertedBlob);
-          }
-
-          return url;
-        } catch {
-          return url; // Retourne l'URL d'origine en cas d'erreur
-        }
-      };
-      const processMedia = async () => {
-        if (!heic2any) return;
-
-        const initialMedias = event?.initialMedia || [];
-        const processed = await Promise.all(
-          initialMedias.map(async (item) => {
-            if (
-              item.type === "image" &&
-              item.url.toLowerCase().endsWith(".heic")
-            ) {
-              const convertedUrl = await convertHeicToJpeg(item.url);
-              return { url: convertedUrl, type: "image", isValid: true };
-            }
-            return { ...item, isValid: true };
-          }),
-        );
-        setProcessedMedia(processed);
-        setIsLoading(false);
-      };
-
-      processMedia();
-    }
-  }, [event]);
 
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.touches[0].clientX;
@@ -88,14 +28,6 @@ const RenderMedia = ({ event }: { event: EventType }) => {
     e.stopPropagation();
   };
 
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center h-full">
-        <p className="text-lg text-gray-500">Loading media...</p>
-      </div>
-    );
-  }
-
   return (
     <div
       onTouchStart={handleTouchStart}
@@ -112,7 +44,7 @@ const RenderMedia = ({ event }: { event: EventType }) => {
         useKeyboardArrows={true}
         className="relative"
       >
-        {processedMedia.map((item, index) =>
+        {event.initialMedia.map((item, index) =>
           item.type === "video" ? (
             <video
               key={index}
