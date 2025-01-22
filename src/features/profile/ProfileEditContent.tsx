@@ -329,37 +329,39 @@ const ProfileEditContent = () => {
         </div>
 
         {/* Phone Number */}
-        <div>
-          <Label htmlFor="phone">Phone Number</Label>
+        {process.env.NODE_ENV === "development" && (
           <div>
-            <Label htmlFor="countryCode">Country Code</Label>
-            <select
-              name="countryCode"
-              value={formData.countryCode}
-              onChange={(e) => {
-                setFormData((prevData) => ({
-                  ...prevData,
-                  countryCode: e.target.value,
-                }));
-              }}
-              className="p-2 border border-gray-300 rounded w-full"
-            >
-              <option value="">Select a country code</option>
-              {countryCodes.map((code, index) => (
-                <option key={index} value={code.dial_code}>
-                  {code.name} {code.dial_code}
-                </option>
-              ))}
-            </select>
-            <Label htmlFor="phoneNumber">Phone Number</Label>
-            <Input
-              type="tel"
-              name="phoneNumber"
-              value={formData.phoneNumber}
-              onChange={(e) => handleChangePhone(e)}
-            />
+            <Label htmlFor="phone">Phone Number</Label>
+            <div>
+              <Label htmlFor="countryCode">Country Code</Label>
+              <select
+                name="countryCode"
+                value={formData.countryCode}
+                onChange={(e) => {
+                  setFormData((prevData) => ({
+                    ...prevData,
+                    countryCode: e.target.value,
+                  }));
+                }}
+                className="p-2 border border-gray-300 rounded w-full"
+              >
+                <option value="">Select a country code</option>
+                {countryCodes.map((code, index) => (
+                  <option key={index} value={code.dial_code}>
+                    {code.name} {code.dial_code}
+                  </option>
+                ))}
+              </select>
+              <Label htmlFor="phoneNumber">Phone Number</Label>
+              <Input
+                type="tel"
+                name="phoneNumber"
+                value={formData.phoneNumber}
+                onChange={(e) => handleChangePhone(e)}
+              />
+            </div>
           </div>
-        </div>
+        )}
         {/* Bio */}
         <div>
           <Label htmlFor="bio">Bio</Label>
