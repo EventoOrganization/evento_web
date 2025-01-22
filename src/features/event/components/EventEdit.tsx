@@ -29,6 +29,7 @@ const EventEdit = ({
   onUpdateField: (field: string, value: any) => void;
 }) => {
   const { toast } = useToast();
+  const { updateEvent } = useGlobalStore();
   const [showTooltip, setShowTooltip] = useState(false);
   const today = startOfDay(new Date());
   const [title, setTitle] = useState(event?.title || "");
@@ -106,6 +107,7 @@ const EventEdit = ({
         });
         console.log("field updated successfully with", value);
         onUpdateField(field, value);
+        updateEvent(event._id, { [field]: value });
       } else {
         console.error("Error updating the event");
       }

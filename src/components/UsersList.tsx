@@ -158,8 +158,7 @@ const UsersList = ({
       );
 
       if (response.ok) {
-        useGlobalStore.getState().updateEvent({
-          _id: eventId,
+        useGlobalStore.getState().updateEvent(eventId, {
           guests: event?.guests?.filter((guest) => guest._id !== user._id),
         });
         updateUser({

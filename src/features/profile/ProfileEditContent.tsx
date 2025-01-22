@@ -156,32 +156,32 @@ const ProfileEditContent = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     // verify country code and phone number
-    const selectedCountry = countryCodes.find(
-      (c) => c.dial_code === formData.countryCode,
-    );
+    // const selectedCountry = countryCodes.find(
+    //   (c) => c.dial_code === formData.countryCode,
+    // );
 
-    if (!formData.countryCode || !formData.phoneNumber || !selectedCountry) {
-      toast({
-        description: "Both Country Code and Phone Number are required.",
-        variant: "destructive",
-        duration: 3000,
-      });
-      return;
-    }
+    // if (!formData.countryCode || !formData.phoneNumber || !selectedCountry) {
+    //   toast({
+    //     description: "Both Country Code and Phone Number are required.",
+    //     variant: "destructive",
+    //     duration: 3000,
+    //   });
+    //   return;
+    // }
 
-    const { minLength, maxLength } = selectedCountry;
+    // const { minLength, maxLength } = selectedCountry;
 
-    if (
-      formData.phoneNumber.length < minLength ||
-      formData.phoneNumber.length > maxLength
-    ) {
-      toast({
-        description: `Phone number must be between ${minLength} and ${maxLength} digits.`,
-        variant: "destructive",
-        duration: 3000,
-      });
-      return;
-    }
+    // if (
+    //   formData.phoneNumber.length < minLength ||
+    //   formData.phoneNumber.length > maxLength
+    // ) {
+    //   toast({
+    //     description: `Phone number must be between ${minLength} and ${maxLength} digits.`,
+    //     variant: "destructive",
+    //     duration: 3000,
+    //   });
+    //   return;
+    // }
 
     const dataToSend = new FormData();
 
