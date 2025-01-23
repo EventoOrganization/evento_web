@@ -51,15 +51,9 @@ const QuestionModal: React.FC<QuestionModalProps> = ({
     }
   };
 
-  const handleBack = () => {
-    if (currentQuestionIndex > 0) {
-      setCurrentQuestionIndex(currentQuestionIndex - 1);
-    }
-  };
-
   const handleSubmit = () => {
     onSubmit(answers);
-    onClose(); // Ferme la modal après soumission
+    onClose();
   };
 
   return (
@@ -143,12 +137,8 @@ const QuestionModal: React.FC<QuestionModalProps> = ({
 
         {/* Navigation Buttons */}
         <div className="flex justify-between mt-4">
-          <button
-            className="btn"
-            onClick={handleBack}
-            disabled={currentQuestionIndex === 0}
-          >
-            Back
+          <button className="btn" onClick={() => onClose()}>
+            Close
           </button>
 
           {currentQuestionIndex < questions.length - 1 ? (

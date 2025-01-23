@@ -155,40 +155,36 @@ export const useGlobalStore = create<GlobalStoreState>()(
       },
 
       updateEventStatus: (eventId, newStatus, user) => {
+        if (!user || !user._id) {
+          console.error("❌ User is null or does not have an _id in Zustand");
+          return;
+        }
+
         set((state) => ({
           events: state.events.map((event) => {
             if (event._id === eventId) {
-              const updatedEvent = {
+              return {
                 ...event,
                 isGoing: false,
                 isFavourite: false,
                 isRefused: false,
                 attendees: event?.attendees?.filter(
-                  (attendee) => attendee._id !== user._id,
+                  (attendee) => attendee?._id && attendee._id !== user._id,
                 ),
                 favouritees: event?.favouritees?.filter(
-                  (favourite) => favourite._id !== user._id,
+                  (favourite) => favourite?._id && favourite._id !== user._id,
                 ),
                 refused: event?.refused?.filter(
-                  (refusedUser) => refusedUser._id !== user._id,
+                  (refusedUser) =>
+                    refusedUser?._id && refusedUser._id !== user._id,
                 ),
               };
-              if (newStatus.isGoing) {
-                updatedEvent.isGoing = true;
-                updatedEvent.attendees?.push(user);
-              } else if (newStatus.isFavourite) {
-                updatedEvent.isFavourite = true;
-                updatedEvent.favouritees?.push(user);
-              } else if (newStatus.isRefused) {
-                updatedEvent.isRefused = true;
-                updatedEvent.refused?.push(user);
-              }
-              return updatedEvent;
             }
             return event;
           }),
         }));
       },
+
       addEvent: (newEvent: EventType) => {
         set((state) => {
           const updatedUserInfo = state.userInfo

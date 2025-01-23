@@ -86,9 +86,8 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
       return;
     }
 
-    console.log("token", token);
     const isCurrentlySet = event[status];
-
+    console.log("status", status);
     try {
       setLoading(status);
       const body = {
@@ -124,12 +123,20 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
 
       if (isLocal && updateEventStatusLocally) {
         updateEventStatusLocally(status, !isCurrentlySet);
+        if (!user || !user._id) {
+          console.error("❌ User is null or does not have an _id");
+          return;
+        }
         updateEventStatusInStore(
           event._id,
           { [status]: !isCurrentlySet },
           user as UserType,
         );
       } else {
+        if (!user || !user._id) {
+          console.error("❌ User is null or does not have an _id");
+          return;
+        }
         updateEventStatusInStore(
           event._id,
           { [status]: !isCurrentlySet },

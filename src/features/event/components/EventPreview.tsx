@@ -11,6 +11,7 @@ import { EventType } from "@/types/EventType";
 import { renderDate } from "@/utils/dateUtils";
 import { BookmarkCheck, Circle, CircleCheckBig } from "lucide-react";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import EventModal from "./EventModal";
 
@@ -24,6 +25,7 @@ const EventPreview = ({
   title?: string;
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const pathname = usePathname();
   // Adjusted function for correct DateTimeFormatOptions types
 
   const handleCardClick = () => {
@@ -45,8 +47,12 @@ const EventPreview = ({
         onClick={handleCardClick}
       >
         <CardHeader className="p-0 absolute right-0 top-0 w-full flex flex-row justify-between ">
-          <EventSettingButton className="m-2" event={event} />
-          <div className="z-10 mr-2">
+          {pathname === "/profile" ? (
+            <EventSettingButton className="m-2" event={event} />
+          ) : (
+            <div></div>
+          )}
+          <div className="z-10 mr-2 w-10 h-10">
             {event?.isGoing && (
               <CircleCheckBig
                 strokeWidth={1.5}
