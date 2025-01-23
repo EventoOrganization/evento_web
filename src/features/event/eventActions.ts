@@ -1,4 +1,6 @@
 import { useEventStore } from "@/store/useEventStore";
+import { EventType } from "@/types/EventType";
+import { UserType } from "@/types/UserType";
 
 export const setEventField = (key: string, value: any) => {
   const eventStore = useEventStore.getState();
@@ -33,4 +35,8 @@ export const formatDateToEuropean = (date: string): string => {
     year: "numeric",
   };
   return new Date(date).toLocaleDateString("en-UK", options); // "fr-FR" est pour le format européen
+};
+export const hasEventhost = (event: EventType, user: UserType) => {
+  if (!event || !user) return false;
+  return event.user._id === user._id;
 };

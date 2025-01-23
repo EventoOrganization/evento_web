@@ -12,15 +12,17 @@ import { useState } from "react";
 const DeleteEventButton = ({
   eventId,
   isHost,
+  className,
 }: {
   eventId: string;
   isHost: boolean;
+  className?: string;
 }) => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const { token } = useSession();
   const deleteEventFromStore = useGlobalStore((state) => state.deleteEvent);
-  const { toast } = useToast(); // Ajoute la fonctionnalité toast
+  const { toast } = useToast();
   if (!isHost) {
     return null;
   }
@@ -28,7 +30,7 @@ const DeleteEventButton = ({
     if (!isHost) return;
     setLoading(true);
     try {
-      console.log("Attempting to delete event with id:", eventId); // Log pour vérifier l'ID
+      console.log("Attempting to delete event with id:", eventId);
       await fetchData(
         `/events/deleteEvent/${eventId}`,
         HttpMethod.DELETE,
@@ -58,7 +60,12 @@ const DeleteEventButton = ({
   };
 
   return (
-    <Button variant="destructive" onClick={handleDelete} disabled={loading}>
+    <Button
+      variant="destructive"
+      onClick={handleDelete}
+      disabled={loading}
+      className={className}
+    >
       {loading ? <Loader className="animate-spin" /> : "Delete Event"}
     </Button>
   );

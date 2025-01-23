@@ -1,11 +1,10 @@
 "use client";
+import EventSettingButton from "@/components/EventSettingButton";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { EventType } from "@/types/EventType";
@@ -45,8 +44,9 @@ const EventPreview = ({
         )}
         onClick={handleCardClick}
       >
-        <CardHeader className="p-0 absolute right-2 top-2">
-          <CardTitle className="z-10 w-10 h-10 self-end space-y-2 ">
+        <CardHeader className="p-0 absolute right-0 top-0 w-full flex flex-row justify-between ">
+          <EventSettingButton className="m-2" event={event} />
+          <div className="z-10 mr-2">
             {event?.isGoing && (
               <CircleCheckBig
                 strokeWidth={1.5}
@@ -66,8 +66,7 @@ const EventPreview = ({
                 <BookmarkCheck className="absolute inset-0 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white" />
               </div>
             )}
-          </CardTitle>
-          <CardDescription></CardDescription>
+          </div>
         </CardHeader>
         <CardContent className="w-full h-full p-0 rounded-t-xl overflow-hidden aspect-square ">
           {event?.initialMedia && event?.initialMedia[0]?.url && (

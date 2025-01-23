@@ -133,13 +133,20 @@ export const useGlobalStore = create<GlobalStoreState>()(
             events: state.events.map((event) =>
               event._id === eventId ? { ...event, ...updatedFields } : event,
             ),
-            userInfo: state.userInfo?._id
+            userInfo: state.userInfo
               ? {
                   ...state.userInfo,
-                  hostedEvents: state.userInfo.hostedEvents?.map((event) =>
-                    event._id === eventId
-                      ? { ...event, ...updatedFields }
-                      : event,
+                  pastEventsGoing: state.userInfo.pastEventsGoing?.map(
+                    (event) =>
+                      event._id === eventId
+                        ? { ...event, ...updatedFields }
+                        : event,
+                  ),
+                  pastEventsHosted: state.userInfo.pastEventsHosted?.map(
+                    (event) =>
+                      event._id === eventId
+                        ? { ...event, ...updatedFields }
+                        : event,
                   ),
                 }
               : state.userInfo,

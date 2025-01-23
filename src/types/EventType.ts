@@ -45,6 +45,7 @@ export type EventType = {
       type: string;
     },
   ];
+  hiddenByUsers?: string[];
   title: string;
   user: UserType;
   eventType: "public" | "private";
