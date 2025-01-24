@@ -1,3 +1,6 @@
+import { handleError } from "./handleError";
+import { handleWarning } from "./handleWarning";
+
 export enum HttpMethod {
   GET = "GET",
   POST = "POST",
@@ -13,6 +16,9 @@ export type FetchDataResult<T> = {
   ok: boolean;
 };
 
+const requestTimestamps = new Map<string, number>();
+const REQUEST_COOLDOWN = 1000;
+
 export const fetchData = async <T, B = any>(
   endpoint: string,
   method: HttpMethod = HttpMethod.GET,
@@ -20,7 +26,6 @@ export const fetchData = async <T, B = any>(
   token?: string | null,
 ): Promise<FetchDataResult<T>> => {
   const headers: Record<string, string> = {};
-
   if (token) {
     headers["Authorization"] = `Bearer ${token}`;
   }
@@ -40,21 +45,55 @@ export const fetchData = async <T, B = any>(
     }
   }
 
+  const now = Date.now();
+  const lastRequestTime = requestTimestamps.get(endpoint) || 0;
+
+  if (now - lastRequestTime < REQUEST_COOLDOWN) {
+    handleWarning({
+      message: `⏳ Request blocked (cooldown active: ${REQUEST_COOLDOWN}ms)`,
+      source: `fetchData: ${endpoint}`,
+      context: { endpoint, lastRequestTime, now },
+    });
+
+    return {
+      data: null,
+      error: "Request blocked: cooldown active",
+      status: 429,
+      ok: false,
+    };
+  }
+
+  requestTimestamps.set(endpoint, now);
+
   try {
     const response = await fetch(
       process.env.NEXT_PUBLIC_API_URL + endpoint,
       fetchOptions,
     );
+
     const contentType = response.headers.get("content-type");
 
     if (!response.ok) {
       let errorMessage = `HTTP error! status: ${response.status}`;
-      if (contentType && contentType.includes("application/json")) {
-        const errorData = await response.json();
+      let errorData = null;
+
+      if (contentType?.includes("application/json")) {
+        errorData = await response.json();
         errorMessage = errorData.message || JSON.stringify(errorData);
       } else {
         errorMessage = await response.text();
       }
+
+      handleError(
+        {
+          message: errorMessage,
+          statusCode: response.status,
+          source: `fetchData: ${endpoint}`,
+          originalError: errorData || null,
+        },
+        `fetchData: ${endpoint}`,
+      );
+
       return {
         data: null,
         error: errorMessage,
@@ -63,7 +102,7 @@ export const fetchData = async <T, B = any>(
       };
     }
 
-    if (contentType && contentType.includes("application/json")) {
+    if (contentType?.includes("application/json")) {
       const json = await response.json();
       return {
         data: json.data || json.body || json,
@@ -73,13 +112,13 @@ export const fetchData = async <T, B = any>(
       };
     }
 
-    // If no content-type is JSON or response is not specified as JSON but is OK
     return { data: null, error: null, status: response.status, ok: true };
   } catch (error) {
-    console.error("Fetch failed due to network or CORS issues: ", error);
+    const formattedError = handleError(error, `fetchData: ${endpoint}`);
+
     return {
       data: null,
-      error: `Failed to fetch data from ${endpoint}: ${error instanceof Error ? error.message : "Unknown error"}`,
+      error: formattedError.message,
       status: 500,
       ok: false,
     };
