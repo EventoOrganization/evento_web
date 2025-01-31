@@ -107,8 +107,13 @@ const config = {
           "0%, 100%": { transform: "scale(1) rotate(0deg)" },
           "50%": { transform: "scale(1.1) rotate(180deg)" },
         },
+        gradientRotate: {
+          "0%": { transform: "rotate(0deg)" },
+          "100%": { transform: "rotate(360deg)" },
+        },
       },
       animation: {
+        "gradient-rotate": "gradientRotate 4s linear infinite",
         "smooth-spin": "spin 2s cubic-bezier(0.4, 0.0, 0.2, 1) infinite",
         "smooth-wavy": "wavy 3s ease-in-out infinite",
         "wavy-spin": "wavy-spin 2s infinite",

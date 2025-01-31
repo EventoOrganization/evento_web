@@ -314,7 +314,7 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
               >
                 <SelectTrigger
                   className={cn(
-                    "border flex p-2 rounded justify-center items-center w-full",
+                    "relative flex p-2 rounded justify-center items-center w-full border overflow-hidden",
                     {
                       "bg-evento-gradient-button text-white": event.isGoing,
                       "bg-eventoPurpleDark text-white":
@@ -325,30 +325,48 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
                     e.stopPropagation();
                   }}
                 >
-                  <SelectValue
-                    className={cn()}
-                    placeholder={
-                      event.isGoing ? (
-                        <div className="flex ">
-                          <CalendarCheck2 className="w-5 h-5 text-white mr-2" />{" "}
-                          Going
-                        </div>
-                      ) : event.isFavourite ? (
-                        <div className="flex ">
-                          <CalendarHeart className="w-5 h-5 text-white mr-2" />
-                          Maybe
-                        </div>
-                      ) : event.isRefused ? (
-                        <div className="flex ">
-                          <CalendarX2 className="w-5 h-5 text-white mr-2" />
-                          Declined
-                        </div>
-                      ) : (
-                        "Respond"
-                      )
-                    }
-                  />
+                  {/* Bordure animée */}
+                  {!event.isGoing && !event.isFavourite && !event.isRefused && (
+                    <span
+                      className="absolute inset-0 rounded border-[3px] border-transparent animate-pulse"
+                      style={{
+                        background:
+                          "linear-gradient(white, white) padding-box, linear-gradient(var(--gradient-angle, 160deg), #A62BA7, #5973D3) border-box",
+                        maskImage: "linear-gradient(white, white)",
+                        WebkitMaskImage: "linear-gradient(white, white)",
+                      }}
+                    />
+                  )}
+
+                  {/* Contenu du bouton */}
+                  <span className="relative z-10 ">
+                    <SelectValue
+                      placeholder={
+                        event.isGoing ? (
+                          <div className="flex">
+                            <CalendarCheck2 className="w-5 h-5 text-white mr-2" />{" "}
+                            Going
+                          </div>
+                        ) : event.isFavourite ? (
+                          <div className="flex">
+                            <CalendarHeart className="w-5 h-5 text-white mr-2" />
+                            Maybe
+                          </div>
+                        ) : event.isRefused ? (
+                          <div className="flex">
+                            <CalendarX2 className="w-5 h-5 text-white mr-2" />
+                            Declined
+                          </div>
+                        ) : (
+                          <span className="animate-bounce">
+                            Respond to this event
+                          </span>
+                        )
+                      }
+                    />
+                  </span>
                 </SelectTrigger>
+
                 <SelectContent className="z-50 text-black">
                   <SelectItem value="going">
                     <div className="flex">
