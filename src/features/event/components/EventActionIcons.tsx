@@ -186,9 +186,12 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
   };
 
   const handleSubmitQuestions = (answers: any) => {
+    if (answers.length > 0) {
+      updateEventStatus("isGoing", answers);
+    }
     setShowQuestionModal(false);
-    handleGoing(answers);
   };
+
   return (
     <>
       <div
@@ -339,7 +342,7 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
                   )}
 
                   {/* Contenu du bouton */}
-                  <span className="relative z-10 ">
+                  <span className="relative z-10">
                     <SelectValue
                       placeholder={
                         event.isGoing ? (
@@ -358,9 +361,7 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
                             Declined
                           </div>
                         ) : (
-                          <span className="animate-bounce">
-                            Respond to this event
-                          </span>
+                          "Respond to this event"
                         )
                       }
                     />
