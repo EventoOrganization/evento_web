@@ -25,14 +25,16 @@ const CollapsibleList = ({
   );
   const removeUserLocally = (userId: string) => {
     if (!setEvent || !event) return;
-
+    const updateAttendees =
+      event?.attendees?.filter((attendee) => attendee._id !== userId) || [];
     const updatedGuests =
       event?.guests?.filter((guest) => guest._id !== userId) || [];
     const updatedTempGuests =
       event?.tempGuests?.filter((tempGuest) => tempGuest._id !== userId) || [];
-
+    console.log("updateAttendees", updateAttendees);
     setEvent({
       ...event,
+      attendees: updateAttendees,
       guests: updatedGuests,
       tempGuests: updatedTempGuests,
     });

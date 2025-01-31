@@ -79,7 +79,7 @@ const UsersList = ({
           className: "bg-evento-gradient text-white",
         });
         removeUserLocally?.(user._id);
-        fetchUsers?.(); // Rafraîchit la liste des utilisateurs
+        fetchUsers?.();
       } else {
         console.error("Error:", response.error);
         toast({
@@ -161,7 +161,7 @@ const UsersList = ({
         });
         updateUser({
           _id: user._id,
-          isIFollowingHim: !isIFollowingHim, // Changement du statut localement
+          isIFollowingHim: !isIFollowingHim,
         });
         toast({
           title: "Success",
@@ -179,6 +179,57 @@ const UsersList = ({
       setLoading(false);
     }
   };
+
+  const handleUngoing = async () => {
+    if (!token) {
+      setIsAuthModalOpen(true);
+      return;
+    }
+    setLoading(true);
+
+    try {
+      const body = {
+        eventId: eventId,
+        userId: user._id,
+      };
+      const response = await fetchData(
+        "/events/removeUserFromGoing",
+        HttpMethod.POST,
+        body,
+        token,
+      );
+
+      if (response.ok) {
+        updateEvent(eventId, {
+          attendees: event?.attendees?.filter(
+            (attendee) => attendee._id !== user._id,
+          ),
+        });
+
+        toast({
+          title: "Success",
+          description: "User removed from Going list",
+          duration: 2000,
+          className: "bg-evento-gradient text-white",
+        });
+
+        if (removeUserLocally) removeUserLocally(user._id);
+      } else {
+        console.error("Error:", response.error);
+        toast({
+          title: "Error",
+          description: response.error,
+          variant: "destructive",
+          duration: 2000,
+        });
+      }
+    } catch (error) {
+      console.error("An error occurred:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   if (user?.username === "anonymous") return;
   const isSuccessPage = pathname.includes(`/create-event/${eventId}/success`);
   // console.log("user reason", user.reason);
@@ -246,6 +297,12 @@ const UsersList = ({
             {loading ? "Processing..." : <XIcon />}
           </Button>
         )}
+        {isAdmin && title === "Going" && (
+          <Button variant="outline" onClick={handleUngoing} disabled={loading}>
+            {loading ? "Processing..." : <XIcon />}
+          </Button>
+        )}
+
         {title === "Requested to Join" && isAdmin && (
           <Button onClick={handleAcceptRequest} disabled={loading}>
             {loading ? "Processing..." : "Accept"}
