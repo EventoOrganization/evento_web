@@ -1,6 +1,18 @@
 // src\components\UsersList.tsx
 "use client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useSession } from "@/contexts/SessionProvider";
 import AuthModal from "@/features/auth/components/AuthModal";
 import { useToast } from "@/hooks/use-toast";
@@ -29,6 +41,13 @@ const UsersList = ({
   title?: string;
   isAdmin?: boolean;
 }) => {
+  const [showMobileReason, setShowMobileReason] = useState(false);
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
+
+  // Détecte si on est sur un mobile/tactile
+  useEffect(() => {
+    setIsTouchDevice(typeof window !== "undefined" && window.innerWidth <= 768);
+  }, []);
   const { id } = useParams();
   const eventId = Array.isArray(id) ? id[0] : id;
   const { token } = useSession();
@@ -232,7 +251,6 @@ const UsersList = ({
 
   if (user?.username === "anonymous") return;
   const isSuccessPage = pathname.includes(`/create-event/${eventId}/success`);
-  // console.log("user reason", user.reason);
   return (
     <div className="flex justify-between w-full items-center">
       <Link href={`/profile/${user?._id}`} className="flex items-center gap-4">
@@ -263,9 +281,47 @@ const UsersList = ({
           </li>
         </ul>
       </Link>
-      <div className="flex gap-2">
+      <div className="flex gap-2 overflow-hidden">
         {user.reason && isAdmin ? (
-          <span className="text-destructive font-semibold">{user.reason}</span>
+          <>
+            {/* Tooltip sur desktop */}
+            {!isTouchDevice ? (
+              <TooltipProvider delayDuration={200}>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <span className="text-destructive font-semibold truncate w-full ml-2 cursor-pointer block overflow-hidden whitespace-nowrap">
+                      {user.reason}
+                    </span>
+                  </TooltipTrigger>
+                  <TooltipContent className="bg-black text-white px-3 py-1 rounded-md text-sm shadow-lg max-w-[250px]">
+                    {user.reason}
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            ) : (
+              // Modal sur mobile
+              <>
+                <span
+                  className="text-destructive font-semibold truncate w-full ml-2 cursor-pointer block overflow-hidden whitespace-nowrap"
+                  onClick={() => setShowMobileReason(true)}
+                >
+                  {user.reason}
+                </span>
+
+                <Dialog
+                  open={showMobileReason}
+                  onOpenChange={setShowMobileReason}
+                >
+                  <DialogContent className="max-w-[95%] rounded">
+                    <DialogHeader>
+                      <DialogTitle>Reason</DialogTitle>
+                    </DialogHeader>
+                    <p className="text-sm">{user.reason}</p>
+                  </DialogContent>
+                </Dialog>
+              </>
+            )}
+          </>
         ) : (
           !isLoggedUser &&
           !isTempGuest &&

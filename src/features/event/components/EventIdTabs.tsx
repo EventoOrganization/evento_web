@@ -288,7 +288,7 @@ const EventIdTabs = ({ evento }: { evento?: EventType }) => {
                   </div>
                 </Link>
                 {accessControl.isAdmin && (
-                  <TooltipProvider>
+                  <TooltipProvider delayDuration={100}>
                     <Tooltip>
                       <TooltipTrigger>
                         <Pencil
