@@ -110,7 +110,7 @@ const ProfileHeader = ({ profile }: Props) => {
                   ? profile.totalEventAttended
                   : 0}
               </span>
-              <p>Event Attended</p>
+              <p>Events Attended</p>
             </div>
             <Button
               className="gap-2 w-fit self-end"
