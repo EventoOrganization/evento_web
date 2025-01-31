@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { useSession } from "@/contexts/SessionProvider";
 import { useSocket } from "@/contexts/SocketProvider";
 import { toast } from "@/hooks/use-toast";
-import { useGlobalStore } from "@/store/useGlobalStore";
+import { useUsersStore } from "@/store/useUsersStore";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { ArrowLeftIcon } from "lucide-react";
 import Image from "next/image";
@@ -30,7 +30,7 @@ const ConversationList = ({
   } = useSocket();
   const [suggestedUsers, setSuggestedUsers] = useState<any[]>([]);
   const router = useRouter();
-  const { users } = useGlobalStore((state) => state);
+  const { users } = useUsersStore();
   const [searchTerm, setSearchTerm] = useState("");
   // const { toast } = useToast();
 

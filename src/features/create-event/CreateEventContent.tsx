@@ -20,8 +20,10 @@ import EventQuestionsForm from "@/features/event/components/EventQuestionsForm";
 import EventURL from "@/features/event/components/EventURL";
 import { handleFieldChange } from "@/features/event/eventActions";
 import { useToast } from "@/hooks/use-toast";
-import { MediaItem, useEventStore } from "@/store/useEventStore";
-import { useGlobalStore } from "@/store/useGlobalStore";
+import { MediaItem, useCreateEventStore } from "@/store/useCreateEventStore";
+import { useEventStore } from "@/store/useEventsStore";
+import { useInterestsStore } from "@/store/useInterestsStore";
+import { useUsersStore } from "@/store/useUsersStore";
 import { EventType, InterestType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
@@ -31,14 +33,16 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const CreateEventContent = () => {
-  const eventStore = useEventStore();
-  // const mediaPreviews = useEventStore((state) => state.mediaPreviews || []);
+  const eventStore = useCreateEventStore();
+  // const mediaPreviews = useCreateEventStore((state) => state.mediaPreviews || []);
   // const [carouselItems, setCarouselItems] = useState<any>(mediaPreviews);
   const [isEventModalOpen, setIsEventModalOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
-  const { addEvent, users, interests } = useGlobalStore((state) => state);
+  const { addEvent } = useEventStore();
+  const { users } = useUsersStore();
+  const { interests } = useInterestsStore();
   const [isUploading, setIsUploading] = useState(false);
   const [tempMediaPreviews, setTempMediaPreviews] = useState<
     { url: string; type: string }[]
@@ -206,7 +210,7 @@ const CreateEventContent = () => {
 
       if (media.type === "image" || media.type === "video") {
         const mediaItemType = media.type === "image" ? "image" : "video";
-        useEventStore.setState((state) => ({
+        useCreateEventStore.setState((state) => ({
           tempMediaPreview: state.tempMediaPreview?.filter(
             (_, i) => i !== index,
           ),
@@ -236,12 +240,12 @@ const CreateEventContent = () => {
       const fileKey = new URL(mediaItem.url).pathname.substring(1);
       const success = await handleDeleteMedia(fileKey);
       if (success) {
-        useEventStore.setState((state) => ({
+        useCreateEventStore.setState((state) => ({
           mediaPreviews: state.mediaPreviews?.filter((_, i) => i !== index),
         }));
       }
     } else {
-      useEventStore.setState((state) => ({
+      useCreateEventStore.setState((state) => ({
         tempMediaPreview: state.tempMediaPreview?.filter((_, i) => i !== index),
       }));
     }

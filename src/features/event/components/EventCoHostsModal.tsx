@@ -1,5 +1,5 @@
 import { Label } from "@/components/ui/label";
-import { useEventStore } from "@/store/useEventStore";
+import { useCreateEventStore } from "@/store/useCreateEventStore";
 import { UserType } from "@/types/UserType";
 import Image from "next/image";
 import { useState } from "react";
@@ -12,7 +12,7 @@ const EventCoHostsModal = ({
   allUsers: UserType[];
   currentUserId?: string;
 }) => {
-  const eventStore = useEventStore();
+  const eventStore = useCreateEventStore();
   const [coHosts, setCoHosts] = useState<
     { userId: UserType; status: string }[]
   >([]);

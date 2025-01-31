@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { useSession } from "@/contexts/SessionProvider";
 import AuthModal from "@/features/auth/components/AuthModal";
 import { cn } from "@/lib/utils";
-import { useEventStore } from "@/store/useEventStore";
+import { useCreateEventStore } from "@/store/useCreateEventStore";
 import { UserType } from "@/types/UserType";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -23,7 +23,7 @@ import EventLocationInput from "./EventLocationInput";
 
 const useSyncFormWithStore = () => {
   const { reset, getValues } = useFormContext();
-  const eventStore = useEventStore();
+  const eventStore = useCreateEventStore();
   const { user } = useSession();
 
   useEffect(() => {
@@ -63,7 +63,7 @@ const EventForm = ({
   allUsers?: UserType[];
 }) => {
   const router = useRouter();
-  const eventStore = useEventStore();
+  const eventStore = useCreateEventStore();
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [pendingData, setPendingData] = useState(null); // Store pending form data
   const { user, token } = useSession();

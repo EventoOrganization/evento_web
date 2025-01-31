@@ -1,5 +1,6 @@
 import Section from "@/components/layout/Section";
 import { Button } from "@/components/ui/button";
+import { useSession } from "@/contexts/SessionProvider";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -16,14 +17,53 @@ const EventSection = ({
   noEventsMessage?: string;
 }) => {
   const pathname = usePathname();
+  const { user } = useSession();
+  const canSeePrivateEvent = (event: any) => {
+    console.log(
+      `🔍 Vérification de l'événement : ${event.title} (${event._id})`,
+    );
+
+    if (event.eventType === "public") {
+      console.log(`✅ L'événement est PUBLIC → Affiché`);
+      return true;
+    }
+
+    if (!user?._id) {
+      console.log(`❌ L'utilisateur n'est pas connecté → Événement MASQUÉ`);
+      return false;
+    }
+
+    const isHost = event.user?._id === user._id;
+    const isCoHost = event.coHosts?.some(
+      (coHost: any) => coHost.userId?._id === user._id,
+    );
+    const isGuest = event.guests?.some((guest: any) => guest._id === user._id);
+    const isGoing = event.isGoing;
+    if (isHost) {
+      return true;
+    }
+    if (isCoHost) {
+      return true;
+    }
+    if (isGuest) {
+      return true;
+    }
+    if (isGoing) {
+      return true;
+    }
+    return false;
+  };
+
+  // 🔍 Filtrer les événements affichés
+  const visibleEvents = events ? events.filter(canSeePrivateEvent) : [];
   return (
     <Section className={sectionStyle}>
       <h4 className="font-medium">
         {title} ({events?.length || 0})
       </h4>
       <div className={cn("grid grid-cols-2 sm:grid-cols-3  w-full gap-2")}>
-        {events && events.length > 0 ? (
-          events.map((event: any, index: number) => (
+        {visibleEvents && visibleEvents.length > 0 ? (
+          visibleEvents.map((event: any, index: number) => (
             <EventPreview key={index} event={event} title={title} />
           ))
         ) : !pathname.startsWith("/profile/") ? (

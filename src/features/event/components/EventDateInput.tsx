@@ -5,13 +5,13 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useEventStore } from "@/store/useEventStore";
+import { useCreateEventStore } from "@/store/useCreateEventStore";
 import { useEffect, useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { handleFieldChange } from "../eventActions";
 
 const EventDateInput = () => {
-  const eventStore = useEventStore((state) => state);
+  const eventStore = useCreateEventStore((state) => state);
   const { register, setValue } = useFormContext();
   const [timeSlots, setTimeSlots] = useState(
     eventStore.timeSlots.length > 0

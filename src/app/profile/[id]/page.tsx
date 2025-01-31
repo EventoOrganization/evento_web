@@ -58,8 +58,10 @@ export default async function UserProfilePage({ params }: Props) {
     return (
       <UserProfile
         profile={profileData}
-        upcomingEvents={profileData.upcomingEvents || []}
-        hostingEvents={profileData.hostedEvents || []}
+        upcomingGoingEvents={profileData.upcomingEvents || []}
+        upcomingHostingEvents={profileData.hostedEvents || []}
+        pastGoingEvents={profileData.pastEventsGoing || []}
+        pastHostedEvents={profileData.pastEventsHosted || []}
       />
     );
   } catch (error) {

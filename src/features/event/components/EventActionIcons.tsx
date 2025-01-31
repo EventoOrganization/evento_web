@@ -11,7 +11,7 @@ import { useSession } from "@/contexts/SessionProvider";
 import AuthModal from "@/features/auth/components/AuthModal";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
-import { useGlobalStore } from "@/store/useGlobalStore";
+import { useEventStore } from "@/store/useEventsStore";
 import { EventType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
@@ -51,9 +51,8 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
   const newVersion = true;
   const { toast } = useToast();
   const { token, user } = useSession();
-  const updateEventStatusInStore = useGlobalStore(
-    (state) => state.updateEventStatus,
-  );
+
+  const { updateEventStatus: updateEventStatusInStore } = useEventStore();
   const [showQuestionModal, setShowQuestionModal] = useState<boolean>(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
   const [isRefusalModalOpen, setIsRefusalModalOpen] = useState(false);

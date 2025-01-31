@@ -17,7 +17,7 @@ import EventDescriptionTab from "@/features/event/components/EventDescriptionTab
 import EventEdit from "@/features/event/components/EventEdit";
 import StructuredData from "@/features/SEO/StructuredEventData";
 import { useToast } from "@/hooks/use-toast";
-import { useGlobalStore } from "@/store/useGlobalStore";
+import { useUsersStore } from "@/store/useUsersStore";
 import { EventType } from "@/types/EventType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { createUpdateEventField } from "@/utils/updateEventHelper";
@@ -37,12 +37,11 @@ const EventIdTabs = ({ evento }: { evento?: EventType }) => {
   const eventId = Array.isArray(id) ? id[0] : id;
   const { token, user } = useSession();
   const { toast } = useToast();
-  const { users } = useGlobalStore((state) => state);
+  const { users } = useUsersStore();
   const [event, setEvent] = useState<EventType | null>(evento || null);
   const [selectedTab, setSelectedTab] = useState("Description");
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  // Access control state
   const [accessControl, setAccessControl] = useState({
     isPublic: false,
     isPrivate: false,
@@ -53,7 +52,6 @@ const EventIdTabs = ({ evento }: { evento?: EventType }) => {
     isTempGuest: false,
     hasAccess: true,
   });
-  // Fonction pour mettre à jour le champ de l'événement
   const handleUpdateField = (field: string, value: any) => {
     if (event) {
       const updateFunction = createUpdateEventField(event);
@@ -62,7 +60,6 @@ const EventIdTabs = ({ evento }: { evento?: EventType }) => {
     }
   };
 
-  // Mettre à jour le statut local de l'événement
   const updateEventStatusLocally = (
     statusKey: EventStatusKeys,
     value: boolean,
@@ -103,7 +100,6 @@ const EventIdTabs = ({ evento }: { evento?: EventType }) => {
     });
   };
 
-  // Gérer la demande de rejoindre
   const handleRequestToJoin = async () => {
     try {
       const response = await fetchData(
@@ -134,7 +130,6 @@ const EventIdTabs = ({ evento }: { evento?: EventType }) => {
     }
   };
 
-  // Charger les données de l'événement
   useEffect(() => {
     const fetchEventData = async () => {
       try {
@@ -145,12 +140,8 @@ const EventIdTabs = ({ evento }: { evento?: EventType }) => {
           null,
           token,
         );
-        if (response.ok) {
-          setEvent(response.data as EventType);
-          console.log("event", response.data);
-        } else {
-          toast({ description: "Event not found", variant: "destructive" });
-        }
+        setEvent(response.data as EventType);
+        console.log("event", response.data);
       } catch {
         toast({ description: "Error fetching event", variant: "destructive" });
       }
@@ -158,7 +149,6 @@ const EventIdTabs = ({ evento }: { evento?: EventType }) => {
     fetchEventData();
   }, [eventId, token, toast]);
 
-  // Calculer les droits d'accès
   useEffect(() => {
     const emailParam = params.get("email");
     console.log("emailParam", emailParam);
@@ -186,7 +176,6 @@ const EventIdTabs = ({ evento }: { evento?: EventType }) => {
       const isTempGuest =
         event.tempGuests?.some((guest) => guest.email === emailParam) || false;
 
-      // Log des états d'accès
       const accessStates = {
         isPublic,
         isPrivate,
@@ -198,11 +187,10 @@ const EventIdTabs = ({ evento }: { evento?: EventType }) => {
         isAttendee,
         isUnconnectedGuest,
         isUnconnectedCoHost,
-        hasAccess: null, // Calculé après
+        hasAccess: null,
       };
       console.log("Access states:", accessStates);
 
-      // Calculer l'accès
       const hasAccess =
         isPublic ||
         isAdmin ||
@@ -219,14 +207,13 @@ const EventIdTabs = ({ evento }: { evento?: EventType }) => {
     } else {
       setAccessControl((prev) => ({
         ...prev,
-        hasAccess: false, // Si pas d'event ou user
+        hasAccess: false,
       }));
     }
 
     setIsLoading(false);
   }, [event, user, params]);
 
-  // Affichage de l'événement
   if (isLoading) {
     return (
       <div className="w-full h-full flex items-center justify-center">

@@ -6,7 +6,7 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useEventStore } from "@/store/useEventStore";
+import { useCreateEventStore } from "@/store/useCreateEventStore";
 import { useFieldArray, useFormContext } from "react-hook-form";
 
 const EventAdditionalFieldsInput = () => {
@@ -15,7 +15,7 @@ const EventAdditionalFieldsInput = () => {
     control,
     name: "additionalField",
   });
-  const setEventField = useEventStore((state) => state.setEventField);
+  const setEventField = useCreateEventStore((state) => state.setEventField);
   const additionalField = watch("additionalField");
 
   const updateStore = () => {

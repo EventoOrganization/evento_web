@@ -1,27 +1,26 @@
 "use client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useGlobalStore } from "@/store/useGlobalStore";
+import { useUsersStore } from "@/store/useUsersStore";
 import { EventType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 const AvatarStack = ({ event }: { event: EventType }) => {
   const [friends, setFriends] = useState<UserType[]>([]);
-  const { users } = useGlobalStore((state) => ({
-    users: state.users as UserType[],
-  }));
-
+  const { users } = useUsersStore();
   useEffect(() => {
     const filteredFriends =
       event?.attendees
-        ?.filter((attendee: UserType | null) => attendee && attendee._id) // Check for null and _id
+        ?.filter((attendee: UserType | null) => attendee && attendee._id)
         .filter((attendee: UserType) => {
-          const user = users.find((user) => user._id === attendee._id);
+          const user = Array.isArray(users)
+            ? users.find((user) => user._id === attendee._id)
+            : undefined;
           return user?.isIFollowingHim && user?.isFollowingMe;
         }) || [];
 
     setFriends(filteredFriends);
-  }, []);
+  }, [users, event?.attendees]);
   return (
     <div className="flex items-center">
       <div className="flex -space-x-3 overflow-hidden">

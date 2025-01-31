@@ -7,13 +7,13 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { useEventStore } from "@/store/useEventStore";
+import { useCreateEventStore } from "@/store/useCreateEventStore";
 import { debounce } from "lodash";
 import { useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { handleFieldChange } from "../eventActions";
 const OpenStreetMapGeocoding = () => {
-  const eventStore = useEventStore();
+  const eventStore = useCreateEventStore();
   const { register } = useFormContext();
   const [locationInput, setLocationInput] = useState("");
   const [lastFetchedLocation, setLastFetchedLocation] = useState("");

@@ -11,6 +11,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import UsersList from "@/components/UsersList";
 import { useSession } from "@/contexts/SessionProvider";
 import AuthModal from "@/features/auth/components/AuthModal";
 import { filterEvents } from "@/features/discover/discoverActions";
@@ -19,7 +20,9 @@ import TabSelector from "@/features/discover/TabSelector";
 import Event from "@/features/event/components/Event";
 import EventModal from "@/features/event/components/EventModal";
 import { cn } from "@/lib/utils";
-import { useGlobalStore } from "@/store/useGlobalStore";
+import { useEventStore } from "@/store/useEventsStore";
+import { useInterestsStore } from "@/store/useInterestsStore";
+import { useUsersStore } from "@/store/useUsersStore";
 import { EventType, InterestType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
 import { format, startOfDay } from "date-fns";
@@ -27,14 +30,13 @@ import { enUS } from "date-fns/locale";
 import {
   Calendar as CalendarIcon,
   Check,
+  ChevronDownIcon,
   FilterIcon,
   Search,
   XIcon,
 } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { filterUsers } from "./discoverActions";
-import DiscoverUserList from "./DiscoverUserList";
+import { useEffect, useMemo, useState } from "react";
 
 interface Location {
   lat: number;
@@ -42,12 +44,16 @@ interface Location {
 }
 
 const DiscoverPageContent = () => {
+  // Provider data
+  const session = useSession();
+  // Stored data
+  const { interests } = useInterestsStore();
+  const events = useEventStore((state) => state.events);
+  // local state
   const [selectedInterests, setSelectedInterests] = useState<InterestType[]>(
     [],
   );
-  const { users, interests, events } = useGlobalStore();
   const [showReset, setShowReset] = useState(false);
-  const today = startOfDay(new Date());
   const [selectedEvent, setSelectedEvent] = useState<EventType | null>();
   const [isEventModalOpen, setIsEventModalOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
@@ -56,136 +62,44 @@ const DiscoverPageContent = () => {
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [selectedTab, setSelectedTab] = useState("All events");
   const [location, setLocation] = useState<Location | null>(null);
-  const session = useSession();
-  const [usersYouMayKnow, setUsersYouMayKnow] = useState<UserType[]>([]);
-  const [usersWithSharedInterests, setUsersWithSharedInterests] = useState<
-    UserType[]
-  >([]);
-  const [generalSuggestions, setGeneralSuggestions] = useState<UserType[]>([]);
-  const [friends, setFriends] = useState<UserType[]>([]);
-  const [filteredUsers, setFilteredUsers] = useState<UserType[]>([]);
-  const [isUserFetching, setIsUserFetching] = useState(false);
   const [isHydrated, setIsHydrated] = useState(false);
   const [toggleSearch, setToggleSearch] = useState(false);
-  const [filteredEvents, setFilteredEvents] = useState<EventType[]>([]);
-  const [isFetching, setIsFetching] = useState(false);
+  const today = startOfDay(new Date());
   useEffect(() => {
     if (!isHydrated && events) {
       setIsHydrated(true);
     }
   }, [events]);
-  useEffect(() => {
-    const fetchFilteredEvents = async () => {
-      if (isHydrated && events && events.length > 0) {
-        setIsFetching(true); // Active le loader
-        // Simule une requête ou un délai pour garantir la mise à jour
-        const filtered = await new Promise<EventType[]>(
-          (resolve) =>
-            setTimeout(() => {
-              resolve(
-                filterEvents(
-                  events || [],
-                  selectedInterests || [],
-                  searchText || "",
-                  selectedTab || "All events",
-                  location || null,
-                  startDate || null,
-                  endDate || null,
-                ),
-              );
-            }, 500), // Ajout d'un délai (500 ms pour tester)
-        );
-        setFilteredEvents(filtered);
-        setIsFetching(false); // Désactive le loader une fois que tout est prêt
-      }
-    };
-
-    fetchFilteredEvents();
+  const getFilteredUserGroups = useUsersStore(
+    (state) => state.getFilteredUserGroups,
+  );
+  const {
+    filteredUsers,
+    friends,
+    usersYouMayKnow,
+    usersWithSharedInterests,
+    generalSuggestions,
+  } = getFilteredUserGroups(searchText, selectedInterests);
+  const filteredEvents = useMemo(() => {
+    if (!searchText) return events;
+    return filterEvents(
+      events,
+      selectedInterests,
+      searchText,
+      selectedTab,
+      location,
+      startDate,
+      endDate,
+    );
   }, [
-    selectedInterests,
     searchText,
-    selectedEvent,
+    selectedInterests,
     selectedTab,
     events,
     location,
-    interests,
-    users,
     startDate,
     endDate,
-    isHydrated,
   ]);
-  useEffect(() => {
-    if (filteredUsers && filteredUsers.length > 0) {
-      // 1. Filtrer les utilisateurs que l'on "peut connaître"
-      const mayKnow = filteredUsers.filter(
-        (user) => !user.isIFollowingHim && user.isFollowingMe,
-      );
-
-      // 2. Filtrer les utilisateurs avec des intérêts communs
-      const sharedInterests = filteredUsers.filter(
-        (user) =>
-          typeof user.matchingInterests === "number" &&
-          user.matchingInterests > 0 &&
-          !user.isIFollowingHim,
-      );
-
-      // 3. Filtrer les suggestions générales
-      const suggestions = filteredUsers.filter(
-        (user) =>
-          !user.isIFollowingHim &&
-          !user.isFollowingMe &&
-          (!user.matchingInterests || user.matchingInterests === 0),
-      );
-      const friends = filteredUsers.filter(
-        (user) => user.isIFollowingHim && user.isFollowingMe,
-      );
-      setFriends(friends);
-      setUsersYouMayKnow(mayKnow);
-      setUsersWithSharedInterests(sharedInterests);
-      setGeneralSuggestions(suggestions);
-    } else {
-      // Réinitialiser si aucun utilisateur filtré
-      setFriends([]);
-      setUsersYouMayKnow([]);
-      setUsersWithSharedInterests([]);
-      setGeneralSuggestions([]);
-    }
-  }, [filteredUsers]);
-
-  useEffect(() => {
-    const fetchFilteredUsers = async () => {
-      if (users && users.length > 0) {
-        setIsUserFetching(true); // Active le loader pour les utilisateurs
-
-        const filtered = users.filter((user) => {
-          // Vérifie si l'utilisateur correspond aux critères
-          const matchesInterests =
-            selectedInterests.length === 0 ||
-            (user.interests &&
-              user.interests.some((interestId) =>
-                selectedInterests.some(
-                  (selectedInterest) => selectedInterest._id === interestId,
-                ),
-              ));
-
-          const matchesSearchText = searchText
-            ? user.username.toLowerCase().includes(searchText.toLowerCase()) ||
-              user.firstName
-                ?.toLowerCase()
-                .includes(searchText.toLowerCase()) ||
-              user.lastName?.toLowerCase().includes(searchText.toLowerCase())
-            : true;
-
-          return matchesInterests && matchesSearchText;
-        });
-
-        setFilteredUsers(filtered);
-        setIsUserFetching(false); // Désactive le loader
-      }
-    };
-
-    fetchFilteredUsers();
-  }, [users, selectedInterests, searchText]);
 
   const handleEventClick = (event: EventType) => {
     const storedEvent = events.find((ev) => ev._id === event._id);
@@ -206,7 +120,11 @@ const DiscoverPageContent = () => {
     }
     setShowReset(true);
   };
+  const [SeeMoreCount, setSeeMoreCount] = useState<number>(10);
 
+  const handleSeeMore = () => {
+    setSeeMoreCount(SeeMoreCount + 10);
+  };
   const handleEndDateChange = (date: Date | undefined) => {
     if (!startDate) {
       setStartDate(today);
@@ -260,21 +178,80 @@ const DiscoverPageContent = () => {
                   </Button>
                 </div>
               </li>
-              {isFetching && (
-                <div className="flex justify-center items-center h-96">
-                  <EventoLoader />
-                </div>
-              )}
-              {searchText.length > 2 && filterUsers.length > 0 && (
+              {searchText.length > 2 && filteredUsers.length > 0 && (
                 <li className="px-4">
-                  <DiscoverUserList
-                    searchText={searchText.length > 2}
-                    friends={friends}
-                    isUserFetching={isUserFetching}
-                    usersYouMayKnow={usersYouMayKnow}
-                    usersWithSharedInterests={usersWithSharedInterests}
-                    generalSuggestions={generalSuggestions}
-                  />
+                  <div className="space-y-4 mb-20">
+                    {/* Friends */}
+                    {searchText && friends.length > 0 && (
+                      <div>
+                        <Label className="text-sm">Your friends</Label>
+                        <ul className="space-y-2">
+                          {friends.map((user: UserType) => (
+                            <li key={user._id} className="flex justify-between">
+                              <UsersList user={user} />
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    {/* Users You May Know */}
+                    {usersYouMayKnow.length > 0 && (
+                      <div>
+                        <Label className="text-sm">You may know them</Label>
+                        <ul className="space-y-2">
+                          {usersYouMayKnow.map((user: UserType) => (
+                            <li key={user._id} className="flex justify-between">
+                              <UsersList user={user} />
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    {/* Users with Shared Interests */}
+                    {usersWithSharedInterests.length > 0 && (
+                      <div>
+                        <Label className="text-sm">
+                          They share your interests
+                        </Label>
+                        <ul className="space-y-2">
+                          {usersWithSharedInterests.map((user: UserType) => (
+                            <li key={user._id} className="flex justify-between">
+                              <UsersList user={user} />
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    {/* General Suggestions */}
+                    {generalSuggestions.length > 0 && (
+                      <div>
+                        <Label className="text-sm">Other users</Label>
+                        <ul className="space-y-2">
+                          {generalSuggestions
+                            .slice(0, SeeMoreCount)
+                            .map((user: UserType) => (
+                              <li
+                                key={user._id}
+                                className="flex justify-between"
+                              >
+                                <UsersList user={user} />
+                              </li>
+                            ))}
+                        </ul>
+                        {generalSuggestions.length > SeeMoreCount && (
+                          <p
+                            className="text-sm text-blue-400 underline cursor-pointer flex gap-2"
+                            onClick={handleSeeMore}
+                          >
+                            <ChevronDownIcon /> See more
+                          </p>
+                        )}
+                      </div>
+                    )}
+                  </div>
                 </li>
               )}
               {filteredEvents.length > 0 ? (
@@ -449,14 +426,87 @@ const DiscoverPageContent = () => {
               <div className="p-4 hidden lg:block">
                 <div className="space-y-4 mb-20">
                   {session.isAuthenticated ? (
-                    <DiscoverUserList
-                      searchText={searchText.length > 2}
-                      friends={friends}
-                      isUserFetching={isUserFetching}
-                      usersYouMayKnow={usersYouMayKnow}
-                      usersWithSharedInterests={usersWithSharedInterests}
-                      generalSuggestions={generalSuggestions}
-                    />
+                    <div className="space-y-4 mb-20">
+                      {/* Friends */}
+                      {searchText && friends.length > 0 && (
+                        <div>
+                          <Label className="text-sm">Your friends</Label>
+                          <ul className="space-y-2">
+                            {friends.map((user: UserType) => (
+                              <li
+                                key={user._id}
+                                className="flex justify-between"
+                              >
+                                <UsersList user={user} />
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+
+                      {/* Users You May Know */}
+                      {usersYouMayKnow.length > 0 && (
+                        <div>
+                          <Label className="text-sm">You may know them</Label>
+                          <ul className="space-y-2">
+                            {usersYouMayKnow.map((user: UserType) => (
+                              <li
+                                key={user._id}
+                                className="flex justify-between"
+                              >
+                                <UsersList user={user} />
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+
+                      {/* Users with Shared Interests */}
+                      {usersWithSharedInterests.length > 0 && (
+                        <div>
+                          <Label className="text-sm">
+                            They share your interests
+                          </Label>
+                          <ul className="space-y-2">
+                            {usersWithSharedInterests.map((user: UserType) => (
+                              <li
+                                key={user._id}
+                                className="flex justify-between"
+                              >
+                                <UsersList user={user} />
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+
+                      {/* General Suggestions */}
+                      {generalSuggestions.length > 0 && (
+                        <div>
+                          <Label className="text-sm">Other users</Label>
+                          <ul className="space-y-2">
+                            {generalSuggestions
+                              .slice(0, SeeMoreCount)
+                              .map((user: UserType) => (
+                                <li
+                                  key={user._id}
+                                  className="flex justify-between"
+                                >
+                                  <UsersList user={user} />
+                                </li>
+                              ))}
+                          </ul>
+                          {generalSuggestions.length > SeeMoreCount && (
+                            <p
+                              className="text-sm text-blue-400 underline cursor-pointer flex gap-2"
+                              onClick={handleSeeMore}
+                            >
+                              <ChevronDownIcon /> See more
+                            </p>
+                          )}
+                        </div>
+                      )}
+                    </div>
                   ) : (
                     <>
                       <Label className="text-sm">Follow Suggestions</Label>

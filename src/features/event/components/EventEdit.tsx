@@ -2,7 +2,8 @@
 import { Switch } from "@/components/ui/togglerbtn";
 import { useSession } from "@/contexts/SessionProvider";
 import { useToast } from "@/hooks/use-toast";
-import { useGlobalStore } from "@/store/useGlobalStore";
+import { useEventStore } from "@/store/useEventsStore";
+import { useInterestsStore } from "@/store/useInterestsStore";
 import { EventType, InterestType, QuestionType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
@@ -29,7 +30,7 @@ const EventEdit = ({
   onUpdateField: (field: string, value: any) => void;
 }) => {
   const { toast } = useToast();
-  const { updateEvent } = useGlobalStore();
+  const { updateEvent } = useEventStore();
   const [showTooltip, setShowTooltip] = useState(false);
   const today = startOfDay(new Date());
   const [title, setTitle] = useState(event?.title || "");
@@ -45,7 +46,7 @@ const EventEdit = ({
   const [createRSVP, setCreateRSVP] = useState(
     event?.details?.createRSVP || false,
   );
-  const { interests } = useGlobalStore();
+  const { interests } = useInterestsStore();
   const [selectedInterests, setSelectedInterests] = useState<InterestType[]>(
     event?.interests || [],
   );

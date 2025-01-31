@@ -13,7 +13,7 @@ import EditProfileImage from "@/features/profile/EditProfileImage";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/store/useAuthStore";
-import { useGlobalStore } from "@/store/useGlobalStore";
+import { useProfileStore } from "@/store/useProfileStore";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
@@ -30,7 +30,7 @@ const UserInfoForm = ({ onAuthSuccess }: { onAuthSuccess: () => void }) => {
   const { toast } = useToast();
   const { setUser } = useAuthStore();
   const session = useSession();
-  const setProfileData = useGlobalStore((state) => state.setProfileData);
+  const { setProfileData } = useProfileStore();
   const [croppedProfileImage, setCroppedProfileImage] = useState<string | null>(
     session?.user?.profileImage || null,
   );

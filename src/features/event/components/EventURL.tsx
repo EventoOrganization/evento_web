@@ -2,11 +2,11 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/togglerbtn";
-import { useEventStore } from "@/store/useEventStore";
+import { useCreateEventStore } from "@/store/useCreateEventStore";
 import { useEffect, useState } from "react";
 import { handleFieldChange } from "../eventActions";
 const EventURL = () => {
-  const eventStore = useEventStore();
+  const eventStore = useCreateEventStore();
   const { isUrl } = eventStore;
   const [isToggleOn, setIsToggleOn] = useState(isUrl || false);
   useEffect(() => {

@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/togglerbtn";
 import { cn } from "@/lib/utils";
-import { useEventStore } from "@/store/useEventStore";
+import { useCreateEventStore } from "@/store/useCreateEventStore";
 import { QuestionType } from "@/types/EventType";
 import { ChevronDown, Info, Plus, Trash, X } from "lucide-react";
 import { handleFieldChange } from "../eventActions";
@@ -24,7 +24,7 @@ const EventQuestionsForm = () => {
     updateOption,
     removeOption,
     createRSVP,
-  } = useEventStore();
+  } = useCreateEventStore();
 
   const handleRSVPChange = () => {
     const newState = !createRSVP;

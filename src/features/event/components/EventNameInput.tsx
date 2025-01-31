@@ -6,12 +6,12 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { useEventStore } from "@/store/useEventStore";
+import { useCreateEventStore } from "@/store/useCreateEventStore";
 import { useFormContext } from "react-hook-form";
 import { handleFieldChange } from "../eventActions";
 
 const EventNameInput = ({ className }: { className?: string }) => {
-  const eventStore = useEventStore();
+  const eventStore = useCreateEventStore();
   // const { user } = useSession();
   // useEffect(() => {
   //   if (user) {

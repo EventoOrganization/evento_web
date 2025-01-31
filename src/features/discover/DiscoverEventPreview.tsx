@@ -7,7 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import EventActionIcons from "@/features/event/components/EventActionIcons";
 import { cn } from "@/lib/utils";
-import { useGlobalStore } from "@/store/useGlobalStore";
+import { useEventStore } from "@/store/useEventsStore";
 import { EventType } from "@/types/EventType";
 import { renderDate } from "@/utils/dateUtils";
 import Image from "next/image";
@@ -25,7 +25,7 @@ const DiscoverEventPreview = ({
   const eventEndDate = event.details?.endDate
     ? new Date(event.details.endDate)
     : null;
-  const { events } = useGlobalStore((state) => state);
+  const { events } = useEventStore();
   const currentEvent = events.find((e: EventType) => e._id === event._id);
 
   return (

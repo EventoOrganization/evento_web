@@ -2,8 +2,8 @@
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 // import { useSession } from "@/contexts/SessionProvider";
-import { useEventStore } from "@/store/useEventStore";
-import { useGlobalStore } from "@/store/useGlobalStore";
+import { useCreateEventStore } from "@/store/useCreateEventStore";
+import { useInterestsStore } from "@/store/useInterestsStore";
 import { InterestType } from "@/types/EventType";
 import { Label } from "@radix-ui/react-label";
 import { Check } from "lucide-react";
@@ -11,8 +11,9 @@ import { useEffect, useState } from "react";
 import MyGoogleMapComponent from "../discover/MyGoogleMapComponent";
 
 const CreateEventForm = () => {
-  const eventStore = useEventStore();
-  const interests = useGlobalStore((state) => state.interests);
+  const eventStore = useCreateEventStore();
+  const { interests } = useInterestsStore();
+
   // const { isAuthenticated, user, token } = useSession();
 
   // formFields

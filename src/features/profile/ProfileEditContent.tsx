@@ -7,7 +7,8 @@ import { countryCodes } from "@/constantes/countryCode";
 import { useSession } from "@/contexts/SessionProvider";
 import EditProfileImage from "@/features/profile/EditProfileImage";
 import { useToast } from "@/hooks/use-toast";
-import { useGlobalStore } from "@/store/useGlobalStore";
+import { useInterestsStore } from "@/store/useInterestsStore";
+import { useProfileStore } from "@/store/useProfileStore";
 import { InterestType } from "@/types/EventType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { cn } from "@nextui-org/theme";
@@ -22,9 +23,8 @@ const libraries: ("places" | "geometry" | "drawing" | "visualization")[] = [
 const ProfileEditContent = () => {
   const session = useSession();
   const maxChars = 155;
-  const { setProfileData } = useGlobalStore((state) => state);
-  const userInfo = useGlobalStore((state) => state.userInfo);
-  const interests = useGlobalStore((state) => state.interests);
+  const { userInfo, setProfileData } = useProfileStore();
+  const { interests } = useInterestsStore();
   const { toast } = useToast();
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);

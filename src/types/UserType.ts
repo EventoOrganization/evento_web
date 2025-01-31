@@ -10,6 +10,7 @@ export type UserType = {
   email: string;
   userId?: UserType;
   URL?: string;
+  users?: any[];
   preferences?: PreferencesType;
   unsubscribeToken?: string;
   countryCode?: string;

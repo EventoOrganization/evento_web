@@ -165,7 +165,7 @@ const AuthModal = ({
       }}
     >
       <DialogContent
-        className="rounded-xl max-w-[95%] max-h-[95%] md:max-w-lg overflow-y-auto  px-4 pt-10 md:pt-4 pb-4 "
+        className="rounded-xl max-w-[95%] max-h-[80%] md:max-w-lg overflow-y-auto  px-4 pt-10 md:pt-4 pb-4 "
         onClick={(e) => e.stopPropagation()}
       >
         <DialogHeader className="flex-row items-center gap-4 ">

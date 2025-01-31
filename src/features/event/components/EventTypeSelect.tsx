@@ -1,10 +1,10 @@
 import { FormControl, FormItem, FormLabel } from "@/components/ui/form";
-import { useEventStore } from "@/store/useEventStore";
+import { useCreateEventStore } from "@/store/useCreateEventStore";
 import { useFormContext } from "react-hook-form";
 import { handleFieldChange } from "../eventActions";
 
 const EventTypeSelect = () => {
-  const eventStore = useEventStore();
+  const eventStore = useCreateEventStore();
   const { register, setValue } = useFormContext();
 
   // const capitalizeFirstLetter = (value: string) => {

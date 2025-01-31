@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useSession } from "@/contexts/SessionProvider";
 import { useToast } from "@/hooks/use-toast";
-import { useGlobalStore } from "@/store/useGlobalStore";
+import { useUsersStore } from "@/store/useUsersStore";
 import { EventType } from "@/types/EventType";
 import { TempUserType, UserType } from "@/types/UserType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
@@ -37,9 +37,8 @@ const EventGuestModal: React.FC<EventGuestModalProps> = ({
   const { id: eventId } = useParams();
   const [isOpen, setIsOpen] = useState(false);
   4;
-  const { users: allUsers } = useGlobalStore((state) => ({
-    users: state.users as UserType[],
-  }));
+
+  const { users: allUsers } = useUsersStore();
   const [excludedUserIds, setExcludedUserIds] = useState<Set<string>>(
     new Set(),
   );

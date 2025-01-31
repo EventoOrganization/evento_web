@@ -1,12 +1,15 @@
-import { useGlobalStore } from "@/store/useGlobalStore";
+import { EventType } from "@/types/EventType";
+import { UserType } from "@/types/UserType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 
 export const handleSwitchHideFromProfile = async (
   eventId: string,
   userId: string,
   token: string,
+  userInfo: UserType | null,
+  events: EventType[],
+  updateEvent: (eventId: string, updatedEvent: Partial<EventType>) => void,
 ) => {
-  const { events, updateEvent, userInfo } = useGlobalStore.getState();
   const pastEvents = [
     ...(userInfo?.pastEventsGoing || []),
     ...(userInfo?.pastEventsHosted || []),

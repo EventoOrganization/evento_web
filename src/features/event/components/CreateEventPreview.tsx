@@ -5,7 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Label } from "@/components/ui/label";
 import { useSession } from "@/contexts/SessionProvider";
 import { cn } from "@/lib/utils";
-import { useEventStore } from "@/store/useEventStore";
+import { useCreateEventStore } from "@/store/useCreateEventStore";
 import Image from "next/image";
 import CreateEventCarousel from "./CreateEventCarousel";
 const CreateEventPreview = ({
@@ -17,7 +17,7 @@ const CreateEventPreview = ({
   className?: string;
   handleRemoveInterest?: (interestId: string) => void;
 }) => {
-  const eventStore = useEventStore();
+  const eventStore = useCreateEventStore();
   const { user } = useSession();
   const renderDate = () => {
     const startDate = eventStore.date || new Date().toISOString();

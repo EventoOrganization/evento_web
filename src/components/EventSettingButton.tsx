@@ -3,6 +3,8 @@ import DeleteEventButton from "@/features/event/components/DeleteEventButton";
 import { hasEventhost } from "@/features/event/eventActions";
 import { handleSwitchHideFromProfile } from "@/features/profile/profileAction";
 import { cn } from "@/lib/utils";
+import { useEventStore } from "@/store/useEventsStore";
+import { useProfileStore } from "@/store/useProfileStore";
 import { EventType } from "@/types/EventType";
 import { Button } from "./ui/button";
 import {
@@ -32,6 +34,8 @@ const EventSettingButton = ({
   event?: EventType;
 }) => {
   const { user, token } = useSession();
+  const { updateEvent, events } = useEventStore();
+  const { userInfo } = useProfileStore();
   return (
     <>
       <DropdownMenu>
@@ -73,7 +77,14 @@ const EventSettingButton = ({
                 checked={event?.hiddenByUsers?.some((id) => id === user?._id)}
                 onClick={(e) => {
                   e.stopPropagation();
-                  handleSwitchHideFromProfile(event._id, user._id, token);
+                  handleSwitchHideFromProfile(
+                    event._id,
+                    user._id,
+                    token,
+                    userInfo,
+                    events,
+                    updateEvent,
+                  );
                 }}
               />
             </DropdownMenuItem>

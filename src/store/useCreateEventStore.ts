@@ -68,7 +68,6 @@ const isLocalStorageAvailable = () => {
     return false;
   }
 };
-// Custom localStorage wrapper to conform to zustand's PersistStorage type
 const localStorageCustom = {
   getItem: (name: string) => {
     if (isLocalStorageAvailable()) {
@@ -89,7 +88,7 @@ const localStorageCustom = {
   },
 };
 
-export const useEventStore = create<EventFormState>()(
+export const useCreateEventStore = create<EventFormState>()(
   persist(
     (set) => ({
       questions: [],
@@ -230,7 +229,7 @@ export const useEventStore = create<EventFormState>()(
         }),
     }),
     {
-      name: "event-form-storage",
+      name: "create-event-store",
       storage: isLocalStorageAvailable() ? localStorageCustom : undefined,
     },
   ),

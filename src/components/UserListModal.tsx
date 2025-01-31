@@ -11,7 +11,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { useSession } from "@/contexts/SessionProvider";
 import { useToast } from "@/hooks/use-toast";
-import { useGlobalStore } from "@/store/useGlobalStore";
+import { useProfileStore } from "@/store/useProfileStore";
+import { useUsersStore } from "@/store/useUsersStore";
 import { UserType } from "@/types/UserType";
 import Image from "next/image";
 import Link from "next/link";
@@ -19,8 +20,8 @@ import { useEffect, useState } from "react";
 interface UserListModalProps {
   isOpen: boolean;
   closeModal: () => void;
-  userIds: string[]; // Liste d'IDs d'utilisateurs (ex. followingUserIds ou followerUserIds)
-  title: string; // Titre de la modale (ex. "Followers" ou "Following")
+  userIds: string[];
+  title: string;
 }
 
 const UserListModal = ({
@@ -34,16 +35,13 @@ const UserListModal = ({
   const [loadingUsers, setLoadingUsers] = useState<Record<string, boolean>>({});
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredUsers, setFilteredUsers] = useState<UserType[]>([]);
-  const { users } = useGlobalStore((state) => ({
-    users: state.users,
-  }));
+  const { users, updateUser } = useUsersStore();
+  const { updateFollowingUserIds } = useProfileStore();
   useEffect(() => {
-    // Filtrer les utilisateurs selon leurs IDs
     const matchedUsers = users.filter((user) => userIds.includes(user._id));
     setFilteredUsers(matchedUsers);
   }, [userIds, users]);
 
-  // Fonction pour filtrer selon le terme de recherche
   const searchFilteredUsers = filteredUsers.filter(
     (user) =>
       user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -67,16 +65,12 @@ const UserListModal = ({
 
       if (response.ok) {
         const isCurrentlyFollowing = userToUpdate.isIFollowingHim;
-        useGlobalStore.getState().updateUser({
-          ...userToUpdate,
-          isIFollowingHim: !isCurrentlyFollowing,
-        });
-        useGlobalStore
-          .getState()
-          .updateFollowingUserIds(
-            userToUpdate._id,
-            isCurrentlyFollowing ? "unfollow" : "follow",
-          );
+        updateUser({ ...userToUpdate, isIFollowingHim: !isCurrentlyFollowing });
+        updateFollowingUserIds(
+          userToUpdate._id,
+          isCurrentlyFollowing ? "unfollow" : "follow",
+        );
+
         toast({
           title: "Success",
           description: `You ${!isCurrentlyFollowing ? "followed" : "unfollowed"} this user`,

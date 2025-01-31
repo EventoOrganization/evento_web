@@ -5,13 +5,13 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useEventStore } from "@/store/useEventStore";
+import { useCreateEventStore } from "@/store/useCreateEventStore";
 import { useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { handleFieldChange } from "../eventActions";
 
 const EventLocationInputFree = () => {
-  const eventStore = useEventStore();
+  const eventStore = useCreateEventStore();
   const { register } = useFormContext();
   const [location, setLocation] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);

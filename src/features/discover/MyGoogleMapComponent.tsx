@@ -2,7 +2,7 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
-import { useEventStore } from "@/store/useEventStore";
+import { useCreateEventStore } from "@/store/useCreateEventStore";
 import { StandaloneSearchBox, useJsApiLoader } from "@react-google-maps/api";
 import { ChevronDown } from "lucide-react";
 import { usePathname } from "next/navigation";
@@ -28,7 +28,8 @@ const MyGoogleMapComponent = ({
   const pathname = usePathname();
   const [address, setAddress] = useState<string>("");
   const [isMapVisible, setIsMapVisible] = useState<boolean>(false);
-  const eventStore = useEventStore();
+  const [isSearchAvailable, setIsSearchAvailable] = useState<boolean>(true);
+  const eventStore = useCreateEventStore();
   const [mapCenter, setMapCenter] = useState<Location>({
     lat: 37.7749,
     lng: -122.4194,
@@ -41,48 +42,30 @@ const MyGoogleMapComponent = ({
     libraries,
   });
 
-  // Function to fetch timezone from Google Time Zone API
-  // const fetchTimeZone = async (lat: number, lng: number) => {
-  //   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
-  //   const url = `https://maps.googleapis.com/maps/api/timezone/json?location=${lat},${lng}&timestamp=${Math.floor(
-  //     Date.now() / 1000,
-  //   )}&key=${apiKey}`;
-
-  //   try {
-  //     const response = await fetch(url);
-  //     const data = await response.json();
-  //     if (data.status === "OK") {
-  //       return data.timeZoneId;
-  //     }
-  //     console.error("Failed to fetch timezone data:", data.status);
-  //   } catch (error) {
-  //     console.error("Error fetching timezone:", error);
-  //   }
-  //   return null;
-  // };
-
   const fetchAddressAndTimeZone = async (lat: number, lng: number) => {
     if (!isLoaded) return;
 
-    const geocoder = new google.maps.Geocoder();
-    const location = { lat, lng };
+    try {
+      const geocoder = new google.maps.Geocoder();
+      const location = { lat, lng };
 
-    geocoder.geocode({ location }, async (results, status) => {
-      if (status === "OK" && results && results[0]) {
-        setAddress(results[0].formatted_address);
-        if (pathname === "/create-event") {
-          eventStore.setEventField("latitude", location.lat.toString());
-          eventStore.setEventField("longitude", location.lng.toString());
-          eventStore.setEventField("location", results[0].formatted_address);
+      geocoder.geocode({ location }, async (results, status) => {
+        if (status === "OK" && results && results[0]) {
+          setAddress(results[0].formatted_address);
+          if (pathname === "/create-event") {
+            eventStore.setEventField("latitude", location.lat.toString());
+            eventStore.setEventField("longitude", location.lng.toString());
+            eventStore.setEventField("location", results[0].formatted_address);
+          }
+        } else {
+          console.error("Geocoder failed:", status);
+          setIsSearchAvailable(false); // Désactiver la recherche en cas d'erreur
         }
-        // const timeZone = await fetchTimeZone(lat, lng);
-        // if (timeZone) {
-        //   eventStore.setEventField("timeZone", timeZone);
-        // }
-      } else {
-        console.error("Geocoder failed:", status);
-      }
-    });
+      });
+    } catch (error) {
+      console.error("Erreur dans fetchAddressAndTimeZone:", error);
+      setIsSearchAvailable(false);
+    }
   };
 
   useEffect(() => {
@@ -96,7 +79,10 @@ const MyGoogleMapComponent = ({
         setMapCenter(currentLocation);
         fetchAddressAndTimeZone(currentLocation.lat, currentLocation.lng);
       },
-      (error) => console.error("Geolocation error:", error),
+      (error) => {
+        console.error("Geolocation error:", error);
+        setIsSearchAvailable(false);
+      },
     );
   }, [isLoaded]);
 
@@ -122,6 +108,15 @@ const MyGoogleMapComponent = ({
       }
     }
   }, [pathname]);
+
+  const handleManualAddressChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    setAddress(e.target.value);
+    if (pathname === "/create-event") {
+      eventStore.setEventField("location", e.target.value);
+    }
+  };
 
   const handleMapClick = async (event: google.maps.MapMouseEvent) => {
     if (event.latLng) {
@@ -158,7 +153,7 @@ const MyGoogleMapComponent = ({
       </div>
 
       <div className="search-box">
-        {isLoaded ? (
+        {isLoaded && isSearchAvailable ? (
           <StandaloneSearchBox
             onLoad={onLoad}
             onPlacesChanged={onPlacesChanged}
@@ -170,7 +165,13 @@ const MyGoogleMapComponent = ({
             />
           </StandaloneSearchBox>
         ) : (
-          <p>Loading...</p>
+          <Input
+            type="text"
+            className="text-xs md:text-sm"
+            placeholder="Enter location manually"
+            value={address}
+            onChange={handleManualAddressChange}
+          />
         )}
       </div>
 

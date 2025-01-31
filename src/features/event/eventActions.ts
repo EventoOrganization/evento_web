@@ -1,18 +1,18 @@
-import { useEventStore } from "@/store/useEventStore";
+import { useCreateEventStore } from "@/store/useCreateEventStore";
 import { EventType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
 
 export const setEventField = (key: string, value: any) => {
-  const eventStore = useEventStore.getState();
+  const eventStore = useCreateEventStore.getState();
   eventStore.setEventField(key, value);
 };
 
 export const clearEventForm = () => {
-  const eventStore = useEventStore.getState();
+  const eventStore = useCreateEventStore.getState();
   eventStore.clearEventForm();
 };
 export const handleFieldChange = (key: string, value: any, index?: number) => {
-  useEventStore.setState((state) => {
+  useCreateEventStore.setState((state) => {
     if (key === "timeSlots" && index !== undefined) {
       const updatedTimeSlots = [...state.timeSlots];
       updatedTimeSlots[index] = { ...updatedTimeSlots[index], ...value };

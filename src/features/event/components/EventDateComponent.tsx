@@ -9,7 +9,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Switch } from "@/components/ui/togglerbtn";
-import { useEventStore } from "@/store/useEventStore";
+import { useCreateEventStore } from "@/store/useCreateEventStore";
 import { TimeSlotType } from "@/types/EventType";
 import { isSameDay, setDateWithTime, updateTimeSlots } from "@/utils/dateUtils";
 import { getUTCOffset, timeZonesMap } from "@/utils/timezones";
@@ -50,7 +50,7 @@ const EventDateComponent = ({
   toggleEditMode,
 }: EventDateComponentProps) => {
   const today = startOfDay(new Date());
-  const eventStore = useEventStore();
+  const eventStore = useCreateEventStore();
   const isEditMode = !!handleUpdate;
   const defaultTimeZone = getUTCOffset();
   const matchedTimeZone =

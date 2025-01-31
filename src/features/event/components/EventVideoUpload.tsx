@@ -5,14 +5,14 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useEventStore } from "@/store/useEventStore";
+import { useCreateEventStore } from "@/store/useCreateEventStore";
 import { Film } from "lucide-react";
 import { useState } from "react";
 import { useFormContext } from "react-hook-form";
 
 const EventVideoUpload = () => {
   const [videoPreview, setVideoPreview] = useState<string | null>(null);
-  const eventStore = useEventStore();
+  const eventStore = useCreateEventStore();
   const { register } = useFormContext();
   const handleVideoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

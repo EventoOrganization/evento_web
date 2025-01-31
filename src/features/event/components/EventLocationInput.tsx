@@ -1,5 +1,5 @@
 import { Input } from "@/components/ui/input";
-import { useEventStore } from "@/store/useEventStore";
+import { useCreateEventStore } from "@/store/useCreateEventStore";
 import { useJsApiLoader } from "@react-google-maps/api";
 import { useEffect, useRef, useState } from "react";
 export interface Location {
@@ -10,7 +10,7 @@ const libraries: ("places" | "geometry" | "drawing" | "visualization")[] = [
   "places",
 ];
 const EventLocationInput = () => {
-  const eventStore = useEventStore();
+  const eventStore = useCreateEventStore();
   const inputRef = useRef<HTMLInputElement>(null);
   const [autocomplete, setAutocomplete] =
     useState<google.maps.places.Autocomplete | null>(null);

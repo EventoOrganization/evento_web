@@ -2,8 +2,8 @@
 
 import { Button } from "@/components/ui/button";
 import { useSession } from "@/contexts/SessionProvider";
-import { useToast } from "@/hooks/use-toast"; // Si vous avez un hook pour les toasts
-import { useGlobalStore } from "@/store/useGlobalStore";
+import { useToast } from "@/hooks/use-toast";
+import { useEventStore } from "@/store/useEventsStore";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -21,7 +21,7 @@ const DeleteEventButton = ({
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const { token } = useSession();
-  const deleteEventFromStore = useGlobalStore((state) => state.deleteEvent);
+  const { deleteEvent } = useEventStore();
   const { toast } = useToast();
   if (!isHost) {
     return null;
@@ -37,7 +37,7 @@ const DeleteEventButton = ({
         undefined,
         token,
       );
-      deleteEventFromStore(eventId); // Suppression dans le store
+      deleteEvent(eventId);
       setLoading(false);
       toast({
         title: "Event Deleted",

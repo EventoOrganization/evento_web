@@ -5,7 +5,7 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useEventStore } from "@/store/useEventStore";
+import { useCreateEventStore } from "@/store/useCreateEventStore";
 import { Camera } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -13,7 +13,7 @@ import { useFormContext } from "react-hook-form";
 
 const EventImageUpload = () => {
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
-  const eventStore = useEventStore();
+  const eventStore = useCreateEventStore();
   const { register } = useFormContext();
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {

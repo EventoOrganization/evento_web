@@ -5,12 +5,12 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
-import { useEventStore } from "@/store/useEventStore";
+import { useCreateEventStore } from "@/store/useCreateEventStore";
 import { useFormContext } from "react-hook-form";
 import { handleFieldChange } from "../eventActions";
 
 const EventDescriptionArea = () => {
-  const eventStore = useEventStore();
+  const eventStore = useCreateEventStore();
   const { register } = useFormContext();
   return (
     <FormField

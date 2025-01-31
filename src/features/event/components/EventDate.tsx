@@ -6,7 +6,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useEventStore } from "@/store/useEventStore";
+import { useCreateEventStore } from "@/store/useCreateEventStore";
 import { format, startOfDay } from "date-fns";
 import { enUS } from "date-fns/locale";
 import { Calendar as CalendarIcon } from "lucide-react";
@@ -14,7 +14,7 @@ import { useEffect, useState } from "react";
 import { handleFieldChange } from "../eventActions";
 
 const EventDate = () => {
-  const eventStore = useEventStore();
+  const eventStore = useCreateEventStore();
   const today = startOfDay(new Date());
   const [useMultipleTimes, setUseMultipleTimes] = useState(false);
   const [startDate, setStartDate] = useState<Date | undefined>(

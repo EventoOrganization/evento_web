@@ -4,7 +4,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useSession } from "@/contexts/SessionProvider";
 import AuthModal from "@/features/auth/components/AuthModal";
 import { useToast } from "@/hooks/use-toast";
-import { useGlobalStore } from "@/store/useGlobalStore";
+import { useEventStore } from "@/store/useEventsStore";
+import { useUsersStore } from "@/store/useUsersStore";
 import { EventType } from "@/types/EventType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { XIcon } from "lucide-react";
@@ -42,11 +43,8 @@ const UsersList = ({
   const [isLoggedUser, setIsLoggedUser] = useState<boolean>(false);
   const isFollowingMe = user?.isFollowingMe;
   const session = useSession();
-  const { updateUser } = useGlobalStore((state) => ({
-    updateUser: state.updateUser,
-    users: state.users,
-  }));
-
+  const { updateUser } = useUsersStore();
+  const { updateEvent } = useEventStore();
   useEffect(() => {
     if (session?.user && user) {
       if (session.user._id === user._id) {
@@ -158,7 +156,7 @@ const UsersList = ({
       );
 
       if (response.ok) {
-        useGlobalStore.getState().updateEvent(eventId, {
+        updateEvent(eventId, {
           guests: event?.guests?.filter((guest) => guest._id !== user._id),
         });
         updateUser({

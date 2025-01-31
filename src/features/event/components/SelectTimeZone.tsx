@@ -8,7 +8,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
-import { useEventStore } from "@/store/useEventStore";
+import { useCreateEventStore } from "@/store/useCreateEventStore";
 import { timeZonesMap } from "@/utils/timezones";
 import { useEffect, useState } from "react";
 import { handleFieldChange } from "../eventActions";
@@ -27,7 +27,7 @@ const SelectTimeZone = ({
   className,
 }: SelectTimeZoneProps) => {
   const [currentLabel, setCurrentLabel] = useState("Timezone");
-  const eventoStore = useEventStore();
+  const eventoStore = useCreateEventStore();
   useEffect(() => {
     // console.log("changed timezone", eventoStore.timeZone);
     setCurrentLabel(

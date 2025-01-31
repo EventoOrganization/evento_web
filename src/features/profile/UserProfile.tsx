@@ -11,25 +11,37 @@ import ProfileHeader from "./ProfileHeader";
 
 const UserProfile = ({
   profile,
-  upcomingEvents,
-  hostingEvents,
+  upcomingGoingEvents,
+  upcomingFavouriteEvents,
+  upcomingHostingEvents,
+  pastGoingEvents,
+  pastHostedEvents,
+  upcomingCoHostedEvents,
+  upcomingGuestedEvents,
 }: {
   profile?: UserType | null;
-  upcomingEvents?: EventType[];
-  hostingEvents?: EventType[];
+  upcomingGoingEvents?: EventType[];
+  upcomingFavouriteEvents?: EventType[];
+  upcomingRefusedEvents?: EventType[];
+  upcomingGuestedEvents?: EventType[];
+  upcomingHostingEvents?: EventType[];
+  upcomingCoHostedEvents?: EventType[];
+  pastHostedEvents?: EventType[];
+  pastGoingEvents?: EventType[];
 }) => {
   const [isMounted, setIsMounted] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
   const pathname = usePathname();
   useEffect(() => {
     setIsMounted(true);
-    if (!profile || !upcomingEvents) {
+    if (!profile) {
       setIsFetching(true);
       setTimeout(() => {
         setIsFetching(false);
-      }, 1500); // Simule une requête API
+      }, 1500);
     }
-  }, [profile, upcomingEvents]);
+  }, [profile]);
+  console.log("upcomingGuestedEvents", upcomingGuestedEvents);
   return (
     <>
       {!isMounted || isFetching ? (
@@ -42,7 +54,10 @@ const UserProfile = ({
           <Section className="gap-6 max-w-2xl">
             <EventSection
               title="Upcoming Events"
-              events={upcomingEvents}
+              events={[
+                ...(upcomingGoingEvents || []),
+                ...(upcomingFavouriteEvents || []),
+              ]}
               sectionStyle="flex flex-col items-start gap-4 p-0 lg: max-w-7xl"
               noEventsMessage={
                 pathname.startsWith("/profile/")
@@ -52,7 +67,10 @@ const UserProfile = ({
             />
             <EventSection
               title="Events Hosting"
-              events={hostingEvents}
+              events={[
+                ...(upcomingHostingEvents || []),
+                ...(upcomingCoHostedEvents || []),
+              ]}
               sectionStyle="flex flex-col items-start gap-4 p-0 lg: max-w-7xl"
               noEventsMessage={
                 pathname.startsWith("/profile/")
@@ -60,36 +78,30 @@ const UserProfile = ({
                   : "There are no events at the moment. Explore Evento and create or host an event easily."
               }
             />
-            {profile?.pastEventsGoing &&
-              profile?.pastEventsGoing?.length > 0 && (
-                <EventSection
-                  title="Past Events Attended"
-                  events={profile?.pastEventsGoing}
-                  sectionStyle="flex flex-col items-start gap-4 p-0  lg: max-w-7xl"
-                  noEventsMessage="There are no events at the moment. Explore Evento and create or host an event easily."
-                />
-              )}
-            {profile?.pastEventsHosted &&
-              profile?.pastEventsHosted?.length > 0 && (
-                <EventSection
-                  title="Past Events Hosted"
-                  events={profile?.pastEventsHosted}
-                  sectionStyle="flex flex-col items-start gap-4 p-0  lg: max-w-7xl"
-                  noEventsMessage="There are no events at the moment. Explore Evento and create or host an event easily."
-                />
-              )}
-            {/* <UserListModal
-              isOpen={!!modalType}
-              closeModal={() => setModalType("")}
-              title={
-                modalType === ModalType.FOLLOWING ? "Following" : "Followers"
+            <EventSection
+              title="Past Events Attended"
+              events={
+                pastGoingEvents
+                  ? pastGoingEvents
+                  : profile?.pastEventsGoing
+                    ? profile?.pastEventsGoing
+                    : []
               }
-              userIds={
-                modalType === ModalType.FOLLOWING
-                  ? profile?.followingUserIds || []
-                  : profile?.followerUserIds || []
+              sectionStyle="flex flex-col items-start gap-4 p-0  lg: max-w-7xl"
+              noEventsMessage="There are no events at the moment. Explore Evento and create or host an event easily."
+            />
+            <EventSection
+              title="Past Events Hosted"
+              events={
+                pastHostedEvents
+                  ? pastHostedEvents
+                  : profile?.pastEventsHosted
+                    ? profile?.pastEventsHosted
+                    : []
               }
-            /> */}
+              sectionStyle="flex flex-col items-start gap-4 p-0  lg: max-w-7xl"
+              noEventsMessage="There are no events at the moment. Explore Evento and create or host an event easily."
+            />
           </Section>
         </>
       )}

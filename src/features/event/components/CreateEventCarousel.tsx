@@ -1,5 +1,5 @@
 "use client";
-import { useEventStore } from "@/store/useEventStore";
+import { useCreateEventStore } from "@/store/useCreateEventStore";
 import { cn } from "@nextui-org/theme";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
@@ -14,7 +14,7 @@ type MediaItem = {
 
 const CreateEventCarousel = () => {
   const [isModalOpen, setModalOpen] = useState(false);
-  const mediaPreviews = useEventStore((state) => state.mediaPreviews);
+  const mediaPreviews = useCreateEventStore((state) => state.mediaPreviews);
   const [carouselItems, setCarouselItems] = useState<any>(mediaPreviews);
   const [isSwiping, setIsSwiping] = useState(false);
   const touchStartX = useRef(0);
@@ -43,7 +43,7 @@ const CreateEventCarousel = () => {
   //   try {
   //     const success = await handleDeleteMedia(fileKey);
   //     if (success) {
-  //       useEventStore.setState((state) => ({
+  //       useCreateEventStore.setState((state) => ({
   //         mediaPreviews: state?.mediaPreviews?.filter((_, i) => i !== index),
   //       }));
   //       const updatedItems = mediaPreviews?.filter((_, i) => i !== index);

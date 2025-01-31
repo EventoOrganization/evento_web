@@ -11,7 +11,7 @@ import { useSession } from "@/contexts/SessionProvider";
 import CSVImport from "@/features/event/components/CSVImport";
 import EventAddTempGuest from "@/features/event/components/EventAddTempGuest";
 import { useToast } from "@/hooks/use-toast";
-import { useGlobalStore } from "@/store/useGlobalStore";
+import { useUsersStore } from "@/store/useUsersStore";
 import { EventType } from "@/types/EventType";
 import { TempUserType, UserType } from "@/types/UserType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
@@ -26,7 +26,7 @@ type SelectedUser = UserType | TempUserType;
 const EventSuccessPage = () => {
   const { id } = useParams();
   const eventId = Array.isArray(id) ? id[0] : id;
-  const { users } = useGlobalStore((state) => state);
+  const { users } = useUsersStore();
   const [isGuestAllowed, setIsGuestAllowed] = useState<boolean | null>(null);
   const { user, token } = useSession();
   const [showTooltip, setShowTooltip] = useState(false);
@@ -55,13 +55,9 @@ const EventSuccessPage = () => {
           null,
           token,
         );
-        if (response.ok) {
-          setEvent(response.data as EventType);
-          setIsGuestAllowed(response.data?.guestsAllowFriend || false);
-          setIsRestricted(response.data?.restricted || false);
-        } else {
-          toast({ description: "Event not found", variant: "destructive" });
-        }
+        setEvent(response.data as EventType);
+        setIsGuestAllowed(response.data?.guestsAllowFriend || false);
+        setIsRestricted(response.data?.restricted || false);
       } catch {
         toast({ description: "Error fetching event", variant: "destructive" });
       }

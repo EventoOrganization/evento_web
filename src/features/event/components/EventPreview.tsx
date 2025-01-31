@@ -26,8 +26,6 @@ const EventPreview = ({
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const pathname = usePathname();
-  // Adjusted function for correct DateTimeFormatOptions types
-
   const handleCardClick = () => {
     setIsModalOpen(true);
     // console.log("eventprev modal open", event);

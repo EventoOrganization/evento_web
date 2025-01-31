@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import UserListModal from "@/components/UserListModal";
 import { useSession } from "@/contexts/SessionProvider";
 import { toast } from "@/hooks/use-toast";
-import { useGlobalStore } from "@/store/useGlobalStore";
+import { useUsersStore } from "@/store/useUsersStore";
 import { InterestType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
 import { Pencil, Settings, UserRoundPlus } from "lucide-react";
@@ -37,10 +37,8 @@ const platformIcons: Record<string, JSX.Element> = {
 const ProfileHeader = ({ profile }: Props) => {
   const pathname = usePathname();
   const { token, user } = useSession();
-  const { updateUser } = useGlobalStore((state) => ({
-    updateUser: state.updateUser,
-    users: state.users,
-  }));
+
+  const { updateUser } = useUsersStore();
   const [loading, setLoading] = useState<boolean>(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
   const [isIFollowingHim, setIsIFollowingHim] = useState<boolean | null>(
@@ -132,7 +130,13 @@ const ProfileHeader = ({ profile }: Props) => {
           <h3>{profile?.username}</h3>
           <p>{profile?.bio}</p>
           <p className="text-muted-foreground">{profile?.address}</p>
-          <p className="text-eventoPurpleLight">{profile?.URL}</p>
+          <Link
+            href={profile?.URL ?? ""}
+            target="_blank"
+            className="text-eventoPurpleLight"
+          >
+            {profile?.URL}
+          </Link>
         </div>
         {interests && interests.length > 0 && (
           <div className="flex flex-wrap gap-2 w-full">
