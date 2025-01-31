@@ -77,7 +77,7 @@ const EventAttendeesTab: React.FC<EventAttendeesTabProps> = ({
             users={event?.requested || []}
           />
           <CollapsibleList
-            title="favorited"
+            title={event?.eventType === "public" ? "Favourite" : "Maybe"}
             count={event?.favouritees?.length || 0}
             users={event?.favouritees || []}
           />
