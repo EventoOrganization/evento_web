@@ -10,6 +10,7 @@ import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { startOfDay } from "date-fns";
 import { InfoIcon } from "lucide-react";
 import { useState } from "react";
+import EditEventLimit from "../edit/EditEventLimit";
 import CoHostManagementModal from "./CoHostManagementModal";
 import EditableInputText from "./EditableInputText";
 import EditableLocation from "./EditableLocation";
@@ -40,6 +41,9 @@ const EventEdit = ({
   const [timeZone, setTimeZone] = useState(event?.details?.timeZone || "");
   const [urlTitle, setUrlTitle] = useState(event?.details?.URLtitle || "");
   const [isRestricted, setIsRestricted] = useState(event?.restricted || false);
+  const [limitedGuests, setLimitedGuests] = useState<number | null>(
+    event?.limitedGuests || 0,
+  );
   const [questions, setQuestions] = useState<QuestionType[]>(
     event?.questions || [],
   );
@@ -72,6 +76,7 @@ const EventEdit = ({
     mode: false,
     date: false,
     coHosts: false,
+    limitedGuests: false,
   });
   const [startDate, setStartDate] = useState(event.details?.date || "");
   const [endDate, setEndDate] = useState(event.details?.endDate || "");
@@ -241,6 +246,8 @@ const EventEdit = ({
         console.log("Canceling co-hosts");
         setCoHosts(event.coHosts || []);
         break;
+      case "limitedGuests":
+        setLimitedGuests(event?.limitedGuests || null);
       default:
         break;
     }
@@ -279,6 +286,9 @@ const EventEdit = ({
         console.log("Resetting co-hosts");
         setCoHosts([]);
         break;
+      case "limitedGuests":
+        setLimitedGuests(null);
+        break;
       default:
         break;
     }
@@ -287,7 +297,7 @@ const EventEdit = ({
   const handleUpdateLocation = async () => {
     const locationData = {
       location,
-      longitude: Number(longitude), // Ensure type safety
+      longitude: Number(longitude),
       latitude: Number(latitude),
     };
     await handleUpdate("locationData", locationData);
@@ -451,7 +461,17 @@ const EventEdit = ({
         editMode={editMode.url}
         toggleEditMode={() => toggleEditMode("url")}
       />
-
+      <EditEventLimit
+        value={limitedGuests}
+        onChange={setLimitedGuests}
+        field="Limited Guests"
+        handleUpdate={() => handleUpdate("limitedGuests", limitedGuests)}
+        handleCancel={() => handleCancel("limitedGuests")}
+        handleReset={() => handleReset("limitedGuests")}
+        isUpdating={isUpdating}
+        editMode={editMode.limitedGuests}
+        toggleEditMode={() => toggleEditMode("limitedGuests")}
+      />
       {event.isHosted && (
         <CoHostManagementModal
           coHosts={coHosts}

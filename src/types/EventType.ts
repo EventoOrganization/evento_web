@@ -45,6 +45,7 @@ export type EventType = {
       type: string;
     },
   ];
+  limitedGuests?: number | null;
   hiddenByUsers?: string[];
   title: string;
   user: UserType;
