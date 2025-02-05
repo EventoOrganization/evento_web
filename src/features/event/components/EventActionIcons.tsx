@@ -363,7 +363,7 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
                 </SelectTrigger>
 
                 <SelectContent className="z-50 text-black">
-                  <SelectItem value="going">
+                  <SelectItem value="going" disabled={isEventFull}>
                     <div className="flex items-center">
                       {loading === "isGoing" ? (
                         <Spinner className="animate-spin w-5 h-5 mr-2" />
