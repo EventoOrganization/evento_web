@@ -90,10 +90,7 @@ const Event = ({
                 )}
               </div>
             </Link>
-            <EventLimit
-              currentGuests={event?.attendees?.length || 0}
-              limitedGuests={event?.limitedGuests}
-            />
+            <EventLimit event={event} />
           </div>
           <div>
             <RenderMedia event={event} />
@@ -143,7 +140,10 @@ const Event = ({
           <div onClick={(e) => e.stopPropagation()}>
             {event.isGoing && <AddToCalendar event={event} />}
           </div>
-          <div className=" flex flex-col md:grid md:grid-cols-2 w-full justify-between md:items-center gap-2 px-4 md:px-0">
+          <div
+            className=" flex flex-col md:grid md:grid-cols-2 w-full justify-between md:items-center gap-2 px-4 md:px-0"
+            onClick={(e) => e.stopPropagation()}
+          >
             <AvatarStack event={event} />
             <EventActionIcons event={event} />
           </div>

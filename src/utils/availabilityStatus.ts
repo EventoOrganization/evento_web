@@ -8,7 +8,9 @@ interface CapacityStatus {
 export const getCapacityStatus = (
   currentGuests: number,
   limit: number | null,
+  isGoing = false,
 ): CapacityStatus => {
+  const adjustedGuests = isGoing ? currentGuests + 1 : currentGuests;
   if (!limit || limit <= 0) {
     return {
       label: "SPOTS AVAILABLE",
@@ -18,7 +20,7 @@ export const getCapacityStatus = (
     };
   }
 
-  const percentage = (currentGuests / limit) * 100;
+  const percentage = (adjustedGuests / limit) * 100;
 
   if (percentage <= 30) {
     return {

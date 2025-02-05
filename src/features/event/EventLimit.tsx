@@ -1,13 +1,17 @@
+import { useEventStore } from "@/store/useEventsStore";
+import { EventType } from "@/types/EventType";
 import { getCapacityStatus } from "@/utils/availabilityStatus";
 
-interface EventLimitProps {
-  currentGuests: number;
-  limitedGuests: number | null;
-}
-
-const EventLimit = ({ currentGuests, limitedGuests }: EventLimitProps) => {
-  const status = getCapacityStatus(currentGuests, limitedGuests || 0);
-
+const EventLimit = ({ event }: { event: EventType }) => {
+  const eventStatus =
+    useEventStore((state) => event && state.eventsStatus[event._id]) || {};
+  const currentGuests = event.attendees?.length ?? 0;
+  const limitedGuests = event.limitedGuests;
+  const status = getCapacityStatus(
+    currentGuests,
+    limitedGuests || 0,
+    eventStatus.isGoing,
+  );
   return (
     <div
       className={`flex items-center justify-center 

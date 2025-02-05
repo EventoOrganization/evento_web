@@ -6,7 +6,11 @@ import { handleLog } from "@/utils/handleLog";
 import { handleWarning } from "@/utils/handleWarning";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-
+export interface EventStatus {
+  isGoing?: boolean;
+  isFavourite?: boolean;
+  isRefused?: boolean;
+}
 // ✅ Vérification de la disponibilité du localStorage
 const isLocalStorageAvailable = (): boolean => {
   try {
@@ -23,6 +27,9 @@ const isLocalStorageAvailable = (): boolean => {
 interface EventState {
   hasMore: boolean;
   events: EventType[];
+  eventsStatus: {
+    [eventId: string]: EventStatus;
+  };
   loadEvents: (
     user?: UserType,
     seachQuery?: string,
@@ -33,11 +40,7 @@ interface EventState {
   deleteEvent: (eventId: string) => void;
   updateEventStatus: (
     eventId: string,
-    newStatus: {
-      isGoing?: boolean;
-      isFavourite?: boolean;
-      isRefused?: boolean;
-    },
+    newStatus: EventStatus,
     user: UserType,
   ) => void;
 }
@@ -69,12 +72,8 @@ export const useEventStore = create<EventState>()(
     (set) => ({
       hasMore: false,
       events: [],
-
-      loadEvents: async (
-        user?: UserType,
-        searchQuery?: string,
-        updateStore = true,
-      ) => {
+      eventsStatus: {},
+      loadEvents: async (user, searchQuery, updateStore = true) => {
         try {
           handleLog("🔄 Loading events...");
           const userIdQuery = user?._id ? `userId=${user._id}` : "";
@@ -96,13 +95,27 @@ export const useEventStore = create<EventState>()(
             handleLog("✅ Events loaded successfully!");
 
             if (updateStore) {
-              set({
-                events: res.data.events ?? [],
-                hasMore: res.data.hasMore ?? false,
-              });
+              set((state) => ({
+                events: res.data?.events ?? [],
+                hasMore: res.data?.hasMore ?? false,
+                eventsStatus: {
+                  ...state.eventsStatus,
+                  ...res.data?.events.reduce(
+                    (acc, event) => {
+                      acc[event._id] = {
+                        isGoing: event.isGoing || false,
+                        isFavourite: event.isFavourite || false,
+                        isRefused: event.isRefused || false,
+                      };
+                      return acc;
+                    },
+                    {} as { [key: string]: EventStatus },
+                  ),
+                },
+              }));
             }
 
-            return res.data.events ?? []; // 🔥 Retourne les événements aussi
+            return res.data.events ?? [];
           } else {
             handleWarning({
               message: "⚠️ Failed to load events",
@@ -112,7 +125,7 @@ export const useEventStore = create<EventState>()(
             return [];
           }
         } catch (error) {
-          // handleError(error, "loadEvents");
+          handleError(error, "loadEvents");
           return [];
         }
       },
@@ -155,15 +168,7 @@ export const useEventStore = create<EventState>()(
         }
       },
 
-      updateEventStatus: (
-        eventId: string,
-        newStatus: {
-          isGoing?: boolean;
-          isFavourite?: boolean;
-          isRefused?: boolean;
-        },
-        user: UserType,
-      ) => {
+      updateEventStatus: (eventId, newStatus, user) => {
         try {
           if (!user || !user._id) {
             handleWarning({
@@ -172,31 +177,20 @@ export const useEventStore = create<EventState>()(
             });
             return;
           }
-
+          const resetStatus = {
+            isGoing: false,
+            isFavourite: false,
+            isRefused: false,
+          };
           handleLog(`🔄 Updating event status for ${eventId}...`);
-
-          set((state: EventState) => ({
-            events: state.events.map((event) => {
-              if (event._id !== eventId) return event;
-
-              return {
-                ...event,
-                isGoing: newStatus.isGoing || false,
-                isFavourite: newStatus.isFavourite || false,
-                isRefused: newStatus.isRefused || false,
-                attendees: newStatus.isGoing
-                  ? [...(event.attendees || []), user]
-                  : event.attendees?.filter(
-                      (attendee) => attendee._id !== user._id,
-                    ),
-                favouritees: newStatus.isFavourite
-                  ? [...(event.favouritees || []), user]
-                  : event.favouritees?.filter((fav) => fav._id !== user._id),
-                refused: newStatus.isRefused
-                  ? [...(event.refused || []), user]
-                  : event.refused?.filter((r) => r._id !== user._id),
-              };
-            }),
+          set((state) => ({
+            eventsStatus: {
+              ...state.eventsStatus,
+              [eventId]: {
+                ...resetStatus,
+                ...newStatus,
+              },
+            },
           }));
 
           handleLog("✅ Event status updated successfully!");

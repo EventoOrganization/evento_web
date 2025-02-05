@@ -27,6 +27,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import EventLimit from "../EventLimit";
 import DeleteEventButton from "./DeleteEventButton";
 import PastEventGallery from "./PastEventGallery";
 export type EventStatusKeys = "isGoing" | "isFavourite" | "isRefused";
@@ -287,20 +288,22 @@ const EventIdTabs = ({ evento }: { evento?: EventType }) => {
                     )}
                   </div>
                 </Link>
-                {accessControl.isAdmin && (
-                  <TooltipProvider delayDuration={100}>
-                    <Tooltip>
-                      <TooltipTrigger>
-                        <Pencil
-                          className="text-muted-foreground"
-                          onClick={() => setSelectedTab("Settings")}
-                        />
-                      </TooltipTrigger>
-                      <TooltipContent>Edit Event</TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                )}
-                {/* <span className="text-sm">{renderDate(event)}</span> */}
+                <div className="flex items-center gap-2">
+                  {accessControl.isAdmin && (
+                    <TooltipProvider delayDuration={100}>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <Pencil
+                            className="text-muted-foreground"
+                            onClick={() => setSelectedTab("Settings")}
+                          />
+                        </TooltipTrigger>
+                        <TooltipContent>Edit Event</TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  )}
+                  <EventLimit event={event} />
+                </div>
               </div>
               {selectedTab !== "Settings" && <RenderMedia event={event} />}
             </div>

@@ -26,10 +26,10 @@ export default function ProfilePageContent() {
   const session = useSession();
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const { userInfo, loadUser } = useProfileStore();
-  const { events } = useEventStore();
-
+  const { events, eventsStatus } = useEventStore();
   // 📆 Date actuelle
   const currentDate = new Date();
+  const getEventStatus = (eventId: string) => eventsStatus[eventId] || {};
 
   const isUpcomingOrOngoing = (event: Event) => {
     if (!event.details?.date || !event.details?.endDate) return false;
@@ -49,15 +49,18 @@ export default function ProfilePageContent() {
   );
 
   const upcomingGoingEvents = events.filter(
-    (event: Event) => event.isGoing && isUpcomingOrOngoing(event),
+    (event: Event) =>
+      getEventStatus(event._id).isGoing && isUpcomingOrOngoing(event),
   );
 
   const upcomingFavouriteEvents = events.filter(
-    (event: Event) => event.isFavourite && isUpcomingOrOngoing(event),
+    (event: Event) =>
+      getEventStatus(event._id).isFavourite && isUpcomingOrOngoing(event),
   );
 
   const upcomingRefusedEvents = events.filter(
-    (event: Event) => event.isRefused && isUpcomingOrOngoing(event),
+    (event: Event) =>
+      getEventStatus(event._id).isRefused && isUpcomingOrOngoing(event),
   );
 
   const upcomingGuestedEvents = events.filter(

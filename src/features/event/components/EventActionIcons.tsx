@@ -51,11 +51,14 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
   const { token, user } = useSession();
   const attendeeCount = event.attendees?.length ?? 0;
   const guestLimit = event.limitedGuests;
+  const eventStatus =
+    useEventStore((state) => state.eventsStatus[event._id]) || {};
+  const isUserGoing = eventStatus.isGoing ?? false;
+  const adjustedAttendeeCount = attendeeCount + (isUserGoing ? 1 : 0);
   const isEventFull =
     guestLimit !== null &&
     guestLimit !== undefined &&
-    attendeeCount >= guestLimit;
-
+    adjustedAttendeeCount >= guestLimit;
   const { updateEventStatus: updateEventStatusInStore } = useEventStore();
   const [showQuestionModal, setShowQuestionModal] = useState<boolean>(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
@@ -89,7 +92,7 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
       return;
     }
 
-    const isCurrentlySet = event[status];
+    const isCurrentlySet = eventStatus[status];
     console.log("status", status);
     try {
       setLoading(status);
@@ -159,7 +162,7 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
       return;
     }
     if (
-      !event.isGoing &&
+      !eventStatus.isGoing &&
       event?.questions?.length !== undefined &&
       event?.questions?.length > 0 &&
       submittedAnswers.length < event.questions.length
@@ -204,8 +207,9 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
         {event.eventType === "public" ? (
           <>
             <Button
-              onClick={(e) => {
+              onClick={() => {
                 if (isEventFull) {
+                  console.log("Event is full");
                   toast({
                     title: "Event is full",
                     description: "No more spots are available.",
@@ -214,18 +218,17 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
                   return;
                 }
                 handleGoing([]);
-                e.stopPropagation();
               }}
-              disabled={loading === "isGoing" || isEventFull}
+              disabled={loading === "isGoing"}
               variant="outline"
               className={cn(
                 "relative flex items-center justify-center bg-muted w-full hover:opacity-80 text-sm border-eventoPurpleLight",
                 {
                   "bg-gray-300 text-gray-600 cursor-not-allowed": isEventFull,
                   "bg-evento-gradient-button text-white hover:text-white":
-                    event.isGoing,
+                    eventStatus.isGoing,
                   "text-eventoPurpleLight hover:text-eventoPurpleLight":
-                    !event.isGoing,
+                    !eventStatus.isGoing,
                 },
               )}
             >
@@ -233,7 +236,7 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
                 <Spinner className="animate-spin w-5 h-5" />
               ) : isEventFull ? (
                 "Event Full"
-              ) : event.isGoing ? (
+              ) : eventStatus.isGoing ? (
                 <>
                   <CalendarCheck2 className="w-5 h-5 text-white mr-2" />
                   Going
@@ -254,7 +257,7 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
                 {
                   "w-10 h-10": !newVersion,
                   "bg-evento-gradient-button text-white hover:text-white border-eventoPurpleLight ":
-                    event.isFavourite,
+                    eventStatus.isFavourite,
                   // "text-eventoPurpleLight hover:text-eventoPurpleLight":
                   // !event.isFavourite,
                 },
@@ -263,11 +266,11 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
               {loading === "isFavourite" ? (
                 <Spinner
                   className={cn("animate-spin w-5 h-5", {
-                    "text-white": event.isFavourite,
-                    "text-eventoPurpleLight": !event.isFavourite,
+                    "text-white": eventStatus.isFavourite,
+                    "text-eventoPurpleLight": !eventStatus.isFavourite,
                   })}
                 />
-              ) : event.isFavourite ? (
+              ) : eventStatus.isFavourite ? (
                 <BookmarkCheck className=" text-white w-5 h-5" />
               ) : (
                 <Bookmark className="w-5 h-5" />
@@ -278,7 +281,7 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
                   className={cn(
                     "absolute inset-0 text-eventoPurpleLight rounded-full w-full h-full",
                     {
-                      "bg-evento-gradient text-white": event.isFavourite,
+                      "bg-evento-gradient text-white": eventStatus.isFavourite,
                     },
                   )}
                 />
@@ -307,9 +310,10 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
                   className={cn(
                     "relative flex p-2 rounded justify-center items-center w-full border overflow-hidden",
                     {
-                      "bg-evento-gradient-button text-white": event.isGoing,
+                      "bg-evento-gradient-button text-white":
+                        eventStatus.isGoing,
                       "bg-eventoPurpleDark text-white":
-                        event.isFavourite || event.isRefused,
+                        eventStatus.isFavourite || eventStatus.isRefused,
                     },
                   )}
                   onClick={(e) => {
@@ -317,33 +321,35 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
                   }}
                 >
                   {/* Bordure animée */}
-                  {!event.isGoing && !event.isFavourite && !event.isRefused && (
-                    <span
-                      className="absolute inset-0 rounded border-[3px] border-transparent animate-pulse"
-                      style={{
-                        background:
-                          "linear-gradient(white, white) padding-box, linear-gradient(var(--gradient-angle, 160deg), #A62BA7, #5973D3) border-box",
-                        maskImage: "linear-gradient(white, white)",
-                        WebkitMaskImage: "linear-gradient(white, white)",
-                      }}
-                    />
-                  )}
+                  {!eventStatus.isGoing &&
+                    !eventStatus.isFavourite &&
+                    !eventStatus.isRefused && (
+                      <span
+                        className="absolute inset-0 rounded border-[3px] border-transparent animate-pulse"
+                        style={{
+                          background:
+                            "linear-gradient(white, white) padding-box, linear-gradient(var(--gradient-angle, 160deg), #A62BA7, #5973D3) border-box",
+                          maskImage: "linear-gradient(white, white)",
+                          WebkitMaskImage: "linear-gradient(white, white)",
+                        }}
+                      />
+                    )}
 
                   {/* Contenu du bouton */}
                   <span className="relative z-10">
                     <SelectValue
                       placeholder={
-                        event.isGoing ? (
+                        eventStatus.isGoing ? (
                           <div className="flex">
                             <CalendarCheck2 className="w-5 h-5 text-white mr-2" />{" "}
                             Going
                           </div>
-                        ) : event.isFavourite ? (
+                        ) : eventStatus.isFavourite ? (
                           <div className="flex">
                             <CalendarHeart className="w-5 h-5 text-white mr-2" />
                             Maybe
                           </div>
-                        ) : event.isRefused ? (
+                        ) : eventStatus.isRefused ? (
                           <div className="flex">
                             <CalendarX2 className="w-5 h-5 text-white mr-2" />
                             Declined
@@ -357,7 +363,7 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
                 </SelectTrigger>
 
                 <SelectContent className="z-50 text-black">
-                  <SelectItem value="going" disabled={isEventFull}>
+                  <SelectItem value="going">
                     <div className="flex items-center">
                       {loading === "isGoing" ? (
                         <Spinner className="animate-spin w-5 h-5 mr-2" />

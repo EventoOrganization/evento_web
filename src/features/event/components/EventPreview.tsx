@@ -7,6 +7,7 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { useEventStore } from "@/store/useEventsStore";
 import { EventType } from "@/types/EventType";
 import { renderDate } from "@/utils/dateUtils";
 import { BookmarkCheck, Circle, CircleCheckBig } from "lucide-react";
@@ -26,6 +27,8 @@ const EventPreview = ({
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const pathname = usePathname();
+  const { eventsStatus } = useEventStore();
+  const eventStatus = event && eventsStatus[event._id];
   const handleCardClick = () => {
     setIsModalOpen(true);
     // console.log("eventprev modal open", event);
@@ -51,7 +54,7 @@ const EventPreview = ({
             <div></div>
           )}
           <div className="z-10 mr-2 w-10 h-10">
-            {event?.isGoing && (
+            {eventStatus?.isGoing && (
               <CircleCheckBig
                 strokeWidth={1.5}
                 className={cn(
@@ -59,7 +62,7 @@ const EventPreview = ({
                 )}
               />
             )}
-            {event?.isFavourite && (
+            {eventStatus?.isFavourite && (
               <div className="w-10 h-10 relative">
                 <Circle
                   strokeWidth={1.5}

@@ -13,6 +13,7 @@ import { renderDate } from "@/utils/dateUtils";
 import Image from "next/image";
 import Link from "next/link";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
+import EventLimit from "../event/EventLimit";
 
 const DiscoverEventPreview = ({
   className,
@@ -27,7 +28,6 @@ const DiscoverEventPreview = ({
     : null;
   const { events } = useEventStore();
   const currentEvent = events.find((e: EventType) => e._id === event._id);
-
   return (
     <>
       <div
@@ -82,7 +82,7 @@ const DiscoverEventPreview = ({
                 )}
               </div>
             </div>
-            <span className="text-sm text-right">{renderDate(event)}</span>
+            <EventLimit event={event} />
           </div>
           <div>
             <RenderMedia event={event} />
@@ -103,10 +103,10 @@ const DiscoverEventPreview = ({
                 ))}
             </ul>
 
-            <div className="flex justify-between items-center">
+            <div className="overflow-hidden">
               <Button
                 variant={"ghost"}
-                className="flex gap-2 pl-0 max-w-xs truncate"
+                className="flex gap-2 pl-0 max-w-xs truncate "
                 onClick={(e) => {
                   e.stopPropagation();
                   const address = event && event?.details?.location;
@@ -124,10 +124,15 @@ const DiscoverEventPreview = ({
                   {event && event?.details?.location}
                 </span>
               </Button>
-              <p className="whitespace-nowrap">
-                {event?.details?.startTime}{" "}
-                {event?.details?.endTime ? ` - ${event?.details?.endTime}` : ""}
-              </p>
+              <div className="flex justify-between gap-2">
+                <span className="text-sm text-right">{renderDate(event)}</span>
+                <p className="whitespace-nowrap">
+                  {event?.details?.startTime}{" "}
+                  {event?.details?.endTime
+                    ? ` - ${event?.details?.endTime}`
+                    : ""}
+                </p>
+              </div>
             </div>
             <Link
               href={event?.details?.URLlink}

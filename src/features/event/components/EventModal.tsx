@@ -7,10 +7,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useSession } from "@/contexts/SessionProvider";
 import DiscoverEventPreview from "@/features/discover/DiscoverEventPreview";
 import Link from "next/link";
-import DeleteEventButton from "./DeleteEventButton";
 const EventModal = ({
   event,
   isOpen,
@@ -20,7 +18,6 @@ const EventModal = ({
   isOpen: boolean;
   onClose: () => void;
 }) => {
-  const { user } = useSession();
   const handleClickInsideModal = (e: React.MouseEvent) => {
     e.stopPropagation();
   };
@@ -41,9 +38,6 @@ const EventModal = ({
       >
         <ScrollArea className="rounded h-full">
           <DiscoverEventPreview event={event} className="max-w-[90vw]" />
-          {event?.user?._id === user?._id && (
-            <DeleteEventButton eventId={event._id} isHost={true} />
-          )}
         </ScrollArea>
         <div className="grid grid-cols-2 gap-4 items-end">
           <Button variant="ghost" className="bg-gray-200" onClick={onClose}>
