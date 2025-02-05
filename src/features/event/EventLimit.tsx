@@ -7,6 +7,12 @@ const EventLimit = ({ event }: { event: EventType }) => {
     useEventStore((state) => event && state.eventsStatus[event._id]) || {};
   const currentGuests = event.attendees?.length ?? 0;
   const limitedGuests = event.limitedGuests;
+  if (
+    limitedGuests === null ||
+    limitedGuests === undefined ||
+    limitedGuests === 0
+  )
+    return;
   const status = getCapacityStatus(
     currentGuests,
     limitedGuests || 0,

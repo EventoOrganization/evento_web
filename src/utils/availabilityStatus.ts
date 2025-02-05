@@ -7,18 +7,10 @@ interface CapacityStatus {
 
 export const getCapacityStatus = (
   currentGuests: number,
-  limit: number | null,
+  limit: number,
   isGoing = false,
 ): CapacityStatus => {
   const adjustedGuests = isGoing ? currentGuests + 1 : currentGuests;
-  if (!limit || limit <= 0) {
-    return {
-      label: "SPOTS AVAILABLE",
-      bgColor: "bg-green-100",
-      textColor: "text-green-800",
-      borderColor: "border-green-600",
-    };
-  }
 
   const percentage = (adjustedGuests / limit) * 100;
 
