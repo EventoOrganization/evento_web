@@ -34,10 +34,11 @@ const EditEventLimit = ({
     value !== null ? value : "",
   );
 
-  // Synchroniser l'état local avec la prop `value` lors de l'édition
   useEffect(() => {
-    setIsLimited(!!value);
-    setInputValue(value !== null ? value : "");
+    if (value !== null) {
+      setIsLimited(true);
+      setInputValue(value);
+    }
   }, [value]);
 
   const handleToggle = () => {
@@ -45,21 +46,37 @@ const EditEventLimit = ({
     setIsLimited(newIsLimited);
 
     if (!newIsLimited) {
-      // Si désactivé, on met la valeur à `null`
       onChange(null);
       setInputValue("");
     }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = e.target.value === "" ? "" : Number(e.target.value);
-    setInputValue(newValue);
-    onChange(newValue === "" ? null : newValue);
+    const input = e.target.value;
+
+    if (/^\d*$/.test(input)) {
+      const newValue = input === "" ? "" : Number(input);
+      setInputValue(newValue);
+
+      if (newValue !== "") {
+        onChange(newValue);
+      } else {
+        onChange(null);
+      }
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const invalidChars = ["e", "E", "+", "-", ".", ","];
+
+    if (invalidChars.includes(e.key)) {
+      e.preventDefault();
+    }
   };
 
   return (
     <div className={cn("flex flex-col gap-2")}>
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center gap-2">
         <h3 className="text-eventoPurpleLight font-semibold">{field}</h3>
         {editMode ? (
           <div className="flex gap-2">
@@ -109,6 +126,7 @@ const EditEventLimit = ({
           }
           value={isLimited ? inputValue : ""}
           onChange={handleInputChange}
+          onKeyDown={handleKeyDown}
           className="w-full"
           min={1}
           disabled={!isLimited || !editMode}

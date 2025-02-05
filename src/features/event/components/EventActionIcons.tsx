@@ -23,8 +23,6 @@ import {
   CalendarHeart,
   CalendarX2,
   Circle,
-  CircleCheck,
-  CircleCheckBig,
   Loader2 as Spinner,
 } from "lucide-react";
 import React, { useState } from "react";
@@ -51,6 +49,12 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
   const newVersion = true;
   const { toast } = useToast();
   const { token, user } = useSession();
+  const attendeeCount = event.attendees?.length ?? 0;
+  const guestLimit = event.limitedGuests;
+  const isEventFull =
+    guestLimit !== null &&
+    guestLimit !== undefined &&
+    attendeeCount >= guestLimit;
 
   const { updateEventStatus: updateEventStatusInStore } = useEventStore();
   const [showQuestionModal, setShowQuestionModal] = useState<boolean>(false);
@@ -203,14 +207,23 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
           <>
             <Button
               onClick={(e) => {
+                if (isEventFull) {
+                  toast({
+                    title: "Event is full",
+                    description: "No more spots are available.",
+                    variant: "destructive",
+                  });
+                  return;
+                }
                 handleGoing([]);
                 e.stopPropagation();
               }}
-              variant={"outline"}
+              disabled={loading === "isGoing" || isEventFull}
+              variant="outline"
               className={cn(
-                "relative flex items-center justify-center bg-muted w-full hover:opacity-80 text-sm  border-eventoPurpleLight ",
+                "relative flex items-center justify-center bg-muted w-full hover:opacity-80 text-sm border-eventoPurpleLight",
                 {
-                  "w-10 h-10": !newVersion,
+                  "bg-gray-300 text-gray-600 cursor-not-allowed": isEventFull,
                   "bg-evento-gradient-button text-white hover:text-white":
                     event.isGoing,
                   "text-eventoPurpleLight hover:text-eventoPurpleLight":
@@ -218,43 +231,20 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
                 },
               )}
             >
-              {loading === "isGoing" && (
-                <Spinner
-                  className={cn("animate-spin w-5 h-5", {
-                    "text-white": event.isGoing,
-                    "text-eventoPurpleLight": !event.isGoing,
-                  })}
-                />
-              )}
-              {!event.isGoing ? (
+              {loading === "isGoing" ? (
+                <Spinner className="animate-spin w-5 h-5" />
+              ) : isEventFull ? (
+                "Event Full"
+              ) : event.isGoing ? (
                 <>
-                  {newVersion ? (
-                    <>Click to Join</>
-                  ) : (
-                    <CircleCheck
-                      strokeWidth={1.5}
-                      className={cn("text-eventoPurpleLight w-full h-full")}
-                    />
-                  )}
+                  <CalendarCheck2 className="w-5 h-5 text-white mr-2" />
+                  Going
                 </>
               ) : (
-                <>
-                  {newVersion ? (
-                    <>
-                      <CalendarCheck2 className="w-5 h-5 text-white mr-2" />{" "}
-                      Going
-                    </>
-                  ) : (
-                    <CircleCheckBig
-                      strokeWidth={1.5}
-                      className={cn(
-                        "text-white bg-evento-gradient rounded-full w-full h-full",
-                      )}
-                    />
-                  )}
-                </>
+                <>Click to Join</>
               )}
             </Button>
+
             <Button
               onClick={(e) => {
                 handleFavourite();
@@ -369,15 +359,14 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
                 </SelectTrigger>
 
                 <SelectContent className="z-50 text-black">
-                  <SelectItem value="going">
-                    <div className="flex">
+                  <SelectItem value="going" disabled={isEventFull}>
+                    <div className="flex items-center">
                       {loading === "isGoing" ? (
-                        <Spinner className="animate-spin w-5 h-5" />
+                        <Spinner className="animate-spin w-5 h-5 mr-2" />
                       ) : (
-                        <>
-                          <CalendarCheck2 className="w-5 h-5  mr-2" /> Going{" "}
-                        </>
+                        <CalendarCheck2 className="w-5 h-5 mr-2" />
                       )}
+                      {isEventFull ? "Event Full" : "Going"}
                     </div>
                   </SelectItem>
                   <SelectItem value="favourite">

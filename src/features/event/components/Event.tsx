@@ -12,6 +12,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
+import EventLimit from "../EventLimit";
 import EventActionIcons from "./EventActionIcons";
 
 const Event = ({
@@ -37,11 +38,11 @@ const Event = ({
         )}
       >
         <div className=" ">
-          <div className="flex flex-wrap items-center justify-between gap-4 mb-4 px-2 md:px-0">
+          <div className="flex items-center justify-between gap-4 mb-4 px-2 md:px-0">
             <Link
               href={`/profile/${event?.user?._id}`}
               onClick={(e) => e.stopPropagation()}
-              className="flex items-center gap-2 col-span-2"
+              className="flex  items-center gap-2"
             >
               {event?.user?.profileImage ? (
                 <Image
@@ -89,6 +90,10 @@ const Event = ({
                 )}
               </div>
             </Link>
+            <EventLimit
+              currentGuests={event?.attendees?.length || 0}
+              limitedGuests={event?.limitedGuests}
+            />
           </div>
           <div>
             <RenderMedia event={event} />
