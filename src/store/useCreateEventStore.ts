@@ -14,6 +14,7 @@ type EventFormState = {
   endDate?: string;
   startTime: string;
   endTime: string;
+  limitedGuests: number | null;
   description: string;
   includeChat: boolean;
   createRSVP: boolean;
@@ -107,6 +108,7 @@ export const useCreateEventStore = create<EventFormState>()(
       longitude: undefined,
       location: undefined,
       timeZone: undefined,
+      limitedGuests: null,
       isUrl: undefined,
       UrlLink: undefined,
       UrlTitle: undefined,
@@ -215,6 +217,7 @@ export const useCreateEventStore = create<EventFormState>()(
           location: undefined,
           timeZone: undefined,
           isUrl: undefined,
+          limitedGuests: null,
           UrlLink: undefined,
           UrlTitle: undefined,
           mediaPreviews: [],

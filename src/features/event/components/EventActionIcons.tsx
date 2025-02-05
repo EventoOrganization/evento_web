@@ -190,9 +190,7 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
   };
 
   const handleSubmitQuestions = (answers: any) => {
-    if (answers.length > 0) {
-      updateEventStatus("isGoing", answers);
-    }
+    updateEventStatus("isGoing", answers);
     setShowQuestionModal(false);
   };
 

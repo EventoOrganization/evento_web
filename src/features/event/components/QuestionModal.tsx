@@ -52,6 +52,17 @@ const QuestionModal: React.FC<QuestionModalProps> = ({
   };
 
   const handleSubmit = () => {
+    const unansweredRequiredQuestions = questions.filter(
+      (question) =>
+        question.required &&
+        !answers.some((ans) => ans.questionId === question._id && ans.answer),
+    );
+
+    if (unansweredRequiredQuestions.length > 0) {
+      alert("Please answer all required questions.");
+      return;
+    }
+
     onSubmit(answers);
     onClose();
   };

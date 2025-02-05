@@ -72,6 +72,9 @@ const EditEventLimit = ({
     if (invalidChars.includes(e.key)) {
       e.preventDefault();
     }
+    if (e.key === "0" && inputValue === "") {
+      e.preventDefault();
+    }
   };
 
   return (

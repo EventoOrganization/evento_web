@@ -31,6 +31,7 @@ import { Check, Trash } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import CreateEventLimitedGuests from "../event/components/CreateEventLimitedGuests";
 
 const CreateEventContent = () => {
   const eventStore = useCreateEventStore();
@@ -75,6 +76,7 @@ const CreateEventContent = () => {
       timeZone: eventStore.timeZone || "",
       description: eventStore.description || "",
       mode: eventStore.mode || "in-person",
+      limitedGuests: eventStore.limitedGuests || null,
       location:
         eventStore.mode === "virtual" ? "Virtual" : eventStore.location || "",
       latitude: eventStore.latitude || "",
@@ -104,6 +106,7 @@ const CreateEventContent = () => {
     timeZone: eventStore.timeZone || "",
     description: eventStore.description || "",
     mode: eventStore.mode || "in-person",
+    limitedGuests: eventStore.limitedGuests || null,
     location: eventStore.location || "",
     latitude: eventStore.latitude || "",
     medias: eventStore.mediaPreviews || [],
@@ -600,6 +603,7 @@ const CreateEventContent = () => {
               />
               <EnableChatButton />
               <EventURL />
+              <CreateEventLimitedGuests />
             </div>
             <EventQuestionsForm />
             <Button
