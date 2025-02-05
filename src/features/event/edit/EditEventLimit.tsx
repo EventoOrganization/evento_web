@@ -125,7 +125,9 @@ const EditEventLimit = ({
         <Input
           type="number"
           placeholder={
-            isLimited ? "Enter the limit" : "Toggle to enter a limit"
+            isLimited
+              ? "Enter the limite capacity"
+              : "Toggle to enter a limit capacity"
           }
           value={isLimited ? inputValue : ""}
           onChange={handleInputChange}
