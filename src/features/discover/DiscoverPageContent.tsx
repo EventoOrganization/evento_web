@@ -48,7 +48,11 @@ const DiscoverPageContent = () => {
   const session = useSession();
   // Stored data
   const { interests } = useInterestsStore();
-  const events = useEventStore((state) => state.events);
+  const today = startOfDay(new Date());
+  const events = useEventStore((state) => state.events).filter(
+    (event) =>
+      event.details?.endDate && new Date(event.details.endDate) > today,
+  );
   // local state
   const [selectedInterests, setSelectedInterests] = useState<InterestType[]>(
     [],
@@ -64,7 +68,6 @@ const DiscoverPageContent = () => {
   const [location, setLocation] = useState<Location | null>(null);
   const [isHydrated, setIsHydrated] = useState(false);
   const [toggleSearch, setToggleSearch] = useState(false);
-  const today = startOfDay(new Date());
   useEffect(() => {
     if (!isHydrated && events) {
       setIsHydrated(true);
