@@ -28,7 +28,6 @@ const MyGoogleMapComponent = ({
   const pathname = usePathname();
   const [address, setAddress] = useState<string>("");
   const [isMapVisible, setIsMapVisible] = useState<boolean>(false);
-  const [isSearchAvailable, setIsSearchAvailable] = useState<boolean>(true);
   const eventStore = useCreateEventStore();
   const [mapCenter, setMapCenter] = useState<Location>({
     lat: 37.7749,
@@ -59,12 +58,10 @@ const MyGoogleMapComponent = ({
           }
         } else {
           console.error("Geocoder failed:", status);
-          setIsSearchAvailable(false); // Désactiver la recherche en cas d'erreur
         }
       });
     } catch (error) {
       console.error("Erreur dans fetchAddressAndTimeZone:", error);
-      setIsSearchAvailable(false);
     }
   };
 
@@ -81,7 +78,6 @@ const MyGoogleMapComponent = ({
       },
       (error) => {
         console.error("Geolocation error:", error);
-        setIsSearchAvailable(false);
       },
     );
   }, [isLoaded]);
@@ -108,15 +104,6 @@ const MyGoogleMapComponent = ({
       }
     }
   }, [pathname]);
-
-  const handleManualAddressChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    setAddress(e.target.value);
-    if (pathname === "/create-event") {
-      eventStore.setEventField("location", e.target.value);
-    }
-  };
 
   const handleMapClick = async (event: google.maps.MapMouseEvent) => {
     if (event.latLng) {
@@ -153,26 +140,13 @@ const MyGoogleMapComponent = ({
       </div>
 
       <div className="search-box">
-        {isLoaded && isSearchAvailable ? (
-          <StandaloneSearchBox
-            onLoad={onLoad}
-            onPlacesChanged={onPlacesChanged}
-          >
-            <Input
-              type="text"
-              className="text-xs md:text-sm"
-              placeholder={address ? address : "Search for a location"}
-            />
-          </StandaloneSearchBox>
-        ) : (
+        <StandaloneSearchBox onLoad={onLoad} onPlacesChanged={onPlacesChanged}>
           <Input
             type="text"
             className="text-xs md:text-sm"
-            placeholder="Enter location manually"
-            value={address}
-            onChange={handleManualAddressChange}
+            placeholder={address ? address : "Search for a location"}
           />
-        )}
+        </StandaloneSearchBox>
       </div>
 
       {isMapVisible && isLoaded && (
