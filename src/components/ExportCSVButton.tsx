@@ -39,8 +39,12 @@ const handleExportCSV = (event: any) => {
 
 const ExportCSVButton = ({ event }: { event: any }) => {
   return (
-    <Button variant={"link"} onClick={() => handleExportCSV(event)}>
-      Export CSV
+    <Button
+      variant={"link"}
+      className="text-eventoPurpleLight"
+      onClick={() => handleExportCSV(event)}
+    >
+      Export RSVP
     </Button>
   );
 };
