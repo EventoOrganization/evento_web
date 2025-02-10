@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { UserType } from "@/types/UserType";
+import { sortUsersByPriority } from "@/utils/sortUsersByPriority";
 import { Plus, Trash } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -39,19 +40,21 @@ const AddUserModal = ({
     setFilter(e.target.value.toLowerCase());
   };
 
-  const availableUsers = allUsers
-    .filter(
-      (user) =>
-        !currentSelectedUsers.some(
-          (selected) => selected.userId._id === user._id,
-        ),
-    )
-    .filter(
-      (user) =>
-        user?.username.toLowerCase().includes(filter) ||
-        user?.firstName?.toLowerCase().includes(filter) ||
-        user?.lastName?.toLowerCase().includes(filter),
-    );
+  const availableUsers = sortUsersByPriority(
+    allUsers
+      .filter(
+        (user) =>
+          !currentSelectedUsers.some(
+            (selected) => selected.userId._id === user._id,
+          ),
+      )
+      .filter(
+        (user) =>
+          user?.username.toLowerCase().includes(filter) ||
+          user?.firstName?.toLowerCase().includes(filter) ||
+          user?.lastName?.toLowerCase().includes(filter),
+      ),
+  );
 
   const addUser = (user: UserType) => {
     setCurrentSelectedUsers([
@@ -114,7 +117,7 @@ const AddUserModal = ({
         <div className="flex flex-col gap-4">
           {/* Liste des utilisateurs disponibles */}
           <div>
-            <h4 className="mb-2">All Users ({availableUsers.length})</h4>
+            <h4 className="mb-2">Select Co-Host </h4>
             <ScrollArea className="h-48 border rounded">
               {availableUsers.length > 0 ? (
                 availableUsers.map((user) => (
@@ -132,7 +135,9 @@ const AddUserModal = ({
                     />
                     <div className="ml-4">
                       <p>{user.username}</p>
-                      <p className="text-xs">{user.email}</p>
+                      <p className="text-xs">
+                        {user.firstName} {user.lastName}
+                      </p>
                     </div>
                   </div>
                 ))
@@ -163,7 +168,10 @@ const AddUserModal = ({
                       <p className="truncate whitespace-nowrap ">
                         {userId.username}
                       </p>
-                      <p className="text-xs hidden md:block">{userId.email}</p>
+                      <p className="text-xs hidden md:block">
+                        {" "}
+                        {userId.firstName} {userId.lastName}
+                      </p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">

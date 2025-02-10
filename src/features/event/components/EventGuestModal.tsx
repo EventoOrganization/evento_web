@@ -15,6 +15,7 @@ import { useUsersStore } from "@/store/useUsersStore";
 import { EventType } from "@/types/EventType";
 import { TempUserType, UserType } from "@/types/UserType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
+import { sortUsersByPriority } from "@/utils/sortUsersByPriority";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -153,15 +154,17 @@ const EventGuestModal: React.FC<EventGuestModalProps> = ({
     setExcludedUserIds(allExcludedIds);
   }, [event, user]);
 
-  const filteredUsers = (allUsers ?? []).filter(
-    (user) =>
-      !excludedUserIds.has(user._id) &&
-      !currentSelectedUsers.some((selected) => selected._id === user._id) &&
-      !event?.guests?.some((guest) => guest._id === user._id) &&
-      user.username?.toLowerCase() !== "anonymous" &&
-      [user.username, user.firstName, user.lastName]
-        .filter(Boolean)
-        .some((field) => field?.toLowerCase().includes(filter)),
+  const filteredUsers = sortUsersByPriority(
+    (allUsers ?? []).filter(
+      (user) =>
+        !excludedUserIds.has(user._id) &&
+        !currentSelectedUsers.some((selected) => selected._id === user._id) &&
+        !event?.guests?.some((guest) => guest._id === user._id) &&
+        user.username?.toLowerCase() !== "anonymous" &&
+        [user.username, user.firstName, user.lastName]
+          .filter(Boolean)
+          .some((field) => field?.toLowerCase().includes(filter)),
+    ),
   );
 
   // console.log("filteredUsers", filteredUsers);
@@ -182,11 +185,7 @@ const EventGuestModal: React.FC<EventGuestModalProps> = ({
         </DialogHeader>
         <div className="flex flex-col-reverse justify-between gap-4">
           <div>
-            <h3 className="mb-2">
-              All Users {"("}
-              {filteredUsers.length}
-              {")"}
-            </h3>
+            <h3 className="mb-2">Select Users</h3>
             <ScrollArea className="h-48 border rounded">
               {filteredUsers.length > 0 ? (
                 filteredUsers.map((user) => (
