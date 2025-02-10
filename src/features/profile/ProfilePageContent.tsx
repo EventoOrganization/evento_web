@@ -43,10 +43,12 @@ export default function ProfilePageContent() {
     );
   };
 
-  const upcomingHostingEvents = events.filter(
-    (event: Event) =>
-      event.user._id === userInfo?._id && isUpcomingOrOngoing(event),
-  );
+  const upcomingHostingEvents = events
+    .filter(
+      (event: Event) =>
+        event.user._id === userInfo?._id && isUpcomingOrOngoing(event),
+    )
+    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
   const upcomingGoingEvents = events.filter(
     (event: Event) =>

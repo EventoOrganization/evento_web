@@ -29,6 +29,7 @@ const UserProfile = ({
   pastHostedEvents?: EventType[];
   pastGoingEvents?: EventType[];
 }) => {
+  console.log("profileData", upcomingGoingEvents);
   const [isMounted, setIsMounted] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
   const pathname = usePathname();

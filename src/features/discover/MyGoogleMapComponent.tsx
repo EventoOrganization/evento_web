@@ -58,10 +58,12 @@ const MyGoogleMapComponent = ({
           }
         } else {
           console.error("Geocoder failed:", status);
+          setAddress(""); // On garde Google Places actif mais vide
         }
       });
     } catch (error) {
       console.error("Erreur dans fetchAddressAndTimeZone:", error);
+      setAddress(""); // Permet de ne pas bloquer Google Places
     }
   };
 
@@ -99,11 +101,20 @@ const MyGoogleMapComponent = ({
         if (pathname === "/create-event") {
           eventStore.setEventField("latitude", lat.toString());
           eventStore.setEventField("longitude", lng.toString());
-          eventStore.setEventField("location", place.formatted_address);
+          eventStore.setEventField("location", place.formatted_address || "");
         }
       }
     }
   }, [pathname]);
+
+  const handleManualAddressChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    setAddress(e.target.value);
+    if (pathname === "/create-event") {
+      eventStore.setEventField("location", e.target.value);
+    }
+  };
 
   const handleMapClick = async (event: google.maps.MapMouseEvent) => {
     if (event.latLng) {
@@ -140,13 +151,28 @@ const MyGoogleMapComponent = ({
       </div>
 
       <div className="search-box">
-        <StandaloneSearchBox onLoad={onLoad} onPlacesChanged={onPlacesChanged}>
+        {isLoaded ? ( // 🔥 Utiliser Google Places dès qu'il est disponible
+          <StandaloneSearchBox
+            onLoad={onLoad}
+            onPlacesChanged={onPlacesChanged}
+          >
+            <Input
+              type="text"
+              className="text-xs md:text-sm"
+              placeholder={address || "Search for a location"}
+              value={address}
+              onChange={handleManualAddressChange}
+            />
+          </StandaloneSearchBox>
+        ) : (
           <Input
             type="text"
             className="text-xs md:text-sm"
-            placeholder={address ? address : "Search for a location"}
+            placeholder="Enter location manually (Google Maps loading...)"
+            value={address}
+            onChange={handleManualAddressChange}
           />
-        </StandaloneSearchBox>
+        )}
       </div>
 
       {isMapVisible && isLoaded && (
