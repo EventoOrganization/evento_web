@@ -151,7 +151,7 @@ const MyGoogleMapComponent = ({
       </div>
 
       <div className="search-box">
-        {isLoaded ? ( // 🔥 Utiliser Google Places dès qu'il est disponible
+        {isLoaded ? (
           <StandaloneSearchBox
             onLoad={onLoad}
             onPlacesChanged={onPlacesChanged}
@@ -168,7 +168,7 @@ const MyGoogleMapComponent = ({
           <Input
             type="text"
             className="text-xs md:text-sm"
-            placeholder="Enter location manually (Google Maps loading...)"
+            placeholder="Enter location manually"
             value={address}
             onChange={handleManualAddressChange}
           />

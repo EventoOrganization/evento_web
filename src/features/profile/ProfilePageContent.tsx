@@ -25,6 +25,7 @@ interface Event {
 export default function ProfilePageContent() {
   const session = useSession();
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isSigninModalOpen, setIsSigninModalOpen] = useState(false);
   const { userInfo, loadUser } = useProfileStore();
   const { events, eventsStatus } = useEventStore();
   // 📆 Date actuelle
@@ -126,6 +127,7 @@ export default function ProfilePageContent() {
       ) : (
         <StaticProfilePage
           setIsAuthModalOpen={() => setIsAuthModalOpen(true)}
+          setIsSigninModalOpen={setIsSigninModalOpen}
         />
       )}
       {isAuthModalOpen && (
@@ -133,6 +135,7 @@ export default function ProfilePageContent() {
           onAuthSuccess={(token?: string) => {
             if (token) loadUser(token);
           }}
+          defaultForm={isSigninModalOpen ? "login" : "signup"}
           onClose={() => setIsAuthModalOpen(false)}
         />
       )}

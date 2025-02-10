@@ -29,10 +29,10 @@ const UserProfile = ({
   pastHostedEvents?: EventType[];
   pastGoingEvents?: EventType[];
 }) => {
-  console.log("profileData", upcomingGoingEvents);
   const [isMounted, setIsMounted] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
   const pathname = usePathname();
+  const isMyProfile = pathname === "/profile";
   useEffect(() => {
     setIsMounted(true);
     if (!profile) {
@@ -42,7 +42,6 @@ const UserProfile = ({
       }, 1500);
     }
   }, [profile]);
-  console.log("upcomingGuestedEvents", upcomingGuestedEvents);
   return (
     <>
       {!isMounted || isFetching ? (
@@ -53,56 +52,78 @@ const UserProfile = ({
         <>
           <ProfileHeader profile={profile} />
           <Section className="gap-6 max-w-2xl">
-            <EventSection
-              title="Upcoming Events"
-              events={[
-                ...(upcomingGoingEvents || []),
-                ...(upcomingFavouriteEvents || []),
-              ]}
-              sectionStyle="flex flex-col items-start gap-4 p-0 lg: max-w-7xl"
-              noEventsMessage={
-                pathname.startsWith("/profile/")
-                  ? "This user isn't going to upcoming events at the moment."
-                  : "There are no events at the moment. Explore Evento and create or host an event easily."
-              }
-            />
-            <EventSection
-              title="Events Hosting"
-              events={[
-                ...(upcomingHostingEvents || []),
-                ...(upcomingCoHostedEvents || []),
-              ]}
-              sectionStyle="flex flex-col items-start gap-4 p-0 lg: max-w-7xl"
-              noEventsMessage={
-                pathname.startsWith("/profile/")
-                  ? "This user isn't hosting events at the moment."
-                  : "There are no events at the moment. Explore Evento and create or host an event easily."
-              }
-            />
-            <EventSection
-              title="Past Events Attended"
-              events={
-                pastGoingEvents
-                  ? pastGoingEvents
-                  : profile?.pastEventsGoing
-                    ? profile?.pastEventsGoing
-                    : []
-              }
-              sectionStyle="flex flex-col items-start gap-4 p-0  lg: max-w-7xl"
-              noEventsMessage="There are no events at the moment. Explore Evento and create or host an event easily."
-            />
-            <EventSection
-              title="Past Events Hosted"
-              events={
-                pastHostedEvents
-                  ? pastHostedEvents
-                  : profile?.pastEventsHosted
-                    ? profile?.pastEventsHosted
-                    : []
-              }
-              sectionStyle="flex flex-col items-start gap-4 p-0  lg: max-w-7xl"
-              noEventsMessage="There are no events at the moment. Explore Evento and create or host an event easily."
-            />
+            {!isMyProfile &&
+              upcomingGoingEvents?.length === 0 &&
+              upcomingFavouriteEvents?.length === 0 &&
+              upcomingHostingEvents?.length === 0 &&
+              upcomingCoHostedEvents?.length === 0 &&
+              upcomingGuestedEvents?.length === 0 &&
+              pastGoingEvents?.length === 0 &&
+              pastHostedEvents?.length === 0 && (
+                <div className="w-full flex justify-center items-center">
+                  <p className="text-center text-sm text-muted-foreground">
+                    This user isn&apos;t hosting or going to any events at the
+                    moment.
+                  </p>
+                </div>
+              )}
+            {/* 🎯 Upcoming Events */}
+            {(isMyProfile ||
+              (upcomingGoingEvents?.length ?? 0) > 0 ||
+              (upcomingFavouriteEvents?.length ?? 0) > 0) && (
+              <EventSection
+                title="Upcoming Events"
+                events={[
+                  ...(upcomingGoingEvents || []),
+                  ...(upcomingFavouriteEvents || []),
+                ]}
+                sectionStyle="flex flex-col items-start gap-4 p-0 lg:max-w-7xl"
+                noEventsMessage={
+                  isMyProfile
+                    ? "There are no upcoming events at the moment."
+                    : "This user isn't going to upcoming events at the moment."
+                }
+              />
+            )}
+
+            {/* 🎯 Hosting Events */}
+            {(isMyProfile ||
+              (upcomingHostingEvents?.length ?? 0) > 0 ||
+              (upcomingCoHostedEvents?.length ?? 0) > 0) && (
+              <EventSection
+                title="Events Hosting"
+                events={[
+                  ...(upcomingHostingEvents || []),
+                  ...(upcomingCoHostedEvents || []),
+                ]}
+                sectionStyle="flex flex-col items-start gap-4 p-0 lg:max-w-7xl"
+                noEventsMessage={
+                  isMyProfile
+                    ? "There are no hosted events at the moment."
+                    : "This user isn't hosting events at the moment."
+                }
+              />
+            )}
+
+            {/* 🎯 Past Events Attended */}
+            {(isMyProfile || (pastGoingEvents?.length ?? 0) > 0) && (
+              <EventSection
+                title="Past Events Attended"
+                events={pastGoingEvents || []}
+                sectionStyle="flex flex-col items-start gap-4 p-0 lg:max-w-7xl"
+                noEventsMessage="There are no past events attended at the moment."
+              />
+            )}
+
+            {/* 🎯 Past Events Hosted */}
+            {(isMyProfile || (pastHostedEvents?.length ?? 0) > 0) && (
+              <EventSection
+                title="Past Events Hosted"
+                events={pastHostedEvents || []}
+                sectionStyle="flex flex-col items-start gap-4 p-0 lg:max-w-7xl"
+                noEventsMessage="There are no past hosted events at the moment."
+              />
+            )}
           </Section>
         </>
       )}

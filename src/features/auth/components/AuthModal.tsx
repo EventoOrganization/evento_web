@@ -25,10 +25,12 @@ const AuthModal = ({
   onAuthSuccess,
   onClose,
   quickSignup,
+  defaultForm = "signup",
 }: {
   onAuthSuccess: (token?: string) => void;
   onClose?: () => void;
   quickSignup?: boolean;
+  defaultForm?: string;
 }) => {
   const { toast } = useToast();
   const [flowType, setFlowType] = useState<"signup" | "forgot-password">(
@@ -48,7 +50,18 @@ const AuthModal = ({
     | "reset-password"
     | "verify"
     | "user-info"
-  >(quickSignup ? "quick-signup" : "signup");
+  >(
+    quickSignup
+      ? "quick-signup"
+      : (defaultForm as
+          | "signup"
+          | "forgot-password"
+          | "login"
+          | "quick-signup"
+          | "reset-password"
+          | "verify"
+          | "user-info"),
+  );
 
   const handleLoginSuccess = (token: string) => {
     if (token) onAuthSuccess(token);

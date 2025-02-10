@@ -6,8 +6,8 @@ const Footer = () => {
       <Image
         src="/evento-logo.png"
         alt="logo"
-        width={128}
-        height={128}
+        width={60}
+        height={60}
         className="object-contain"
         priority
       />
