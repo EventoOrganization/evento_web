@@ -48,12 +48,30 @@ export default function ProfilePageContent() {
       (event: Event) =>
         event.user._id === userInfo?._id && isUpcomingOrOngoing(event),
     )
-    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    .sort((a, b) => {
+      const dateA = a.details?.date
+        ? new Date(a.details.date).getTime()
+        : Number.MAX_SAFE_INTEGER;
+      const dateB = b.details?.date
+        ? new Date(b.details.date).getTime()
+        : Number.MAX_SAFE_INTEGER;
+      return dateA - dateB;
+    });
 
-  const upcomingGoingEvents = events.filter(
-    (event: Event) =>
-      getEventStatus(event._id).isGoing && isUpcomingOrOngoing(event),
-  );
+  const upcomingGoingEvents = events
+    .filter(
+      (event: Event) =>
+        getEventStatus(event._id).isGoing && isUpcomingOrOngoing(event),
+    )
+    .sort((a, b) => {
+      const dateA = a.details?.date
+        ? new Date(a.details.date).getTime()
+        : Number.MAX_SAFE_INTEGER;
+      const dateB = b.details?.date
+        ? new Date(b.details.date).getTime()
+        : Number.MAX_SAFE_INTEGER;
+      return dateA - dateB;
+    });
 
   const upcomingFavouriteEvents = events.filter(
     (event: Event) =>
