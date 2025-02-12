@@ -7,7 +7,7 @@
   "start_url": "/discover",
   "display": "standalone",
   "background_color": "#F1F5F9",
-  "theme_color": "#a62ba7",
+  "theme_color": "#F1F5F9",
   "orientation": "portrait",
   "scope": "/",
   "protocol_handlers": [
