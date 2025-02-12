@@ -217,7 +217,7 @@ const SignUpForm = ({
             className="bg-evento-gradient-button rounded-full  self-center px-8 py-2 mt-6 text-white hover:shadow-lg hover:scale-105 transition-all duration-300"
             disabled={isFetching}
           >
-            {isFetching ? "Signing up..." : "Sign up"}
+            {isFetching ? "Signing up..." : "Sign-up"}
           </Button>
         </div>
         <div className="mt-4 text-center w-full text-xs">

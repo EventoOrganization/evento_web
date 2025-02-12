@@ -35,7 +35,7 @@ const StaticProfilePage = ({
                   setIsSigninModalOpen(false);
                 }}
               >
-                Sign up to create a profile
+                Sign-up to create a profile
               </Button>
               <Button
                 variant={"link"}
