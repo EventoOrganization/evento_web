@@ -1,110 +1,330 @@
+"use client";
 import Section from "@/components/layout/Section";
 import { Button } from "@/components/ui/button";
+import {
+  Bookmark,
+  CircleUserRound,
+  Compass,
+  Filter,
+  HeartHandshake,
+  Plus,
+  Search,
+  UserRound,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-
+import { useEffect, useRef, useState } from "react";
+import FeaturesSection from "./FeaturesSection";
 const Tuto = () => {
-  return (
-    <div className="bg-eventoPurpleDark w-full text-white py-10">
-      <Section
-        id="tuto-create-event"
-        className="grid grid-cols-1 lg:grid-cols-2 gap-10"
-      >
-        <div className="flex justify-center">
-          <Image
-            src={
-              "https://evento-media-bucket.s3.ap-southeast-2.amazonaws.com/tuto-create-event.png"
+  const sectionRefs = {
+    showcaseTitle: useRef<HTMLDivElement>(null),
+    showcaseContent: useRef<HTMLDivElement>(null),
+    createEventTitle: useRef<HTMLDivElement>(null),
+    discoverTitle: useRef<HTMLDivElement>(null),
+    profileTitle: useRef<HTMLDivElement>(null),
+  };
+
+  const [visibleSections, setVisibleSections] = useState<string[]>([]);
+  useEffect(() => {
+    const observerOptions = {
+      root: null, // Observe par rapport au viewport
+      threshold: 0.3, // Déclenche à 30% de visibilité
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          setVisibleSections((prev) => {
+            const newId = entry.target.id;
+            if (!prev.includes(newId)) {
+              return [...prev, newId];
             }
+            return prev;
+          });
+        }
+      });
+    }, observerOptions);
+
+    Object.values(sectionRefs).forEach((ref) => {
+      if (ref.current) {
+        observer.observe(ref.current);
+      }
+    });
+
+    return () => {
+      Object.values(sectionRefs).forEach((ref) => {
+        if (ref.current) observer.unobserve(ref.current);
+      });
+    };
+  }, []);
+  return (
+    <div className="">
+      <Section className="gap-10 grid md:grid-cols-2 ">
+        <div className="space-y-6 px-4 md:px-12 flex flex-col">
+          <h2
+            ref={sectionRefs.showcaseTitle}
+            id="showcase-title"
+            className={`transition-opacity transform duration-700 ${
+              visibleSections.includes("showcase-title")
+                ? "opacity-100 translate-y-0 motion-safe:animate-slideInLeft"
+                : "opacity-0 translate-y-10"
+            }`}
+          >
+            Showcase your events, build your community
+          </h2>
+
+          <p>
+            Whether you&apos;re hosting wellness workshops, organising pop-ups,
+            supperclubs, or an open-mic - all your events are in one place. By
+            creating and sharing all your upcoming and past events - your
+            profile is a hub for your guests to find out more about you and your
+            happenings. Keep your community in the loop and attract new
+            passionate individuals, they&apos;re only a click away.
+          </p>
+        </div>
+        <div className="flex justify-center ">
+          <Image
+            src={"/WHAT_EVENTO_DOES-removebg-preview 2.png"}
             alt="tuto-create-event"
-            width={200}
-            height={200}
-            className=""
+            width={800}
+            height={800}
+            className="h-96 w-auto"
           />
         </div>
-        <div className="space-y-6 px-6 md:px-12 flex flex-col">
-          <h2 className="text-3xl font-bold text-center lg:text-left">
-            Your next gathering is just a few clicks away!
-          </h2>
-          <p className="text-lg md:text-xl leading-relaxed text-center lg:text-left">
-            Effortlessly customize your event with options for date, time,
-            location, and privacy. Invite co-hosts to share the spotlight and
-            enhance your planning. Import guest lists in bulk or send
-            personalized invites to make your outreach seamless. Set RSVP
-            options and track responses in real-time, while enabling a chat
-            feature to foster communication and excitement among attendees.
-            After the event, create a gallery by adding photos to relive the
-            memorable moments with your guests!
+        <div className="space-y-6 px-6 md:px-12 flex flex-col lg:col-span-2">
+          <p className="text-center text-eventoPurpleDark">
+            Join hundreds of users on Evento to create meaningful experiences.
           </p>
-          <Button className="bg-evento-gradient text-white hover:opacity-80 py-8 md:text-xl w-fit self-center">
-            <Link href="/create-event">CREATE AN EVENT</Link>
+          <Button variant={"eventoPrimary"} className="lg:w-fit self-center">
+            <Link href="/profile" className="flex gap-2 items-center">
+              <UserRound /> Create your Profile
+            </Link>
           </Button>
         </div>
       </Section>
+      <div className="border max-w-2xl"></div>
+      <Section id="tuto-create-event" className="gap-10 px-0">
+        <div className="space-y-6 px-8 md:px-12 max-w-2xl mx-auto lg:text-center">
+          <h2
+            ref={sectionRefs.createEventTitle}
+            id="createEvent-title"
+            className={`transition-opacity transform duration-700 ${
+              visibleSections.includes("createEvent-title")
+                ? "opacity-100 translate-y-0 motion-safe:animate-slideInLeft"
+                : "opacity-0 translate-y-10"
+            }`}
+          >
+            Creating events has never been this easy
+          </h2>
+
+          <p>
+            No more chasing RSVPs or juggling messages— Evento makes organizing
+            seamless. With features like customizable RSVP forms, co-hosting,
+            limited capacity, and more, you can set up your event in minutes and
+            focus on making it unforgettable.
+          </p>
+        </div>
+        <FeaturesSection />
+        <div className="space-y-6 px-6 md:px-12 flex flex-col ">
+          <p className="text-center text-eventoPurpleDark">
+            Explore all Features
+          </p>
+          <Button
+            variant={"eventoPrimary"}
+            className="lg:w-fit self-center"
+            asChild
+          >
+            <Link href="/create-event" className="flex gap-2 items-center">
+              <Plus />
+              CREATE AN EVENT
+            </Link>
+          </Button>
+        </div>
+      </Section>
+      <div className="border"></div>
       <Section
         id="tuto-discover-events"
-        className="flex flex-col-reverse lg:grid lg:grid-cols-2 gap-10"
+        className="flex lg:grid lg:grid-cols-2 gap-10"
       >
         {/* Texte */}
-        <div className="space-y-6 px-6 md:px-12 flex flex-col">
-          <h2 className="text-3xl font-bold text-center lg:text-left">
-            Find the perfect activities to enrich your social life!
+        <div className="space-y-6 px-4 md:px-12 flex flex-col h-full gap-4">
+          <h2
+            ref={sectionRefs.discoverTitle}
+            id="discover-title"
+            className={`transition-opacity transform duration-700 ${
+              visibleSections.includes("discover-title")
+                ? "opacity-100 translate-y-0 motion-safe:animate-slideInLeft"
+                : "opacity-0 translate-y-10"
+            }`}
+          >
+            But that&apos;s not all -discover events that resonate with YOU !
           </h2>
-          <p className="text-lg md:text-xl leading-relaxed text-center lg:text-left">
-            Explore a diverse range of local and virtual events tailored to your
-            interests! Our intuitive search feature allows you to filter by
-            category, location, and keywords, making it easy to find what
-            you&apos;re looking for. Bookmark your favorites to revisit later
-            and enjoy personalized recommendations that keep your social
-            calendar full. With Evento, every experience is a chance to connect,
-            learn, and have fun!
+          <p>
+            At Evento we want you to feel seen, understood, and share your and
+            interests with like-minded people. Explore the Discover page based
+            on your favorite interests.
           </p>
-          <Button className="bg-evento-gradient text-white hover:opacity-80 py-8 md:text-xl w-fit self-center">
-            <Link href="/discover">DISCOVER AN EVENT</Link>
+          <Button
+            variant={"eventoPrimary"}
+            className="w-fit self-center hidden lg:flex"
+            asChild
+          >
+            <Link href="/discover">
+              <Compass />
+              DISCOVER AN EVENT
+            </Link>
           </Button>
         </div>
 
         {/* Image */}
-        <div className="flex justify-center">
-          <Image
-            src={
-              "https://evento-media-bucket.s3.ap-southeast-2.amazonaws.com/tuto-discover-events.png"
-            }
-            alt="tuto-discover-events"
-            width={400}
-            height={400}
-            className="object-cover"
-          />
+        <div className="flex justify-center px-4 flex-col items-center gap-10 text-sm lg:text-base">
+          <h3>💡 Useful tips to discover events !</h3>
+          <ul className="space-y-4">
+            <li className="flex gap-2 items-start">
+              <Filter className="text-eventoPurpleDark min-w-6 h-6" />
+              <span>
+                <b>Use filters for personalized discovery</b> Click on the
+                filter icon tat the top right of the Discover page to explore
+                events in your preferred interest categories like
+                &quot;wellness&quot;, &quot;food & beverage&quot; or
+                &quot;fashion&quot;.{" "}
+              </span>
+            </li>
+            <li className="flex gap-2 items-start">
+              <Search className="text-eventoPurpleDark min-w-6 h-6" />
+              <span>
+                <b>Search for anything</b>
+                Looking for a specific event, venue, or even a friend? Just type
+                it in the search bar—it&apos;s got you covered.
+              </span>
+            </li>
+            <li className="flex gap-2 items-start">
+              <CircleUserRound className="text-eventoPurpleDark min-w-6 h-6" />
+
+              <span>
+                <b>See where your friends are going</b>
+                Spot which friends are attending events you might love. Soon,
+                you&apos;ll be able to message them directly through our chat
+                feature!
+              </span>
+            </li>
+            <li className="flex gap-2 items-start">
+              <Bookmark className="text-eventoPurpleDark min-w-6 h-6" />
+              <span>
+                <b>Save events for later</b> Interested in an event but not
+                ready to commit? Tap the bookmark icon to save it and find it
+                later in your profile.
+              </span>
+            </li>
+          </ul>
+          <Button
+            variant={"eventoPrimary"}
+            className="w-fit self-center lg:hidden"
+            asChild
+          >
+            <Link href="/discover">
+              <Compass />
+              DISCOVER AN EVENT
+            </Link>
+          </Button>
         </div>
       </Section>
-
-      <Section
-        id="tuto-profile"
-        className="grid grid-cols-1 lg:grid-cols-2 gap-10"
-      >
-        <div className="flex justify-center">
-          <Image
-            src={
-              "https://evento-media-bucket.s3.ap-southeast-2.amazonaws.com/tuto-profile.png"
-            }
-            alt="tuto-create-event"
-            width={200}
-            height={200}
-            className=""
-          />
-        </div>
-        <div className="space-y-6 px-6 md:px-12 flex flex-col">
-          <h2 className="text-3xl font-bold text-center lg:text-left">
-            Connecting with like-minded individuals has never been this easy!
+      <div className="border"></div>
+      <Section id="tuto-profile" className="grid grid-cols-1 gap-10">
+        <div className="space-y-6 px-4 md:px-12 flex flex-col">
+          <h2
+            ref={sectionRefs.profileTitle}
+            id="profile-title"
+            className={`transition-opacity transform duration-700 ${
+              visibleSections.includes("profile-title")
+                ? "opacity-100 translate-y-0 motion-safe:animate-slideInLeft"
+                : "opacity-0 translate-y-10"
+            }`}
+          >
+            The story behind Evento
           </h2>
-          <p className="text-lg md:text-xl leading-relaxed text-center lg:text-left">
-            Engage with other attendees through chat and discussion forums,
-            fostering relationships before and after events. Follow your
-            favorite hosts and discover like-minded individuals who share your
-            passions. With our profile feature, showcase your interests and find
-            events that resonate with you.
+          <p>
+            It all started from our own challenges in hosting and finding great
+            events.
           </p>
-          <Button className="bg-evento-gradient text-white hover:opacity-80 py-8 md:text-xl w-fit self-center">
-            <Link href="/profile">CONNECT</Link>
+
+          <p>
+            On one hand we have Camille, who loves bringing people
+            together—organizing unforgettable nights, curating every detail to
+            create the perfect atmosphere. Her love for hosting became so strong
+            that she now runs her own venue in Ho Chi Minh City, where she hosts
+            everything from sunset DJ sessions to outdoor cinemas.
+          </p>
+
+          <p>
+            On the other hand, Elena is a seeker—always looking for unique
+            experiences from niche festivals to wellness workshops. For her,
+            events aren&apos;t just about being somewhere; they&apos;re about
+            finding genuine moments of connection.
+          </p>
+
+          <p>
+            But whether we were hosting events, or looking for them, we kept
+            running into the same frustrations. Too much time was spent on
+            messaging apps and social media. Scrolling to find relatable events,
+            aggressively promoting to find the right audience or chasing after
+            attendees.
+          </p>
+
+          <p>We kept asking ourselves—why isn&apos;t this easier?</p>
+
+          <p>That&apos;s when Evento was born.</p>
+
+          <p>
+            We realized this wasn&apos;t just our problem. As we started talking
+            about our idea, we realised that people crave connection more than
+            ever, yet it often feels harder to make it happen and finding
+            meaningful moments shouldn&apos;t be so difficult.
+          </p>
+
+          <p>
+            Loneliness is as harmful as obesity or smoking, yet we rarely talk
+            about social health. We believe it&apos;s time to change that.
+          </p>
+
+          <p>
+            With Evento, hosting and discovering events becomes effortless.
+            Whether you&apos;re planning an intimate gathering, a public event,
+            or looking to meet like-minded people, Evento makes it simple.
+          </p>
+
+          <p>
+            Because life isn&apos;t just about what we do—it&apos;s about who we
+            share it with.
+          </p>
+
+          <p>
+            We&apos;re two best friends on a mission to inspire more people to
+            host, attend, and truly connect. To turn every event into a
+            memorable moment.
+          </p>
+
+          <p>
+            Thanks for being on this journey with us. Our door is always
+            open—reach out to us just to chat or to suggest improvements for
+            Evento. Let&apos;s build something meaningful together 💜
+          </p>
+
+          <p className="text-lg md:text-xl leading-relaxed text-center lg:text-left font-semibold">
+            Camille & Elena
+            <br />
+            Founders of Evento
+          </p>
+
+          <Button
+            variant={"eventoPrimary"}
+            className="md:w-fit self-center"
+            asChild
+          >
+            <Link href="mailto:help@evento-app.io">
+              <HeartHandshake />
+              Contact us
+            </Link>
           </Button>
         </div>
       </Section>
