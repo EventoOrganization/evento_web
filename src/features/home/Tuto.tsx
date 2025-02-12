@@ -102,7 +102,7 @@ const Tuto = () => {
           </Button>
         </div>
       </Section>
-      <div className="border max-w-2xl"></div>
+      <div className="border max-w-2xl mx-auto my-10"></div>
       <Section id="tuto-create-event" className="gap-10 px-0">
         <div className="space-y-6 px-8 md:px-12 max-w-2xl mx-auto lg:text-center">
           <h2
@@ -141,7 +141,7 @@ const Tuto = () => {
           </Button>
         </div>
       </Section>
-      <div className="border"></div>
+      <div className="border max-w-2xl mx-auto my-10"></div>
       <Section
         id="tuto-discover-events"
         className="flex lg:grid lg:grid-cols-2 gap-10"
@@ -229,7 +229,7 @@ const Tuto = () => {
           </Button>
         </div>
       </Section>
-      <div className="border"></div>
+      <div className="border max-w-2xl mx-auto my-10"></div>
       <Section id="tuto-profile" className="grid grid-cols-1 gap-10">
         <div className="space-y-6 px-4 md:px-12 flex flex-col">
           <h2
