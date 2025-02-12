@@ -9,7 +9,7 @@ const Hero = () => {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
   return (
     <BackgroundGradientAnimation className=" ">
-      <div className="absolute z-50 inset-0 flex flex-col items-center justify-center text-white font-bold px-4  text-3xl md:text-4xl lg:text-7xl">
+      <div className="absolute z-10 inset-0 flex flex-col items-center justify-center text-white font-bold px-4  text-3xl md:text-4xl lg:text-7xl">
         <div className="p-4 w-full flex justify-between absolute top-0 items-center">
           <Image
             src="/icon.png"
