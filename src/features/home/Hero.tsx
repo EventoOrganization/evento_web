@@ -21,13 +21,13 @@ const Hero = () => {
           />
           <div className="flex gap-4">
             <Button variant={"eventoSecondary"} asChild>
-              <Link href="/profile">My event </Link>
+              <Link href="/profile">My Events</Link>
             </Button>
             <Button
               onClick={() => setIsAuthModalOpen(true)}
               variant={"eventoSecondary"}
             >
-              Signup
+              Sign-up
             </Button>
           </div>
         </div>

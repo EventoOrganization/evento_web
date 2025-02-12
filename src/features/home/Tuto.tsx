@@ -126,9 +126,14 @@ const Tuto = () => {
         </div>
         <FeaturesSection />
         <div className="space-y-6 px-6 md:px-12 flex flex-col ">
-          <p className="text-center text-eventoPurpleDark">
-            Explore all Features
-          </p>
+          <Button variant={"ghost"}>
+            <Link
+              href="/create-event"
+              className="text-center text-eventoPurpleDark"
+            >
+              Explore all Features
+            </Link>
+          </Button>
           <Button
             variant={"eventoPrimary"}
             className="lg:w-fit self-center"
@@ -136,7 +141,7 @@ const Tuto = () => {
           >
             <Link href="/create-event" className="flex gap-2 items-center">
               <Plus />
-              CREATE AN EVENT
+              Create Event
             </Link>
           </Button>
         </div>
