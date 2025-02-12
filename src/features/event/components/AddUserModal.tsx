@@ -127,7 +127,7 @@ const AddUserModal = ({
                     onClick={() => addUser(user)}
                   >
                     <Image
-                      src={user.profileImage || "/icon-384x384.png"}
+                      src={user.profileImage || "/evento-logo.png"}
                       alt={user.username}
                       width={40}
                       height={40}
@@ -158,7 +158,7 @@ const AddUserModal = ({
                 >
                   <div className="flex items-center space-x-4">
                     <Image
-                      src={userId.profileImage || "/icon-384x384.png"}
+                      src={userId.profileImage || "/evento-logo.png"}
                       alt={userId.username}
                       width={40}
                       height={40}

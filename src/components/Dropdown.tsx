@@ -33,7 +33,7 @@ const Dropdown = ({ title, users }: { title: string; users: UserType[] }) => {
               ) : (
                 <Avatar>
                   <AvatarImage
-                    src={"/icon-384x384.png"}
+                    src={"/evento-logo.png"}
                     className="rounded-full w-8 h-8 "
                   />
                   <AvatarFallback>CN</AvatarFallback>

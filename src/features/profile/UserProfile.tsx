@@ -17,7 +17,7 @@ const UserProfile = ({
   pastGoingEvents,
   pastHostedEvents,
   upcomingCoHostedEvents,
-  upcomingGuestedEvents,
+  // upcomingGuestedEvents,
 }: {
   profile?: UserType | null;
   upcomingGoingEvents?: EventType[];
@@ -42,6 +42,11 @@ const UserProfile = ({
       }, 1500);
     }
   }, [profile]);
+  const isNoEvent =
+    !upcomingGoingEvents?.length &&
+    !upcomingHostingEvents?.length &&
+    !pastGoingEvents?.length &&
+    !pastHostedEvents?.length;
   return (
     <>
       {!isMounted || isFetching ? (
@@ -51,22 +56,15 @@ const UserProfile = ({
       ) : (
         <>
           <ProfileHeader profile={profile} />
-          <Section className="gap-6 max-w-2xl">
-            {!isMyProfile &&
-              upcomingGoingEvents?.length === 0 &&
-              upcomingFavouriteEvents?.length === 0 &&
-              upcomingHostingEvents?.length === 0 &&
-              upcomingCoHostedEvents?.length === 0 &&
-              upcomingGuestedEvents?.length === 0 &&
-              pastGoingEvents?.length === 0 &&
-              pastHostedEvents?.length === 0 && (
-                <div className="w-full flex justify-center items-center">
-                  <p className="text-center text-sm text-muted-foreground">
-                    This user isn&apos;t hosting or going to any events at the
-                    moment.
-                  </p>
-                </div>
-              )}
+          <Section className="gap-6 max-w-2xl min-h-96">
+            {!isMyProfile && isNoEvent && (
+              <div className="w-full flex justify-center items-center">
+                <p className="text-center text-sm text-muted-foreground">
+                  This user isn&apos;t hosting or going to any events at the
+                  moment.
+                </p>
+              </div>
+            )}
             {/* 🎯 Upcoming Events */}
             {(isMyProfile ||
               (upcomingGoingEvents?.length ?? 0) > 0 ||

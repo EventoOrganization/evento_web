@@ -91,7 +91,7 @@ const CreateEventPreview = ({
                 ) : (
                   <Avatar>
                     <AvatarImage
-                      src={"/icon-384x384.png"}
+                      src={"/evento-logo.png"}
                       className="rounded-full w-8 h-8"
                     />
                     <AvatarFallback>CN</AvatarFallback>

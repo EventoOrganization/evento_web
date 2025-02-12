@@ -131,7 +131,7 @@ const UserListModal = ({
                       ) : (
                         <div className="flex flex-col">
                           <Avatar className="w-8 h-8 md:w-10 md:h-10">
-                            <AvatarImage src="/icon-384x384.png" />
+                            <AvatarImage src="/evento-logo.png" />
                             <AvatarFallback>CN</AvatarFallback>
                           </Avatar>
                         </div>

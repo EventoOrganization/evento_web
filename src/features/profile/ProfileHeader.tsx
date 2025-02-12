@@ -95,7 +95,7 @@ const ProfileHeader = ({ profile }: Props) => {
         <div className="flex justify-between w-full items-center">
           <figure>
             <Image
-              src={profile?.profileImage || "/icon-384x384.png"}
+              src={profile?.profileImage || "/evento-logo.png"}
               alt="user profile image"
               width={500}
               height={500}

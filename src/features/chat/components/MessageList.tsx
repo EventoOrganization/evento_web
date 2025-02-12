@@ -77,7 +77,7 @@ const MessageList = ({ messages, currentUserId }: MessageListProps) => {
                   <Avatar className="w-8 h-8 rounded-full">
                     <AvatarImage
                       className="w-8 h-8 rounded-full"
-                      src="/icon-384x384.png"
+                      src="/evento-logo.png"
                     />
                     <AvatarFallback>CN</AvatarFallback>
                   </Avatar>
@@ -115,7 +115,7 @@ const MessageList = ({ messages, currentUserId }: MessageListProps) => {
                   <Avatar className="w-8 h-8 rounded-full">
                     <AvatarImage
                       className="w-8 h-8 rounded-full"
-                      src="/icon-384x384.png"
+                      src="/evento-logo.png"
                     />
                     <AvatarFallback>CN</AvatarFallback>
                   </Avatar>

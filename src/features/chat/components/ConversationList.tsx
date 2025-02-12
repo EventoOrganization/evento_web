@@ -72,7 +72,7 @@ const ConversationList = ({
   //           {
   //             url:
   //               conversation.reciverId?.profileImage ||
-  //               "/icon-384x384.png",
+  //               "/evento-logo.png",
   //           },
   //         ],
   //       };
@@ -190,7 +190,7 @@ const ConversationList = ({
                     <Avatar className="w-10 h-10 rounded-full">
                       <AvatarImage
                         className="w-10 h-10 rounded-full"
-                        src="/icon-384x384.png"
+                        src="/evento-logo.png"
                       />
                       <AvatarFallback>CN</AvatarFallback>
                     </Avatar>
@@ -233,7 +233,7 @@ const ConversationList = ({
               <div className="relative w-12 h-12 mr-4">
                 {user.profileImage ? (
                   <Image
-                    src={user.profileImage || "/icon-384x384.png"}
+                    src={user.profileImage || "/evento-logo.png"}
                     alt={user.username}
                     fill
                     className="rounded-full"
@@ -242,7 +242,7 @@ const ConversationList = ({
                   <Avatar className="w-10 h-10 rounded-full">
                     <AvatarImage
                       className="w-10 h-10 rounded-full"
-                      src="/icon-384x384.png"
+                      src="/evento-logo.png"
                     />
                     <AvatarFallback>CN</AvatarFallback>
                   </Avatar>

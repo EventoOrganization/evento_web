@@ -129,6 +129,9 @@ export const useUsersStore = create<UsersState>()(
         selectedInterests: InterestType[],
       ) => {
         const filteredUsers = get().users.filter((user) => {
+          if (user.username.toLowerCase() === "anonymous") {
+            return false;
+          }
           const matchesSearchText =
             !searchText ||
             user.username.toLowerCase().includes(searchText.toLowerCase()) ||

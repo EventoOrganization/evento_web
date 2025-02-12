@@ -57,7 +57,7 @@ const Event = ({
               ) : (
                 <Avatar>
                   <AvatarImage
-                    src={"/icon-384x384.png"}
+                    src={"/evento-logo.png"}
                     className="rounded-full min-w-8 w-8 h-8 "
                   />
                   <AvatarFallback>CN</AvatarFallback>

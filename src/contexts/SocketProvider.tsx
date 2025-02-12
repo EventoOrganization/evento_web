@@ -83,7 +83,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
                 ? conversation.groupId.eventId?.initialMedia || []
                 : [
                     {
-                      url: otherUser?.profileImage || "/icon-384x384.png",
+                      url: otherUser?.profileImage || "/evento-logo.png",
                     },
                   ],
             };
@@ -99,7 +99,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
               conversationData.title = otherUser?.username || "Private Chat";
               conversationData.initialMedia = [
                 {
-                  url: otherUser?.profileImage || "/icon-384x384.png",
+                  url: otherUser?.profileImage || "/evento-logo.png",
                 },
               ];
             }

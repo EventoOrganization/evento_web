@@ -113,7 +113,7 @@ const CoHostManagementModal: React.FC<CoHostManagementModalProps> = ({
                     <Avatar className="w-10 h-10 rounded-full">
                       <AvatarImage
                         className="w-10 h-10 rounded-full"
-                        src="/icon-384x384.png"
+                        src="/evento-logo.png"
                       />
                       <AvatarFallback>CN</AvatarFallback>
                     </Avatar>
