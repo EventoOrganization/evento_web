@@ -98,6 +98,7 @@ const MyGoogleMapComponent = ({
         setLocation({ lat, lng });
         setMapCenter({ lat, lng });
         fetchAddressAndTimeZone(lat, lng);
+        setAddress(place.formatted_address || "");
         if (pathname === "/create-event") {
           eventStore.setEventField("latitude", lat.toString());
           eventStore.setEventField("longitude", lng.toString());
