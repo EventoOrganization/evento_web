@@ -3,7 +3,7 @@ import Link from "next/link";
 const Footer = () => {
   return (
     <footer className=" w-full flex flex-col justify-center items-center min-h-40 pt-10 pb-20 gap-10 border-t-2 max-w-2xl">
-      <ul className="flex flex-wrap justify-evenly w-full max-w-96">
+      <ul className="flex flex-wrap justify-center gap-6 w-full max-w-96">
         <li>
           <Link href={"https://www.instagram.com/eventoapp.io/"}>
             <Image

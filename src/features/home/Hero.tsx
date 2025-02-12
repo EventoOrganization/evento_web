@@ -1,30 +1,57 @@
+"use client";
 import Section from "@/components/layout/Section";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
+import AuthModal from "../auth/components/AuthModal";
 
 const Hero = () => {
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
   return (
-    <Section className="h-screen items-center gap-10 bg-purple-50 p-0 max-w-screen">
+    <Section className="h-screen items-center p-0 max-w-screen bg-evento-gradient-button text-secondary relative">
       {/* Texte de la section */}
-      <div className="grid grid-cols-2">
-        <div className="space-y-5 pl-4 md:px-6 flex flex-col justify-center">
-          <h1>
-            Create,
-            <br /> Discover,
-            <br /> Connect
+      <div className="p-4 w-full flex justify-between absolute top-0 items-center">
+        <Image
+          src="/icon.png"
+          alt="logo"
+          width={50}
+          height={50}
+          className="object-contain"
+          priority
+        />
+        <div className="flex gap-4">
+          <Button variant={"eventoSecondary"} asChild>
+            <Link href="/profile">My event </Link>
+          </Button>
+          <Button
+            onClick={() => setIsAuthModalOpen(true)}
+            variant={"eventoSecondary"}
+          >
+            Signup
+          </Button>
+        </div>
+      </div>
+      <div className="flex ">
+        <div className=" flex flex-col justify-center px-6 gap-6 mb-6">
+          <h1 className="text-secondary">
+            Host effortlessly,
+            <br /> connect meaningfully
           </h1>
-          <h2 className="text-xl  lg:text-2xl text-eventoPurpleDark font-extralight">
-            All your events in one place with{" "}
-            <strong className="text-eventoPurple font-bold">Evento</strong>
+          <h2 className="text-xl  md:text-2xl  font-extralight">
+            Create events easily, discover new experiences, and grow your
+            community – all in one platform
           </h2>
-          <Button className="bg-evento-gradient text-white hover:opacity-80 md:text-2xl md:py-8 hidden md:flex">
-            <Link href="/create-event">Create an event today!</Link>
+          <Button
+            variant={"eventoSecondary"}
+            className=" md:text-2xl md:py-8 hidden md:flex"
+          >
+            <Link href="/create-event">CREATE YOUR FIRST EVENT </Link>
           </Button>
         </div>
 
         {/* Image stylisée avec clip-path */}
-        <div className="relative flex justify-center items-center md:px-6">
+        <div className="relative md:flex justify-center items-center md:px-6 hidden ">
           <div
             className="overflow-hidden shadow-lg transition-transform duration-500 ease-in-out"
             style={{ clipPath: "polygon(25% 0%, 100% 0%, 75% 100%, 0% 100%)" }}
@@ -40,9 +67,15 @@ const Hero = () => {
           </div>
         </div>
       </div>
-      <Button className="bg-evento-gradient text-white hover:opacity-80 md:text-2xl md:py-8 md:hidden ">
+      <Button
+        variant={"eventoSecondary"}
+        className=" hover:opacity-80 md:text-2xl md:py-8 md:hidden "
+      >
         <Link href="/create-event">Create an event today!</Link>
       </Button>
+      {isAuthModalOpen && (
+        <AuthModal onAuthSuccess={() => setIsAuthModalOpen(false)} />
+      )}
     </Section>
   );
 };
