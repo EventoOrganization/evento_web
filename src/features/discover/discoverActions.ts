@@ -33,9 +33,23 @@ export const filterEvents = (
   startDate: Date | null,
   endDate: Date | null,
 ): EventType[] => {
-  const todayMidnight = new Date().setHours(0, 0, 0, 0);
-  const tomorrowMidnight = todayMidnight + 24 * 60 * 60 * 1000; // +1 jour
-  const nextWeekMidnight = todayMidnight + 7 * 24 * 60 * 60 * 1000; // +7 jours
+  console.log("FILTERING EVENTS");
+  const getUTCDate = (date: Date) => {
+    return new Date(
+      Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()),
+    );
+  };
+  // Dates de référence définies UNE SEULE FOIS
+  const today = getUTCDate(new Date());
+  const tomorrow = new Date(today);
+  tomorrow.setUTCDate(today.getUTCDate() + 1);
+
+  const afterTomorrow = new Date(today);
+  afterTomorrow.setUTCDate(today.getUTCDate() + 2);
+
+  const nextWeek = new Date(today);
+  nextWeek.setUTCDate(today.getUTCDate() + 7);
+
   const searchLower = searchText.toLowerCase();
 
   // Filtrage des événements
@@ -49,7 +63,7 @@ export const filterEvents = (
         ),
       );
 
-    // Vérifie si le texte de recherche correspond (titre, description, lieu, utilisateur, etc.)
+    // Vérifie si le texte de recherche correspond
     const matchesTextOrLocation =
       event.user?.username?.toLowerCase().includes(searchLower) ||
       event.coHosts?.some((coHost) =>
@@ -79,7 +93,9 @@ export const filterEvents = (
       !startDay ||
       !eventStartDate ||
       !eventEndDate ||
-      (endDay !== null && eventStartDate <= endDay && eventEndDate >= startDay);
+      (endDay !== null &&
+        eventStartDate <= endDay + 24 * 60 * 60 * 1000 &&
+        eventEndDate >= startDay);
 
     // Vérifie le type d'événement (proche, virtuel)
     const isNearMe =
@@ -106,45 +122,49 @@ export const filterEvents = (
 
   // Tri des événements
   const sortedEvents = filteredEvents.sort((a, b) => {
-    const aStartDate = a.details?.date
-      ? new Date(a.details.date).getTime()
-      : Infinity;
-    const aEndDate = a.details?.endDate
-      ? new Date(a.details.endDate).getTime()
-      : aStartDate;
+    const aStartDate = getUTCDate(new Date(a.details?.date ?? "")).getTime();
+    const bStartDate = getUTCDate(new Date(b.details?.date ?? "")).getTime();
 
-    const bStartDate = b.details?.date
-      ? new Date(b.details.date).getTime()
-      : Infinity;
-    const bEndDate = b.details?.endDate
-      ? new Date(b.details.endDate).getTime()
-      : bStartDate;
+    const isAStartingToday = aStartDate === today.getTime();
+    const isBStartingToday = bStartDate === today.getTime();
+    const isAStartingTomorrow = aStartDate === tomorrow.getTime();
+    const isBStartingTomorrow = bStartDate === tomorrow.getTime();
+    const isAStartingAfterTomorrow = aStartDate === afterTomorrow.getTime();
+    const isBStartingAfterTomorrow = bStartDate === afterTomorrow.getTime();
+    const isAStartingThisWeek =
+      aStartDate > afterTomorrow.getTime() && aStartDate <= nextWeek.getTime();
+    const isBStartingThisWeek =
+      bStartDate > afterTomorrow.getTime() && bStartDate <= nextWeek.getTime();
 
-    const aMidpoint = (aStartDate + aEndDate) / 2;
-    const bMidpoint = (bStartDate + bEndDate) / 2;
+    const isAActiveToday =
+      new Date(a.details?.date ?? "").getTime() < today.getTime() &&
+      new Date(a.details?.endDate ?? "").getTime() >= today.getTime();
+    const isBActiveToday =
+      new Date(b.details?.date ?? "").getTime() < today.getTime() &&
+      new Date(b.details?.endDate ?? "").getTime() >= today.getTime();
 
-    // Classement par priorité
-    if (aStartDate <= todayMidnight && aEndDate >= todayMidnight) {
-      return -1; // Événements aujourd'hui
-    }
-    if (bStartDate <= todayMidnight && bEndDate >= todayMidnight) {
-      return 1;
-    }
-    if (aStartDate <= tomorrowMidnight && aEndDate >= tomorrowMidnight) {
-      return -1; // Événements demain
-    }
-    if (bStartDate <= tomorrowMidnight && bEndDate >= tomorrowMidnight) {
-      return 1;
-    }
-    if (aStartDate <= nextWeekMidnight && aEndDate >= nextWeekMidnight) {
-      return -1; // Événements cette semaine
-    }
-    if (bStartDate <= nextWeekMidnight && bEndDate >= nextWeekMidnight) {
-      return 1;
-    }
+    // **1️⃣ Priorité aux événements qui COMMENCENT et SE TERMINENT aujourd'hui**
+    if (isAStartingToday && !isBStartingToday) return -1;
+    if (!isAStartingToday && isBStartingToday) return 1;
 
-    // Sinon, trier par la moyenne des dates
-    return aMidpoint - bMidpoint;
+    // **2️⃣ Ensuite ceux qui commencent demain**
+    if (isAStartingTomorrow && !isBStartingTomorrow) return -1;
+    if (!isAStartingTomorrow && isBStartingTomorrow) return 1;
+
+    // **3️⃣ Ensuite ceux qui commencent après-demain**
+    if (isAStartingAfterTomorrow && !isBStartingAfterTomorrow) return -1;
+    if (!isAStartingAfterTomorrow && isBStartingAfterTomorrow) return 1;
+
+    // **4️⃣ Ensuite ceux qui commencent cette semaine**
+    if (isAStartingThisWeek && !isBStartingThisWeek) return -1;
+    if (!isAStartingThisWeek && isBStartingThisWeek) return 1;
+
+    // **5️⃣ Ensuite les événements "actifs" (qui ont commencé mais pas encore terminés)**
+    if (isAActiveToday && !isBActiveToday) return -1;
+    if (!isAActiveToday && isBActiveToday) return 1;
+
+    // **6️⃣ Enfin, trier par date de début croissante**
+    return aStartDate - bStartDate;
   });
 
   return sortedEvents;
@@ -154,11 +174,21 @@ export const filterUsers = (
   users: UserType[],
   selectedInterests: InterestType[],
   searchText: string,
-): UserType[] => {
+): {
+  filteredUsers: UserType[];
+  friends: UserType[];
+  usersYouMayKnow: UserType[];
+  usersWithSharedInterests: UserType[];
+  generalSuggestions: UserType[];
+} => {
   const searchLower = searchText.toLowerCase();
 
-  return users.filter((user) => {
-    // Vérifie si l'utilisateur correspond aux intérêts sélectionnés
+  // 🔹 **Filtrage principal**
+  const filteredUsers = users.filter((user) => {
+    if (user.username.toLowerCase() === "anonymous") {
+      return false;
+    }
+
     const matchesInterests =
       selectedInterests.length === 0 ||
       (user.interests &&
@@ -168,14 +198,36 @@ export const filterUsers = (
           ),
         ));
 
-    // Vérifie si l'utilisateur correspond au texte de recherche
     const matchesSearchText =
+      !searchText ||
       user.username.toLowerCase().includes(searchLower) ||
       user.firstName?.toLowerCase().includes(searchLower) ||
       user.lastName?.toLowerCase().includes(searchLower) ||
       user.email.toLowerCase().includes(searchLower);
 
-    // Inclut l'utilisateur uniquement s'il correspond à l'un des critères
-    return matchesInterests || matchesSearchText;
+    return matchesInterests && matchesSearchText;
   });
+
+  // 🔹 **Catégories de filtrage**
+  return {
+    filteredUsers,
+    friends: filteredUsers.filter(
+      (user) => user.isIFollowingHim && user.isFollowingMe,
+    ),
+    usersYouMayKnow: filteredUsers.filter(
+      (user) => !user.isIFollowingHim && user.isFollowingMe,
+    ),
+    usersWithSharedInterests: filteredUsers.filter(
+      (user) =>
+        user.matchingInterests &&
+        user.matchingInterests > 0 &&
+        !user.isIFollowingHim,
+    ),
+    generalSuggestions: filteredUsers.filter(
+      (user) =>
+        !user.isIFollowingHim &&
+        !user.isFollowingMe &&
+        (!user.matchingInterests || user.matchingInterests === 0),
+    ),
+  };
 };

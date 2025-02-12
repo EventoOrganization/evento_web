@@ -14,7 +14,7 @@ import {
 import UsersList from "@/components/UsersList";
 import { useSession } from "@/contexts/SessionProvider";
 import AuthModal from "@/features/auth/components/AuthModal";
-import { filterEvents } from "@/features/discover/discoverActions";
+import { filterEvents, filterUsers } from "@/features/discover/discoverActions";
 import MyGoogleMapComponent from "@/features/discover/MyGoogleMapComponent";
 import TabSelector from "@/features/discover/TabSelector";
 import Event from "@/features/event/components/Event";
@@ -36,7 +36,7 @@ import {
   XIcon,
 } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
 interface Location {
   lat: number;
@@ -59,6 +59,7 @@ const DiscoverPageContent = () => {
   );
   const [showReset, setShowReset] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<EventType | null>();
+  const { users } = useUsersStore();
   const [isEventModalOpen, setIsEventModalOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [searchText, setSearchText] = useState("");
@@ -73,37 +74,23 @@ const DiscoverPageContent = () => {
       setIsHydrated(true);
     }
   }, [events]);
-  const getFilteredUserGroups = useUsersStore(
-    (state) => state.getFilteredUserGroups,
-  );
+
   const {
     filteredUsers,
     friends,
     usersYouMayKnow,
     usersWithSharedInterests,
     generalSuggestions,
-  } = getFilteredUserGroups(searchText, selectedInterests);
-  const filteredEvents = useMemo(() => {
-    if (!searchText) return events;
-    return filterEvents(
-      events,
-      selectedInterests,
-      searchText,
-      selectedTab,
-      location,
-      startDate,
-      endDate,
-    );
-  }, [
-    searchText,
-    selectedInterests,
-    selectedTab,
+  } = filterUsers(users, selectedInterests, searchText);
+  const fiteredAndSortedEvent = filterEvents(
     events,
+    selectedInterests,
+    searchText,
+    selectedTab,
     location,
     startDate,
     endDate,
-  ]);
-
+  );
   const handleEventClick = (event: EventType) => {
     const storedEvent = events.find((ev) => ev._id === event._id);
     setSelectedEvent(storedEvent);
@@ -257,8 +244,8 @@ const DiscoverPageContent = () => {
                   </div>
                 </li>
               )}
-              {filteredEvents.length > 0 ? (
-                filteredEvents.map((event, index) => (
+              {fiteredAndSortedEvent.length > 0 ? (
+                fiteredAndSortedEvent.map((event, index) => (
                   <li
                     key={event._id}
                     onClick={() => handleEventClick(event)}
