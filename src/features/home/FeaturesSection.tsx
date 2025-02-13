@@ -1,8 +1,9 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import Image from "next/image";
-import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-
+import Slider from "react-slick";
+import "slick-carousel/slick/slick-theme.css";
+import "slick-carousel/slick/slick.css";
 const FeaturesSection = () => {
   const features = [
     {
@@ -30,40 +31,44 @@ const FeaturesSection = () => {
         "Connect with your guests and other attendees before and after your event. Or simply share cool events to your friends or community.",
     },
   ];
-
+  const sliderSettings = {
+    infinite: true,
+    centerMode: true,
+    centerPadding: "20px",
+    slidesToShow: 1,
+    speed: 500,
+    autoplay: true,
+    autoplaySpeed: 4000,
+    arrows: false,
+  };
   return (
     <div>
       {/* ✅ CAROUSEL en mode mobile */}
-      <div className="lg:hidden max-w-[330px] relative">
-        <Carousel
-          showThumbs={false}
-          showStatus={false}
-          showIndicators={true}
-          infiniteLoop
-          autoPlay
-          interval={4000}
-          className="w-full"
-        >
+      <div className="lg:hidden max-w-[330px] mx-auto relative overflow-hidden">
+        <Slider {...sliderSettings} className="w-full ">
           {features.map((feature, index) => (
-            <div key={index} className="p-4">
-              <Card className="space-y-4">
-                <CardHeader className="p-0">
+            <div
+              key={index}
+              className="px-1 py-6 h-full flex flex-col  mx-auto"
+            >
+              <div className="rounded-lg border bg-card text-card-foreground shadow-lg overflow-hidden flex flex-col h-full">
+                <div className="p-0 w-full flex justify-center items-center">
                   <Image
                     src={feature.image}
                     alt={feature.title}
-                    width={1045}
-                    height={1045}
-                    className="w-full h-auto object-contain"
+                    width={280}
+                    height={280}
+                    className="w-full max-w-[250px] h-[250px] object-contain"
                   />
-                </CardHeader>
-                <CardContent className="text-left">
-                  <h3>{feature.title}</h3>
-                  <p>{feature.description}</p>
-                </CardContent>
-              </Card>
+                </div>
+                <div className="p-4 text-left flex-1 flex flex-col">
+                  <h3 className="text-lg font-bold">{feature.title}</h3>
+                  <p className="text-sm text-gray-500">{feature.description}</p>
+                </div>
+              </div>
             </div>
           ))}
-        </Carousel>
+        </Slider>
       </div>
 
       {/* ✅ GRILLE affichée uniquement en `lg:grid-cols-4` */}

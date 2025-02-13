@@ -103,7 +103,7 @@ const Tuto = () => {
         </div>
       </Section>
       <div className="border max-w-2xl mx-auto my-10"></div>
-      <Section id="tuto-create-event" className="gap-10 px-0">
+      <Section id="tuto-create-event" className="gap-6 px-0">
         <div className="space-y-6 px-8 md:px-12 max-w-2xl mx-auto lg:text-center">
           <h2
             ref={sectionRefs.createEventTitle}
@@ -176,7 +176,7 @@ const Tuto = () => {
           >
             <Link href="/discover">
               <Compass />
-              Discover an Event
+              Discover Events
             </Link>
           </Button>
         </div>
@@ -229,7 +229,7 @@ const Tuto = () => {
           >
             <Link href="/discover">
               <Compass />
-              Discover an Event
+              Discover Events
             </Link>
           </Button>
         </div>
