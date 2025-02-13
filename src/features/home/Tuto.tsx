@@ -129,7 +129,7 @@ const Tuto = () => {
           <Button variant={"ghost"}>
             <Link
               href="/create-event"
-              className="text-center text-eventoPurpleDark"
+              className="text-center text-eventoPurpleDark text-base"
             >
               Explore all Features
             </Link>
@@ -141,7 +141,7 @@ const Tuto = () => {
           >
             <Link href="/create-event" className="flex gap-2 items-center">
               <Plus />
-              Create Event
+              Create an Event
             </Link>
           </Button>
         </div>
@@ -162,7 +162,7 @@ const Tuto = () => {
                 : "opacity-0 translate-y-10"
             }`}
           >
-            But that&apos;s not all -discover events that resonate with YOU !
+            But that&apos;s not all-discover events that resonate with YOU !
           </h2>
           <p>
             At Evento we want you to feel seen, understood, and share your and
@@ -176,7 +176,7 @@ const Tuto = () => {
           >
             <Link href="/discover">
               <Compass />
-              DISCOVER AN EVENT
+              Discover an Event
             </Link>
           </Button>
         </div>
@@ -188,17 +188,17 @@ const Tuto = () => {
             <li className="flex gap-2 items-start">
               <Filter className="text-eventoPurpleDark min-w-6 h-6" />
               <span>
-                <b>Use filters for personalized discovery</b> Click on the
-                filter icon tat the top right of the Discover page to explore
-                events in your preferred interest categories like
-                &quot;wellness&quot;, &quot;food & beverage&quot; or
-                &quot;fashion&quot;.{" "}
+                <b>Use filters for personalized discovery</b>
+                <br /> Click on the filter icon tat the top right of the
+                Discover page to explore events in your preferred interest
+                categories like &quot;wellness&quot;, &quot;food &
+                beverage&quot; or &quot;fashion&quot;.{" "}
               </span>
             </li>
             <li className="flex gap-2 items-start">
               <Search className="text-eventoPurpleDark min-w-6 h-6" />
               <span>
-                <b>Search for anything</b>
+                <b>Search for anything</b> <br />
                 Looking for a specific event, venue, or even a friend? Just type
                 it in the search bar—it&apos;s got you covered.
               </span>
@@ -207,7 +207,7 @@ const Tuto = () => {
               <CircleUserRound className="text-eventoPurpleDark min-w-6 h-6" />
 
               <span>
-                <b>See where your friends are going</b>
+                <b>See where your friends are going</b> <br />
                 Spot which friends are attending events you might love. Soon,
                 you&apos;ll be able to message them directly through our chat
                 feature!
@@ -216,9 +216,9 @@ const Tuto = () => {
             <li className="flex gap-2 items-start">
               <Bookmark className="text-eventoPurpleDark min-w-6 h-6" />
               <span>
-                <b>Save events for later</b> Interested in an event but not
-                ready to commit? Tap the bookmark icon to save it and find it
-                later in your profile.
+                <b>Save events for later</b> <br /> Interested in an event but
+                not ready to commit? Tap the bookmark icon to save it and find
+                it later in your profile.
               </span>
             </li>
           </ul>
@@ -229,7 +229,7 @@ const Tuto = () => {
           >
             <Link href="/discover">
               <Compass />
-              DISCOVER AN EVENT
+              Discover an Event
             </Link>
           </Button>
         </div>
