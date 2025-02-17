@@ -166,8 +166,8 @@ const Tuto = () => {
           </h2>
           <p>
             At Evento we want you to feel seen, understood and share your
-            interests with like-minded people. Explore the &quot;Discover Events
-            page&quot; page based on your favorite interests.
+            interests with like-minded people. Explore the &quot;Discover
+            Events&quot; page based on your favorite interests.
           </p>
           <Button
             variant={"eventoPrimary"}
