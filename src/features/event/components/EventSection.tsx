@@ -2,6 +2,7 @@ import Section from "@/components/layout/Section";
 import { Button } from "@/components/ui/button";
 import { useSession } from "@/contexts/SessionProvider";
 import { cn } from "@/lib/utils";
+import { useEventStore } from "@/store/useEventsStore";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import EventPreview from "./EventPreview";
@@ -18,6 +19,7 @@ const EventSection = ({
 }) => {
   const pathname = usePathname();
   const { user } = useSession();
+  const { eventsStatus } = useEventStore();
   const canSeePrivateEvent = (event: any) => {
     console.log(
       `🔍 Vérification de l'événement : ${event.title} (${event._id})`,
@@ -38,17 +40,34 @@ const EventSection = ({
       (coHost: any) => coHost.userId?._id === user._id,
     );
     const isGuest = event.guests?.some((guest: any) => guest._id === user._id);
-    const isGoing = event.isGoing;
+    const isGoing = eventsStatus?.[event._id]?.isGoing === true;
+
     if (isHost) {
+      console.log(
+        `✅ L'utilisateur est l'hote de l'événement → Affiché`,
+        event.title,
+      );
       return true;
     }
     if (isCoHost) {
+      console.log(
+        `✅ L'utilisateur est co-hote de l'événement → Affiché`,
+        event.title,
+      );
       return true;
     }
     if (isGuest) {
+      console.log(
+        `✅ L'utilisateur est invité de l'événement → Affiché`,
+        event.title,
+      );
       return true;
     }
     if (isGoing) {
+      console.log(
+        `✅ L'utilisateur est en train de participer → Affiché`,
+        event.title,
+      );
       return true;
     }
     return false;

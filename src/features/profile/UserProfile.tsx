@@ -127,7 +127,13 @@ const UserProfile = ({
                 title="Past Events Hosted"
                 events={pastHostedEvents || []}
                 sectionStyle="flex flex-col items-start gap-4 p-0 lg:max-w-7xl"
-                noEventsMessage="There are no past hosted events at the moment."
+                noEventsMessage={
+                  pastHostedEvents?.length === 0
+                    ? "There are no past hosted events at the moment."
+                    : pastHostedEvents?.length === 1
+                      ? "This event is private."
+                      : "These events are private."
+                }
               />
             )}
           </Section>
