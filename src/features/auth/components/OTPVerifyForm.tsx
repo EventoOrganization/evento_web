@@ -135,13 +135,25 @@ const OTPVerifyForm = ({
               </FormItem>
             )}
           />
-          <Button
-            type="submit"
-            className={cn("bg-evento-gradient-button rounded-full w-fit px-6")}
-            disabled={isFetching}
-          >
-            Verify
-          </Button>
+          <div className="flex gap-4">
+            <Button
+              type="submit"
+              className={cn(
+                "bg-evento-gradient-button rounded-full w-fit px-6",
+              )}
+              disabled={isFetching}
+            >
+              Verify
+            </Button>
+            <Button
+              type="button"
+              variant={"outline"}
+              disabled={isFetching}
+              onClick={() => onAuthSuccess()}
+            >
+              Verify later
+            </Button>
+          </div>
         </form>
       </FormProvider>
       {error && (
