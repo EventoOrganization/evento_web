@@ -162,12 +162,12 @@ const Tuto = () => {
                 : "opacity-0 translate-y-10"
             }`}
           >
-            But that&apos;s not all-discover events that resonate with YOU !
+            But that&apos;s not all, discover events that resonate with YOU !
           </h2>
           <p>
-            At Evento we want you to feel seen, understood, and share your and
-            interests with like-minded people. Explore the Discover page based
-            on your favorite interests.
+            At Evento we want you to feel seen, understood and share your
+            interests with like-minded people. Explore the &quot;Discover Events
+            page&quot; page based on your favorite interests.
           </p>
           <Button
             variant={"eventoPrimary"}
@@ -189,10 +189,10 @@ const Tuto = () => {
               <Filter className="text-eventoPurpleDark min-w-6 h-6" />
               <span>
                 <b>Use filters for personalized discovery</b>
-                <br /> Click on the filter icon tat the top right of the
-                Discover page to explore events in your preferred interest
-                categories like &quot;wellness&quot;, &quot;food &
-                beverage&quot; or &quot;fashion&quot;.{" "}
+                <br /> Click on the filter icon at the top right to explore
+                events in your preferred interest categories like
+                &quot;wellness&quot;, &quot;food & beverage&quot; or
+                &quot;fashion&quot;.{" "}
               </span>
             </li>
             <li className="flex gap-2 items-start">

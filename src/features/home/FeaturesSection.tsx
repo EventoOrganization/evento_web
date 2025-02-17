@@ -22,7 +22,7 @@ const FeaturesSection = () => {
       image: "/co-hosting.png",
       title: "Co-Hosting",
       description:
-        "Collaborate with ease: Share hosting duties with others. You can give co-hosts admin access or read-only, no risk of them f*ing up.",
+        "Collaborate with ease: share hosting duties with others. You can give co-hosts admin access or read-only, no risk of them f*ing up.",
     },
     {
       image: "/chat.png",
@@ -61,8 +61,8 @@ const FeaturesSection = () => {
                     className="w-full max-w-[250px] h-[250px] object-contain"
                   />
                 </div>
-                <div className="p-4 text-left flex-1 flex flex-col">
-                  <h3 className="text-lg font-bold">{feature.title}</h3>
+                <div className="p-4 text-left flex-1 flex flex-col gap-2">
+                  <h3 className="text-lg font-bold ">{feature.title}</h3>
                   <p className="text-sm text-gray-500">{feature.description}</p>
                 </div>
               </div>
@@ -85,7 +85,7 @@ const FeaturesSection = () => {
               />
             </CardHeader>
             <CardContent>
-              <h3>{feature.title}</h3>
+              <h3 className="mb-2">{feature.title}</h3>
               <p>{feature.description}</p>
             </CardContent>
           </Card>
