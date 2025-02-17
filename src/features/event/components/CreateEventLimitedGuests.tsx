@@ -1,4 +1,5 @@
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/togglerbtn";
 import { useCreateEventStore } from "@/store/useCreateEventStore";
 import React, { useEffect, useState } from "react";
@@ -53,23 +54,27 @@ const CreateEventLimitedGuests = () => {
     }
   };
   return (
-    <div className="flex items-center gap-4">
-      <Switch checked={isLimited} onClick={handleToggle} className="mt-1" />
-
-      <Input
-        type="number"
-        placeholder={
-          isLimited
-            ? "Enter the limite capacity"
-            : "Toggle to enter a limit capacity"
-        }
-        value={isLimited ? inputValue : ""}
-        onChange={handleInputChange}
-        onKeyDown={handleKeyDown}
-        className="w-full"
-        min={1}
-        disabled={!isLimited}
-      />
+    <div className="flex flex-col gap-2">
+      <div className="flex items-center gap-2">
+        <Switch checked={isLimited} onClick={handleToggle} className="mt-1" />
+        <Label>Maximum Capacity of Attendees</Label>
+      </div>
+      {isLimited && (
+        <Input
+          type="number"
+          placeholder={
+            isLimited
+              ? "Enter the limit of attendees"
+              : "Toggle to enter a limit capacity"
+          }
+          value={isLimited ? inputValue : ""}
+          onChange={handleInputChange}
+          onKeyDown={handleKeyDown}
+          className="w-full"
+          min={1}
+          disabled={!isLimited}
+        />
+      )}
     </div>
   );
 };
