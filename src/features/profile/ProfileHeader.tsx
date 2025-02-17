@@ -16,6 +16,7 @@ import { useState } from "react";
 import AuthModal from "../auth/components/AuthModal";
 interface Props {
   profile: UserType | null | undefined;
+  totalEvents: number;
 }
 enum ModalType {
   FOLLOWERS = "followers",
@@ -34,10 +35,14 @@ const platformIcons: Record<string, JSX.Element> = {
     />
   ),
 };
-const ProfileHeader = ({ profile }: Props) => {
+const ProfileHeader = ({ profile, totalEvents }: Props) => {
   const pathname = usePathname();
   const { token, user } = useSession();
-
+  console.log(
+    "TOTAL EVENTs",
+    profile?.upcomingEvents?.length,
+    profile?.pastEventsGoing,
+  );
   const { updateUser } = useUsersStore();
   const [loading, setLoading] = useState<boolean>(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
@@ -106,11 +111,9 @@ const ProfileHeader = ({ profile }: Props) => {
           <div className="flex flex-col">
             <div className="flex items-center gap-2 md:px-4">
               <span className="font-bold text-base">
-                {profile && profile.totalEventAttended !== undefined
-                  ? profile.totalEventAttended
-                  : 0}
+                {totalEvents ? totalEvents : 0}
               </span>
-              <p>Events Attended</p>
+              <p>Events</p>
             </div>
             <Button
               className="gap-2 w-fit self-end"

@@ -55,7 +55,15 @@ const UserProfile = ({
         </div>
       ) : (
         <>
-          <ProfileHeader profile={profile} />
+          <ProfileHeader
+            profile={profile}
+            totalEvents={
+              (upcomingGoingEvents ?? []).length +
+                (upcomingHostingEvents ?? []).length +
+                (pastGoingEvents ?? []).length +
+                (pastHostedEvents ?? []).length || 0
+            }
+          />
           <Section className="gap-6 max-w-2xl min-h-96">
             {!isMyProfile && isNoEvent && (
               <div className="w-full flex justify-center items-center">
