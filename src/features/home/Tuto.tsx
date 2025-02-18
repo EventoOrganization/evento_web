@@ -1,5 +1,11 @@
 "use client";
 import Section from "@/components/layout/Section";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import {
   Bookmark,
@@ -15,6 +21,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import FeaturesSection from "./FeaturesSection";
+
 const Tuto = () => {
   const sectionRefs = {
     showcaseTitle: useRef<HTMLDivElement>(null),
@@ -235,8 +242,8 @@ const Tuto = () => {
         </div>
       </Section>
       <div className="border max-w-2xl mx-auto my-10"></div>
-      <Section id="tuto-profile" className="grid grid-cols-1 gap-10">
-        <div className="space-y-6 px-4 md:px-12 flex flex-col">
+      <Section id="tuto-profile" className="grid md:grid-cols-3 gap-10">
+        <div className="space-y-6 px-4 md:px-12 flex flex-col md:col-span-2">
           <h2
             ref={sectionRefs.profileTitle}
             id="profile-title"
@@ -279,41 +286,52 @@ const Tuto = () => {
           <p>We kept asking ourselves—why isn&apos;t this easier?</p>
 
           <p>That&apos;s when Evento was born.</p>
+          <Accordion type="single" collapsible>
+            <AccordionItem value="item-1">
+              <AccordionTrigger className="pt-0 text-sm text-eventoPink">
+                Read more
+              </AccordionTrigger>
+              <AccordionContent className="text-base space-y-6">
+                <p>
+                  We realized this wasn&apos;t just our problem. As we started
+                  talking about our idea, we realised that people crave
+                  connection more than ever, yet it often feels harder to make
+                  it happen and finding meaningful moments shouldn&apos;t be so
+                  difficult.
+                </p>
 
-          <p>
-            We realized this wasn&apos;t just our problem. As we started talking
-            about our idea, we realised that people crave connection more than
-            ever, yet it often feels harder to make it happen and finding
-            meaningful moments shouldn&apos;t be so difficult.
-          </p>
+                <p>
+                  Loneliness is as harmful as obesity or smoking, yet we rarely
+                  talk about social health. We believe it&apos;s time to change
+                  that.
+                </p>
 
-          <p>
-            Loneliness is as harmful as obesity or smoking, yet we rarely talk
-            about social health. We believe it&apos;s time to change that.
-          </p>
+                <p>
+                  With Evento, hosting and discovering events becomes
+                  effortless. Whether you&apos;re planning an intimate
+                  gathering, a public event, or looking to meet like-minded
+                  people, Evento makes it simple.
+                </p>
 
-          <p>
-            With Evento, hosting and discovering events becomes effortless.
-            Whether you&apos;re planning an intimate gathering, a public event,
-            or looking to meet like-minded people, Evento makes it simple.
-          </p>
+                <p>
+                  Because life isn&apos;t just about what we do—it&apos;s about
+                  who we share it with.
+                </p>
 
-          <p>
-            Because life isn&apos;t just about what we do—it&apos;s about who we
-            share it with.
-          </p>
+                <p>
+                  We&apos;re two best friends on a mission to inspire more
+                  people to host, attend, and truly connect. To turn every event
+                  into a memorable moment.
+                </p>
 
-          <p>
-            We&apos;re two best friends on a mission to inspire more people to
-            host, attend, and truly connect. To turn every event into a
-            memorable moment.
-          </p>
-
-          <p>
-            Thanks for being on this journey with us. Our door is always
-            open—reach out to us just to chat or to suggest improvements for
-            Evento. Let&apos;s build something meaningful together 💜
-          </p>
+                <p>
+                  Thanks for being on this journey with us. Our door is always
+                  open—reach out to us just to chat or to suggest improvements
+                  for Evento. Let&apos;s build something meaningful together 💜
+                </p>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
 
           <p className="text-lg md:text-xl leading-relaxed text-center lg:text-left font-semibold">
             Camille & Elena
@@ -332,6 +350,13 @@ const Tuto = () => {
             </Link>
           </Button>
         </div>
+        <Image
+          src="/story.png"
+          alt="Camille & Elena"
+          className="w-full object-cover"
+          width={500}
+          height={500}
+        />
       </Section>
     </div>
   );
