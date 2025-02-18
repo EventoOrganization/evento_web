@@ -77,6 +77,15 @@ export function createUpdateEventField(event: EventType) {
           updatedEvent.coHosts = value;
         }
         break;
+      case "initialMedia":
+        if (
+          Array.isArray(value) &&
+          value.every((item) => "url" in item && "type" in item)
+        ) {
+          console.log("initialMedia helper", value);
+          updatedEvent.initialMedia = value as [{ url: string; type: string }];
+        }
+        break;
       default:
         console.warn("Unknown field", field);
     }

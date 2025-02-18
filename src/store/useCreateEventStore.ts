@@ -4,6 +4,7 @@ import { persist } from "zustand/middleware"; // Ajout de PersistOptions
 export type MediaItem = {
   url: string;
   type: "image" | "video";
+  _id?: string;
 };
 type EventFormState = {
   title: string;

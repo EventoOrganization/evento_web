@@ -27,6 +27,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import EditEventMedia from "../edit/EditEventMedia";
 import EventLimit from "../EventLimit";
 import DeleteEventButton from "./DeleteEventButton";
 import PastEventGallery from "./PastEventGallery";
@@ -57,6 +58,9 @@ const EventIdTabs = ({ evento }: { evento?: EventType }) => {
     if (event) {
       const updateFunction = createUpdateEventField(event);
       const updatedEvent = updateFunction(field, value);
+
+      console.log("🟢 Avant setEvent - updatedEvent :", updatedEvent);
+
       setEvent(updatedEvent);
     }
   };
@@ -217,7 +221,7 @@ const EventIdTabs = ({ evento }: { evento?: EventType }) => {
 
   if (isLoading) {
     return (
-      <div className="w-full h-full flex items-center justify-center">
+      <div className="w-full h-screen flex items-center justify-center">
         <EventoLoader />
       </div>
     );
@@ -305,7 +309,14 @@ const EventIdTabs = ({ evento }: { evento?: EventType }) => {
                   <EventLimit event={event} />
                 </div>
               </div>
-              {selectedTab !== "Settings" && <RenderMedia event={event} />}
+              {selectedTab !== "Settings" ? (
+                <RenderMedia event={event} />
+              ) : (
+                <EditEventMedia
+                  event={event}
+                  handleUpdateField={handleUpdateField}
+                />
+              )}
             </div>
             <Section className="justify-start gap-2 pt-2 md:pt-14 w-full h-full px-2">
               <div className=" sticky top-0 w-full z-10">

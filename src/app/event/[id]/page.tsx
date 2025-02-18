@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   if (!event) {
     return {
-      title: "Event Not Found - Evento",
+      title: "Event ",
       description: "This event could not be found on Evento.",
     };
   }

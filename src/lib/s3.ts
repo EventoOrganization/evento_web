@@ -6,10 +6,10 @@ import {
 } from "@aws-sdk/client-s3";
 
 const s3 = new S3Client({
-  region: process.env.AWS_REGION || "",
+  region: process.env.NEXT_PUBLIC_AWS_REGION || "",
   credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID || "",
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || "",
+    accessKeyId: process.env.NEXT_PUBLIC_AWS_ACCESS_KEY_ID || "",
+    secretAccessKey: process.env.NEXT_PUBLIC_AWS_SECRET_ACCESS_KEY || "",
   },
 });
 
@@ -20,7 +20,7 @@ export async function uploadFileToS3(file: File, folder: string) {
   const buffer = await file.arrayBuffer();
 
   const params = {
-    Bucket: process.env.S3_BUCKET_NAME,
+    Bucket: process.env.NEXT_PUBLIC_S3_BUCKET_NAME,
     Key: key,
     Body: Buffer.from(buffer),
     ContentType: file.type,
@@ -29,7 +29,7 @@ export async function uploadFileToS3(file: File, folder: string) {
 
   try {
     await s3.send(new PutObjectCommand(params));
-    const url = `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${key}`;
+    const url = `https://${process.env.NEXT_PUBLIC_S3_BUCKET_NAME}.s3.${process.env.NEXT_PUBLIC_AWS_REGION}.amazonaws.com/${key}`;
 
     return { success: true, key, url };
   } catch (error) {
@@ -40,7 +40,7 @@ export async function uploadFileToS3(file: File, folder: string) {
 
 export async function deleteFileFromS3(fileKey: string) {
   const params = {
-    Bucket: process.env.S3_BUCKET_NAME,
+    Bucket: process.env.NEXT_PUBLIC_S3_BUCKET_NAME,
     Key: fileKey,
   };
 

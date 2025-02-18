@@ -127,3 +127,6 @@ export type EventDetailsType = {
   URLlink?: string;
   URLtitle?: string;
 };
+export const getMediaType = (mimeType: string): "image" | "video" => {
+  return mimeType.startsWith("video/") ? "video" : "image";
+};

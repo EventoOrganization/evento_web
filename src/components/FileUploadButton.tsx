@@ -1,7 +1,14 @@
+import { cn } from "@/lib/utils";
 import { Plus } from "lucide-react";
 import { useRef } from "react";
 
-const FileUploadButton = ({ onChange }: { onChange: (e: any) => void }) => {
+const FileUploadButton = ({
+  onChange,
+  className,
+}: {
+  onChange: (e: any) => void;
+  className?: string;
+}) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleButtonClick = () => {
@@ -11,7 +18,10 @@ const FileUploadButton = ({ onChange }: { onChange: (e: any) => void }) => {
   return (
     <div
       onClick={handleButtonClick}
-      className="cursor-pointer relative flex items-center justify-center mt-2 min-w-24 h-24 rounded-md  border-2 border-dashed border-gray-300 hover:border-eventoPurpleLight"
+      className={cn(
+        "cursor-pointer relative flex items-center justify-center mt-2 min-w-24 h-24 rounded-md  border-2 border-dashed border-gray-300 hover:border-eventoPurpleLight",
+        className,
+      )}
     >
       {/* Input caché */}
       <input
