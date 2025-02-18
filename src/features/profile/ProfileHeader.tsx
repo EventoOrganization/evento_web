@@ -43,6 +43,7 @@ const ProfileHeader = ({ profile, totalEvents }: Props) => {
     profile?.upcomingEvents?.length,
     profile?.pastEventsGoing,
   );
+  console.log("PROFILE", profile);
   const { updateUser } = useUsersStore();
   const [loading, setLoading] = useState<boolean>(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
@@ -108,8 +109,8 @@ const ProfileHeader = ({ profile, totalEvents }: Props) => {
               priority
             />
           </figure>
-          <div className="flex flex-col">
-            <div className="flex items-center gap-2 md:px-4">
+          <div className="flex flex-col justify-end">
+            <div className="flex items-center gap-2 px-4">
               <span className="font-bold text-base">
                 {totalEvents ? totalEvents : 0}
               </span>
