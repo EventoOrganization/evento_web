@@ -1,3 +1,4 @@
+import Section from "@/components/layout/Section";
 import EventIdTabs from "@/features/event/components/EventIdTabs";
 import { EventType } from "@/types/EventType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
@@ -60,7 +61,11 @@ export default async function EventPage({ params }: Props) {
   const event = await fetchEventData(params.id);
 
   if (!event) {
-    return <p>Event not found</p>;
+    return (
+      <Section>
+        <p>Event not found</p>
+      </Section>
+    );
   }
 
   return <EventIdTabs evento={event} />;

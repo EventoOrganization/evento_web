@@ -21,21 +21,17 @@ export async function handleUpload(
   }
 }
 export async function handleDeleteMedia(fileKey: string): Promise<boolean> {
-  if (
-    fileKey.startsWith("events/initialMedia") ||
-    fileKey.startsWith("events/postEvent")
-  ) {
-    try {
-      const response = await deleteFileFromS3(fileKey);
+  console.log("Deleting file from S3:", fileKey);
 
-      console.log("File deleted successfully:", response);
-      return response.success;
-    } catch (error) {
-      console.error("Error deleting file from S3 or DB:", error);
-      return false;
-    }
+  try {
+    const response = await deleteFileFromS3(fileKey);
+
+    console.log("File deleted successfully:", response);
+    return response.success;
+  } catch (error) {
+    console.error("Error deleting file from S3 or DB:", error);
+    return false;
   }
-  return true;
 }
 export async function normalizeEvent(event: any) {
   return {

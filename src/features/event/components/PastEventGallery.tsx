@@ -8,7 +8,7 @@ import { useSession } from "@/contexts/SessionProvider";
 import { useToast } from "@/hooks/use-toast";
 import { EventType } from "@/types/EventType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
-import { PlayCircleIcon } from "lucide-react";
+import { PlayCircleIcon, Trash } from "lucide-react";
 import Image from "next/image";
 import { useMemo, useRef, useState } from "react";
 import PastEventModal from "./PastEventModal";
@@ -37,6 +37,11 @@ const PastEventGallery: React.FC<PastEventGalleryProps> = ({ event }) => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const { toast } = useToast();
   const { token, user } = useSession();
+  const isAdmin =
+    user?._id === event.user._id ||
+    event.coHosts?.some((host) => host._id === user?._id);
+
+  const loggedUserId = user?._id;
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       setFiles(Array.from(e.target.files));
@@ -57,6 +62,7 @@ const PastEventGallery: React.FC<PastEventGalleryProps> = ({ event }) => {
         if (!userMediaMap.has(user._id)) {
           userMediaMap.set(user._id, {
             username: user.username,
+            userId: user._id,
             profileImage: user.profileImage,
             mediaFiles: [media],
           });
@@ -129,6 +135,39 @@ const PastEventGallery: React.FC<PastEventGalleryProps> = ({ event }) => {
       setIsUploading(false);
     }
   };
+  const deleteMedia = async (index: number, mediaItem: MediaItem) => {
+    console.log("🗑️ Suppression du média :", mediaItem.url);
+
+    try {
+      const response = await fetchData(
+        `/events/deletePostEventMedia/${event._id}`,
+        HttpMethod.DELETE,
+        { mediaUrl: mediaItem.url.trim() },
+        token,
+      );
+
+      console.log("🔍 Réponse suppression :", response);
+
+      if (response.ok) {
+        toast({
+          title: "Success",
+          description: "Media deleted successfully",
+          className: "bg-evento-gradient text-white",
+        });
+
+        setMediaItems((prevItems) =>
+          prevItems.filter((item) => item.url !== mediaItem.url),
+        );
+      }
+    } catch (error) {
+      console.error("❌ Failed to delete media from event", error);
+      toast({
+        title: "Error",
+        description: "Failed to delete media from event",
+        variant: "destructive",
+      });
+    }
+  };
 
   const handleAllUploadPhotoVideo = async () => {
     try {
@@ -167,7 +206,7 @@ const PastEventGallery: React.FC<PastEventGalleryProps> = ({ event }) => {
   };
   return (
     <div className="w-full md:p-4 pb-20 md:pb-32">
-      <div className="flex w-full items-center gap-2 justify-between border-b-2 pb-4 mb-4">
+      <div className="flex w-full items-center gap-2 justify-between  pb-4 mb-4">
         {event.isHosted && (
           <div className="flex items-center gap-2 justify-between ">
             <Switch
@@ -177,12 +216,16 @@ const PastEventGallery: React.FC<PastEventGalleryProps> = ({ event }) => {
           </div>
         )}
         {((allUploadPhotoVideo && event.isGoing) || event.isHosted) && (
-          <>
-            <p className="text-sm">
-              {allUploadPhotoVideo
-                ? "Your guests are allowed to upload media"
-                : "You only are allowed to upload media"}
-            </p>
+          <div className="border-b-2 flex justify-between w-full items-center pb-4">
+            {isAdmin ? (
+              <p className="text-sm">
+                {allUploadPhotoVideo
+                  ? "Your guests are allowed to upload media"
+                  : "You only are allowed to upload media"}
+              </p>
+            ) : (
+              <p className="text-sm">You are not allowed to upload media</p>
+            )}
             <div>
               <Input
                 id="gallery-file-upload"
@@ -210,7 +253,7 @@ const PastEventGallery: React.FC<PastEventGalleryProps> = ({ event }) => {
                 </Button>
               )}
             </div>
-          </>
+          </div>
         )}
       </div>
       {groupedMedia.map((user, index) => (
@@ -247,7 +290,7 @@ const PastEventGallery: React.FC<PastEventGalleryProps> = ({ event }) => {
                     alt={`Media file ${mediaIndex + 1}`}
                     width={100}
                     height={100}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover rounded-xl"
                   />
                 ) : (
                   <div className="relative w-full h-full">
@@ -255,7 +298,7 @@ const PastEventGallery: React.FC<PastEventGalleryProps> = ({ event }) => {
                       width={100}
                       height={100}
                       src={media.url}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover rounded-xl"
                       controls
                     ></video>
                     <PlayCircleIcon
@@ -263,6 +306,15 @@ const PastEventGallery: React.FC<PastEventGalleryProps> = ({ event }) => {
                       className="w-10 h-10 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-evento-gradient text-white opacity-80 rounded-full"
                     />
                   </div>
+                )}{" "}
+                {(isAdmin || loggedUserId === user.userId) && (
+                  <Trash
+                    className="absolute top-2 right-2 w-10 h-10 cursor-pointer rounded bg-background p-2 border hover:bg-destructive hover:text-destructive-foreground"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      deleteMedia(index, media as MediaItem);
+                    }}
+                  />
                 )}
               </div>
             ))}
@@ -285,7 +337,7 @@ const PastEventGallery: React.FC<PastEventGalleryProps> = ({ event }) => {
           selectedMediaIndex={selectedMediaIndex}
           onClose={closeModal}
           eventId={event._id}
-          onMediaDelete={handleMediaDelete} // Pass the callback to the modal
+          onMediaDelete={handleMediaDelete}
         />
       )}
     </div>
