@@ -48,7 +48,10 @@ const Hero = () => {
           <Link href="/create-event">CREATE YOUR FIRST EVENT</Link>
         </Button>
         {isAuthModalOpen && (
-          <AuthModal onAuthSuccess={() => setIsAuthModalOpen(false)} />
+          <AuthModal
+            onAuthSuccess={() => setIsAuthModalOpen(false)}
+            onClose={() => setIsAuthModalOpen(false)}
+          />
         )}
       </div>
     </BackgroundGradientAnimation>

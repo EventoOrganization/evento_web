@@ -89,6 +89,10 @@ const config = {
           "0%": { transform: "translateX(100%)", opacity: "0" },
           "100%": { transform: "translateX(0)", opacity: "1" },
         },
+        slideInBottom: {
+          "0%": { transform: "translateY(100%)", opacity: "0" },
+          "100%": { transform: "translateY(0)", opacity: "1" },
+        },
         "spin-custom": {
           "0%": { transform: "rotate(0deg)" },
           "30%": { transform: "rotate(90deg)" },
@@ -144,8 +148,17 @@ const config = {
             transform: "translateY(-50%)",
           },
         },
+        floating: {
+          "0%": { transform: "translate(0px, 0px) rotate(0deg)" },
+          "25%": { transform: "translate(8px, -5px) rotate(2deg)" },
+          "50%": { transform: "translate(-10px, 6px) rotate(-2deg)" },
+          "75%": { transform: "translate(5px, -8px) rotate(1deg)" },
+          "100%": { transform: "translate(0px, 0px) rotate(0deg)" },
+        },
       },
       animation: {
+        slideInBottom: "slideInBottom 0.5s ease-in-out",
+        floating: "floating 6s ease-in-out infinite",
         "gradient-rotate": "gradientRotate 4s linear infinite",
         "smooth-spin": "spin 2s cubic-bezier(0.4, 0.0, 0.2, 1) infinite",
         "smooth-wavy": "wavy 3s ease-in-out infinite",

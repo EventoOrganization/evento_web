@@ -7,6 +7,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import {
   Bookmark,
   CircleUserRound,
@@ -29,6 +30,8 @@ const Tuto = () => {
     createEventTitle: useRef<HTMLDivElement>(null),
     discoverTitle: useRef<HTMLDivElement>(null),
     profileTitle: useRef<HTMLDivElement>(null),
+    showcaseImage1: useRef<HTMLImageElement>(null),
+    showcaseImage2: useRef<HTMLImageElement>(null),
   };
 
   const [visibleSections, setVisibleSections] = useState<string[]>([]);
@@ -89,13 +92,30 @@ const Tuto = () => {
             passionate individuals, they&apos;re only a click away.
           </p>
         </div>
-        <div className="flex justify-center ">
+        <div className="grid-cols-2 gap-2 md:gap-6 grid ">
           <Image
-            src={"/WHAT_EVENTO_DOES-removebg-preview 2.png"}
+            ref={sectionRefs.showcaseImage1}
+            id="showcase-image1"
+            src={"/HOMEPAGE - SHOTS (2).png"}
             alt="tuto-create-event"
-            width={800}
-            height={800}
-            className="h-96 w-auto"
+            className={cn("w-full object-cover  opacity-0", {
+              "animate-slideInBottom opacity-100":
+                visibleSections.includes("showcase-image1"),
+            })}
+            width={500}
+            height={500}
+          />
+          <Image
+            ref={sectionRefs.showcaseImage2}
+            id="showcase-image2"
+            src={"/HOMEPAGE - SHOTS (3).png"}
+            alt="tuto-create-event"
+            className={cn("w-full object-cover delay-200 opacity-0", {
+              "animate-slideInBottom opacity-100":
+                visibleSections.includes("showcase-image2"),
+            })}
+            width={500}
+            height={500}
           />
         </div>
         <div className="space-y-6 px-6 md:px-12 flex flex-col lg:col-span-2">
@@ -353,7 +373,7 @@ const Tuto = () => {
         <Image
           src="/story.png"
           alt="Camille & Elena"
-          className="w-full object-cover"
+          className="w-full object-cover max-w-[290px]"
           width={500}
           height={500}
         />
