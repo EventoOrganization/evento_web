@@ -332,15 +332,15 @@ const Faq = () => {
               your browser or app. Ensure your device’s location services are
               enabled, and that you&apos;ve entered the address accurately. If
               issues persist, contact Evento support for assistance. You can
-              reach out to our support team via the &quot;Help&quot; section in
-              the app. You can also email us at:{" "}
+              contact support directly by clicking the <b>helpdesk icon</b> at
+              the bottom right. You can also email us at:{" "}
               <Link
-                href="mailto:evento_app@outlook.com"
+                href="mailto:help@evento-app.io"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-blue-400 underline"
               >
-                evento_app@outlook.com.
+                help@evento-app.io.
               </Link>
             </>
           }
@@ -351,16 +351,16 @@ const Faq = () => {
             <>
               We&apos;re here to help! Start by checking your internet
               connection and making sure you’re using the latest version of the
-              app. If the issue persists, you can reach out to our support team
-              via the &quot;Help&quot; section in the app. You can also email us
-              at:{" "}
+              app. If the issue persists, you can reach out. You can contact
+              support directly by clicking the <b>helpdesk icon</b> at the
+              bottom right. You can also email us at:{" "}
               <Link
-                href="mailto:evento_app@outlook.com"
+                href="mailto:help@evento-app.io"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-blue-400 underline"
               >
-                evento_app@outlook.com.
+                help@evento-app.io.
               </Link>
             </>
           }
@@ -368,7 +368,23 @@ const Faq = () => {
 
         <Accordion
           title="📞 How can I contact support?"
-          content="You can contact support directly through the Evento app by going to 'Help' and submitting a support request. Our team typically responds within 24 hours."
+          content={
+            <>
+              You can contact support directly by clicking the{" "}
+              <b>helpdesk icon</b> at the bottom right of our platform:
+              www.evento-app.io. Our team typically responds within 24 hours.
+              You can also email us at:{" "}
+              <Link
+                href="mailto:help@evento-app.io"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-400 underline"
+              >
+                help@evento-app.io.
+              </Link>
+              .
+            </>
+          }
         />
 
         {/* Feedback */}

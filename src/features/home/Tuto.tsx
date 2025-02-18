@@ -373,7 +373,7 @@ const Tuto = () => {
         <Image
           src="/story.png"
           alt="Camille & Elena"
-          className="w-full object-cover max-w-[290px]"
+          className="w-full object-cover max-w-[290px] mx-auto"
           width={500}
           height={500}
         />
