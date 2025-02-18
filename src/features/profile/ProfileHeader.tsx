@@ -38,12 +38,6 @@ const platformIcons: Record<string, JSX.Element> = {
 const ProfileHeader = ({ profile, totalEvents }: Props) => {
   const pathname = usePathname();
   const { token, user } = useSession();
-  console.log(
-    "TOTAL EVENTs",
-    profile?.upcomingEvents?.length,
-    profile?.pastEventsGoing,
-  );
-  console.log("PROFILE", profile);
   const { updateUser } = useUsersStore();
   const [loading, setLoading] = useState<boolean>(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);

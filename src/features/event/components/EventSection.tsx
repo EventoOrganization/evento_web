@@ -21,17 +21,17 @@ const EventSection = ({
   const { user } = useSession();
   const { eventsStatus } = useEventStore();
   const canSeePrivateEvent = (event: any) => {
-    console.log(
-      `🔍 Vérification de l'événement : ${event.title} (${event._id})`,
-    );
+    // console.log(
+    //   `🔍 Vérification de l'événement : ${event.title} (${event._id})`,
+    // );
 
     if (event.eventType === "public") {
-      console.log(`✅ L'événement est PUBLIC → Affiché`);
+      // console.log(`✅ L'événement est PUBLIC → Affiché`);
       return true;
     }
 
     if (!user?._id) {
-      console.log(`❌ L'utilisateur n'est pas connecté → Événement MASQUÉ`);
+      // console.log(`❌ L'utilisateur n'est pas connecté → Événement MASQUÉ`);
       return false;
     }
 
@@ -43,31 +43,31 @@ const EventSection = ({
     const isGoing = eventsStatus?.[event._id]?.isGoing === true;
 
     if (isHost) {
-      console.log(
-        `✅ L'utilisateur est l'hote de l'événement → Affiché`,
-        event.title,
-      );
+      // console.log(
+      //   `✅ L'utilisateur est l'hote de l'événement → Affiché`,
+      //   event.title,
+      // );
       return true;
     }
     if (isCoHost) {
-      console.log(
-        `✅ L'utilisateur est co-hote de l'événement → Affiché`,
-        event.title,
-      );
+      // console.log(
+      //   `✅ L'utilisateur est co-hote de l'événement → Affiché`,
+      //   event.title,
+      // );
       return true;
     }
     if (isGuest) {
-      console.log(
-        `✅ L'utilisateur est invité de l'événement → Affiché`,
-        event.title,
-      );
+      // console.log(
+      //   `✅ L'utilisateur est invité de l'événement → Affiché`,
+      //   event.title,
+      // );
       return true;
     }
     if (isGoing) {
-      console.log(
-        `✅ L'utilisateur est en train de participer → Affiché`,
-        event.title,
-      );
+      // console.log(
+      //   `✅ L'utilisateur est en train de participer → Affiché`,
+      //   event.title,
+      // );
       return true;
     }
     return false;
