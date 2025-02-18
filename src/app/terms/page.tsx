@@ -187,8 +187,8 @@ const Terms = () => {
         <h2 className="self-center">12. Contact Us</h2>
         <p>
           If you have any questions about these Terms, please contact us at{" "}
-          <Link href="mailto:evento_app@outlook.com" className="text-blue-500">
-            evento_app@outlook.com
+          <Link href="mailto:help@evento-app.io" className="text-blue-500">
+            help@evento-app.io
           </Link>
           or by post to: Evento 1, boulevard de Belgique 98000 Monaco.
         </p>

@@ -371,9 +371,15 @@ const Faq = () => {
           content={
             <>
               You can contact support directly by clicking the{" "}
-              <b>helpdesk icon</b> at the bottom right of our platform:
-              www.evento-app.io. Our team typically responds within 24 hours.
-              You can also email us at:{" "}
+              <b>helpdesk icon</b> at the bottom right of our platform:{" "}
+              <a
+                href="http://www.evento-app.io"
+                className="underline text-blue-500"
+              >
+                http://www.evento-app.io
+              </a>
+              . Our team typically responds within 24 hours. You can also email
+              us at:{" "}
               <Link
                 href="mailto:help@evento-app.io"
                 target="_blank"
@@ -382,7 +388,6 @@ const Faq = () => {
               >
                 help@evento-app.io.
               </Link>
-              .
             </>
           }
         />
@@ -392,7 +397,23 @@ const Faq = () => {
 
         <Accordion
           title="💬 How can I provide feedback about my experience with Evento?"
-          content="We love hearing from our users! You can share feedback directly within the app by navigating to 'Settings' and selecting 'Send Feedback.' We’re always looking for ways to improve and appreciate your insights."
+          content={
+            <>
+              We love hearing from our users! You can share feedback directly
+              within the app clicking the <b>helpdesk icon</b> at the bottom
+              right. Or by sending us an email at{" "}
+              <Link
+                href="mailto:help@evento-app.io"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-400 underline"
+              >
+                help@evento-app.io.
+              </Link>{" "}
+              We&apos;re always looking for ways to improve and appreciate your
+              insights.
+            </>
+          }
         />
       </Section>
     </div>

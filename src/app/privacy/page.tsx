@@ -44,11 +44,11 @@ const PrivacyPolicy = () => {
           kindly ask that you do not use our services. If you still have
           questions or concerns, please contact us at{" "}
           <Link
-            href={"mailto:evento_app@outlook.com"}
+            href={"mailto:help@evento-app.io"}
             target="_blank"
             className="text-blue-500"
           >
-            evento_app@outlook.com
+            help@evento-app.io
           </Link>
           .
         </p>
@@ -267,12 +267,9 @@ const PrivacyPolicy = () => {
           terminate your account, we will deactivate or delete your account and
           information on our active databases. If you no longer wish to use our
           Services or want us to delete your data, you can request its removal
-          by contacting us at
-          <Link
-            href={"mailto:evento_app@outlook.com"}
-            className="text-blue-500"
-          >
-            evento_app@outlook.com
+          by contacting us at{" "}
+          <Link href={"mailto:help@evento-app.io"} className="text-blue-500">
+            help@evento-app.io
           </Link>
           .
         </p>
@@ -334,12 +331,9 @@ const PrivacyPolicy = () => {
           </li>
         </ul>
         <p>
-          To exercise these rights, please contact us at
-          <Link
-            href={"mailto:evento_app@outlook.com"}
-            className="text-blue-500"
-          >
-            evento_app@outlook.com
+          To exercise these rights, please contact us at{" "}
+          <Link href={"mailto:help@evento-app.io"} className="text-blue-500">
+            help@evento-app.io
           </Link>
           .
         </p>
@@ -375,11 +369,8 @@ const PrivacyPolicy = () => {
         <p>
           If you become aware of any data we may have collected from children
           under age 18, please contact us at{" "}
-          <Link
-            href={"mailto:evento_app@outlook.com"}
-            className="text-blue-500"
-          >
-            evento_app@outlook.com
+          <Link href={"mailto:help@evento-app.io"} className="text-blue-500">
+            help@evento-app.io
           </Link>
           .
         </p>
@@ -394,13 +385,10 @@ const PrivacyPolicy = () => {
         {/* Section 11 - Contact Us */}
         <h2 className="self-center">11. Contact Us</h2>
         <p>
-          If you have any questions or comments about this Privacy Policy or the
+          f you have any questions or comments about this Privacy Policy or the
           way we handle your personal data, please email us at{" "}
-          <Link
-            href="mailto:evento_app@outlook.com"
-            className="text-blue-500 mr-2"
-          >
-            evento_app@outlook.com
+          <Link href="mailto:help@evento-app.io" className="text-blue-500 mr-2">
+            help@evento-app.io
           </Link>
           or by post to: Evento 1, boulevard de Belgique 98000 Monaco
         </p>
