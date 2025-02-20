@@ -44,7 +44,6 @@ const CreateEventContent = () => {
   const { addEvent } = useEventStore();
   const { users } = useUsersStore();
   const { interests } = useInterestsStore();
-  const [isUploading, setIsUploading] = useState(false);
   const [tempMediaPreviews, setTempMediaPreviews] = useState<
     { url: string; type: string }[]
   >(eventStore.tempMediaPreview || []);
@@ -189,17 +188,20 @@ const CreateEventContent = () => {
     tempMediaPreviews.forEach((media, index) => {
       if (!uploadingMediaStatus[index]) {
         uploadMedia(media, index);
-        setTempMediaPreviews([]);
       }
     });
   }, [tempMediaPreviews]);
-
+  const isMediaItem = (media: {
+    url: string;
+    type: string;
+  }): media is MediaItem => {
+    return media.type === "image" || media.type === "video";
+  };
   const uploadMedia = async (
     media: { url: string; type: string },
     index: number,
   ) => {
     try {
-      setIsUploading(true);
       setUploadingMediaStatus((prev) =>
         prev.map((status, i) => (i === index ? true : status)),
       );
@@ -222,6 +224,7 @@ const CreateEventContent = () => {
             { url: s3Url, type: mediaItemType },
           ],
         }));
+        setTempMediaPreviews((prev) => prev.filter((_, i) => i !== index));
       } else {
         console.error("Invalid media type:", media.type);
       }
@@ -231,7 +234,6 @@ const CreateEventContent = () => {
       setUploadingMediaStatus((prev) =>
         prev.map((status, i) => (i === index ? false : status)),
       );
-      setIsUploading(false);
     }
   };
 
@@ -557,15 +559,15 @@ const CreateEventContent = () => {
               )}
               <div className="flex mt-2 w-full">
                 <FileUploadButton onChange={handleFileSelect} />
-                {eventStore.mediaPreviews.length > 0 && (
-                  <ul className="flex gap-2 overflow-x-scroll max-w-full ml-2 scroll-container p-2">
-                    {eventStore.mediaPreviews.map((media, index) => (
+                <ul className="flex gap-2 overflow-x-scroll max-w-full ml-2 scroll-container p-2">
+                  {[...tempMediaPreviews, ...eventStore.mediaPreviews].map(
+                    (media, index) => (
                       <li
                         key={index}
                         onClick={() => handleSelectMedia(index)}
-                        className="cursor-pointer relative w-24 h-24 overflow-hidden aspect-square border rounded-md flex-shrink-0 ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 hover:ring-2 hover:ring-ring"
+                        className="relative w-24 h-24 overflow-hidden aspect-square border rounded-md flex-shrink-0 ring-offset-background hover:ring-2 hover:ring-ring"
                       >
-                        {/* Afficher l'image ou la vidéo selon le type */}
+                        {/* 🖼️ Image ou 🎥 Vidéo */}
                         {media.type === "image" ? (
                           <Image
                             src={media.url}
@@ -582,16 +584,23 @@ const CreateEventContent = () => {
                           />
                         )}
 
-                        {/* Bouton de suppression */}
-                        <Trash
-                          className="absolute top-2 right-2 w-10 h-10 cursor-pointer rounded bg-background p-2 border hover:bg-destructive hover:text-destructive-foreground"
-                          onClick={() => deleteMedia(index, media)}
-                        />
+                        {/* ⏳ Loader si en cours d'upload */}
+                        {tempMediaPreviews.includes(media) ? (
+                          <div className="absolute inset-0 flex items-center justify-center bg-black/50">
+                            <EventoLoader />
+                          </div>
+                        ) : (
+                          <Trash
+                            className="absolute top-2 right-2 w-10 h-10 cursor-pointer rounded bg-background p-2 border hover:bg-destructive hover:text-destructive-foreground"
+                            onClick={() =>
+                              isMediaItem(media) && deleteMedia(index, media)
+                            }
+                          />
+                        )}
                       </li>
-                    ))}
-                    {isUploading && <EventoLoader />}
-                  </ul>
-                )}
+                    ),
+                  )}
+                </ul>
               </div>
             </div>
 

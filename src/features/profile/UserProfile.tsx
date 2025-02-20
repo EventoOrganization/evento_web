@@ -47,6 +47,7 @@ const UserProfile = ({
     !upcomingHostingEvents?.length &&
     !pastGoingEvents?.length &&
     !pastHostedEvents?.length;
+
   return (
     <>
       {!isMounted || isFetching ? (

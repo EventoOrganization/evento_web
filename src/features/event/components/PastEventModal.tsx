@@ -22,46 +22,6 @@ const PastEventModal = ({
   // const { toast } = useToast();
   const [currentMediaIndex, setCurrentMediaIndex] =
     useState(selectedMediaIndex);
-  // const { token } = useSession();
-
-  // const handleDelete = async () => {
-  //   const mediaItem = mediaItems[currentMediaIndex];
-  //   const fileKey = new URL(mediaItem.url).pathname.substring(1); // Removes the leading slash
-
-  //   try {
-  //     const success = await handleDeleteMedia(fileKey); // Delete from S3
-  //     if (success) {
-  //       const body = {
-  //         currentMediaIndex,
-  //       };
-  //       const deleteFromDb = await fetchData(
-  //         `/events/deletePostEventMedia/${eventId}`,
-  //         HttpMethod.DELETE,
-  //         body,
-  //         token,
-  //       );
-  //       if (deleteFromDb.ok) {
-  //         toast({
-  //           title: "Media deleted successfully",
-  //           description: "The media has been deleted successfully.",
-  //           duration: 3000,
-  //           className: "bg-evento-gradient text-white",
-  //         });
-  //         onMediaDelete(currentMediaIndex); // Notify parent component about the deletion
-  //         onClose(); // Close the modal
-  //       } else {
-  //         toast({
-  //           title: "Error deleting media",
-  //           description: "An error occurred while deleting the media.",
-  //           variant: "destructive",
-  //           duration: 3000,
-  //         });
-  //       }
-  //     }
-  //   } catch (error) {
-  //     console.error("Error deleting media:", error);
-  //   }
-  // };
 
   const handleDownload = async () => {
     const mediaUrl = mediaItems[currentMediaIndex].url;
@@ -110,8 +70,9 @@ const PastEventModal = ({
                 <Image
                   src={item.url}
                   alt={`Media ${index + 1}`}
-                  layout="fill"
-                  objectFit="contain"
+                  width={1000}
+                  height={1000}
+                  className="w-full h-full object-contain"
                 />
               ) : (
                 <video controls autoPlay className=" h-full">

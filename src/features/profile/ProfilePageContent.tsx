@@ -110,17 +110,7 @@ export default function ProfilePageContent() {
       event.details?.endDate &&
       new Date(event.details.endDate) <= currentDate,
   );
-  console.log(
-    "TOTAL EVENTS",
-    upcomingHostingEvents,
-    upcomingGoingEvents,
-    pastHostedEvents,
-    pastGoingEvents,
-    upcomingFavouriteEvents,
-    upcomingRefusedEvents,
-    upcomingGuestedEvents,
-    upcomingCoHostedEvents,
-  );
+
   return (
     <>
       {session.isAuthenticated ? (
