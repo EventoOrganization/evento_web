@@ -76,7 +76,7 @@ const EventPreview = ({
           </div>
         </CardHeader>
         <CardContent className="w-full h-full p-0 rounded-t-xl overflow-hidden aspect-square ">
-          {event?.initialMedia && event?.initialMedia[0]?.url && (
+          {event?.initialMedia && event?.initialMedia[0]?.url ? (
             <Image
               src={event?.initialMedia[0].url}
               alt="Event Image"
@@ -86,6 +86,17 @@ const EventPreview = ({
               priority={title === "Upcoming Events" ? true : false}
               loading={title === "Upcoming Events" ? "eager" : "lazy"}
             />
+          ) : (
+            <div className="w-full h-full bg-evento-gradient rounded">
+              <Image
+                src="https://evento-media-bucket.s3.ap-southeast-2.amazonaws.com/evento-bg.jpg"
+                alt="Evento standard background"
+                height={500}
+                width={500}
+                className={cn("opacity-20 w-full h-full object-cover")}
+                priority
+              />
+            </div>
           )}
         </CardContent>
         <CardFooter className="p-0 bg-background rounded-b-xl h-[104px] md:min-h-32">

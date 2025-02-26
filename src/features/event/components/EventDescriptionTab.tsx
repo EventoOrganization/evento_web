@@ -25,7 +25,7 @@ const EventDescriptionTab: React.FC<EventDescriptionTabProps> = ({
   updateEventStatusLocally,
 }) => {
   return (
-    <div className="space-y-2 w-full">
+    <div className="flex flex-col h-full gap-2 justify-between w-full">
       <h2 className="text-xl font-bold">{event?.title}</h2>
       <div className="flex justify-between items-center text-sm">
         <AddressModal address={event?.details?.location} />
@@ -40,6 +40,7 @@ const EventDescriptionTab: React.FC<EventDescriptionTabProps> = ({
         </p>
       </div>
       <TruncatedText
+        expand
         className="px-0 text-muted-foreground"
         text={event?.details?.description || ""}
       />

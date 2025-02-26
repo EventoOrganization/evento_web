@@ -1,5 +1,6 @@
 "use client";
 import { EventType } from "@/types/EventType";
+import { cn } from "@nextui-org/theme";
 import Image from "next/image";
 import { useRef, useState } from "react";
 import { Carousel } from "react-responsive-carousel";
@@ -36,43 +37,56 @@ const RenderMedia = ({ event }: { event: EventType }) => {
       onClick={handleClick}
       className="h-full"
     >
-      <Carousel
-        showThumbs={false}
-        dynamicHeight={false}
-        infiniteLoop={true}
-        emulateTouch={true}
-        useKeyboardArrows={true}
-        className="relative"
-      >
-        {event.initialMedia.map((item, index) =>
-          item.type === "video" ? (
-            <video
-              key={index}
-              controls
-              autoPlay
-              className="w-full h-auto max-h-screen rounded"
-            >
-              <source src={item.url} type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
-          ) : (
-            <Image
-              src={item.url}
-              alt={`Preview media ${index + 1}`}
-              key={index}
-              width={800}
-              height={0}
-              priority
-              className="w-full object-cover max-h-screen md:rounded"
-              onClick={(e) => {
-                if (!isSwiping) {
-                  e.stopPropagation();
-                }
-              }}
-            />
-          ),
-        )}
-      </Carousel>
+      {event.initialMedia.length > 0 ? (
+        <Carousel
+          showThumbs={false}
+          dynamicHeight={false}
+          infiniteLoop={true}
+          emulateTouch={true}
+          useKeyboardArrows={true}
+          className="relative"
+        >
+          {event.initialMedia.map((item, index) =>
+            item.type === "video" ? (
+              <video
+                key={index}
+                controls
+                autoPlay
+                className="w-full h-auto max-h-screen rounded"
+              >
+                <source src={item.url} type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            ) : (
+              <Image
+                src={item.url}
+                alt={`Preview media ${index + 1}`}
+                key={index}
+                width={800}
+                height={0}
+                priority
+                className="w-full object-cover max-h-screen md:rounded"
+                onClick={(e) => {
+                  if (!isSwiping) {
+                    e.stopPropagation();
+                  }
+                }}
+              />
+            ),
+          )}
+        </Carousel>
+      ) : (
+        <div className="w-full  bg-evento-gradient rounded">
+          <Image
+            src="https://evento-media-bucket.s3.ap-southeast-2.amazonaws.com/evento-bg.jpg"
+            alt="Evento standard background"
+            height={500}
+            width={500}
+            className={cn("opacity-20 w-full object-cover")}
+            priority
+          />
+        </div>
+      )}
     </div>
   );
 };

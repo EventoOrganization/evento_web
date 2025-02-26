@@ -136,68 +136,63 @@ const EditEventMedia = ({
 
   return (
     <div className="flex p-2 w-full">
-      {initialMedia.length > 0 && (
-        <ul className="grid grid-cols-2 w-full gap-2 p-2">
-          <FileUploadButton
-            onChange={handleFileSelect}
-            className="h-full m-0"
-          />
-          {initialMedia.map((media, index) => (
-            <li
-              key={index}
-              className="cursor-pointer relative  overflow-hidden aspect-square border rounded-md flex-shrink-0 ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 hover:ring-2 hover:ring-ring"
-            >
-              {/* Afficher l'image ou la vidéo selon le type */}
-              {media.type === "image" ? (
-                <Image
-                  src={media.url}
-                  alt={`Media ${index}`}
-                  width={96}
-                  height={96}
-                  className="object-cover w-full h-full"
-                />
-              ) : (
-                <video
-                  src={media.url}
-                  controls
-                  className="object-cover w-full h-full"
-                />
-              )}
+      <ul className="grid grid-cols-2 w-full gap-2 p-2">
+        <FileUploadButton
+          onChange={handleFileSelect}
+          className="h-full m-0 aspect-square"
+        />
+        {initialMedia.map((media, index) => (
+          <li
+            key={index}
+            className="cursor-pointer relative  overflow-hidden aspect-square border rounded-md flex-shrink-0 ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 hover:ring-2 hover:ring-ring"
+          >
+            {/* Afficher l'image ou la vidéo selon le type */}
+            {media.type === "image" ? (
+              <Image
+                src={media.url}
+                alt={`Media ${index}`}
+                width={96}
+                height={96}
+                className="object-cover w-full h-full"
+              />
+            ) : (
+              <video
+                src={media.url}
+                controls
+                className="object-cover w-full h-full"
+              />
+            )}
 
-              {/* Bouton de suppression */}
-              {initialMedia.length > 1 && (
-                <Trash
-                  className="absolute top-2 right-2 w-10 h-10 cursor-pointer rounded bg-background p-2 border hover:bg-destructive hover:text-destructive-foreground"
-                  onClick={() => deleteMedia(index, media as MediaItem)}
-                />
-              )}
-            </li>
-          ))}
-          {tempMediaPreviews.map((media, index) => (
-            <li
-              key={index}
-              className="cursor-pointer relative  overflow-hidden aspect-square border rounded-md flex-shrink-0 ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 hover:ring-2 hover:ring-ring"
-            >
-              {media.type === "image" ? (
-                <Image
-                  src={media.url}
-                  alt={`Media ${index}`}
-                  width={96}
-                  height={96}
-                  className="object-cover w-full h-full"
-                />
-              ) : (
-                <video
-                  src={media.url}
-                  controls
-                  className="object-cover w-full h-full"
-                />
-              )}
-            </li>
-          ))}
-          {isUploading && <EventoLoader />}
-        </ul>
-      )}
+            <Trash
+              className="absolute top-2 right-2 w-10 h-10 cursor-pointer rounded bg-background p-2 border hover:bg-destructive hover:text-destructive-foreground"
+              onClick={() => deleteMedia(index, media as MediaItem)}
+            />
+          </li>
+        ))}
+        {tempMediaPreviews.map((media, index) => (
+          <li
+            key={index}
+            className="cursor-pointer relative  overflow-hidden aspect-square border rounded-md flex-shrink-0 ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 hover:ring-2 hover:ring-ring"
+          >
+            {media.type === "image" ? (
+              <Image
+                src={media.url}
+                alt={`Media ${index}`}
+                width={96}
+                height={96}
+                className="object-cover w-full h-full"
+              />
+            ) : (
+              <video
+                src={media.url}
+                controls
+                className="object-cover w-full h-full"
+              />
+            )}
+          </li>
+        ))}
+        {isUploading && <EventoLoader />}
+      </ul>
     </div>
   );
 };
