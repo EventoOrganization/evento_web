@@ -1,5 +1,6 @@
 "use client";
 import CollapsibleList from "@/components/CollapsibleList";
+import EventoLoader from "@/components/EventoLoader";
 import Section from "@/components/layout/Section";
 import ShareModal from "@/components/ShareModal";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -236,7 +237,11 @@ const EventSuccessPage = () => {
   );
 
   if (!event) {
-    return <div>Loading...</div>;
+    return (
+      <Section className="h-screen">
+        <EventoLoader />
+      </Section>
+    );
   }
 
   return (

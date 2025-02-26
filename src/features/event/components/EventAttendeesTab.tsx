@@ -1,16 +1,18 @@
 // components/EventAttendeesTab.tsx
 
 import CollapsibleList from "@/components/CollapsibleList";
+import ExportCSVButton from "@/components/ExportCSVButton";
 import GuestAllowFriendToggle from "@/components/GuestAllowFriendToggle";
+import { Label } from "@/components/ui/label";
 import { EventType } from "@/types/EventType";
 import EventGuestModal from "./EventGuestModal";
 import HideGuestList from "./HideGuestList";
-import ExportCSVButton from "@/components/ExportCSVButton";
 
 interface EventAttendeesTabProps {
   event: EventType | undefined;
   isAdmin?: boolean;
   isPrivate?: boolean;
+  isGuest?: boolean;
   setEvent?: (event: EventType) => void;
 }
 
@@ -18,6 +20,7 @@ const EventAttendeesTab: React.FC<EventAttendeesTabProps> = ({
   event,
   isAdmin,
   isPrivate,
+  isGuest,
   setEvent,
 }) => {
   const goingIds = new Set(
@@ -47,6 +50,12 @@ const EventAttendeesTab: React.FC<EventAttendeesTabProps> = ({
           <EventGuestModal event={event} setEvent={setEvent} />
           <HideGuestList event={event} />
           <ExportCSVButton event={event} />
+        </div>
+      )}
+      {isGuest && event?.guestsAllowFriend && (
+        <div className="grid grid-cols-2 items-center justify-between gap-2 mb-2">
+          <Label>You are autorized to invite friends</Label>
+          <EventGuestModal event={event} setEvent={setEvent} />{" "}
         </div>
       )}
       <CollapsibleList

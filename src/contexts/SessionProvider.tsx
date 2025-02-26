@@ -1,4 +1,6 @@
 "use client";
+import EventoLoader from "@/components/EventoLoader";
+import Section from "@/components/layout/Section";
 import { useAuthStore } from "@/store/useAuthStore";
 import { UserType } from "@/types/UserType";
 import React, { createContext, useContext, useEffect, useState } from "react";
@@ -134,7 +136,13 @@ export const SessionProvider: React.FC<{
         tokenExpiredMessage,
       }}
     >
-      {!isTokenChecked ? <div>Loading...</div> : children}
+      {!isTokenChecked ? (
+        <Section className="h-screen">
+          <EventoLoader />
+        </Section>
+      ) : (
+        children
+      )}
     </SessionContext.Provider>
   );
 };

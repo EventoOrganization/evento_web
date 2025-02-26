@@ -48,6 +48,7 @@ const EventIdTabs = ({ evento }: { evento?: EventType }) => {
     isPublic: false,
     isPrivate: false,
     isRestricted: false,
+    isHost: false,
     isCoHost: false,
     isAdmin: false,
     isGuest: false,
@@ -163,7 +164,8 @@ const EventIdTabs = ({ evento }: { evento?: EventType }) => {
       const isPublic = event.eventType === "public";
       const isPrivate = event.eventType === "private";
       const isRestricted = event.restricted || false;
-      const isAdmin = user?._id === event.user?._id;
+
+      const isHost = user?._id === event.user?._id;
       const isGuest = user
         ? event.guests?.some((guest) => guest._id === user._id) || false
         : false;
@@ -176,6 +178,7 @@ const EventIdTabs = ({ evento }: { evento?: EventType }) => {
         ? (event.coHosts?.some((coHost) => coHost.userId?._id === user._id) ??
           false)
         : false;
+      const isAdmin = isHost || isCoHost;
       const isUnconnectedCoHost =
         event.coHosts?.some((coHost) => coHost.email === emailParam) || false;
       const isTempGuest =
@@ -186,6 +189,7 @@ const EventIdTabs = ({ evento }: { evento?: EventType }) => {
         isPrivate,
         isRestricted,
         isAdmin,
+        isHost,
         isCoHost,
         isGuest,
         isTempGuest,
@@ -236,7 +240,7 @@ const EventIdTabs = ({ evento }: { evento?: EventType }) => {
           hasToken={!!token}
         />
       )}
-      {event && (
+      {event ? (
         <>
           <StructuredData event={event} />
           <div className="md:grid-cols-2 grid grid-cols-1 w-full max-w-7xl mx-auto">
@@ -341,6 +345,7 @@ const EventIdTabs = ({ evento }: { evento?: EventType }) => {
                   event={event}
                   isAdmin={accessControl.isAdmin}
                   isPrivate={accessControl.isPrivate}
+                  isGuest={accessControl.isGuest}
                   setEvent={setEvent}
                 />
               )}
@@ -361,6 +366,10 @@ const EventIdTabs = ({ evento }: { evento?: EventType }) => {
             </Section>
           </div>
         </>
+      ) : (
+        <Section className="h-screen">
+          <EventoLoader />
+        </Section>
       )}
     </>
   );

@@ -1,8 +1,13 @@
+import { cn } from "@/lib/utils";
 import Image from "next/image";
-const EventoLoader = () => {
+const EventoLoader = ({ full }: { full?: boolean }) => {
   return (
     <>
-      <div className="flex justify-center items-center ">
+      <div
+        className={cn("flex justify-center items-center", {
+          "h-full w-full": full,
+        })}
+      >
         {/* Main Loader Container */}
         <div className="relative w-20 h-20">
           {/* Outer Rotating Ring */}
