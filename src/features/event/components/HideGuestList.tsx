@@ -69,7 +69,7 @@ const HideGuestList = ({ event }: Props) => {
         onCheckedChange={handleToggle}
       />
       <Label htmlFor="guestsAllowFriend" className="cursor-pointer">
-        Hide guest list
+        Hide guestlist
       </Label>
     </div>
   );

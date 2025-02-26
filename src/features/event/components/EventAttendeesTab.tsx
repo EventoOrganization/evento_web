@@ -6,7 +6,7 @@ import GuestAllowFriendToggle from "@/components/GuestAllowFriendToggle";
 import { Label } from "@/components/ui/label";
 import { EventType } from "@/types/EventType";
 import { useEffect, useState } from "react";
-import AddUpdate from "../update/AddUpdate";
+import AddAnnoncement from "../update/AddUpdate";
 import EventGuestModal from "./EventGuestModal";
 import HideGuestList from "./HideGuestList";
 
@@ -61,7 +61,7 @@ const EventAttendeesTab: React.FC<EventAttendeesTabProps> = ({
           <EventGuestModal event={event} setEvent={setEvent} />
           <HideGuestList event={event} />
           <ExportCSVButton event={event} />
-          <AddUpdate
+          <AddAnnoncement
             event={event}
             setEvent={setEvent}
             invitedUsers={invitedUsers}

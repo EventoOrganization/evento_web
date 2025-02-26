@@ -3,6 +3,7 @@ import EventoLoader from "@/components/EventoLoader";
 import Section from "@/components/layout/Section";
 import RenderMedia from "@/components/RenderMedia";
 import RequestModal from "@/components/RequestModal";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Tooltip,
   TooltipContent,
@@ -21,7 +22,6 @@ import { useUsersStore } from "@/store/useUsersStore";
 import { EventType } from "@/types/EventType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { createUpdateEventField } from "@/utils/updateEventHelper";
-import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { Pencil } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -157,7 +157,8 @@ const EventIdTabs = ({ evento }: { evento?: EventType }) => {
 
   useEffect(() => {
     const emailParam = params.get("email");
-    console.log("emailParam", emailParam);
+    // console.log("emailParam", emailParam);
+    console.log("EVENT", event);
     setIsLoading(true);
 
     if (event) {

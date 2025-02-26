@@ -9,26 +9,35 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { useSession } from "@/contexts/SessionProvider";
+import { useToast } from "@/hooks/use-toast";
 import { EventType } from "@/types/EventType";
 import { TempUserType, UserType } from "@/types/UserType";
+import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { BellIcon, XIcon } from "lucide-react";
 import { useState } from "react";
-type AddUpdateProps = {
-  onSave?: () => void;
+
+type AddAnnouncementProps = {
   event: EventType | undefined;
-  setEvent?: (event: EventType) => void;
   invitedUsers: (UserType | TempUserType)[];
   setIsSelectEnable: (isEnabled: boolean) => void;
+  setEvent?: (event: EventType) => void;
   selectedIds?: string[];
 };
-const AddUpdate = ({
+
+const AddAnnouncement = ({
   event,
   invitedUsers,
   setIsSelectEnable,
   selectedIds,
-}: AddUpdateProps) => {
+  setEvent,
+}: AddAnnouncementProps) => {
+  const { toast } = useToast();
+  const { token } = useSession();
   const [isNotifying, setIsNotifying] = useState("");
+  const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
   const getPlaceholder = (value: string) => {
     switch (value) {
       case "going":
@@ -39,15 +48,74 @@ const AddUpdate = ({
         return "Notify all declined guests now!";
       case "individuals":
         return "Select people from the lists above to notify them.";
+      default:
+        return "";
     }
   };
-  const handleNotify = () => {
-    setIsLoading(true);
 
-    setTimeout(() => {
+  const handleAnnouncement = async () => {
+    if (!message.trim()) {
+      toast({
+        title: "Error",
+        description: "Message cannot be empty",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const receivers =
+        isNotifying === "individuals"
+          ? { userIds: selectedIds || [] }
+          : { status: isNotifying };
+
+      const response = await fetchData<any>(
+        `/events/${event?._id}/createAnnouncement`,
+        HttpMethod.POST,
+        {
+          userId: event?.user._id,
+          message,
+          receivers,
+        },
+        token,
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to send announcement");
+      }
+
+      toast({
+        title: "Success",
+        description: "Announcement sent successfully!",
+        className: "bg-evento-gradient text-white",
+      });
+
+      // Reset state
+      setIsNotifying("");
+      setMessage("");
+      setIsSelectEnable(false);
+      console.log("response", response?.data?.announcement);
+      if (event && setEvent) {
+        setEvent({
+          ...event,
+          announcements: [
+            ...(event.announcements ?? []),
+            response.data.announcement,
+          ],
+        });
+      }
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
       setIsLoading(false);
-    }, 2000);
+    }
   };
+
   return (
     <>
       <Label htmlFor="notify" className="text-eventoPurpleLight">
@@ -61,8 +129,8 @@ const AddUpdate = ({
           setIsSelectEnable(value === "individuals");
         }}
       >
-        <SelectTrigger className="" id="notify">
-          <SelectValue placeholder="Select who are notified" />
+        <SelectTrigger id="notify">
+          <SelectValue placeholder="Select who is notified" />
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="going">
@@ -85,6 +153,8 @@ const AddUpdate = ({
         <div className="col-span-2 flex flex-col gap-2">
           <Textarea
             placeholder={getPlaceholder(isNotifying)}
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
             disabled={isLoading}
           />
           <div className="flex w-fit gap-2 self-end">
@@ -92,6 +162,7 @@ const AddUpdate = ({
               disabled={isLoading}
               onClick={() => {
                 setIsNotifying("");
+                setMessage("");
                 setIsSelectEnable(false);
               }}
               variant={"eventoSecondary"}
@@ -101,12 +172,10 @@ const AddUpdate = ({
             </Button>
             <Button
               variant={"eventoPrimary"}
-              onClick={handleNotify}
+              onClick={handleAnnouncement}
               disabled={isLoading}
             >
-              {/* {isLoading ? <EventoSpinner /> : <Send size={16} />}
-              Send Message */}
-              <EventoSpinner /> Feature in progress
+              {isLoading ? <EventoSpinner /> : "Send Announcement"}
             </Button>
           </div>
         </div>
@@ -115,4 +184,4 @@ const AddUpdate = ({
   );
 };
 
-export default AddUpdate;
+export default AddAnnouncement;

@@ -21,6 +21,25 @@ export type OptionType = {
   name: string;
   image?: string;
 };
+export type Announcement = {
+  _id: string;
+  eventId: string;
+  senderId: string;
+  message: string;
+  receivers: {
+    userIds?: string[]; // Liste d'IDs des utilisateurs
+    status?: "going" | "invited" | "decline"; // Filtrage par statut
+  };
+  comments: {
+    _id: string;
+    userId: string;
+    content: string;
+    createdAt: string;
+  }[];
+  createdAt: string;
+  updatedAt: string;
+};
+
 export type QuestionType = {
   id: string;
   question: string;
@@ -72,6 +91,7 @@ export type EventType = {
   tempGuests?: TempUserType[];
   coHostStatus?: boolean;
   isAdmin?: boolean;
+  announcements?: Announcement[];
   guestsCohostAdd?: UserType[];
   timeSlots: TimeSlotType[];
   privateEventLink?: string;
