@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 import { EventType } from "@/types/EventType";
 import { TempUserType, UserType } from "@/types/UserType";
 import { ChevronRightIcon } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import UsersList from "./UsersList";
 const CollapsibleList = ({
   title,
@@ -11,6 +11,9 @@ const CollapsibleList = ({
   event,
   isAdmin = false,
   setEvent,
+  selectedIds,
+  isSelectEnable,
+  setSelectedIds,
 }: {
   title: string;
   count: number;
@@ -18,10 +21,16 @@ const CollapsibleList = ({
   event?: EventType;
   isAdmin?: boolean;
   setEvent?: (event: EventType) => void;
+  isSelectEnable?: boolean;
+  selectedIds?: string[];
+  setSelectedIds?: (ids: string[]) => void;
 }) => {
   const [isOpen, setIsOpen] = useState(
     title === "Going" || title === "Invited" ? true : false,
   );
+  useEffect(() => {
+    if (isSelectEnable) setIsOpen(true);
+  }, [isSelectEnable]);
   const removeUserLocally = (userId: string) => {
     if (!setEvent || !event) return;
     const updateAttendees =
@@ -69,6 +78,9 @@ const CollapsibleList = ({
                 removeUserLocally={removeUserLocally}
                 event={event}
                 title={title}
+                selectedIds={selectedIds}
+                setSelectedIds={setSelectedIds}
+                isSelectEnable={isSelectEnable}
               />
             ))}
         </div>

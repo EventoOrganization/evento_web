@@ -26,6 +26,8 @@ import Link from "next/link";
 import { useParams, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
+import { Checkbox } from "./ui/checkbox";
+import { Label } from "./ui/label";
 const UsersList = ({
   isAdmin = false,
   user,
@@ -33,6 +35,9 @@ const UsersList = ({
   removeUserLocally,
   event,
   title,
+  isSelectEnable = false,
+  setSelectedIds,
+  selectedIds,
 }: {
   user?: any;
   fetchUsers?: () => void;
@@ -40,6 +45,9 @@ const UsersList = ({
   event?: EventType;
   title?: string;
   isAdmin?: boolean;
+  isSelectEnable?: boolean;
+  selectedIds?: string[];
+  setSelectedIds?: (ids: string[]) => void;
 }) => {
   const [showMobileReason, setShowMobileReason] = useState(false);
   const [isTouchDevice, setIsTouchDevice] = useState(false);
@@ -253,34 +261,90 @@ const UsersList = ({
   const isSuccessPage = pathname.includes(`/create-event/${eventId}/success`);
   return (
     <div className="flex justify-between w-full items-center">
-      <Link href={`/profile/${user?._id}`} className="flex items-center gap-4">
-        {user?.profileImage &&
-        user?.profileImage.startsWith("http") &&
-        user?.profileImage ? (
-          <Image
-            src={user.profileImage}
-            alt="user image"
-            width={500}
-            height={500}
-            className="min-w-10 w-10 h-10 rounded-full"
+      {isSelectEnable ? (
+        <div className="flex items-center gap-2 ">
+          <Checkbox
+            id={user._id}
+            checked={user?._id ? selectedIds?.includes(user._id) : false}
+            onCheckedChange={(checked) => {
+              if (setSelectedIds) {
+                setSelectedIds(
+                  checked
+                    ? [...(selectedIds ?? []), user._id]
+                    : (selectedIds ?? []).filter((id) => id !== user._id),
+                );
+              }
+            }}
           />
-        ) : (
-          <div className="flex flex-col min-w-10 w-10 h-10">
-            <Avatar className="min-w-10 w-10 h-10 ">
-              <AvatarImage src="/evento-logo.png" className="rounded-full" />
-              <AvatarFallback>CN</AvatarFallback>
-            </Avatar>
-          </div>
-        )}
-        <ul>
-          <li className="font-bold">
-            {user?.username.charAt(0).toUpperCase() + user?.username.slice(1)}
-          </li>
-          <li className="text-sm">
-            {user?.firstName} {user?.lastName}
-          </li>
-        </ul>
-      </Link>
+          <Label
+            htmlFor={user._id}
+            className="flex items-center gap-4 cursor-pointer"
+          >
+            {user?.profileImage &&
+            user?.profileImage.startsWith("http") &&
+            user?.profileImage ? (
+              <Image
+                src={user.profileImage}
+                alt="user image"
+                width={500}
+                height={500}
+                className="min-w-10 w-10 h-10 rounded-full"
+              />
+            ) : (
+              <div className="flex flex-col min-w-10 w-10 h-10">
+                <Avatar className="min-w-10 w-10 h-10 ">
+                  <AvatarImage
+                    src="/evento-logo.png"
+                    className="rounded-full"
+                  />
+                  <AvatarFallback>CN</AvatarFallback>
+                </Avatar>
+              </div>
+            )}
+            <ul>
+              <li className="font-bold">
+                {user?.username.charAt(0).toUpperCase() +
+                  user?.username.slice(1)}
+              </li>
+              <li className="text-sm">
+                {user?.firstName} {user?.lastName}
+              </li>
+            </ul>
+          </Label>
+        </div>
+      ) : (
+        <Link
+          href={`/profile/${user?._id}`}
+          className="flex items-center gap-4"
+        >
+          {user?.profileImage &&
+          user?.profileImage.startsWith("http") &&
+          user?.profileImage ? (
+            <Image
+              src={user.profileImage}
+              alt="user image"
+              width={500}
+              height={500}
+              className="min-w-10 w-10 h-10 rounded-full"
+            />
+          ) : (
+            <div className="flex flex-col min-w-10 w-10 h-10">
+              <Avatar className="min-w-10 w-10 h-10 ">
+                <AvatarImage src="/evento-logo.png" className="rounded-full" />
+                <AvatarFallback>CN</AvatarFallback>
+              </Avatar>
+            </div>
+          )}
+          <ul>
+            <li className="font-bold">
+              {user?.username.charAt(0).toUpperCase() + user?.username.slice(1)}
+            </li>
+            <li className="text-sm">
+              {user?.firstName} {user?.lastName}
+            </li>
+          </ul>
+        </Link>
+      )}
       <div className="flex gap-2 overflow-hidden">
         {user.reason && isAdmin ? (
           <>

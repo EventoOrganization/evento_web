@@ -5,6 +5,8 @@ import ExportCSVButton from "@/components/ExportCSVButton";
 import GuestAllowFriendToggle from "@/components/GuestAllowFriendToggle";
 import { Label } from "@/components/ui/label";
 import { EventType } from "@/types/EventType";
+import { useEffect, useState } from "react";
+import AddUpdate from "../update/AddUpdate";
 import EventGuestModal from "./EventGuestModal";
 import HideGuestList from "./HideGuestList";
 
@@ -23,6 +25,15 @@ const EventAttendeesTab: React.FC<EventAttendeesTabProps> = ({
   isGuest,
   setEvent,
 }) => {
+  const [isSelectEnable, setIsSelectEnable] = useState(false);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  useEffect(() => {
+    console.log("isSelectEnable", isSelectEnable);
+  }, [isSelectEnable]);
+  useEffect(() => {
+    console.log("selectedIds", selectedIds);
+  }, [selectedIds]);
+
   const goingIds = new Set(
     (event?.attendees || []).map((user) => user._id!).filter((id) => id),
   );
@@ -50,6 +61,13 @@ const EventAttendeesTab: React.FC<EventAttendeesTabProps> = ({
           <EventGuestModal event={event} setEvent={setEvent} />
           <HideGuestList event={event} />
           <ExportCSVButton event={event} />
+          <AddUpdate
+            event={event}
+            setEvent={setEvent}
+            invitedUsers={invitedUsers}
+            setIsSelectEnable={setIsSelectEnable}
+            selectedIds={selectedIds}
+          />
         </div>
       )}
       {isGuest && event?.guestsAllowFriend && (
@@ -64,6 +82,9 @@ const EventAttendeesTab: React.FC<EventAttendeesTabProps> = ({
         users={event?.attendees || []}
         event={event}
         isAdmin={isAdmin}
+        isSelectEnable={isSelectEnable}
+        selectedIds={selectedIds}
+        setSelectedIds={setSelectedIds}
       />
       <CollapsibleList
         isAdmin={isAdmin}
@@ -72,6 +93,9 @@ const EventAttendeesTab: React.FC<EventAttendeesTabProps> = ({
         users={invitedUsers || []}
         event={event}
         setEvent={setEvent}
+        isSelectEnable={isSelectEnable}
+        selectedIds={selectedIds}
+        setSelectedIds={setSelectedIds}
       />
       {isPrivate && (
         <CollapsibleList
@@ -79,6 +103,9 @@ const EventAttendeesTab: React.FC<EventAttendeesTabProps> = ({
           count={event?.refused?.length || 0}
           users={event?.refused || []}
           isAdmin={isAdmin}
+          isSelectEnable={isSelectEnable}
+          selectedIds={selectedIds}
+          setSelectedIds={setSelectedIds}
         />
       )}
       {isAdmin && (
@@ -93,6 +120,9 @@ const EventAttendeesTab: React.FC<EventAttendeesTabProps> = ({
             title={event?.eventType === "public" ? "Favourite" : "Maybe"}
             count={event?.favouritees?.length || 0}
             users={event?.favouritees || []}
+            isSelectEnable={isSelectEnable}
+            selectedIds={selectedIds}
+            setSelectedIds={setSelectedIds}
           />
         </>
       )}
