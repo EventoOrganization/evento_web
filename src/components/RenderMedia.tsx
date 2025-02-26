@@ -46,37 +46,39 @@ const RenderMedia = ({ event }: { event: EventType }) => {
           useKeyboardArrows={true}
           className="relative"
         >
-          {event.initialMedia.map((item, index) =>
-            item.type === "video" ? (
-              <video
-                key={index}
-                controls
-                autoPlay
-                className="w-full h-auto max-h-screen rounded"
-              >
-                <source src={item.url} type="video/mp4" />
-                Your browser does not support the video tag.
-              </video>
-            ) : (
-              <Image
-                src={item.url}
-                alt={`Preview media ${index + 1}`}
-                key={index}
-                width={800}
-                height={0}
-                priority
-                className="w-full object-cover max-h-screen md:rounded"
-                onClick={(e) => {
-                  if (!isSwiping) {
-                    e.stopPropagation();
-                  }
-                }}
-              />
-            ),
+          {event.initialMedia.map(
+            (item, index) =>
+              item &&
+              (item.type === "video" ? (
+                <video
+                  key={index}
+                  controls
+                  autoPlay
+                  className="w-full h-auto max-h-screen rounded"
+                >
+                  <source src={item.url} type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
+              ) : (
+                <Image
+                  src={item.url}
+                  alt={`Preview media ${index + 1}`}
+                  key={index}
+                  width={800}
+                  height={0}
+                  priority
+                  className="w-full object-cover max-h-screen md:rounded"
+                  onClick={(e) => {
+                    if (!isSwiping) {
+                      e.stopPropagation();
+                    }
+                  }}
+                />
+              )),
           )}
         </Carousel>
       ) : (
-        <div className="w-full  bg-evento-gradient rounded">
+        <div className="w-full bg-evento-gradient rounded">
           <Image
             src="https://evento-media-bucket.s3.ap-southeast-2.amazonaws.com/evento-bg.jpg"
             alt="Evento standard background"
