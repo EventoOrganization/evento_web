@@ -106,7 +106,6 @@ const EventQuestionsForm = () => {
                       </Label>
                       <Info className="w-4 h-4 cursor-pointer md:hidden" />
 
-                      {/* Infobulle */}
                       <div className="absolute left-1/2 -translate-x-1/2 bottom-8 md:bottom-auto md:top-8 w-32 p-2 bg-gray-800 text-white text-xs rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity">
                         This switch makes the question mandatory.
                       </div>

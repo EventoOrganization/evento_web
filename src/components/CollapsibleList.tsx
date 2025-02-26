@@ -3,7 +3,6 @@ import { EventType } from "@/types/EventType";
 import { TempUserType, UserType } from "@/types/UserType";
 import { ChevronRightIcon } from "lucide-react";
 import { useState } from "react";
-import ExportCSVButton from "./ExportCSVButton";
 import UsersList from "./UsersList";
 const CollapsibleList = ({
   title,
@@ -57,9 +56,6 @@ const CollapsibleList = ({
           </span>
           {title} ({count})
         </button>
-        {title === "Going" && event && isAdmin && (
-          <ExportCSVButton event={event} />
-        )}
       </div>
       {isOpen && (
         <div className="mt-2 space-y-2">

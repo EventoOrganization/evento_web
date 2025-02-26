@@ -39,6 +39,11 @@ const EventDescriptionTab: React.FC<EventDescriptionTabProps> = ({
           {event?.details?.endTime ? ` - ${event?.details?.endTime}` : ""}
         </p>
       </div>
+      <EventActionIcons
+        event={event}
+        updateEventStatusLocally={updateEventStatusLocally}
+        isLocal
+      />
       <TruncatedText
         expand
         className="px-0 text-muted-foreground"
@@ -67,11 +72,6 @@ const EventDescriptionTab: React.FC<EventDescriptionTabProps> = ({
         />
       </Link>
       <AddToCalendar event={event} />
-      <EventActionIcons
-        event={event}
-        updateEventStatusLocally={updateEventStatusLocally}
-        isLocal
-      />
     </div>
   );
 };

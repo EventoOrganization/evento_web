@@ -1,17 +1,17 @@
 "use client";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/togglerbtn";
 import { useSession } from "@/contexts/SessionProvider";
 import { useToast } from "@/hooks/use-toast";
 import { EventType } from "@/types/EventType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { useState } from "react";
-import { Label } from "./ui/label";
-import { Switch } from "./ui/togglerbtn";
 
 type Props = {
   event?: EventType | undefined;
 };
 
-const GuestAllowFriendToggle = ({ event }: Props) => {
+const HideGuestList = ({ event }: Props) => {
   const { token } = useSession();
   const { toast } = useToast();
   const [isGuestAllowed, setIsGuestAllowed] = useState<boolean>(
@@ -19,6 +19,14 @@ const GuestAllowFriendToggle = ({ event }: Props) => {
   );
   const eventId = event?._id;
   const handleToggle = async () => {
+    toast({
+      title: "Coming Soon",
+      description:
+        "This feature will allow hiding the guest list from regular users while keeping it visible to the host and co-host.",
+      variant: "evento",
+    });
+
+    return;
     try {
       const newStatus = !isGuestAllowed;
       const response = await fetchData(
@@ -61,10 +69,10 @@ const GuestAllowFriendToggle = ({ event }: Props) => {
         onCheckedChange={handleToggle}
       />
       <Label htmlFor="guestsAllowFriend" className="cursor-pointer">
-        Allow guests to bring friends
+        Hide guest list
       </Label>
     </div>
   );
 };
 
-export default GuestAllowFriendToggle;
+export default HideGuestList;

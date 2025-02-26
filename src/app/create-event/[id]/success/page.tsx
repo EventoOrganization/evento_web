@@ -346,16 +346,11 @@ const EventSuccessPage = () => {
           </ScrollArea>{" "}
           {event.isHosted && (
             <div className="flex items-center gap-2 pt-4">
-              {/* <input
-                type="checkbox"
-                id="guestsAllowFriend"
-                onChange={handleGuestsAllowFriendChange}
-                checked={isGuestAllowed ?? false}
-              /> */}
               <Switch
                 checked={isGuestAllowed ?? false}
                 onCheckedChange={handleGuestsAllowFriendChange}
               />
+
               <label htmlFor="guestsAllowFriend">
                 Allow guests to bring friends
               </label>

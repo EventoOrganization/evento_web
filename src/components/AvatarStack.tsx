@@ -23,9 +23,9 @@ const AvatarStack = ({ event }: { event: EventType }) => {
   }, [users, event?.attendees]);
   return (
     <div className="flex items-center">
-      <div className="flex -space-x-3 overflow-hidden">
+      <div className="flex -space-x-3 overflow-hidden mr-2">
         {friends.slice(0, 3).map((friend, index) => (
-          <div key={index} className="mr-2">
+          <div key={index} className="">
             {friend.profileImage ? (
               <Image
                 key={index}
@@ -36,9 +36,12 @@ const AvatarStack = ({ event }: { event: EventType }) => {
                 className="inline-block h-8 w-8 rounded-full ring-2 ring-white"
               />
             ) : (
-              <Avatar key={index} className="w-12 h-12 rounded-full">
+              <Avatar
+                key={index}
+                className="h-8 w-8 rounded-full ring-2 ring-white"
+              >
                 <AvatarImage
-                  className="w-12 h-12 rounded-full"
+                  className="h-8 w-8 rounded-full"
                   src="/evento-logo.png"
                 />
                 <AvatarFallback>CN</AvatarFallback>

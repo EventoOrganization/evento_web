@@ -4,6 +4,8 @@ import CollapsibleList from "@/components/CollapsibleList";
 import GuestAllowFriendToggle from "@/components/GuestAllowFriendToggle";
 import { EventType } from "@/types/EventType";
 import EventGuestModal from "./EventGuestModal";
+import HideGuestList from "./HideGuestList";
+import ExportCSVButton from "@/components/ExportCSVButton";
 
 interface EventAttendeesTabProps {
   event: EventType | undefined;
@@ -40,9 +42,11 @@ const EventAttendeesTab: React.FC<EventAttendeesTabProps> = ({
   return (
     <div className="w-full">
       {isAdmin && (
-        <div className="flex items-center justify-between gap-2 mb-2">
+        <div className="grid grid-cols-2 items-center justify-between gap-2 mb-2">
           <GuestAllowFriendToggle event={event} />
           <EventGuestModal event={event} setEvent={setEvent} />
+          <HideGuestList event={event} />
+          <ExportCSVButton event={event} />
         </div>
       )}
       <CollapsibleList
