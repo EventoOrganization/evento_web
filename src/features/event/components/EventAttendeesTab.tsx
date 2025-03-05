@@ -76,37 +76,43 @@ const EventAttendeesTab: React.FC<EventAttendeesTabProps> = ({
           <EventGuestModal event={event} setEvent={setEvent} />{" "}
         </div>
       )}
-      <CollapsibleList
-        title="Going"
-        count={event?.attendees?.length || 0}
-        users={event?.attendees || []}
-        event={event}
-        isAdmin={isAdmin}
-        isSelectEnable={isSelectEnable}
-        selectedIds={selectedIds}
-        setSelectedIds={setSelectedIds}
-      />
-      <CollapsibleList
-        isAdmin={isAdmin}
-        title="Invited"
-        count={invitedUsers?.length || 0}
-        users={invitedUsers || []}
-        event={event}
-        setEvent={setEvent}
-        isSelectEnable={isSelectEnable}
-        selectedIds={selectedIds}
-        setSelectedIds={setSelectedIds}
-      />
-      {isPrivate && (
-        <CollapsibleList
-          title="Refused"
-          count={event?.refused?.length || 0}
-          users={event?.refused || []}
-          isAdmin={isAdmin}
-          isSelectEnable={isSelectEnable}
-          selectedIds={selectedIds}
-          setSelectedIds={setSelectedIds}
-        />
+      {isAdmin || event?.showUsersLists ? (
+        <>
+          <CollapsibleList
+            title="Going"
+            count={event?.attendees?.length || 0}
+            users={event?.attendees || []}
+            event={event}
+            isAdmin={isAdmin}
+            isSelectEnable={isSelectEnable}
+            selectedIds={selectedIds}
+            setSelectedIds={setSelectedIds}
+          />
+          <CollapsibleList
+            isAdmin={isAdmin}
+            title="Invited"
+            count={invitedUsers?.length || 0}
+            users={invitedUsers || []}
+            event={event}
+            setEvent={setEvent}
+            isSelectEnable={isSelectEnable}
+            selectedIds={selectedIds}
+            setSelectedIds={setSelectedIds}
+          />
+          {isPrivate && (
+            <CollapsibleList
+              title="Refused"
+              count={event?.refused?.length || 0}
+              users={event?.refused || []}
+              isAdmin={isAdmin}
+              isSelectEnable={isSelectEnable}
+              selectedIds={selectedIds}
+              setSelectedIds={setSelectedIds}
+            />
+          )}
+        </>
+      ) : (
+        <p>Sorry the guest list is private</p>
       )}
       {isAdmin && (
         <>

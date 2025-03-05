@@ -14,47 +14,38 @@ type Props = {
 const HideGuestList = ({ event }: Props) => {
   const { token } = useSession();
   const { toast } = useToast();
-  const [isGuestAllowed, setIsGuestAllowed] = useState<boolean>(
-    event?.guestsAllowFriend || false,
+  const [isHideGuestlist, setIsHideGuestlist] = useState<boolean>(
+    event?.showUsersLists || false,
   );
   const eventId = event?._id;
   const handleToggle = async () => {
-    toast({
-      title: "Coming Soon",
-      description:
-        "This feature will allow hiding the guest list from regular users while keeping it visible to the host and co-host.",
-      variant: "evento",
-    });
-
-    return;
     try {
-      const newStatus = !isGuestAllowed;
       const response = await fetchData(
-        `/events/${eventId}/updateGuestsAllowFriend`,
+        `/events/updateEvent/${eventId}`,
         HttpMethod.PUT,
-        { guestsAllowFriend: newStatus },
+        { field: "showUsersLists", value: !isHideGuestlist },
         token,
       );
-
       if (response.ok) {
-        setIsGuestAllowed(newStatus);
+        setIsHideGuestlist(!isHideGuestlist);
         toast({
-          description: `Guests ${newStatus ? "allowed" : "denied"} successfully!`,
+          description: `Guestlist ${!isHideGuestlist ? "Show to all" : "Hidden"} successfully!`,
           className: "bg-evento-gradient text-white",
           duration: 3000,
         });
-      } else {
-        console.error("Error updating guestsAllowFriend:", response.error);
+      }
+      if (response.error) {
+        console.error("Error updating event:", response.error);
         toast({
-          description: "Error updating guestsAllowFriend",
+          description: response.error,
           variant: "destructive",
           duration: 3000,
         });
       }
     } catch (error) {
-      console.error("Error updating guestsAllowFriend:", error);
+      console.error("Error updating event:", error);
       toast({
-        description: "Error updating guestsAllowFriend",
+        description: "Error updating event",
         variant: "destructive",
         duration: 3000,
       });
@@ -65,7 +56,7 @@ const HideGuestList = ({ event }: Props) => {
     <div className="flex items-center gap-2">
       <Switch
         id="guestsAllowFriend"
-        checked={isGuestAllowed}
+        checked={isHideGuestlist}
         onCheckedChange={handleToggle}
       />
       <Label htmlFor="guestsAllowFriend" className="cursor-pointer">
