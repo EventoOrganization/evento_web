@@ -1,3 +1,4 @@
+import { XIcon } from "lucide-react";
 import React, { useState } from "react";
 
 type QuestionModalProps = {
@@ -28,6 +29,12 @@ const QuestionModal: React.FC<QuestionModalProps> = ({
       );
       return [...updatedAnswers, { questionId, answer }];
     });
+    if (
+      currentQuestion.type === "multiple-choice" &&
+      currentQuestionIndex < questions.length - 1
+    ) {
+      setCurrentQuestionIndex(currentQuestionIndex + 1);
+    }
   };
 
   const handleNext = () => {
@@ -72,7 +79,7 @@ const QuestionModal: React.FC<QuestionModalProps> = ({
       className="fixed inset-0 bg-gray-800 bg-opacity-75 flex justify-center items-center z-50"
       onClick={(e) => e.stopPropagation()}
     >
-      <div className="bg-white p-8 rounded shadow-lg w-full max-w-lg">
+      <div className="bg-white p-8 rounded shadow-lg w-full max-w-lg relative">
         <h2 className="text-2xl mb-4">Please answer the questions</h2>
 
         {/* Question Rendering */}
@@ -148,8 +155,19 @@ const QuestionModal: React.FC<QuestionModalProps> = ({
 
         {/* Navigation Buttons */}
         <div className="flex justify-between mt-4">
-          <button className="btn" onClick={() => onClose()}>
-            Close
+          <button
+            className="btn absolute top-4 right-4"
+            onClick={() => onClose()}
+          >
+            <XIcon />
+          </button>
+
+          <button
+            className="btn"
+            disabled={currentQuestionIndex === 0}
+            onClick={() => setCurrentQuestionIndex(currentQuestionIndex - 1)}
+          >
+            Back
           </button>
 
           {currentQuestionIndex < questions.length - 1 ? (

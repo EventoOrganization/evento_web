@@ -297,14 +297,12 @@ const DiscoverPageContent = () => {
                   className="pl-10 border-none py-2 rounded-lg w-full text-xs md:text-sm"
                 />
               </div>
-              {selectedTab === "Near me" && (
-                <div className="flex flex-col gap-2 md:p-4 py-0 pt-0 rounded bg-muted">
-                  <MyGoogleMapComponent
-                    location={location || { lat: 0, lng: 0 }}
-                    setLocation={setLocation}
-                  />
-                </div>
-              )}
+              <div className="flex flex-col gap-2 md:p-4 py-0 pt-0 rounded bg-muted">
+                <MyGoogleMapComponent
+                  location={location || { lat: 0, lng: 0 }}
+                  setLocation={setLocation}
+                />
+              </div>
               <div className="md:p-4  gap-4 ">
                 <div className="flex justify-between items-center ">
                   {showReset && (

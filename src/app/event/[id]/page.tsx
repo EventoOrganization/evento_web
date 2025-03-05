@@ -27,7 +27,7 @@ async function fetchEventData(eventId: string): Promise<EventType | null> {
 // Générer dynamiquement les métadonnées
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const event = await fetchEventData(params.id);
-
+  console.log("event", event);
   if (!event) {
     return {
       title: "Event ",
