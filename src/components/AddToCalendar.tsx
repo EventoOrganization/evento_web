@@ -10,7 +10,7 @@ type AddToCalendarProps = {
 
 const AddToCalendar: React.FC<AddToCalendarProps> = ({ event }) => {
   const details = event?.details;
-  const isPastEvent = new Date(details?.date || "") < new Date();
+  const isPastEvent = new Date(details?.endDate || "") < new Date();
 
   if (!details || !details.date || !details.endDate || !details.startTime) {
     console.warn("Missing event details:", details);

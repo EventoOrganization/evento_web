@@ -67,6 +67,19 @@ const EventDescriptionTab: React.FC<EventDescriptionTabProps> = ({
   return (
     <div className="flex flex-col h-full gap-2 w-full">
       <h2 className="text-xl font-bold">{event?.title}</h2>
+      <ul className="flex flex-wrap gap-2">
+        {event.interests &&
+          event.interests?.map((interest) => {
+            return (
+              <li
+                key={interest._id || interest.name}
+                className="bg-eventoPurpleLight/30 w-fit px-2 py-1 rounded-lg text-sm"
+              >
+                {interest.name}
+              </li>
+            );
+          })}
+      </ul>
       <div className="flex justify-between items-center text-sm">
         <AddressModal address={event?.details?.location} />
       </div>
@@ -84,6 +97,7 @@ const EventDescriptionTab: React.FC<EventDescriptionTabProps> = ({
         updateEventStatusLocally={updateEventStatusLocally}
         isLocal
       />
+      <AddToCalendar event={event} />
       <TruncatedText
         expand={
           event.announcements && event.announcements?.length > 0 ? false : true
@@ -235,20 +249,6 @@ const EventDescriptionTab: React.FC<EventDescriptionTabProps> = ({
           })}
         </div>
       )}
-
-      <ul className="flex flex-wrap gap-2">
-        {event.interests &&
-          event.interests?.map((interest) => {
-            return (
-              <li
-                key={interest._id || interest.name}
-                className="bg-eventoPurpleLight/30 w-fit px-2 py-1 rounded-lg text-sm"
-              >
-                {interest.name}
-              </li>
-            );
-          })}
-      </ul>
       <Link
         href={event?.details?.URLlink || ""}
         target="_blank"
@@ -258,7 +258,6 @@ const EventDescriptionTab: React.FC<EventDescriptionTabProps> = ({
           text={event?.details?.URLtitle || event?.details?.URLlink || ""}
         />
       </Link>
-      <AddToCalendar event={event} />
     </div>
   );
 };

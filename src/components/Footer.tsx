@@ -41,6 +41,12 @@ const Footer = () => {
         </li>
       </ul>
       <div className="grid grid-cols-1 md:flex gap-4 md:gap-10 text-center">
+        <Link
+          target="_blank"
+          href="https://enormous-curler-2a0.notion.site/Welcome-to-Evento-How-it-Works-Guide-1a8c972b8ab481a192a1c7018ab1527d"
+        >
+          Evento &#039;How-To&#039; Guide
+        </Link>
         <Link href="/faq">FAQs</Link>
         <Link href="/terms">Terms & Conditions</Link>
         <Link href="/privacy">Privacy Policy</Link>
