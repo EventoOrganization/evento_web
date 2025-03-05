@@ -145,7 +145,8 @@ const AddAnnouncement = ({
             </SelectItem>
           )}
           <SelectItem value="individuals">
-            Select Individuals ({selectedIds?.length})
+            Select Individuals{" "}
+            {(selectedIds?.length ?? 0 > 0) ? `(${selectedIds?.length})` : ""}
           </SelectItem>
         </SelectContent>
       </Select>

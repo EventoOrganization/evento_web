@@ -336,8 +336,10 @@ const EventIdTabs = ({ evento }: { evento?: EventType }) => {
               </div>
               {selectedTab === "Description" && (
                 <EventDescriptionTab
+                  isAdmin={accessControl.isAdmin}
                   event={event}
                   updateEventStatusLocally={updateEventStatusLocally}
+                  setEvent={setEvent}
                 />
               )}
 
