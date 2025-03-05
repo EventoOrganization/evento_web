@@ -26,10 +26,19 @@ const CSVImport = ({ onAddTempGuests }: CSVImportProps) => {
     Papa.parse(csvFile, {
       header: true,
       skipEmptyLines: true,
-      complete: (results: Papa.ParseResult<TempUserType>) => {
+      transformHeader: (header) => header.toLowerCase().trim(), // Normalise les en-têtes
+      complete: (results) => {
         const data = results.data as TempUserType[];
 
-        // Validate the data to ensure it has the correct fields
+        // Vérification si les colonnes sont bien présentes
+        if (
+          !results.meta.fields?.includes("email") ||
+          !results.meta.fields?.includes("username")
+        ) {
+          setError("CSV file must have 'email' and 'username' columns.");
+          return;
+        }
+
         const validGuests = data.filter(
           (guest) => guest.email && guest.username,
         );
@@ -58,9 +67,58 @@ const CSVImport = ({ onAddTempGuests }: CSVImportProps) => {
           onMouseLeave={() => setShowTooltip(false)}
         />
         {showTooltip && (
-          <span className="absolute bg-gray-800 text-white text-xs rounded py-1 px-2 -mt-10 ml-4">
-            Format: email, username
-          </span>
+          <div className="fixed top-16 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs rounded p-3 shadow-lg border border-gray-600 z-50 max-w-xs sm:max-w-sm w-[90%] overflow-auto max-h-60">
+            <p className="mb-2 text-sm font-semibold text-center">
+              CSV format required:
+            </p>
+            <table className="w-full border-collapse border border-gray-500 text-center text-xs">
+              <thead>
+                <tr className="bg-gray-700 text-white">
+                  <th className="border border-gray-500 px-2 py-1">email ✅</th>
+                  <th className="border border-gray-500 px-2 py-1">
+                    username ✅
+                  </th>
+                  <th className="border border-gray-500 px-2 py-1 text-gray-400">
+                    useless_column ❌
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td className="border border-gray-500 px-2 py-1">
+                    john@example.com
+                  </td>
+                  <td className="border border-gray-500 px-2 py-1">JohnDoe</td>
+                  <td className="border border-gray-500 px-2 py-1 text-gray-400">
+                    ignored_data
+                  </td>
+                </tr>
+                <tr>
+                  <td className="border border-gray-500 px-2 py-1">
+                    jane@example.com
+                  </td>
+                  <td className="border border-gray-500 px-2 py-1">JaneDoe</td>
+                  <td className="border border-gray-500 px-2 py-1 text-gray-400">
+                    ignored_data
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <p className="mt-2">
+              ✅ Only &quot;email&quot; and &quot;username&quot; will be
+              imported.
+            </p>
+            <p className="text-gray-300">
+              ❌ Other columns (e.g., &quot;useless_column&quot;) will be
+              ignored.
+            </p>
+            <p className="mt-1 font-semibold">
+              ℹ️ The position of the columns does not matter.
+            </p>
+            <p className="mt-1">
+              Make sure the first row contains the correct column names.
+            </p>
+          </div>
         )}
       </h4>
       <div className="flex gap-2 w-full">

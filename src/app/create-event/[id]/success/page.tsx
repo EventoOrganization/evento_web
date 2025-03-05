@@ -256,7 +256,7 @@ const EventSuccessPage = () => {
       </Section>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Section className="justify-start gap-2 pt-0 md:pt-10 items-start pb-0">
+        <Section className="justify-start gap-2 pt-0 md:py-10 items-start pb-0">
           <div
             className={cn(
               "flex flex-col  justify-between gap-2 items-center w-full",
