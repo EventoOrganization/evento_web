@@ -43,9 +43,10 @@ const EventDescriptionTab: React.FC<EventDescriptionTabProps> = ({
   const { users } = useUsersStore();
   const { user } = useSession();
   const isAdmin =
-    user?._id === event.user._id ||
-    user?._id ===
-      event.coHosts?.some((coHost) => coHost.userId?._id === user?._id);
+    user?._id === event.user._id || user
+      ? (event.coHosts?.some((coHost) => coHost.userId?._id === user._id) ??
+        false)
+      : false;
   const filteredAnnouncements =
     event.announcements &&
     event.announcements.filter((announcement) => {

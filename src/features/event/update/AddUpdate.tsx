@@ -33,7 +33,7 @@ const AddAnnouncement = ({
   setEvent,
 }: AddAnnouncementProps) => {
   const { toast } = useToast();
-  const { token } = useSession();
+  const { token, user } = useSession();
   const [isNotifying, setIsNotifying] = useState("");
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -74,7 +74,7 @@ const AddAnnouncement = ({
         `/events/${event?._id}/createAnnouncement`,
         HttpMethod.POST,
         {
-          userId: event?.user._id,
+          userId: user?._id,
           message,
           receivers,
         },
