@@ -76,7 +76,7 @@ const EventAttendeesTab: React.FC<EventAttendeesTabProps> = ({
           <EventGuestModal event={event} setEvent={setEvent} />{" "}
         </div>
       )}
-      {isAdmin || event?.showUsersLists ? (
+      {isAdmin || !event?.showUsersLists ? (
         <>
           <CollapsibleList
             title="Going"
