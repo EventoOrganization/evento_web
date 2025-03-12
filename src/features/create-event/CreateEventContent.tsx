@@ -3,6 +3,7 @@ import { handleDeleteMedia, handleUpload } from "@/app/create-event/action";
 import EventoLoader from "@/components/EventoLoader";
 import FileUploadButton from "@/components/FileUploadButton";
 import Section from "@/components/layout/Section";
+import SmartImage from "@/components/SmartImage";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -31,7 +32,6 @@ import { Check, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import CreateEventLimitedGuests from "../event/components/CreateEventLimitedGuests";
-import SmartImage from "@/components/SmartImage";
 
 const CreateEventContent = () => {
   const eventStore = useCreateEventStore();
@@ -575,6 +575,7 @@ const CreateEventContent = () => {
                             width={96}
                             height={96}
                             className="object-cover"
+                            forceImg
                           />
                         ) : (
                           <video

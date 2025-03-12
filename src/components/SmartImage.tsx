@@ -24,20 +24,29 @@ const SmartImage = ({
   forceImg = false,
   priority = false,
   fill = false,
-  loading = "lazy",
+  loading,
   style = {},
 }: Props) => {
   const [useFallback, setUseFallback] = useState(forceImg);
 
   useEffect(() => {
-    if (!useFallback) {
+    if (!useFallback && !forceImg) {
       fetch(src, { method: "HEAD" })
         .then((res) => {
           if (res.status === 402) {
-            setUseFallback(true); // 🔥 Si quota dépassé, fallback sur <img>
+            console.log(
+              "OPTIMIZED_IMAGE_REQUEST_PAYMENT_REQUIRED, Fallback",
+              src,
+            );
+            setUseFallback(true);
+          } else {
+            console.log("✅ Payment OK, keep Next.js Image", src);
           }
         })
-        .catch(() => setUseFallback(true));
+        .catch((error) => {
+          console.error("⚠️ Fetch error, but keeping Next.js Image:", error);
+        });
+      console.log("Payment ok render Next Image", src);
     }
   }, [src, useFallback]);
 
@@ -60,8 +69,8 @@ const SmartImage = ({
     <Image
       src={src}
       alt={alt}
-      width={width}
-      height={height}
+      {...(!fill && { width: width })}
+      {...(!fill && { height: height })}
       className={className}
       style={style}
       {...(priority && { priority: true })}

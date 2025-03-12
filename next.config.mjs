@@ -14,6 +14,16 @@ const nextConfig = {
         hostname: "github.com",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "www.evento-app.io",
+        pathname: "/**",
+      },
+      {
+        protocol: "http",
+        hostname: "localhost:3000",
+        pathname: "/**",
+      },
     ],
   },
 };
