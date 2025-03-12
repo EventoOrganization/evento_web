@@ -28,6 +28,7 @@ const SmartImage = ({
   style = {},
 }: Props) => {
   const [useFallback, setUseFallback] = useState(false);
+
   if (forceImg) {
     return (
       <img

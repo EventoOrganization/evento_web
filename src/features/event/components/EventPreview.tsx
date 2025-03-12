@@ -1,5 +1,6 @@
 "use client";
 import EventSettingButton from "@/components/EventSettingButton";
+import SmartImage from "@/components/SmartImage";
 import {
   Card,
   CardContent,
@@ -11,7 +12,6 @@ import { useEventStore } from "@/store/useEventsStore";
 import { EventType } from "@/types/EventType";
 import { renderDate } from "@/utils/dateUtils";
 import { BookmarkCheck, Circle, CircleCheckBig } from "lucide-react";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import EventModal from "./EventModal";
@@ -77,24 +77,24 @@ const EventPreview = ({
         </CardHeader>
         <CardContent className="w-full h-full p-0 rounded-t-xl overflow-hidden aspect-square ">
           {event?.initialMedia && event?.initialMedia[0]?.url ? (
-            <Image
+            <SmartImage
               src={event?.initialMedia[0].url}
               alt="Event Image"
               width={200}
               height={200}
               className="w-full object-cover aspect-square md:max-w-[204px] h-[204px]"
-              priority={title === "Upcoming Events" ? true : false}
               loading={title === "Upcoming Events" ? "eager" : "lazy"}
+              forceImg
             />
           ) : (
             <div className="w-full h-full bg-evento-gradient rounded">
-              <Image
+              <SmartImage
                 src="https://evento-media-bucket.s3.ap-southeast-2.amazonaws.com/evento-bg.jpg"
                 alt="Evento standard background"
                 height={500}
                 width={500}
                 className={cn("opacity-20 w-full h-full object-cover")}
-                priority
+                forceImg
               />
             </div>
           )}
