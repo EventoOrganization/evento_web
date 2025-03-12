@@ -60,7 +60,7 @@ const HideGuestList = ({ event }: Props) => {
         onCheckedChange={handleToggle}
       />
       <Label htmlFor="guestsAllowFriend" className="cursor-pointer">
-        Hide guestlist
+        {isHideGuestlist ? "🔒 Guestlist is Hidden" : "👀 Guestlist is Visible"}
       </Label>
     </div>
   );
