@@ -45,7 +45,7 @@ const Footer = () => {
           target="_blank"
           href="https://enormous-curler-2a0.notion.site/Welcome-to-Evento-How-it-Works-Guide-1a8c972b8ab481a192a1c7018ab1527d"
         >
-          Evento &#039;How-To&#039; Guide
+          How It Works: Guide
         </Link>
         <Link href="/faq">FAQs</Link>
         <Link href="/terms">Terms & Conditions</Link>
