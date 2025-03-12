@@ -29,7 +29,7 @@ const HideGuestList = ({ event }: Props) => {
       if (response.ok) {
         setIsHideGuestlist(!isHideGuestlist);
         toast({
-          description: `Guestlist ${!isHideGuestlist ? "Show to all" : "Hidden"} successfully!`,
+          description: `Guestlist ${!isHideGuestlist ? "is Hidden" : "is Visible"}!`,
           className: "bg-evento-gradient text-white",
           duration: 3000,
         });
