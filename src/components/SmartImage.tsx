@@ -8,7 +8,7 @@ type Props = {
   width?: number;
   height?: number;
   className?: string;
-  forceImg?: boolean;
+  forceImg?: boolean; // 👈 Intentionnel : on veut une <img>
   priority?: boolean;
   fill?: boolean;
   loading?: "lazy" | "eager";
@@ -27,12 +27,10 @@ const SmartImage = ({
   loading,
   style = {},
 }: Props) => {
-  const [useFallback, setUseFallback] = useState(forceImg);
+  const [useFallback, setUseFallback] = useState(false); // 👈 Indépendant de forceImg
 
-  if (useFallback || forceImg) {
-    if (useFallback) {
-      console.warn("⚠️ Affichage d'une <img> standard pour :", src);
-    }
+  // 🔹 Si `forceImg` est activé → on ne tente même pas d'afficher Next.js Image
+  if (forceImg) {
     return (
       /* eslint-disable-next-line @next/next/no-img-element */
       <img
@@ -47,6 +45,24 @@ const SmartImage = ({
     );
   }
 
+  // 🔹 Si `useFallback` est activé → on utilise une <img> car Next.js a échoué
+  if (useFallback) {
+    console.warn("⚠️ Fallback sur <img> après erreur :", src);
+    return (
+      /* eslint-disable-next-line @next/next/no-img-element */
+      <img
+        src={src}
+        alt={alt}
+        width={width}
+        height={height}
+        className={className}
+        style={style}
+        {...(loading && { loading })}
+      />
+    );
+  }
+
+  // 🔹 Sinon, on tente de charger avec Next.js Image
   return (
     <Image
       src={src}
@@ -59,7 +75,7 @@ const SmartImage = ({
       {...(fill && { fill: true })}
       {...(loading && { loading })}
       onError={() => {
-        console.error("❌ Next.js ne peut pas charger l'image :", src);
+        console.error("❌ Next.js Image échouée, fallback sur <img> :", src);
         setUseFallback(true);
       }}
     />
