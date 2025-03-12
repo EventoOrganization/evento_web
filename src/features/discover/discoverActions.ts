@@ -173,24 +173,6 @@ export const filterEvents = (
         ),
       ).length || 0;
 
-    console.log(`🔍 Comparaison entre ${a.title} et ${b.title}`);
-    console.log({
-      a: {
-        title: a.title,
-        isNearMe: isANearMe,
-        matchingInterests: aMatchingInterests,
-        friendsGoing: aFriendsGoing,
-        startDate: aStartDate,
-      },
-      b: {
-        title: b.title,
-        isNearMe: isBNearMe,
-        matchingInterests: bMatchingInterests,
-        friendsGoing: bFriendsGoing,
-        startDate: bStartDate,
-      },
-    });
-
     // 🔥 **1️⃣ Priorité aux événements "Near Me"**
     if (isANearMe && !isBNearMe) return -1;
     if (!isANearMe && isBNearMe) return 1;

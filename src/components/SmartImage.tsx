@@ -39,8 +39,6 @@ const SmartImage = ({
           } else if (!res.ok) {
             console.log("⚠️ Problème avec l'image, fallback sur <img>", src);
             setUseFallback(true);
-          } else {
-            console.log("✅ Image valide, utilisation de Next.js Image", src);
           }
         })
         .catch((error) => {
