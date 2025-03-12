@@ -30,7 +30,9 @@ const SmartImage = ({
   const [useFallback, setUseFallback] = useState(forceImg);
 
   if (useFallback || forceImg) {
-    console.warn("⚠️ Affichage d'une <img> standard pour :", src);
+    if (useFallback) {
+      console.warn("⚠️ Affichage d'une <img> standard pour :", src);
+    }
     return (
       /* eslint-disable-next-line @next/next/no-img-element */
       <img
