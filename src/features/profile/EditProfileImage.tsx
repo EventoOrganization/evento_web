@@ -95,6 +95,7 @@ const EditProfileImage = ({
             width={500}
             height={500}
             className="w-20 h-20 md:w-36 md:h-36 object-cover rounded-full"
+            forceImg
           />
         ) : imageSrc ? (
           <SmartImage
@@ -103,6 +104,7 @@ const EditProfileImage = ({
             width={500}
             height={500}
             className="w-20 h-20 md:w-36 md:h-36 object-cover rounded-full"
+            forceImg
           />
         ) : (
           <div className="rounded-full w-20 h-20 md:w-24 md:h-24 bg-gray-100 flex justify-center items-center hover:scale-105 hover:opacity-80 transition-transform duration-200 ease-in-out">

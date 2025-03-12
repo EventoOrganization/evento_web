@@ -34,23 +34,23 @@ const SmartImage = ({
       fetch(src, { method: "HEAD" })
         .then((res) => {
           if (res.status === 402) {
-            console.log(
-              "OPTIMIZED_IMAGE_REQUEST_PAYMENT_REQUIRED, Fallback",
-              src,
-            );
+            console.log("❌ Quota dépassé, fallback sur <img>", src);
+            setUseFallback(true);
+          } else if (!res.ok) {
+            console.log("⚠️ Problème avec l'image, fallback sur <img>", src);
             setUseFallback(true);
           } else {
-            console.log("✅ Payment OK, keep Next.js Image", src);
+            console.log("✅ Image valide, utilisation de Next.js Image", src);
           }
         })
         .catch((error) => {
-          console.error("⚠️ Fetch error, but keeping Next.js Image:", error);
+          console.error("⚠️ Fetch error, fallback sur <img>:", error);
+          setUseFallback(true);
         });
-      console.log("Payment ok render Next Image", src);
     }
   }, [src, useFallback]);
 
-  if (useFallback) {
+  if (useFallback || forceImg) {
     return (
       /* eslint-disable-next-line @next/next/no-img-element */
       <img

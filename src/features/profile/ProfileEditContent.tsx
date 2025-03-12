@@ -198,12 +198,31 @@ const ProfileEditContent = () => {
     }
 
     // add ProfileImage
-    if (croppedProfileImage) {
-      const response = await fetch(croppedProfileImage);
-      const blob = await response.blob();
-      const file = new File([blob], "profile.jpg", { type: "image/jpeg" });
-      dataToSend.append("profileImage", file);
+    console.log("📸 Image à uploader :", croppedProfileImage);
+
+    if (
+      croppedProfileImage &&
+      !croppedProfileImage.startsWith("data:") && // 🔥 Ignore les Data URLs
+      !croppedProfileImage.startsWith("blob:") && // 🔥 Ignore les Blob URLs
+      croppedProfileImage.startsWith("http") // ✅ Vérifie si c'est une URL distante
+    ) {
+      try {
+        const response = await fetch(croppedProfileImage);
+        if (!response.ok) throw new Error("Failed to fetch image");
+
+        const blob = await response.blob();
+        const file = new File([blob], "profile.jpg", { type: "image/jpeg" });
+        dataToSend.append("profileImage", file);
+      } catch (error) {
+        console.error("❌ Erreur lors du téléchargement de l'image :", error);
+      }
+    } else {
+      console.warn(
+        "⚠️ Image inchangée ou format invalide, pas d'upload :",
+        croppedProfileImage,
+      );
     }
+
     // Add interests
     if (formData.interests.length > 0) {
       const interestIds = formData.interests.map(

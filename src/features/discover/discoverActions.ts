@@ -1,3 +1,4 @@
+import { useProfileStore } from "@/store/useProfileStore";
 import { EventType, InterestType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
 interface Location {
@@ -32,6 +33,7 @@ export const filterEvents = (
   location: Location | null,
   startDate: Date | null,
   endDate: Date | null,
+  users: UserType[],
 ): EventType[] => {
   console.log("FILTERING EVENTS");
   const getUTCDate = (date: Date) => {
@@ -120,50 +122,88 @@ export const filterEvents = (
     );
   });
 
-  // Tri des événements
   const sortedEvents = filteredEvents.sort((a, b) => {
     const aStartDate = getUTCDate(new Date(a.details?.date ?? "")).getTime();
     const bStartDate = getUTCDate(new Date(b.details?.date ?? "")).getTime();
 
-    const isAStartingToday = aStartDate === today.getTime();
-    const isBStartingToday = bStartDate === today.getTime();
-    const isAStartingTomorrow = aStartDate === tomorrow.getTime();
-    const isBStartingTomorrow = bStartDate === tomorrow.getTime();
-    const isAStartingAfterTomorrow = aStartDate === afterTomorrow.getTime();
-    const isBStartingAfterTomorrow = bStartDate === afterTomorrow.getTime();
-    const isAStartingThisWeek =
-      aStartDate > afterTomorrow.getTime() && aStartDate <= nextWeek.getTime();
-    const isBStartingThisWeek =
-      bStartDate > afterTomorrow.getTime() && bStartDate <= nextWeek.getTime();
+    const friends = users.filter(
+      (user) => user.isIFollowingHim && user.isFollowingMe,
+    );
+    const profileInterests = useProfileStore.getState().userInfo?.interests;
+    // **1️⃣ Vérifie si les événements sont "Near Me"**
+    const isANearMe =
+      location &&
+      getDistanceFromLatLonInKm(
+        location.lat,
+        location.lng,
+        a.details?.loc?.coordinates[1] || 0,
+        a.details?.loc?.coordinates[0] || 0,
+      ) < 10;
 
-    const isAActiveToday =
-      new Date(a.details?.date ?? "").getTime() < today.getTime() &&
-      new Date(a.details?.endDate ?? "").getTime() >= today.getTime();
-    const isBActiveToday =
-      new Date(b.details?.date ?? "").getTime() < today.getTime() &&
-      new Date(b.details?.endDate ?? "").getTime() >= today.getTime();
+    const isBNearMe =
+      location &&
+      getDistanceFromLatLonInKm(
+        location.lat,
+        location.lng,
+        b.details?.loc?.coordinates[1] || 0,
+        b.details?.loc?.coordinates[0] || 0,
+      ) < 10;
 
-    // **1️⃣ Priorité aux événements qui COMMENCENT et SE TERMINENT aujourd'hui**
-    if (isAStartingToday && !isBStartingToday) return -1;
-    if (!isAStartingToday && isBStartingToday) return 1;
+    // **2️⃣ Vérifie si des amis participent**
+    const aFriendsGoing = a.attendees?.some((attendee) =>
+      friends.some((friend) => friend._id === attendee._id),
+    );
 
-    // **2️⃣ Ensuite ceux qui commencent demain**
-    if (isAStartingTomorrow && !isBStartingTomorrow) return -1;
-    if (!isAStartingTomorrow && isBStartingTomorrow) return 1;
+    const bFriendsGoing = b.attendees?.some((attendee) =>
+      friends.some((friend) => friend._id === attendee._id),
+    );
 
-    // **3️⃣ Ensuite ceux qui commencent après-demain**
-    if (isAStartingAfterTomorrow && !isBStartingAfterTomorrow) return -1;
-    if (!isAStartingAfterTomorrow && isBStartingAfterTomorrow) return 1;
+    // **3️⃣ Vérifie les intérêts communs**
+    const aMatchingInterests =
+      a.interests?.filter((interest) =>
+        profileInterests?.some(
+          (profileInterest) => profileInterest._id === interest._id,
+        ),
+      ).length || 0;
 
-    // **4️⃣ Ensuite ceux qui commencent cette semaine**
-    if (isAStartingThisWeek && !isBStartingThisWeek) return -1;
-    if (!isAStartingThisWeek && isBStartingThisWeek) return 1;
+    const bMatchingInterests =
+      b.interests?.filter((interest) =>
+        profileInterests?.some(
+          (profileInterest) => profileInterest._id === interest._id,
+        ),
+      ).length || 0;
 
-    // **5️⃣ Ensuite les événements "actifs" (qui ont commencé mais pas encore terminés)**
-    if (isAActiveToday && !isBActiveToday) return -1;
-    if (!isAActiveToday && isBActiveToday) return 1;
+    console.log(`🔍 Comparaison entre ${a.title} et ${b.title}`);
+    console.log({
+      a: {
+        title: a.title,
+        isNearMe: isANearMe,
+        matchingInterests: aMatchingInterests,
+        friendsGoing: aFriendsGoing,
+        startDate: aStartDate,
+      },
+      b: {
+        title: b.title,
+        isNearMe: isBNearMe,
+        matchingInterests: bMatchingInterests,
+        friendsGoing: bFriendsGoing,
+        startDate: bStartDate,
+      },
+    });
 
-    // **6️⃣ Enfin, trier par date de début croissante**
+    // 🔥 **1️⃣ Priorité aux événements "Near Me"**
+    if (isANearMe && !isBNearMe) return -1;
+    if (!isANearMe && isBNearMe) return 1;
+
+    // 🔥 **2️⃣ Priorité aux événements avec des intérêts communs**
+    if (aMatchingInterests > bMatchingInterests) return -1;
+    if (aMatchingInterests < bMatchingInterests) return 1;
+
+    // 🔥 **3️⃣ Priorité aux événements avec des amis participants**
+    if (aFriendsGoing && !bFriendsGoing) return -1;
+    if (!aFriendsGoing && bFriendsGoing) return 1;
+
+    // 🔥 **4️⃣ Finalement, tri par date croissante**
     return aStartDate - bStartDate;
   });
 

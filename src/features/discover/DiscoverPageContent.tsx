@@ -90,6 +90,7 @@ const DiscoverPageContent = () => {
     location,
     startDate,
     endDate,
+    users,
   );
   const handleEventClick = (event: EventType) => {
     const storedEvent = events.find((ev) => ev._id === event._id);
