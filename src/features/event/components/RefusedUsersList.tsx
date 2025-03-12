@@ -1,6 +1,6 @@
+import SmartImage from "@/components/SmartImage";
 import { cn } from "@/lib/utils";
 import { ChevronDownIcon } from "lucide-react";
-import Image from "next/image";
 import { useState } from "react";
 
 const RefusedUsersList = ({
@@ -34,12 +34,13 @@ const RefusedUsersList = ({
           {refused.map((user) => (
             <div key={user._id} className="p-4 border rounded-md">
               <div className="flex items-center mb-4">
-                <Image
+                <SmartImage
                   src={user.userId.profileImage || ""}
                   alt={user.userId.username}
                   width={30}
                   height={30}
                   className="w-10 h-10 rounded-full mr-4"
+                  forceImg
                 />
                 <h3 className="font-bold">{user.userId.username}</h3>
               </div>

@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useRef, useState } from "react";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
+import SmartImage from "./SmartImage";
 
 const RenderMedia = ({ event }: { event: EventType }) => {
   const [isSwiping, setIsSwiping] = useState(false);
@@ -79,7 +80,7 @@ const RenderMedia = ({ event }: { event: EventType }) => {
         </Carousel>
       ) : (
         <div className="w-full bg-evento-gradient rounded">
-          <Image
+          <SmartImage
             src="https://evento-media-bucket.s3.ap-southeast-2.amazonaws.com/evento-bg.jpg"
             alt="Evento standard background"
             height={500}

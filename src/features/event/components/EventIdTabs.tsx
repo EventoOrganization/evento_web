@@ -3,6 +3,7 @@ import EventoLoader from "@/components/EventoLoader";
 import Section from "@/components/layout/Section";
 import RenderMedia from "@/components/RenderMedia";
 import RequestModal from "@/components/RequestModal";
+import SmartImage from "@/components/SmartImage";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Tooltip,
@@ -22,7 +23,6 @@ import { EventType } from "@/types/EventType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { createUpdateEventField } from "@/utils/updateEventHelper";
 import { Pencil } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -254,12 +254,13 @@ const EventIdTabs = ({ evento }: { evento?: EventType }) => {
                   href={`/profile/${event?.user?._id}`}
                 >
                   {event?.user?.profileImage ? (
-                    <Image
+                    <SmartImage
                       src={event?.user.profileImage}
                       alt="user image"
                       width={30}
                       height={30}
                       className="w-10 h-10 rounded-full"
+                      forceImg
                     />
                   ) : (
                     <Avatar>

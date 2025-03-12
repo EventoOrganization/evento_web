@@ -11,9 +11,9 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import Image from "next/image";
 import { useEffect, useState } from "react";
 import { handleFieldChange } from "../eventActions";
+import SmartImage from "@/components/SmartImage";
 
 const MediaSelectionModal = ({
   isOpen,
@@ -156,7 +156,7 @@ const MediaSelectionModal = ({
                         muted
                       />
                     ) : (
-                      <Image
+                      <SmartImage
                         src={media}
                         alt={`Predefined media ${index + 1}`}
                         width={100}
@@ -192,7 +192,7 @@ const MediaSelectionModal = ({
                         muted
                       />
                     ) : (
-                      <Image
+                      <SmartImage
                         src={preview.url}
                         alt={`Preview media ${index + 1}`}
                         width={100}

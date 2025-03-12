@@ -2,6 +2,7 @@
 import { handleDeleteMedia, handleUpload } from "@/app/create-event/action";
 import EventoLoader from "@/components/EventoLoader";
 import FileUploadButton from "@/components/FileUploadButton";
+import SmartImage from "@/components/SmartImage";
 import { useSession } from "@/contexts/SessionProvider";
 import { useToast } from "@/hooks/use-toast";
 import { MediaItem, useCreateEventStore } from "@/store/useCreateEventStore";
@@ -9,7 +10,6 @@ import { useEventStore } from "@/store/useEventsStore";
 import { EventType } from "@/types/EventType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { Trash } from "lucide-react";
-import Image from "next/image";
 import { useState } from "react";
 const EditEventMedia = ({
   event,
@@ -148,7 +148,7 @@ const EditEventMedia = ({
           >
             {/* Afficher l'image ou la vidéo selon le type */}
             {media.type === "image" ? (
-              <Image
+              <SmartImage
                 src={media.url}
                 alt={`Media ${index}`}
                 width={96}
@@ -175,7 +175,7 @@ const EditEventMedia = ({
             className="cursor-pointer relative  overflow-hidden aspect-square border rounded-md flex-shrink-0 ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 hover:ring-2 hover:ring-ring"
           >
             {media.type === "image" ? (
-              <Image
+              <SmartImage
                 src={media.url}
                 alt={`Media ${index}`}
                 width={96}

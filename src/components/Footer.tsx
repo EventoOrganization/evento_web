@@ -1,16 +1,17 @@
-import Image from "next/image";
 import Link from "next/link";
+import SmartImage from "./SmartImage";
 const Footer = () => {
   return (
     <footer className=" w-full flex flex-col justify-center items-center min-h-40 pt-10 pb-20 gap-10 border-t-2 max-w-2xl">
       <ul className="flex flex-wrap justify-center gap-6 w-full max-w-96">
         <li>
           <Link href={"https://www.instagram.com/eventoapp.io/"}>
-            <Image
+            <SmartImage
               src={"/Instagram_logo_2022.png"}
               alt="Instagram_logo_2022"
               width={50}
               height={50}
+              forceImg
             />
           </Link>
         </li>
@@ -20,22 +21,24 @@ const Footer = () => {
               "https://open.spotify.com/user/31msifekspkjzjhhedzyywi7nicy?si=8a85e82182bd4d9b"
             }
           >
-            <Image
+            <SmartImage
               src={"/spotify.png"}
               alt="spotify_logo"
               width={50}
               height={50}
               className="rounded-lg"
+              forceImg
             />
           </Link>
         </li>
         <li>
           <Link href={"https://www.tiktok.com/@eventoapp.io"}>
-            <Image
+            <SmartImage
               src={"/tiktok-logo.webp"}
               alt="tiktok_logo"
               width={50}
               height={50}
+              forceImg
             />
           </Link>
         </li>
@@ -52,13 +55,13 @@ const Footer = () => {
         <Link href="/privacy">Privacy Policy</Link>
         <Link href={"mailto:help@evento-app.io"}>Contact Us</Link>
       </div>
-      <Image
+      <SmartImage
         src="/evento-logo.png"
         alt="logo"
         width={60}
         height={60}
         className="object-contain"
-        priority
+        forceImg
       />
     </footer>
   );

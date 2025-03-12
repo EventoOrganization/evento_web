@@ -1,5 +1,6 @@
 "use client";
 
+import SmartImage from "@/components/SmartImage";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,7 +10,6 @@ import { toast } from "@/hooks/use-toast";
 import { useUsersStore } from "@/store/useUsersStore";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { ArrowLeftIcon } from "lucide-react";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { startPrivateChat } from "./chatsActions";
@@ -179,7 +179,7 @@ const ConversationList = ({
               <div className="flex items-center space-x-4">
                 <div className="relative w-10 h-10">
                   {conversation.initialMedia?.[0]?.url ? (
-                    <Image
+                    <SmartImage
                       src={conversation.initialMedia?.[0]?.url || ""}
                       alt={conversation.title}
                       width={40}
@@ -232,11 +232,12 @@ const ConversationList = ({
             >
               <div className="relative w-12 h-12 mr-4">
                 {user.profileImage ? (
-                  <Image
+                  <SmartImage
                     src={user.profileImage || "/evento-logo.png"}
                     alt={user.username}
                     fill
                     className="rounded-full"
+                    forceImg
                   />
                 ) : (
                   <Avatar className="w-10 h-10 rounded-full">

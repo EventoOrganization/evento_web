@@ -4,9 +4,9 @@ import { useToast } from "@/hooks/use-toast";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { cn } from "@nextui-org/theme";
 import { ChevronDown, ChevronUp } from "lucide-react";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useRef, useState } from "react";
+import SmartImage from "./SmartImage";
 import { Button } from "./ui/button";
 
 const ChatbotComponent = ({ className }: { className?: string }) => {
@@ -87,7 +87,7 @@ const ChatbotComponent = ({ className }: { className?: string }) => {
         onClick={() => setIsOpen(!isOpen)}
       >
         <div className="flex items-center w-full justify-between">
-          <Image
+          <SmartImage
             src="/chatbot-icon.png"
             alt="Chatbot Icon"
             className={cn(
@@ -96,6 +96,7 @@ const ChatbotComponent = ({ className }: { className?: string }) => {
             )}
             width={80}
             height={80}
+            forceImg
           />
 
           {isOpen ? (

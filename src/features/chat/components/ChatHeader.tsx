@@ -1,9 +1,9 @@
 // features/chat/components/ChatHeader.tsx
 "use client";
 
+import SmartImage from "@/components/SmartImage";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useSocket } from "@/contexts/SocketProvider";
-import Image from "next/image";
 import { useEffect, useState } from "react";
 const ChatHeader = () => {
   const { activeConversation } = useSocket();
@@ -24,7 +24,7 @@ const ChatHeader = () => {
         <>
           <div className={`relative w-10 h-10 mr-3 ${animationClass}`}>
             {activeConversation?.initialMedia[0]?.url ? (
-              <Image
+              <SmartImage
                 src={activeConversation?.initialMedia[0]?.url || ""}
                 alt={activeConversation?.title || ""}
                 fill

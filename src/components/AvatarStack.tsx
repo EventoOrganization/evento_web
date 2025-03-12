@@ -3,8 +3,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useUsersStore } from "@/store/useUsersStore";
 import { EventType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
-import Image from "next/image";
 import { useEffect, useState } from "react";
+import SmartImage from "./SmartImage";
 const AvatarStack = ({ event }: { event: EventType }) => {
   const [friends, setFriends] = useState<UserType[]>([]);
   const { users } = useUsersStore();
@@ -27,13 +27,14 @@ const AvatarStack = ({ event }: { event: EventType }) => {
         {friends.slice(0, 3).map((friend, index) => (
           <div key={index} className="">
             {friend.profileImage ? (
-              <Image
+              <SmartImage
                 key={index}
                 src={friend.profileImage || ""}
                 alt={friend.username}
                 width={32}
                 height={32}
                 className="inline-block h-8 w-8 rounded-full ring-2 ring-white"
+                forceImg
               />
             ) : (
               <Avatar

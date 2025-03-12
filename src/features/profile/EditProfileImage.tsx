@@ -1,3 +1,4 @@
+import SmartImage from "@/components/SmartImage";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -10,7 +11,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { UserType } from "@/types/UserType";
 import { getCroppedImg } from "@/utils/imageHelpers"; // Assurez-vous que cette fonction retourne une Data URL
-import Image from "next/image";
 import { useState } from "react";
 import Cropper, { Area } from "react-easy-crop";
 
@@ -89,7 +89,7 @@ const EditProfileImage = ({
         className="cursor-pointer w-fit"
       >
         {userInfo?.profileImage ? (
-          <Image
+          <SmartImage
             src={imageSrc || userInfo?.profileImage}
             alt="user image"
             width={500}
@@ -97,7 +97,7 @@ const EditProfileImage = ({
             className="w-20 h-20 md:w-36 md:h-36 object-cover rounded-full"
           />
         ) : imageSrc ? (
-          <Image
+          <SmartImage
             src={imageSrc}
             alt="user image"
             width={500}

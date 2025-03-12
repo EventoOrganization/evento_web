@@ -1,7 +1,5 @@
+import SmartImage from "@/components/SmartImage";
 import { Button } from "@/components/ui/button";
-// import { useSession } from "@/contexts/SessionProvider";
-// import { useToast } from "@/hooks/use-toast";
-import Image from "next/image";
 import { useState } from "react";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
@@ -67,7 +65,7 @@ const PastEventModal = ({
               className="flex justify-center items-center h-[95.5vh] "
             >
               {item.type === "image" ? (
-                <Image
+                <SmartImage
                   src={item.url}
                   alt={`Media ${index + 1}`}
                   width={1000}

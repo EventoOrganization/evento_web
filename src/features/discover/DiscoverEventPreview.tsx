@@ -2,6 +2,7 @@
 import AvatarStack from "@/components/AvatarStack";
 import MapPinIcon2 from "@/components/icons/MappPinIcon2";
 import RenderMedia from "@/components/RenderMedia";
+import SmartImage from "@/components/SmartImage";
 import TruncatedText from "@/components/TruncatedText";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -10,7 +11,6 @@ import { cn } from "@/lib/utils";
 import { useEventStore } from "@/store/useEventsStore";
 import { EventType } from "@/types/EventType";
 import { renderDate } from "@/utils/dateUtils";
-import Image from "next/image";
 import Link from "next/link";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import EventLimit from "../event/EventLimit";
@@ -40,12 +40,13 @@ const DiscoverEventPreview = ({
           <div className="flex items-center justify-between  mb-4">
             <div className="flex items-center gap-2">
               {event?.user?.profileImage ? (
-                <Image
+                <SmartImage
                   src={event?.user.profileImage}
                   alt="user image"
                   width={30}
                   height={30}
                   className="w-10 h-10 rounded-full"
+                  forceImg
                 />
               ) : (
                 <Avatar>

@@ -3,12 +3,12 @@ import AddressModal from "@/components/AddressModal";
 import AddToCalendar from "@/components/AddToCalendar";
 import AvatarStack from "@/components/AvatarStack";
 import EventoLoader from "@/components/EventoLoader";
+import SmartImage from "@/components/SmartImage";
 import TruncatedText from "@/components/TruncatedText";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 import { renderDate } from "@/utils/dateUtils";
 import dynamic from "next/dynamic";
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
@@ -45,14 +45,14 @@ const Event = ({
               className="flex  items-center gap-2"
             >
               {event?.user?.profileImage ? (
-                <Image
+                <SmartImage
                   src={event?.user.profileImage}
                   alt="user image"
                   width={30}
                   height={30}
                   className="w-8 h-8 min-w-8  rounded-full"
                   loading={index === 0 ? "eager" : "lazy"}
-                  priority={index === 0}
+                  forceImg
                 />
               ) : (
                 <Avatar>

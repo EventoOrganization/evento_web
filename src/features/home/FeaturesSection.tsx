@@ -1,5 +1,5 @@
+import SmartImage from "@/components/SmartImage";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import Image from "next/image";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick-theme.css";
@@ -53,7 +53,7 @@ const FeaturesSection = () => {
             >
               <div className="rounded-lg border bg-card text-card-foreground shadow-lg overflow-hidden flex flex-col h-full">
                 <div className="p-0 w-full flex justify-center items-center">
-                  <Image
+                  <SmartImage
                     src={feature.image}
                     alt={feature.title}
                     width={280}
@@ -76,7 +76,7 @@ const FeaturesSection = () => {
         {features.map((feature, index) => (
           <Card key={index} className="space-y-4">
             <CardHeader className="p-0">
-              <Image
+              <SmartImage
                 src={feature.image}
                 alt={feature.title}
                 width={1045}

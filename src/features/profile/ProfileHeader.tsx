@@ -1,6 +1,7 @@
 import LinkedinIcon from "@/components/icons/LinkedinIcon";
 import TiktokIcon from "@/components/icons/TiktokIcon";
 import Section from "@/components/layout/Section";
+import SmartImage from "@/components/SmartImage";
 import { Button } from "@/components/ui/button";
 import UserListModal from "@/components/UserListModal";
 import { useSession } from "@/contexts/SessionProvider";
@@ -9,7 +10,6 @@ import { useUsersStore } from "@/store/useUsersStore";
 import { InterestType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
 import { Pencil, Settings, UserRoundPlus } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -26,12 +26,13 @@ const platformIcons: Record<string, JSX.Element> = {
   linkedin: <LinkedinIcon />,
   tiktok: <TiktokIcon />,
   instagram: (
-    <Image
+    <SmartImage
       src={"/Instagram_logo_2022.png"}
       alt="Instagram_logo_2022"
       width={40}
       height={40}
       className="w-full h-full"
+      forceImg
     />
   ),
 };
@@ -94,13 +95,13 @@ const ProfileHeader = ({ profile, totalEvents }: Props) => {
       <Section className="text-sm gap-2 border-b-2 py-6 max-w-2xl">
         <div className="flex justify-between w-full items-center">
           <figure>
-            <Image
+            <SmartImage
               src={profile?.profileImage || "/evento-logo.png"}
               alt="user profile image"
               width={500}
               height={500}
               className="w-24 h-24 md:w-36 md:h-36 object-cover rounded-full"
-              priority
+              forceImg
             />
           </figure>
           <div className="flex flex-col justify-end">

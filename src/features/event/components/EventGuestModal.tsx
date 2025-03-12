@@ -1,3 +1,4 @@
+import SmartImage from "@/components/SmartImage";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,7 +17,6 @@ import { EventType } from "@/types/EventType";
 import { TempUserType, UserType } from "@/types/UserType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { sortUsersByPriority } from "@/utils/sortUsersByPriority";
-import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import CSVImport from "./CSVImport";
@@ -195,12 +195,13 @@ const EventGuestModal: React.FC<EventGuestModalProps> = ({
                     onClick={() => addUser(user)}
                   >
                     {user.profileImage ? (
-                      <Image
+                      <SmartImage
                         src={user.profileImage}
                         alt="user image"
                         width={50}
                         height={50}
                         className="w-12 h-12 rounded-full"
+                        forceImg
                       />
                     ) : (
                       <Avatar className="w-12 h-12 rounded-full">
@@ -240,12 +241,13 @@ const EventGuestModal: React.FC<EventGuestModalProps> = ({
                 >
                   <div className="flex items-center space-x-4">
                     {user.profileImage ? (
-                      <Image
+                      <SmartImage
                         src={user.profileImage}
                         alt="user image"
                         width={50}
                         height={50}
                         className="w-12 h-12 rounded-full"
+                        forceImg
                       />
                     ) : (
                       <Avatar className="w-12 h-12 rounded-full">

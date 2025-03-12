@@ -14,9 +14,9 @@ import { useToast } from "@/hooks/use-toast";
 import { useProfileStore } from "@/store/useProfileStore";
 import { useUsersStore } from "@/store/useUsersStore";
 import { UserType } from "@/types/UserType";
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import SmartImage from "./SmartImage";
 interface UserListModalProps {
   isOpen: boolean;
   closeModal: () => void;
@@ -121,12 +121,13 @@ const UserListModal = ({
                       className="flex items-center gap-4"
                     >
                       {user?.profileImage ? (
-                        <Image
+                        <SmartImage
                           src={user?.profileImage}
                           alt="user image"
-                          width={500}
-                          height={500}
+                          width={40}
+                          height={40}
                           className="w-8 h-8 md:w-10 md:h-10 rounded-full"
+                          forceImg
                         />
                       ) : (
                         <div className="flex flex-col">

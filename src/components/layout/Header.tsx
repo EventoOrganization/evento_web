@@ -2,9 +2,9 @@
 import { useSession } from "@/contexts/SessionProvider";
 import useOnScroll from "@/hooks/useOnScroll";
 import { cn } from "@/lib/utils";
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import SmartImage from "../SmartImage";
 import { Button } from "../ui/button";
 const Header = () => {
   const { user } = useSession();
@@ -23,13 +23,12 @@ const Header = () => {
       <div className="mx-auto w-full max-w-screen-lg h-fit flex justify-between items-center">
         <div className="flex flex-wrap items-center justify-between">
           <Link href="/" className="flex items-center">
-            <Image
+            <SmartImage
               src="/logo.png"
               alt="logo"
               width={45}
               height={45}
-              priority
-              style={{ width: "auto", height: "auto" }}
+              forceImg
             />
             <h2 className="flex items-center text-xl font-semibold my-0">
               EVENTO

@@ -1,8 +1,8 @@
 "use client";
+import SmartImage from "@/components/SmartImage";
 import { BackgroundGradientAnimation } from "@/components/ui/background-gradient-animation";
 import { Button } from "@/components/ui/button";
 import { useSession } from "@/contexts/SessionProvider";
-import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import AuthModal from "../auth/components/AuthModal";
@@ -13,13 +13,13 @@ const Hero = () => {
     <BackgroundGradientAnimation className=" ">
       <div className="absolute z-10 inset-0 flex flex-col items-center justify-center text-white font-bold px-4  text-3xl md:text-4xl lg:text-7xl">
         <div className="p-4 w-full flex justify-between absolute top-0 items-center">
-          <Image
+          <SmartImage
             src="/icon.png"
             alt="logo"
             width={50}
             height={50}
             className="object-contain"
-            priority
+            forceImg
           />
           <div className="flex gap-4">
             <Button variant={"eventoSecondary"} asChild>
@@ -37,12 +37,13 @@ const Hero = () => {
                 href={"/profile"}
                 className="text-sm flex items-center gap-2"
               >
-                <Image
+                <SmartImage
                   src={`${user?.profileImage}`}
                   width={30}
                   height={30}
                   alt={`${user?.username} profile image`}
                   className="rounded-full object-cover h-6 w-6"
+                  forceImg
                 />
                 {user?.username}
               </Link>

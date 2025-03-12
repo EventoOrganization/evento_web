@@ -1,7 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { UserType } from "@/types/UserType";
-import Image from "next/image";
 import { useState } from "react";
+import SmartImage from "./SmartImage";
 
 const Dropdown = ({ title, users }: { title: string; users: UserType[] }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -23,12 +23,13 @@ const Dropdown = ({ title, users }: { title: string; users: UserType[] }) => {
               className="flex items-center px-4 py-2 hover:bg-gray-100"
             >
               {user.profileImage ? (
-                <Image
+                <SmartImage
                   src={user.profileImage}
                   width={30}
                   height={30}
                   alt={user.username}
                   className="w-10 h-10 rounded-full mr-3"
+                  forceImg
                 />
               ) : (
                 <Avatar>

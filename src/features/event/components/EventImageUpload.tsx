@@ -1,3 +1,4 @@
+import SmartImage from "@/components/SmartImage";
 import {
   FormControl,
   FormField,
@@ -7,7 +8,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { useCreateEventStore } from "@/store/useCreateEventStore";
 import { Camera } from "lucide-react";
-import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useFormContext } from "react-hook-form";
 
@@ -57,7 +57,7 @@ const EventImageUpload = () => {
           <div className="image-preview-container mt-4 grid grid-cols-3 gap-2 max-w-96">
             {imagePreviews.map((src, index) => (
               <div key={index} className="relative w-24 h-24">
-                <Image
+                <SmartImage
                   src={src}
                   alt={`Image preview ${index}`}
                   fill

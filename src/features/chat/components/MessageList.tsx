@@ -1,8 +1,8 @@
+import SmartImage from "@/components/SmartImage";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useSession } from "@/contexts/SessionProvider";
 import { useSocket } from "@/contexts/SocketProvider";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
-import Image from "next/image";
 import { useEffect, useRef } from "react";
 
 interface Message {
@@ -66,12 +66,13 @@ const MessageList = ({ messages, currentUserId }: MessageListProps) => {
             {msg.senderId._id !== currentUserId && (
               <div className="w-8 h-8 mr-2">
                 {msg.senderId.profileImage ? (
-                  <Image
+                  <SmartImage
                     src={msg.senderId.profileImage}
                     alt="Profile Image"
                     width={32}
                     height={32}
                     className="rounded-full w-8 h-8"
+                    forceImg
                   />
                 ) : (
                   <Avatar className="w-8 h-8 rounded-full">
@@ -104,12 +105,13 @@ const MessageList = ({ messages, currentUserId }: MessageListProps) => {
             {msg.senderId._id === currentUserId && (
               <div className="w-8 h-8 ml-2">
                 {msg.senderId.profileImage ? (
-                  <Image
+                  <SmartImage
                     src={msg.senderId.profileImage}
                     alt="Profile Image"
                     width={32}
                     height={32}
                     className="rounded-full w-8 h-8"
+                    forceImg
                   />
                 ) : (
                   <Avatar className="w-8 h-8 rounded-full">

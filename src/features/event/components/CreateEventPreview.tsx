@@ -1,12 +1,12 @@
 "use client";
 
+import SmartImage from "@/components/SmartImage";
 import TruncatedText from "@/components/TruncatedText";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Label } from "@/components/ui/label";
 import { useSession } from "@/contexts/SessionProvider";
 import { cn } from "@/lib/utils";
 import { useCreateEventStore } from "@/store/useCreateEventStore";
-import Image from "next/image";
 import CreateEventCarousel from "./CreateEventCarousel";
 const CreateEventPreview = ({
   className,
@@ -81,12 +81,13 @@ const CreateEventPreview = ({
             <div className="flex justify-between items-center mb-4">
               <div className="flex gap-2 items-center">
                 {user && user?.profileImage ? (
-                  <Image
+                  <SmartImage
                     src={user?.profileImage || ""}
                     alt="user image"
                     width={30}
                     height={30}
                     className="w-8 h-8 rounded-full"
+                    forceImg
                   />
                 ) : (
                   <Avatar>

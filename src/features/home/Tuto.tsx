@@ -1,5 +1,6 @@
 "use client";
 import Section from "@/components/layout/Section";
+import SmartImage from "@/components/SmartImage";
 import {
   Accordion,
   AccordionContent,
@@ -22,7 +23,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import FeaturesSection from "./FeaturesSection";
-
 const Tuto = () => {
   const sectionRefs = {
     showcaseTitle: useRef<HTMLDivElement>(null),
@@ -370,7 +370,7 @@ const Tuto = () => {
             </Link>
           </Button>
         </div>
-        <Image
+        <SmartImage
           src="/story.png"
           alt="Camille & Elena"
           className="w-full object-cover max-w-[290px] mx-auto"

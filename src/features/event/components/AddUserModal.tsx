@@ -1,3 +1,4 @@
+import SmartImage from "@/components/SmartImage";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -12,7 +13,6 @@ import { cn } from "@/lib/utils";
 import { UserType } from "@/types/UserType";
 import { sortUsersByPriority } from "@/utils/sortUsersByPriority";
 import { Plus, Trash } from "lucide-react";
-import Image from "next/image";
 import { useEffect, useState } from "react";
 
 interface AddUserModalProps {
@@ -126,12 +126,13 @@ const AddUserModal = ({
                     className="p-2 flex items-center cursor-pointer hover:bg-muted/20"
                     onClick={() => addUser(user)}
                   >
-                    <Image
+                    <SmartImage
                       src={user.profileImage || "/evento-logo.png"}
                       alt={user.username}
                       width={40}
                       height={40}
                       className="w-10 h-10 rounded-full"
+                      forceImg
                     />
                     <div className="ml-4">
                       <p>{user.username}</p>
@@ -157,12 +158,13 @@ const AddUserModal = ({
                   className="p-2 flex items-center justify-between"
                 >
                   <div className="flex items-center space-x-4">
-                    <Image
+                    <SmartImage
                       src={userId.profileImage || "/evento-logo.png"}
                       alt={userId.username}
                       width={40}
                       height={40}
                       className="w-10 h-10 rounded-full"
+                      forceImg
                     />
                     <div>
                       <p className="truncate whitespace-nowrap ">

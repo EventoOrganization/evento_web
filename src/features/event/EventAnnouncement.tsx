@@ -1,4 +1,5 @@
 import EventoSpinner from "@/components/EventoSpinner";
+import SmartImage from "@/components/SmartImage";
 import TruncatedText from "@/components/TruncatedText";
 import {
   Accordion,
@@ -15,7 +16,6 @@ import { useUsersStore } from "@/store/useUsersStore";
 import { Announcement, EventType } from "@/types/EventType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { Trash } from "lucide-react";
-import Image from "next/image";
 interface EventAnnouncementProps {
   event: EventType;
   isAdmin?: boolean;
@@ -106,12 +106,13 @@ const EventAnnouncement = ({
                 <div className="flex items-center gap-2 justify-between">
                   <div className="flex items-center gap-2">
                     {sender ? (
-                      <Image
+                      <SmartImage
                         src={sender.profileImage || "/evento-logo.png"}
                         alt={sender.username || "User"}
                         width={30}
                         height={30}
                         className="w-6 h-6 rounded-full"
+                        forceImg
                       />
                     ) : (
                       <Avatar>
@@ -164,7 +165,7 @@ const EventAnnouncement = ({
                           {announcement.comments.map((comment) => (
                             <>
                               {comment.userId ? (
-                                <Image
+                                <SmartImage
                                   src={
                                     users.find((u) => u._id === comment.userId)
                                       ?.profileImage || "/evento-logo.png"
@@ -176,6 +177,7 @@ const EventAnnouncement = ({
                                   width={30}
                                   height={30}
                                   className="w-8 h-8 rounded-full"
+                                  forceImg
                                 />
                               ) : (
                                 <Avatar>
@@ -196,12 +198,13 @@ const EventAnnouncement = ({
                 )}
                 <div className="flex items-center gap-2 py-2 pl-8">
                   {user ? (
-                    <Image
+                    <SmartImage
                       src={user.profileImage || "/evento-logo.png"}
                       alt={user.username || "User"}
                       width={30}
                       height={30}
                       className="w-6 h-6 rounded-full"
+                      forceImg
                     />
                   ) : (
                     <Avatar>

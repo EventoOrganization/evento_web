@@ -20,10 +20,10 @@ import { useUsersStore } from "@/store/useUsersStore";
 import { EventType } from "@/types/EventType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { XIcon } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { useParams, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import SmartImage from "./SmartImage";
 import { Button } from "./ui/button";
 import { Checkbox } from "./ui/checkbox";
 import { Label } from "./ui/label";
@@ -282,12 +282,13 @@ const UsersList = ({
             {user?.profileImage &&
             user?.profileImage.startsWith("http") &&
             user?.profileImage ? (
-              <Image
+              <SmartImage
                 src={user.profileImage}
                 alt="user image"
-                width={500}
-                height={500}
+                width={40}
+                height={40}
                 className="min-w-10 w-10 h-10 rounded-full"
+                forceImg
               />
             ) : (
               <div className="flex flex-col min-w-10 w-10 h-10">
@@ -319,12 +320,13 @@ const UsersList = ({
           {user?.profileImage &&
           user?.profileImage.startsWith("http") &&
           user?.profileImage ? (
-            <Image
+            <SmartImage
               src={user.profileImage}
               alt="user image"
-              width={500}
-              height={500}
+              width={40}
+              height={40}
               className="min-w-10 w-10 h-10 rounded-full"
+              forceImg
             />
           ) : (
             <div className="flex flex-col min-w-10 w-10 h-10">

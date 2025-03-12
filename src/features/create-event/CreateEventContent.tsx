@@ -28,10 +28,10 @@ import { EventType, InterestType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { Check, Trash } from "lucide-react";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import CreateEventLimitedGuests from "../event/components/CreateEventLimitedGuests";
+import SmartImage from "@/components/SmartImage";
 
 const CreateEventContent = () => {
   const eventStore = useCreateEventStore();
@@ -542,7 +542,7 @@ const CreateEventContent = () => {
               {selectedMedia && (
                 <div className="relative w-full h-96 border rounded-md mt-4 md:hidden">
                   {selectedMedia.type === "image" ? (
-                    <Image
+                    <SmartImage
                       src={selectedMedia.url}
                       alt="Selected Media"
                       fill
@@ -569,7 +569,7 @@ const CreateEventContent = () => {
                       >
                         {/* 🖼️ Image ou 🎥 Vidéo */}
                         {media.type === "image" ? (
-                          <Image
+                          <SmartImage
                             src={media.url}
                             alt={`Media ${index}`}
                             width={96}

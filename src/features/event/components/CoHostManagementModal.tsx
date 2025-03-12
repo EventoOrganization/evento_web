@@ -1,8 +1,8 @@
+import SmartImage from "@/components/SmartImage";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { UserType } from "@/types/UserType";
-import Image from "next/image";
 import { useEffect, useState } from "react";
 import AddUserModal from "./AddUserModal";
 
@@ -102,12 +102,13 @@ const CoHostManagementModal: React.FC<CoHostManagementModalProps> = ({
               >
                 <div className="flex items-center">
                   {userInfo?.profileImage ? (
-                    <Image
+                    <SmartImage
                       src={userInfo.profileImage}
                       alt={userInfo.username}
                       width={10}
                       height={10}
                       className="w-10 h-10 rounded-full"
+                      forceImg
                     />
                   ) : (
                     <Avatar className="w-10 h-10 rounded-full">

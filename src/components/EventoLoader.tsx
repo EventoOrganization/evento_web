@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import Image from "next/image";
+import SmartImage from "./SmartImage";
 const EventoLoader = ({ full }: { full?: boolean }) => {
   return (
     <>
@@ -10,7 +10,13 @@ const EventoLoader = ({ full }: { full?: boolean }) => {
       >
         <div className="relative w-20 h-20">
           <div className="absolute inset-0 flex items-center justify-center w-20 h-20 animate-smooth-spin">
-            <Image src="/evento-logo.png" alt="logo" width={50} height={50} />
+            <SmartImage
+              src="/evento-logo.png"
+              alt="logo"
+              width={50}
+              height={50}
+              forceImg
+            />
           </div>
         </div>
       </div>

@@ -5,9 +5,9 @@ import { useSession } from "@/contexts/SessionProvider";
 import AuthModal from "@/features/auth/components/AuthModal";
 import { cn } from "@/lib/utils";
 import { UserType } from "@/types/UserType";
-import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import SmartImage from "./SmartImage";
 import { Button } from "./ui/button";
 const AttendeesList = ({
   user,
@@ -59,12 +59,13 @@ const AttendeesList = ({
         {user?.profileImage &&
         user?.profileImage.startsWith("http") &&
         user?.profileImage ? (
-          <Image
+          <SmartImage
             src={user.profileImage}
             alt="user image"
             width={500}
             height={500}
             className="w-10 h-10 rounded-full"
+            forceImg
           />
         ) : (
           <div className="flex flex-col">

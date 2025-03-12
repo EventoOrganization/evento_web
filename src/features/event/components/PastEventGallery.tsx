@@ -1,5 +1,6 @@
 import { handleUpload } from "@/app/create-event/action";
 import EventoLoader from "@/components/EventoLoader";
+import SmartImage from "@/components/SmartImage";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -9,7 +10,6 @@ import { useToast } from "@/hooks/use-toast";
 import { EventType } from "@/types/EventType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { PlayCircleIcon, Trash } from "lucide-react";
-import Image from "next/image";
 import { useMemo, useRef, useState } from "react";
 import PastEventModal from "./PastEventModal";
 // Define the MediaItem type
@@ -260,12 +260,13 @@ const PastEventGallery: React.FC<PastEventGalleryProps> = ({ event }) => {
         <div key={index} className="mb-4">
           {/* Profil utilisateur */}
           <div className="flex items-center gap-2 p-2">
-            <Image
+            <SmartImage
               src={user.profileImage || "/default-avatar.png"}
               alt={`${user.username}'s profile`}
               width={40}
               height={40}
               className="rounded-full"
+              forceImg
             />
             <div>
               <p className="font-bold">{user.username}</p>
@@ -285,7 +286,7 @@ const PastEventGallery: React.FC<PastEventGalleryProps> = ({ event }) => {
                 onClick={() => setSelectedMediaIndex(mediaIndex)}
               >
                 {media.type === "image" ? (
-                  <Image
+                  <SmartImage
                     src={media.url}
                     alt={`Media file ${mediaIndex + 1}`}
                     width={100}

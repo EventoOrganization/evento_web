@@ -1,7 +1,7 @@
 "use client";
+import SmartImage from "@/components/SmartImage";
 import { useCreateEventStore } from "@/store/useCreateEventStore";
 import { cn } from "@nextui-org/theme";
-import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
@@ -60,7 +60,7 @@ const CreateEventCarousel = () => {
     <div className="relative w-full">
       {mediaPreviews?.length === 0 ? (
         <div className="relative w-full h-full bg-evento-gradient rounded">
-          <Image
+          <SmartImage
             src="https://evento-media-bucket.s3.ap-southeast-2.amazonaws.com/evento-bg.jpg"
             alt="Evento standard background"
             height={500}
@@ -114,7 +114,7 @@ const CreateEventCarousel = () => {
                     }
                   }}
                 >
-                  <Image
+                  <SmartImage
                     src={item.url}
                     alt={`Preview media ${index + 1}`}
                     height={500}

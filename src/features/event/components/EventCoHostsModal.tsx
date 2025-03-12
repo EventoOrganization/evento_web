@@ -1,7 +1,7 @@
+import SmartImage from "@/components/SmartImage";
 import { Label } from "@/components/ui/label";
 import { useCreateEventStore } from "@/store/useCreateEventStore";
 import { UserType } from "@/types/UserType";
-import Image from "next/image";
 import { useState } from "react";
 import AddCoHostsModal from "./AddUserModal";
 
@@ -42,20 +42,22 @@ const EventCoHostsModal = ({
               className="w-10 h-10 p-0.5 bg-white rounded-full"
             >
               {coHost.userId.profileImage ? (
-                <Image
+                <SmartImage
                   src={coHost.userId.profileImage || ""}
                   alt={coHost.userId.username}
                   width={40}
                   height={40}
                   className="rounded-full w-full h-full"
+                  forceImg
                 />
               ) : (
-                <Image
+                <SmartImage
                   src={"/icon-96x96.png"}
                   alt={coHost.userId.username}
                   width={40}
                   height={40}
                   className="rounded-full  w-full h-full"
+                  forceImg
                 />
               )}
             </li>
