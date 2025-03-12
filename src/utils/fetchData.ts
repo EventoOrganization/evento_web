@@ -1,5 +1,4 @@
 import { handleError } from "./handleError";
-import { handleWarning } from "./handleWarning";
 
 export enum HttpMethod {
   GET = "GET",
@@ -15,9 +14,8 @@ export type FetchDataResult<T> = {
   status: number;
   ok: boolean;
 };
-
-const requestTimestamps = new Map<string, number>();
-const REQUEST_COOLDOWN = 1000;
+const requestCache = new Map<string, { data: any; timestamp: number }>();
+const REQUEST_CACHE_DURATION = 1000; // 1 seconde
 
 export const fetchData = async <T, B = any>(
   endpoint: string,
@@ -46,24 +44,21 @@ export const fetchData = async <T, B = any>(
   }
 
   const now = Date.now();
-  const lastRequestTime = requestTimestamps.get(endpoint) || 0;
+  const cachedResponse = requestCache.get(endpoint);
 
-  if (now - lastRequestTime < REQUEST_COOLDOWN) {
-    handleWarning({
-      message: `⏳ Request blocked (cooldown active: ${REQUEST_COOLDOWN}ms)`,
-      source: `fetchData: ${endpoint}`,
-      context: { endpoint, lastRequestTime, now },
-    });
-
+  // 🔥 Vérifie si la réponse est en cache et encore valide
+  if (
+    cachedResponse &&
+    now - cachedResponse.timestamp < REQUEST_CACHE_DURATION
+  ) {
+    console.log(`⚡ Returning cached response for ${endpoint}`);
     return {
-      data: null,
-      error: "Request blocked: cooldown active",
-      status: 429,
-      ok: false,
+      data: cachedResponse.data,
+      error: null,
+      status: 200,
+      ok: true,
     };
   }
-
-  requestTimestamps.set(endpoint, now);
 
   try {
     const response = await fetch(
@@ -104,6 +99,13 @@ export const fetchData = async <T, B = any>(
 
     if (contentType?.includes("application/json")) {
       const json = await response.json();
+
+      // 🔥 Stocke la réponse en cache
+      requestCache.set(endpoint, {
+        data: json.data || json.body || json,
+        timestamp: now,
+      });
+
       return {
         data: json.data || json.body || json,
         error: null,

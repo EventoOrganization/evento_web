@@ -53,6 +53,21 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         },
       ],
     },
+    twitter: {
+      card: "summary_large_image",
+      title: event.title,
+      description: event.details?.description,
+      images: [
+        {
+          url:
+            event.initialMedia?.[0]?.url ||
+            "https://evento-media-bucket.s3.ap-southeast-2.amazonaws.com/og-image.jpg",
+          width: 1200,
+          height: 630,
+          alt: event.title,
+        },
+      ],
+    },
   };
 }
 
