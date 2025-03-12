@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 type Props = {
   src: string;
@@ -29,26 +29,8 @@ const SmartImage = ({
 }: Props) => {
   const [useFallback, setUseFallback] = useState(forceImg);
 
-  useEffect(() => {
-    if (!useFallback && !forceImg) {
-      fetch(src, { method: "HEAD" })
-        .then((res) => {
-          if (res.status === 402) {
-            console.log("❌ Quota dépassé, fallback sur <img>", src);
-            setUseFallback(true);
-          } else if (!res.ok) {
-            console.log("⚠️ Problème avec l'image, fallback sur <img>", src);
-            setUseFallback(true);
-          }
-        })
-        .catch((error) => {
-          console.error("⚠️ Fetch error, fallback sur <img>:", error);
-          setUseFallback(true);
-        });
-    }
-  }, [src, useFallback]);
-
   if (useFallback || forceImg) {
+    console.warn("⚠️ Affichage d'une <img> standard pour :", src);
     return (
       /* eslint-disable-next-line @next/next/no-img-element */
       <img
@@ -67,13 +49,17 @@ const SmartImage = ({
     <Image
       src={src}
       alt={alt}
-      {...(!fill && { width: width })}
-      {...(!fill && { height: height })}
+      {...(!fill && { width })}
+      {...(!fill && { height })}
       className={className}
       style={style}
       {...(priority && { priority: true })}
       {...(fill && { fill: true })}
       {...(loading && { loading })}
+      onError={() => {
+        console.error("❌ Next.js ne peut pas charger l'image :", src);
+        setUseFallback(true);
+      }}
     />
   );
 };
