@@ -7,7 +7,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useSession } from "@/contexts/SessionProvider";
@@ -299,17 +298,15 @@ const EventIdTabs = ({ evento }: { evento?: EventType }) => {
                 </Link>
                 <div className="flex items-center gap-2">
                   {accessControl.isAdmin && (
-                    <TooltipProvider delayDuration={100}>
-                      <Tooltip>
-                        <TooltipTrigger>
-                          <Pencil
-                            className="text-muted-foreground"
-                            onClick={() => setSelectedTab("Settings")}
-                          />
-                        </TooltipTrigger>
-                        <TooltipContent>Edit Event</TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <Pencil
+                          className="text-muted-foreground"
+                          onClick={() => setSelectedTab("Settings")}
+                        />
+                      </TooltipTrigger>
+                      <TooltipContent>Edit Event</TooltipContent>
+                    </Tooltip>
                   )}
                   <EventLimit event={event} />
                 </div>

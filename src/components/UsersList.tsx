@@ -10,7 +10,6 @@ import {
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useSession } from "@/contexts/SessionProvider";
@@ -350,18 +349,16 @@ const UsersList = ({
           <>
             {/* Tooltip sur desktop */}
             {!isTouchDevice ? (
-              <TooltipProvider delayDuration={200}>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <span className="text-destructive font-semibold truncate w-full ml-2 cursor-pointer block overflow-hidden whitespace-nowrap">
-                      {user.reason}
-                    </span>
-                  </TooltipTrigger>
-                  <TooltipContent className="bg-black text-white px-3 py-1 rounded-md text-sm shadow-lg max-w-[250px]">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span className="text-destructive font-semibold truncate w-full ml-2 cursor-pointer block overflow-hidden whitespace-nowrap">
                     {user.reason}
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+                  </span>
+                </TooltipTrigger>
+                <TooltipContent className="bg-black text-white px-3 py-1 rounded-md text-sm shadow-lg max-w-[250px]">
+                  {user.reason}
+                </TooltipContent>
+              </Tooltip>
             ) : (
               // Modal sur mobile
               <>

@@ -1,12 +1,14 @@
 "use client";
 import { BackgroundGradientAnimation } from "@/components/ui/background-gradient-animation";
 import { Button } from "@/components/ui/button";
+import { useSession } from "@/contexts/SessionProvider";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import AuthModal from "../auth/components/AuthModal";
 const Hero = () => {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
+  const { user, isAuthenticated } = useSession();
   return (
     <BackgroundGradientAnimation className=" ">
       <div className="absolute z-10 inset-0 flex flex-col items-center justify-center text-white font-bold px-4  text-3xl md:text-4xl lg:text-7xl">
@@ -23,12 +25,28 @@ const Hero = () => {
             <Button variant={"eventoSecondary"} asChild>
               <Link href="/profile">My Events</Link>
             </Button>
-            <Button
-              onClick={() => setIsAuthModalOpen(true)}
-              variant={"eventoSecondary"}
-            >
-              Sign-up
-            </Button>
+            {!isAuthenticated ? (
+              <Button
+                onClick={() => setIsAuthModalOpen(true)}
+                variant={"eventoSecondary"}
+              >
+                Sign-up
+              </Button>
+            ) : (
+              <Link
+                href={"/profile"}
+                className="text-sm flex items-center gap-2"
+              >
+                <Image
+                  src={`${user?.profileImage}`}
+                  width={30}
+                  height={30}
+                  alt={`${user?.username} profile image`}
+                  className="rounded-full object-cover h-6 w-6"
+                />
+                {user?.username}
+              </Link>
+            )}
           </div>
         </div>
         <div className=" flex flex-col justify-center px-6 gap-6 mb-6 animate-slideInLeft">

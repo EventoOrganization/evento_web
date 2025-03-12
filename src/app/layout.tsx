@@ -10,6 +10,7 @@ import { SocketProvider } from "@/contexts/SocketProvider";
 import GoogleAnalytics from "@/features/googleAnalitics/GoogleAnalytics";
 import { cn } from "@/lib/utils";
 import { getSessionSSR } from "@/utils/authUtilsSSR";
+import { TooltipProvider } from "@radix-ui/react-tooltip";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
@@ -100,11 +101,13 @@ export default function RootLayout({
             <SocketProvider>
               <GlobalDataProvider>
                 <Toaster />
-                <Main className={cn("pb-14 md:pb-28")}>
-                  {children}
-                  <Footer />
-                  <ChatbotComponent />
-                </Main>
+                <TooltipProvider delayDuration={100}>
+                  <Main className={cn("pb-14 md:pb-28")}>
+                    {children}
+                    <Footer />
+                    <ChatbotComponent />
+                  </Main>
+                </TooltipProvider>
                 <NavbarApp />
               </GlobalDataProvider>
             </SocketProvider>
