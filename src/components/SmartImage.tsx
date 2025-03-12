@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type Props = {
   src: string;
@@ -21,16 +21,29 @@ const SmartImage = ({
   width = 200,
   height = 200,
   className,
-  forceImg,
+  forceImg = false,
   priority = false,
   fill = false,
   loading = "lazy",
   style = {},
 }: Props) => {
-  const [useFallback, setUseFallback] = useState(false);
+  const [useFallback, setUseFallback] = useState(forceImg);
 
-  if (forceImg) {
+  useEffect(() => {
+    if (!useFallback) {
+      fetch(src, { method: "HEAD" })
+        .then((res) => {
+          if (res.status === 402) {
+            setUseFallback(true); // 🔥 Si quota dépassé, fallback sur <img>
+          }
+        })
+        .catch(() => setUseFallback(true));
+    }
+  }, [src, useFallback]);
+
+  if (useFallback) {
     return (
+      /* eslint-disable-next-line @next/next/no-img-element */
       <img
         src={src}
         alt={alt}
@@ -38,23 +51,12 @@ const SmartImage = ({
         height={height}
         className={className}
         style={style}
-        {...(loading && { loading: loading })}
+        {...(loading && { loading })}
       />
     );
   }
-  return useFallback ? (
-    // 🔥 Si Next.js bloque l'image, on affiche une <img> classique
-    <img
-      src={src}
-      alt={alt}
-      width={width}
-      height={height}
-      className={className}
-      style={style}
-      {...(loading && { loading: loading })}
-    />
-  ) : (
-    // 🖼️ On essaye d'afficher l'image optimisée Next.js
+
+  return (
     <Image
       src={src}
       alt={alt}
@@ -62,10 +64,9 @@ const SmartImage = ({
       height={height}
       className={className}
       style={style}
-      onError={() => setUseFallback(true)} // 🔥 Si Next.js échoue, on change d'affichage
       {...(priority && { priority: true })}
       {...(fill && { fill: true })}
-      {...(loading && { loading: loading })}
+      {...(loading && { loading })}
     />
   );
 };
