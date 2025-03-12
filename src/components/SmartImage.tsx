@@ -13,6 +13,9 @@ type Props = {
   fill?: boolean;
   loading?: "lazy" | "eager";
   style?: React.CSSProperties;
+  onClick?: (
+    event: React.MouseEvent<HTMLImageElement | HTMLDivElement>,
+  ) => void;
 };
 
 const SmartImage = ({
@@ -26,6 +29,7 @@ const SmartImage = ({
   fill = false,
   loading,
   style = {},
+  onClick,
 }: Props) => {
   const [useFallback, setUseFallback] = useState(false); // 👈 Indépendant de forceImg
 
@@ -41,6 +45,7 @@ const SmartImage = ({
         className={className}
         style={style}
         {...(loading && { loading })}
+        onClick={onClick}
       />
     );
   }
@@ -57,6 +62,7 @@ const SmartImage = ({
         height={height}
         className={className}
         style={style}
+        onClick={onClick}
         {...(loading && { loading })}
       />
     );
@@ -74,6 +80,7 @@ const SmartImage = ({
       {...(priority && { priority: true })}
       {...(fill && { fill: true })}
       {...(loading && { loading })}
+      onClick={onClick}
       onError={() => {
         console.error("❌ Next.js Image échouée, fallback sur <img> :", src);
         setUseFallback(true);

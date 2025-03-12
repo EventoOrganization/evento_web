@@ -1,7 +1,6 @@
 "use client";
 import { EventType } from "@/types/EventType";
 import { cn } from "@nextui-org/theme";
-import Image from "next/image";
 import { useRef, useState } from "react";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
@@ -61,7 +60,7 @@ const RenderMedia = ({ event }: { event: EventType }) => {
                   Your browser does not support the video tag.
                 </video>
               ) : (
-                <Image
+                <SmartImage
                   src={item.url}
                   alt={`Preview media ${index + 1}`}
                   key={index}
