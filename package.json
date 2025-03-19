@@ -42,7 +42,7 @@
     "@radix-ui/react-switch": "^1.1.1",
     "@radix-ui/react-toast": "^1.2.1",
     "@radix-ui/react-tooltip": "^1.1.6",
-    "@react-google-maps/api": "^2.19.3",
+    "@react-google-maps/api": "^2.20.6",
     "@types/react-select": "^5.0.1",
     "@types/react-swipeable-views": "^0.13.5",
     "aws-sdk": "^2.1687.0",
