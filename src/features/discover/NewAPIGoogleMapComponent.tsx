@@ -17,6 +17,7 @@ export interface Location {
 const libraries: ("places" | "geometry" | "drawing" | "visualization")[] = [
   "places",
 ];
+
 const NewAPIGoogleMapComponent = ({
   location,
   setLocation,
@@ -26,17 +27,21 @@ const NewAPIGoogleMapComponent = ({
 }) => {
   const searchTimeout = useRef<NodeJS.Timeout | null>(null);
   const pathname = usePathname();
+  const eventStore = useCreateEventStore();
   const [address, setAddress] = useState<string>("");
   const [isMapVisible, setIsMapVisible] = useState<boolean>(false);
   const [suggestions, setSuggestions] = useState<
     { address: string; location: Location }[]
   >([]);
-
   const [mapCenter, setMapCenter] = useState<Location>({
     lat: 37.7749,
     lng: -122.4194,
   });
-  const eventStore = useCreateEventStore();
+  useEffect(() => {
+    if (isMapVisible) {
+      setMapCenter(location);
+    }
+  }, [isMapVisible, location]);
   const { isLoaded } = useJsApiLoader({
     id: "google-maps-script",
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
@@ -62,61 +67,50 @@ const NewAPIGoogleMapComponent = ({
 
   const fetchAddressAndTimeZone = async (lat: number, lng: number) => {
     if (!isLoaded) return;
-
     try {
       const geocoder = new google.maps.Geocoder();
-      const location = { lat, lng };
-
-      geocoder.geocode({ location }, async (results, status) => {
+      geocoder.geocode({ location: { lat, lng } }, async (results, status) => {
         if (status === "OK" && results && results[0]) {
-          setAddress(results[0].formatted_address);
-          if (pathname === "/create-event") {
-            eventStore.setEventField("latitude", location.lat.toString());
-            eventStore.setEventField("longitude", location.lng.toString());
-            eventStore.setEventField("location", results[0].formatted_address);
+          const formattedAddress = results[0].formatted_address;
+          setAddress(formattedAddress);
+
+          // ✅ Mise à jour du store
+          if (pathname.startsWith("/create-event")) {
+            eventStore.setEventField("latitude", lat.toString());
+            eventStore.setEventField("longitude", lng.toString());
+            eventStore.setEventField("location", formattedAddress);
           }
         } else {
           console.error("Geocoder failed:", status);
-          setAddress(""); // On garde Google Places actif mais vide
+          setAddress("");
         }
       });
     } catch (error) {
       console.error("Erreur dans fetchAddressAndTimeZone:", error);
-      setAddress(""); // Permet de ne pas bloquer Google Places
+      setAddress("");
     }
   };
 
   const handleSearch = (query: string) => {
-    console.log("[Frontend] User typed:", query);
-
     setAddress(query);
-
     if (query.length < 3) {
-      console.log("[Frontend] Query too short, not calling API.");
       setSuggestions([]);
       return;
     }
 
-    // Annule le timeout précédent si une nouvelle saisie est détectée
     if (searchTimeout.current) {
       clearTimeout(searchTimeout.current);
     }
 
-    // Démarre un nouveau timeout pour retarder la requête
     searchTimeout.current = setTimeout(async () => {
       try {
-        console.log("[Frontend] Sending search request to API...");
         const response = await fetch("http://localhost:3000/api/googlePlaces", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ query }),
         });
 
-        console.log("[Frontend] Response status:", response.status);
-
         const data = await response.json();
-        console.log("[Frontend] API response:", data);
-
         if (data?.places?.length > 0) {
           setSuggestions(
             data.places.map((place: any) => ({
@@ -135,6 +129,32 @@ const NewAPIGoogleMapComponent = ({
         setSuggestions([]);
       }
     }, 500);
+  };
+
+  const handleSelectLocation = (place: {
+    address: string;
+    location: Location;
+  }) => {
+    setAddress(place.address);
+    setLocation(place.location);
+    setSuggestions([]);
+    setMapCenter(place.location);
+    // ✅ Mise à jour du store
+    if (pathname.startsWith("/create-event")) {
+      eventStore.setEventField("latitude", place.location.lat.toString());
+      eventStore.setEventField("longitude", place.location.lng.toString());
+      eventStore.setEventField("location", place.address);
+    }
+  };
+
+  const handleMapClick = async (event: google.maps.MapMouseEvent) => {
+    if (event.latLng) {
+      const lat = event.latLng.lat();
+      const lng = event.latLng.lng();
+      setLocation({ lat, lng });
+      setMapCenter({ lat, lng });
+      await fetchAddressAndTimeZone(lat, lng);
+    }
   };
 
   return (
@@ -156,20 +176,20 @@ const NewAPIGoogleMapComponent = ({
         className="text-xs md:text-sm"
         placeholder="Search for a location"
         value={address}
-        defaultValue={address} // Permet d'éviter un blocage de l'input
-        onChange={(e) => handleSearch(e.target.value)}
+        onChange={(e) => {
+          handleSearch(e.target.value);
+          if (pathname.startsWith("/create-event"))
+            eventStore.setEventField("location", e.target.value);
+        }}
       />
+
       {suggestions.length > 0 && (
         <ul className="bg-white border border-gray-300 rounded-md shadow-md mt-1 max-h-60 overflow-auto">
           {suggestions.map((place, index) => (
             <li
               key={index}
               className="p-2 cursor-pointer hover:bg-gray-200"
-              onClick={() => {
-                setAddress(place.address);
-                setLocation(place.location);
-                setSuggestions([]); // Cacher les suggestions après sélection
-              }}
+              onClick={() => handleSelectLocation(place)}
             >
               {place.address}
             </li>
@@ -183,15 +203,7 @@ const NewAPIGoogleMapComponent = ({
             isLoaded={isLoaded}
             mapCenter={mapCenter}
             location={location}
-            handleMapClick={async (event: google.maps.MapMouseEvent) => {
-              if (event.latLng) {
-                const lat = event.latLng.lat();
-                const lng = event.latLng.lng();
-                setLocation({ lat, lng });
-                setMapCenter({ lat, lng });
-                await fetchAddressAndTimeZone(lat, lng);
-              }
-            }}
+            handleMapClick={handleMapClick}
           />
         </div>
       )}

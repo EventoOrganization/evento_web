@@ -11,8 +11,8 @@ const DuplicateEventButton = ({ eventId }: DuplicateEventProps) => {
   const { toast } = useToast();
   const handleDuplicateEvent = () => {
     toast({
-      description: "Event duplicated successfully",
-      className: "bg-evento-gradient-button text-white",
+      description: "Start duplicating event, Think to change the date",
+      variant: "evento",
     });
     router.push(`/create-event/${eventId}`);
   };

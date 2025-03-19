@@ -11,7 +11,6 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 import { useSession } from "@/contexts/SessionProvider";
 import AuthModal from "@/features/auth/components/AuthModal";
-import MyGoogleMapComponent from "@/features/discover/MyGoogleMapComponent";
 import CreateEventModal from "@/features/event/components/CreateEventModal";
 import CreateEventPreview from "@/features/event/components/CreateEventPreview";
 import EnableChatButton from "@/features/event/components/EnableChatButton";
@@ -31,6 +30,7 @@ import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { Check, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import NewAPIGoogleMapComponent from "../discover/NewAPIGoogleMapComponent";
 import CreateEventLimitedGuests from "../event/components/CreateEventLimitedGuests";
 
 const CreateEventContent = () => {
@@ -517,7 +517,7 @@ const CreateEventContent = () => {
               </RadioGroup>
             </div>
             <div className={`${eventStore.mode !== "virtual" ? "" : "hidden"}`}>
-              <MyGoogleMapComponent
+              <NewAPIGoogleMapComponent
                 location={location || { lat: 0, lng: 0 }}
                 setLocation={setLocation}
               />
