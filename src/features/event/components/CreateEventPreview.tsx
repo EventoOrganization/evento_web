@@ -134,8 +134,8 @@ const CreateEventPreview = ({
               {eventStore.date ? renderDate() : "Date"}
             </span>
             <p className="text-sm text-muted-foreground">
-              {eventStore.startTime ? eventStore.startTime : "08:00"} -{" "}
-              {eventStore.endTime ? eventStore.endTime : "18:00"}
+              {eventStore.startTime ? eventStore.startTime : "08:00"}
+              {`${eventStore.endTime ? "- " + eventStore.endTime : ""}`}
             </p>
           </div>
           {/* <MapPinIcon2 className="w-5 h-5" /> */}

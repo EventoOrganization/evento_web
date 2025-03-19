@@ -36,14 +36,12 @@ import CreateEventLimitedGuests from "../event/components/CreateEventLimitedGues
 const DuplicateEventContent = () => {
   const eventStore = useCreateEventStore();
   const pathname = usePathname();
-  console.log("pathname", pathname);
-  // const mediaPreviews = useCreateEventStore((state) => state.mediaPreviews || []);
-  // const [carouselItems, setCarouselItems] = useState<any>(mediaPreviews);
   const [isEventModalOpen, setIsEventModalOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
-  const { addEvent } = useEventStore();
+  const { addEvent, events } = useEventStore();
+  const existingEvent = events.find((event) => pathname.includes(event._id));
   const { users } = useUsersStore();
   const { interests } = useInterestsStore();
   const [tempMediaPreviews, setTempMediaPreviews] = useState<
@@ -64,6 +62,83 @@ const DuplicateEventContent = () => {
       handleFieldChange("username", user.username);
     }
   }, [isAuthenticated, user?.username]);
+
+  useEffect(() => {
+    if (existingEvent) {
+      console.log("Updating store with existingEvent:", existingEvent);
+
+      eventStore.setEventField("title", existingEvent.title || "");
+      eventStore.setEventField(
+        "eventType",
+        existingEvent.eventType || "public",
+      );
+      eventStore.setEventField(
+        "startTime",
+        existingEvent.details?.startTime || "",
+      );
+      eventStore.setEventField("endTime", existingEvent.details?.endTime || "");
+      eventStore.setEventField(
+        "timeZone",
+        existingEvent.details?.timeZone || "",
+      );
+      eventStore.setEventField(
+        "description",
+        existingEvent.details?.description || "",
+      );
+      eventStore.setEventField(
+        "predefinedMedia",
+        existingEvent.initialMedia || [],
+      );
+      eventStore.setEventField(
+        "mode",
+        existingEvent.details?.mode || "in-person",
+      );
+      eventStore.setEventField(
+        "location",
+        existingEvent.details?.location || "",
+      );
+      eventStore.setEventField(
+        "latitude",
+        existingEvent.details?.loc?.coordinates[1] || "",
+      );
+      eventStore.setEventField(
+        "longitude",
+        existingEvent.details?.loc?.coordinates[0] || "",
+      );
+      eventStore.setEventField(
+        "timeSlots",
+        existingEvent.details?.timeSlots || [],
+      );
+      eventStore.setEventField("coHosts", existingEvent.coHosts || []);
+      eventStore.setEventField(
+        "mediaPreviews",
+        existingEvent.initialMedia || [],
+      );
+      eventStore.setEventField(
+        "createRSVP",
+        existingEvent.details?.createRSVP || false,
+      );
+      eventStore.setEventField("questions", existingEvent.questions || []);
+      eventStore.setEventField("additionalField", []);
+      eventStore.setEventField(
+        "includeChat",
+        existingEvent.details?.includeChat || false,
+      );
+      eventStore.setEventField("UrlLink", existingEvent.details?.URLlink || "");
+      eventStore.setEventField(
+        "UrlTitle",
+        existingEvent.details?.URLtitle || "",
+      );
+      eventStore.setEventField("uploadedMedia", {
+        images: existingEvent.details?.images || [],
+        videos: existingEvent.details?.video || [],
+      });
+      eventStore.setEventField("predefinedMedia", { images: [], videos: [] });
+      eventStore.setEventField("interests", existingEvent.interests || []);
+
+      console.log("Event Store Updated:", eventStore);
+    }
+  }, [existingEvent]);
 
   useEffect(() => {
     setFormValues({
@@ -124,6 +199,7 @@ const DuplicateEventContent = () => {
     predefinedMedia: eventStore.predefinedMedia || { images: [], videos: [] },
     interests: eventStore.interests || [],
   });
+
   const handleAuthSuccess = () => {
     setIsAuthModalOpen(false);
     if (user?.username) {
@@ -273,6 +349,7 @@ const DuplicateEventContent = () => {
       setIsAuthModalOpen(!isAuthModalOpen);
       return;
     }
+    console.log("Form values before validation:", formValues);
     const missingFields: string[] = [];
 
     const fields = [
@@ -289,10 +366,6 @@ const DuplicateEventContent = () => {
       { name: "Time Zone", value: formValues.timeZone },
       // { name: "End Time", value: formValues.endTime },
       { name: "Description", value: formValues.description },
-      {
-        name: "Média (Pictures and/or Vidéos)",
-        value: formValues.medias.length > 0,
-      },
     ];
     fields.forEach((field) => {
       if (!field.value) {
@@ -344,7 +417,7 @@ const DuplicateEventContent = () => {
         url: media.url,
         type: media.type,
       }));
-
+    console.log("initialMedia", initialMedia);
     const predefinedMedia = (eventStore.mediaPreviews || [])
       .filter(
         (media: any) =>
@@ -391,7 +464,7 @@ const DuplicateEventContent = () => {
       }
     }
   };
-
+  if (!existingEvent) return <div>Event not found</div>;
   return (
     <>
       <h1 className="animate-slideInLeft opacity-0 text-3xl md:text-4xl lg:text-5xl flex justify-center md:justify-start md:font-bold text-black w-full h-fit mt-10 px-4">
