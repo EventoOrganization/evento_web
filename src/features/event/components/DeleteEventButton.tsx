@@ -62,7 +62,10 @@ const DeleteEventButton = ({
   return (
     <Button
       variant="destructive"
-      onClick={handleDelete}
+      onClick={(e) => {
+        handleDelete();
+        e.stopPropagation();
+      }}
       disabled={loading}
       className={className}
     >

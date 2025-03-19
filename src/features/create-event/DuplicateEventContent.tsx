@@ -709,7 +709,10 @@ const DuplicateEventContent = () => {
           <Button
             variant={"outline"}
             className="mt-4 shadow w-full"
-            onClick={() => eventStore.clearEventForm()}
+            onClick={() => {
+              eventStore.clearEventForm();
+              router.push("/create-event");
+            }}
           >
             Reset from
           </Button>
