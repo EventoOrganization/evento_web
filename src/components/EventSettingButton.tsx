@@ -1,4 +1,5 @@
 import { useSession } from "@/contexts/SessionProvider";
+import DuplicateEventButton from "@/features/create-event/DuplicateEventButton";
 import DeleteEventButton from "@/features/event/components/DeleteEventButton";
 import { hasEventhost } from "@/features/event/eventActions";
 import { handleSwitchHideFromProfile } from "@/features/profile/profileAction";
@@ -98,6 +99,9 @@ const EventSettingButton = ({
                   isHost={true}
                   className="w-full"
                 />
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <DuplicateEventButton eventId={event._id} />
               </DropdownMenuItem>
             </>
           )}

@@ -1,7 +1,7 @@
-import ComingSoon from "@/components/ComingSoon";
+import DuplicateEventContent from "@/features/create-event/DuplicateEventContent";
 
 const page = () => {
-  return <ComingSoon />;
+  return <DuplicateEventContent />;
 };
 
 export default page;
