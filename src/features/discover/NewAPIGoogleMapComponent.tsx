@@ -104,7 +104,7 @@ const NewAPIGoogleMapComponent = ({
 
     searchTimeout.current = setTimeout(async () => {
       try {
-        const response = await fetch("http://localhost:3000/api/googlePlaces", {
+        const response = await fetch("/api/googlePlaces", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ query }),
