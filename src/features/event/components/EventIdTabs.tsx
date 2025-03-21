@@ -165,7 +165,6 @@ const EventIdTabs = ({ evento }: { evento?: EventType }) => {
       const isPrivate = event.eventType === "private";
       const isRestricted = event.restricted || false;
 
-      const isHost = user?._id === event.user?._id;
       const isGuest = user
         ? event.guests?.some((guest) => guest._id === user._id) || false
         : false;
@@ -174,6 +173,7 @@ const EventIdTabs = ({ evento }: { evento?: EventType }) => {
       const isAttendee =
         event.attendees?.some((attendee) => attendee._id === user?._id) ||
         false;
+      const isHost = user?._id === event.user?._id;
       const isCoHost = user
         ? (event.coHosts?.some((coHost) => coHost.userId?._id === user._id) ??
           false)

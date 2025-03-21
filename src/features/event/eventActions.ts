@@ -40,3 +40,23 @@ export const hasEventhost = (event: EventType, user: UserType) => {
   if (!event || !user) return false;
   return event.user._id === user._id;
 };
+export const isApproved = (event: EventType, user: UserType) => {
+  return (
+    !!event &&
+    !!user &&
+    (!event.requiresApproval ||
+      isAdmin(event, user) ||
+      (event.approvedUserIds ?? []).includes(user._id))
+  );
+};
+
+export const isAdmin = (event: EventType, user: UserType) => {
+  if (!event || !user) return false;
+  const isHost = user?._id === event.user?._id;
+  const isCoHost = user
+    ? (event.coHosts?.some((coHost) => coHost.userId?._id === user._id) ??
+      false)
+    : false;
+  const isAdmin = isHost || isCoHost;
+  return isAdmin;
+};
