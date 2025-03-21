@@ -243,9 +243,17 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
               ) : eventStatus.isGoing ? (
                 <>
                   <CalendarCheck2 className="w-5 h-5 text-white mr-2" />
-                  {approvedUsers
-                    ? "Going"
-                    : "Going - Pending Payment Confirmation"}
+                  {approvedUsers ? (
+                    "Going"
+                  ) : (
+                    <p>
+                      Going - Pending
+                      <span className="md:hidden"> approval</span>
+                      <span className="hidden md:inline">
+                        Payment Confirmation
+                      </span>
+                    </p>
+                  )}
                 </>
               ) : (
                 <>Click to Join</>
@@ -348,9 +356,18 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
                         eventStatus.isGoing ? (
                           <div className="flex">
                             <CalendarCheck2 className="w-5 h-5 text-white mr-2" />{" "}
-                            {approvedUsers
-                              ? "Going"
-                              : "Going - Pending Payment Confirmation"}
+                            {approvedUsers ? (
+                              "Going"
+                            ) : (
+                              <p>
+                                Going - Pending
+                                <span className="md:hidden"> approval</span>
+                                <span className="hidden md:inline">
+                                  {" "}
+                                  Payment Confirmation
+                                </span>
+                              </p>
+                            )}
                           </div>
                         ) : eventStatus.isFavourite ? (
                           <div className="flex">
@@ -378,11 +395,20 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
                       ) : (
                         <CalendarCheck2 className="w-5 h-5 mr-2" />
                       )}
-                      {isEventFull
-                        ? "Event Full"
-                        : approvedUsers
-                          ? "Going"
-                          : "Going - Pending Payment Confirmation"}
+                      {isEventFull ? (
+                        "Event Full"
+                      ) : approvedUsers ? (
+                        "Going"
+                      ) : (
+                        <p>
+                          Going - Pending
+                          <span className="md:hidden"> approval</span>
+                          <span className="hidden md:inline">
+                            {" "}
+                            Payment Confirmation
+                          </span>
+                        </p>
+                      )}
                     </div>
                   </SelectItem>
                   <SelectItem value="favourite">
