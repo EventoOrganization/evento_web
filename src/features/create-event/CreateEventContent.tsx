@@ -617,7 +617,6 @@ const CreateEventContent = () => {
               <EnableChatButton />
               <EventURL />
               <CreateEventLimitedGuests />
-
               <RequiresApprovalToggle />
             </div>
             <EventQuestionsForm />

@@ -3,6 +3,7 @@ import { handleDeleteMedia, handleUpload } from "@/app/create-event/action";
 import EventoLoader from "@/components/EventoLoader";
 import FileUploadButton from "@/components/FileUploadButton";
 import Section from "@/components/layout/Section";
+import RequiresApprovalToggle from "@/components/RequiresApprovalToggle";
 import SmartImage from "@/components/SmartImage";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -135,7 +136,14 @@ const DuplicateEventContent = () => {
       });
       eventStore.setEventField("predefinedMedia", { images: [], videos: [] });
       eventStore.setEventField("interests", existingEvent.interests || []);
-
+      eventStore.setEventField(
+        "limitedGuests",
+        existingEvent.limitedGuests || null,
+      );
+      eventStore.setEventField(
+        "requiresApproval",
+        existingEvent.requiresApproval || false,
+      );
       console.log("Event Store Updated:", eventStore);
     }
   }, [existingEvent]);
@@ -169,6 +177,7 @@ const DuplicateEventContent = () => {
       uploadedMedia: eventStore.uploadedMedia || { images: [], videos: [] },
       predefinedMedia: eventStore.predefinedMedia || { images: [], videos: [] },
       interests: eventStore.interests || [],
+      requiresApproval: eventStore.requiresApproval || false,
     });
   }, [eventStore]);
   const [formValues, setFormValues] = useState({
@@ -198,6 +207,7 @@ const DuplicateEventContent = () => {
     uploadedMedia: eventStore.uploadedMedia || { images: [], videos: [] },
     predefinedMedia: eventStore.predefinedMedia || { images: [], videos: [] },
     interests: eventStore.interests || [],
+    requiresApproval: eventStore.requiresApproval || false,
   });
 
   const handleAuthSuccess = () => {
@@ -692,6 +702,7 @@ const DuplicateEventContent = () => {
               <EnableChatButton />
               <EventURL />
               <CreateEventLimitedGuests />
+              <RequiresApprovalToggle />
             </div>
             <EventQuestionsForm />
             <Button
