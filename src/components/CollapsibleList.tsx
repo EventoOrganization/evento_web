@@ -27,7 +27,7 @@ const CollapsibleList = ({
   setSelectedIds?: (ids: string[]) => void;
 }) => {
   const [isOpen, setIsOpen] = useState(
-    title === "Going" || title === "Invited" ? true : false,
+    title.startsWith("Going") || title === "Invited" ? true : false,
   );
   useEffect(() => {
     if (isSelectEnable) setIsOpen(true);
