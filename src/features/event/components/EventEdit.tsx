@@ -1,4 +1,5 @@
 // src/features/event/components/EventEdit.tsx
+import RequiresApprovalToggle from "@/components/RequiresApprovalToggle";
 import { Switch } from "@/components/ui/togglerbtn";
 import { useSession } from "@/contexts/SessionProvider";
 import { useToast } from "@/hooks/use-toast";
@@ -472,6 +473,7 @@ const EventEdit = ({
         editMode={editMode.limitedGuests}
         toggleEditMode={() => toggleEditMode("limitedGuests")}
       />
+      <RequiresApprovalToggle event={event} />
       {event.isHosted && (
         <CoHostManagementModal
           coHosts={coHosts}

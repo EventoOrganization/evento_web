@@ -37,6 +37,7 @@ type EventFormState = {
   uploadedMedia: { images: File[]; videos: File[] };
   predefinedMedia: { images: string[]; videos: string[] };
   additionalField?: any[];
+  requiresApproval?: boolean;
   setEventField: (key: string, value: any) => void;
   clearEventForm: () => void;
   addQuestion: () => void;
@@ -122,6 +123,7 @@ export const useCreateEventStore = create<EventFormState>()(
       uploadedMedia: { images: [], videos: [] },
       predefinedMedia: { images: [], videos: [] },
       additionalField: [],
+      requiresApproval: false,
 
       setEventField: (key, value) =>
         set((state) => ({ ...state, [key]: value })),
@@ -230,6 +232,7 @@ export const useCreateEventStore = create<EventFormState>()(
           predefinedMedia: { images: [], videos: [] },
           questions: [],
           additionalField: [],
+          requiresApproval: false,
         }),
     }),
     {

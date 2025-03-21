@@ -109,6 +109,8 @@ export type EventType = {
   isHosted?: boolean;
   isFavourite?: boolean;
   isRefused?: boolean;
+  requiresApproval?: boolean;
+  approvedUserIds?: string[];
 };
 export type FileType = {
   name: string;

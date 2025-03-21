@@ -3,6 +3,7 @@ import { handleDeleteMedia, handleUpload } from "@/app/create-event/action";
 import EventoLoader from "@/components/EventoLoader";
 import FileUploadButton from "@/components/FileUploadButton";
 import Section from "@/components/layout/Section";
+import RequiresApprovalToggle from "@/components/RequiresApprovalToggle";
 import SmartImage from "@/components/SmartImage";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -92,6 +93,7 @@ const CreateEventContent = () => {
       uploadedMedia: eventStore.uploadedMedia || { images: [], videos: [] },
       predefinedMedia: eventStore.predefinedMedia || { images: [], videos: [] },
       interests: eventStore.interests || [],
+      requiresApproval: eventStore.requiresApproval || false,
     });
   }, [eventStore]);
   const [formValues, setFormValues] = useState({
@@ -121,6 +123,7 @@ const CreateEventContent = () => {
     uploadedMedia: eventStore.uploadedMedia || { images: [], videos: [] },
     predefinedMedia: eventStore.predefinedMedia || { images: [], videos: [] },
     interests: eventStore.interests || [],
+    requiresApproval: eventStore.requiresApproval || false,
   });
   const handleAuthSuccess = () => {
     setIsAuthModalOpen(false);
@@ -614,6 +617,8 @@ const CreateEventContent = () => {
               <EnableChatButton />
               <EventURL />
               <CreateEventLimitedGuests />
+
+              <RequiresApprovalToggle />
             </div>
             <EventQuestionsForm />
             <Button
