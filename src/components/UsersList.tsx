@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/tooltip";
 import { useSession } from "@/contexts/SessionProvider";
 import AuthModal from "@/features/auth/components/AuthModal";
+import ApproveGoingUser from "@/features/event/update/ApproveGoingUser";
 import { useToast } from "@/hooks/use-toast";
 import { useEventStore } from "@/store/useEventsStore";
 import { useUsersStore } from "@/store/useUsersStore";
@@ -37,6 +38,7 @@ const UsersList = ({
   isSelectEnable = false,
   setSelectedIds,
   selectedIds,
+  setEvent,
 }: {
   user?: any;
   fetchUsers?: () => void;
@@ -47,6 +49,7 @@ const UsersList = ({
   isSelectEnable?: boolean;
   selectedIds?: string[];
   setSelectedIds?: (ids: string[]) => void;
+  setEvent?: (event: EventType) => void;
 }) => {
   const [showMobileReason, setShowMobileReason] = useState(false);
   const [isTouchDevice, setIsTouchDevice] = useState(false);
@@ -189,13 +192,13 @@ const UsersList = ({
           _id: user._id,
           isIFollowingHim: !isIFollowingHim,
         });
+        removeUserLocally?.(user._id);
         toast({
           title: "Success",
           description: `User is no longer a guest.`,
           duration: 2000,
           className: "bg-evento-gradient text-white",
         });
-        if (removeUserLocally) removeUserLocally(user._id);
       } else {
         console.error("Error:", response.error);
       }
@@ -212,6 +215,8 @@ const UsersList = ({
       return;
     }
     setLoading(true);
+    console.log("🔍 Checking setEvent: ", setEvent);
+    console.log("🔍 Checking event: ", event);
 
     try {
       const body = {
@@ -226,20 +231,41 @@ const UsersList = ({
       );
 
       if (response.ok) {
-        updateEvent(eventId, {
-          attendees: event?.attendees?.filter(
-            (attendee) => attendee._id !== user._id,
-          ),
-        });
+        console.log("✅ User removed from Going list");
 
+        if (setEvent) {
+          console.log("✅ Calling setEvent");
+          setEvent({
+            ...event!,
+            attendees:
+              event?.attendees?.filter(
+                (attendee) => attendee._id !== user._id,
+              ) || [],
+            approvedUserIds:
+              event?.approvedUserIds?.filter(
+                (id) => id.toString() !== user._id,
+              ) || [],
+          });
+        } else {
+          console.log("❌ setEvent is undefined, cannot update event locally.");
+        }
+
+        updateEvent(eventId, {
+          ...event!,
+          attendees:
+            event?.attendees?.filter((attendee) => attendee._id !== user._id) ||
+            [],
+          approvedUserIds:
+            event?.approvedUserIds?.filter(
+              (id) => id.toString() !== user._id,
+            ) || [],
+        });
         toast({
           title: "Success",
           description: "User removed from Going list",
           duration: 2000,
           className: "bg-evento-gradient text-white",
         });
-
-        if (removeUserLocally) removeUserLocally(user._id);
       } else {
         console.error("Error:", response.error);
         toast({
@@ -411,16 +437,28 @@ const UsersList = ({
             </Button>
           )
         )}
+        {isAdmin && title === "Going Pending Approval" && (
+          <ApproveGoingUser
+            event={event as EventType}
+            userId={user._id}
+            setEvent={setEvent}
+          />
+        )}
         {isAdmin && title === "Invited" && (
           <Button variant="outline" onClick={handleUnGuest} disabled={loading}>
             {loading ? "Processing..." : <XIcon />}
           </Button>
         )}
-        {isAdmin && title === "Going" && (
-          <Button variant="outline" onClick={handleUngoing} disabled={loading}>
-            {loading ? "Processing..." : <XIcon />}
-          </Button>
-        )}
+        {isAdmin &&
+          (title === "Going" || title === "Going Pending Approval") && (
+            <Button
+              variant="outline"
+              onClick={handleUngoing}
+              disabled={loading}
+            >
+              {loading ? "Processing..." : <XIcon />}
+            </Button>
+          )}
 
         {title === "Requested to Join" && isAdmin && (
           <Button onClick={handleAcceptRequest} disabled={loading}>

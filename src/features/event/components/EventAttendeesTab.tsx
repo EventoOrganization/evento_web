@@ -5,7 +5,9 @@ import ExportCSVButton from "@/components/ExportCSVButton";
 import GuestAllowFriendToggle from "@/components/GuestAllowFriendToggle";
 import { Label } from "@/components/ui/label";
 import { EventType } from "@/types/EventType";
+import { UserType } from "@/types/UserType";
 import { useEffect, useState } from "react";
+import { isApproved } from "../eventActions";
 import AddAnnoncement from "../update/AddUpdate";
 import EventGuestModal from "./EventGuestModal";
 import HideGuestList from "./HideGuestList";
@@ -33,6 +35,13 @@ const EventAttendeesTab: React.FC<EventAttendeesTabProps> = ({
   useEffect(() => {
     console.log("selectedIds", selectedIds);
   }, [selectedIds]);
+  const approvedGoingUsers = (event?.attendees || []).filter(
+    (user) => event && isApproved(event, user as UserType),
+  );
+
+  const pendingApprovalUsers = (event?.attendees || []).filter(
+    (user) => event && !isApproved(event, user as UserType),
+  );
 
   const goingIds = new Set(
     (event?.attendees || []).map((user) => user._id!).filter((id) => id),
@@ -80,14 +89,28 @@ const EventAttendeesTab: React.FC<EventAttendeesTabProps> = ({
         <>
           <CollapsibleList
             title="Going"
-            count={event?.attendees?.length || 0}
+            count={approvedGoingUsers?.length || 0}
             users={event?.attendees || []}
             event={event}
             isAdmin={isAdmin}
+            setEvent={setEvent}
             isSelectEnable={isSelectEnable}
             selectedIds={selectedIds}
             setSelectedIds={setSelectedIds}
           />
+          {isAdmin && event?.requiresApproval && (
+            <CollapsibleList
+              title="Going Pending Approval"
+              count={pendingApprovalUsers?.length || 0}
+              users={event?.attendees || []}
+              event={event}
+              isAdmin={isAdmin}
+              setEvent={setEvent}
+              isSelectEnable={isSelectEnable}
+              selectedIds={selectedIds}
+              setSelectedIds={setSelectedIds}
+            />
+          )}
           <CollapsibleList
             isAdmin={isAdmin}
             title="Invited"

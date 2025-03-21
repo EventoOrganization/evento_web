@@ -1,3 +1,4 @@
+import { isApproved } from "@/features/event/eventActions";
 import { cn } from "@/lib/utils";
 import { EventType } from "@/types/EventType";
 import { TempUserType, UserType } from "@/types/UserType";
@@ -31,6 +32,7 @@ const CollapsibleList = ({
   useEffect(() => {
     if (isSelectEnable) setIsOpen(true);
   }, [isSelectEnable]);
+
   const removeUserLocally = (userId: string) => {
     if (!setEvent || !event) return;
     const updateAttendees =
@@ -70,19 +72,59 @@ const CollapsibleList = ({
         <div className="mt-2 space-y-2">
           {users
             .filter((user) => user && user._id)
-            .map((user) => (
-              <UsersList
-                isAdmin={isAdmin}
-                key={user._id}
-                user={user}
-                removeUserLocally={removeUserLocally}
-                event={event}
-                title={title}
-                selectedIds={selectedIds}
-                setSelectedIds={setSelectedIds}
-                isSelectEnable={isSelectEnable}
-              />
-            ))}
+            .map((user) => {
+              if (title === "Going" || title === "Going Pending Approval") {
+                const isUserApproved =
+                  event && isApproved(event, user as UserType);
+                if (title === "Going Pending Approval") {
+                  if (isUserApproved) return null;
+                  return (
+                    <UsersList
+                      isAdmin={isAdmin}
+                      key={user._id}
+                      user={user}
+                      removeUserLocally={removeUserLocally}
+                      event={event}
+                      title={title}
+                      setEvent={setEvent}
+                      selectedIds={selectedIds}
+                      setSelectedIds={setSelectedIds}
+                      isSelectEnable={isSelectEnable}
+                    />
+                  );
+                } else if (title === "Going") {
+                  if (!isUserApproved) return null;
+                  return (
+                    <UsersList
+                      isAdmin={isAdmin}
+                      key={user._id}
+                      user={user}
+                      removeUserLocally={removeUserLocally}
+                      event={event}
+                      title={title}
+                      setEvent={setEvent}
+                      selectedIds={selectedIds}
+                      setSelectedIds={setSelectedIds}
+                      isSelectEnable={isSelectEnable}
+                    />
+                  );
+                }
+              }
+              return (
+                <UsersList
+                  isAdmin={isAdmin}
+                  key={user._id}
+                  user={user}
+                  removeUserLocally={removeUserLocally}
+                  event={event}
+                  title={title}
+                  setEvent={setEvent}
+                  selectedIds={selectedIds}
+                  setSelectedIds={setSelectedIds}
+                  isSelectEnable={isSelectEnable}
+                />
+              );
+            })}
         </div>
       )}
     </div>
