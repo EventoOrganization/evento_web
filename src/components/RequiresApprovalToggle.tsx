@@ -3,6 +3,7 @@ import { Switch } from "@/components/ui/togglerbtn";
 import { useSession } from "@/contexts/SessionProvider";
 import { handleFieldChange } from "@/features/event/eventActions";
 import { useToast } from "@/hooks/use-toast";
+import { useEventStore } from "@/store/useEventsStore";
 import { EventType } from "@/types/EventType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { usePathname } from "next/navigation";
@@ -14,6 +15,7 @@ const RequiresApprovalToggle = ({ event }: RequiresApprovalToggleProps) => {
   const pathname = usePathname();
   const { toast } = useToast();
   const { token } = useSession();
+  const { updateEvent } = useEventStore();
   const isCreatingEvent = pathname.startsWith("/create-event");
   const [isApprovalRequired, setIsApprovalRequired] = useState(
     event?.requiresApproval || false,
@@ -36,6 +38,7 @@ const RequiresApprovalToggle = ({ event }: RequiresApprovalToggleProps) => {
           variant: "evento",
           duration: 3000,
         });
+        updateEvent(event._id, { requiresApproval: value });
       } catch (error) {
         console.error("Error updating event:", error);
         toast({

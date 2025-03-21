@@ -41,13 +41,13 @@ export const hasEventhost = (event: EventType, user: UserType) => {
   return event.user._id === user._id;
 };
 export const isApproved = (event: EventType, user: UserType) => {
-  return (
+  const isApproved =
     !!event &&
     !!user &&
     (!event.requiresApproval ||
       isAdmin(event, user) ||
-      (event.approvedUserIds ?? []).includes(user._id))
-  );
+      (event.approvedUserIds ?? []).includes(user._id));
+  return isApproved;
 };
 
 export const isAdmin = (event: EventType, user: UserType) => {

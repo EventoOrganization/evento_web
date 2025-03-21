@@ -26,6 +26,7 @@ import {
   Loader2 as Spinner,
 } from "lucide-react";
 import React, { useState } from "react";
+import { isApproved } from "../eventActions";
 import QuestionModal from "./QuestionModal";
 import RefusalModal from "./RefusalModal";
 
@@ -59,6 +60,9 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
     guestLimit !== null &&
     guestLimit !== undefined &&
     adjustedAttendeeCount >= guestLimit;
+  const [approvedUsers, setApprovedUsers] = useState(
+    isApproved(event, user as UserType),
+  );
   const { updateEventStatus: updateEventStatusInStore } = useEventStore();
   const [showQuestionModal, setShowQuestionModal] = useState<boolean>(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
@@ -68,7 +72,6 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
   const hasEventEnded = event.details?.endDate
     ? new Date(event.details.endDate) < startOfDay(new Date())
     : false;
-
   if (hasEventEnded) {
     return null;
   }
@@ -153,6 +156,7 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
       console.error(`Error updating event status (${status}):`, error);
     } finally {
       setLoading(null);
+      setApprovedUsers(isApproved(event, user as UserType));
     }
   };
 
@@ -226,9 +230,9 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
                 {
                   "bg-gray-300 text-gray-600 cursor-not-allowed": isEventFull,
                   "bg-evento-gradient-button text-white hover:text-white":
-                    eventStatus.isGoing,
+                    eventStatus.isGoing && approvedUsers,
                   "text-eventoPurpleLight hover:text-eventoPurpleLight":
-                    !eventStatus.isGoing,
+                    !eventStatus.isGoing || !approvedUsers,
                 },
               )}
             >
@@ -239,7 +243,9 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
               ) : eventStatus.isGoing ? (
                 <>
                   <CalendarCheck2 className="w-5 h-5 text-white mr-2" />
-                  Going
+                  {approvedUsers
+                    ? "Going"
+                    : "Going - Pending Payment Confirmation"}
                 </>
               ) : (
                 <>Click to Join</>
@@ -342,7 +348,9 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
                         eventStatus.isGoing ? (
                           <div className="flex">
                             <CalendarCheck2 className="w-5 h-5 text-white mr-2" />{" "}
-                            Going
+                            {approvedUsers
+                              ? "Going"
+                              : "Going - Pending Payment Confirmation"}
                           </div>
                         ) : eventStatus.isFavourite ? (
                           <div className="flex">
@@ -370,7 +378,11 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
                       ) : (
                         <CalendarCheck2 className="w-5 h-5 mr-2" />
                       )}
-                      {isEventFull ? "Event Full" : "Going"}
+                      {isEventFull
+                        ? "Event Full"
+                        : approvedUsers
+                          ? "Going"
+                          : "Going - Pending Payment Confirmation"}
                     </div>
                   </SelectItem>
                   <SelectItem value="favourite">
