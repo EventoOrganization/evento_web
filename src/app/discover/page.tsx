@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 const page = () => {
   return (
     <div className="max-w-7xl">
-      <DiscoverPageContent />;
+      <DiscoverPageContent />
     </div>
   );
 };
