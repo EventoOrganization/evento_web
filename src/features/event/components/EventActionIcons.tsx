@@ -243,17 +243,7 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
               ) : eventStatus.isGoing ? (
                 <>
                   <CalendarCheck2 className="w-5 h-5 text-white mr-2" />
-                  {approvedUsers ? (
-                    "Going"
-                  ) : (
-                    <p>
-                      Going - Pending
-                      <span className="md:hidden"> approval</span>
-                      <span className="hidden md:inline">
-                        Payment Confirmation
-                      </span>
-                    </p>
-                  )}
+                  {approvedUsers ? "Going" : <p>Going - Pending Approval</p>}
                 </>
               ) : (
                 <>Click to Join</>
@@ -359,14 +349,7 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
                             {approvedUsers ? (
                               "Going"
                             ) : (
-                              <p>
-                                Going - Pending
-                                <span className="md:hidden"> approval</span>
-                                <span className="hidden md:inline">
-                                  {" "}
-                                  Payment Confirmation
-                                </span>
-                              </p>
+                              <p>Going - Pending Approval</p>
                             )}
                           </div>
                         ) : eventStatus.isFavourite ? (
@@ -400,14 +383,7 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
                       ) : approvedUsers ? (
                         "Going"
                       ) : (
-                        <p>
-                          Going - Pending
-                          <span className="md:hidden"> approval</span>
-                          <span className="hidden md:inline">
-                            {" "}
-                            Payment Confirmation
-                          </span>
-                        </p>
+                        <p>Going - Pending Approval</p>
                       )}
                     </div>
                   </SelectItem>

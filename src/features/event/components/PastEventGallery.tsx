@@ -224,7 +224,7 @@ const PastEventGallery: React.FC<PastEventGalleryProps> = ({ event }) => {
                   : "You only are allowed to upload media"}
               </p>
             ) : (
-              <p className="text-sm">
+              <p className="text-sm ">
                 {allUploadPhotoVideo
                   ? "You are allowed to upload media"
                   : "You are not allowed to upload media"}
@@ -327,7 +327,7 @@ const PastEventGallery: React.FC<PastEventGalleryProps> = ({ event }) => {
         </div>
       ))}
       {mediaItems.length === 0 && (
-        <p>
+        <p className="text-center">
           {allUploadPhotoVideo
             ? event.isGoing
               ? "No media uploaded yet. Upload the first media!"

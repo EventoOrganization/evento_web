@@ -135,7 +135,7 @@ const EventAttendeesTab: React.FC<EventAttendeesTabProps> = ({
           )}
         </>
       ) : (
-        <p className="p-4 mt-8">Sorry, the guestlist is private.</p>
+        <p className="p-4 mt-8 text-center">Sorry, the guestlist is private.</p>
       )}
       {isAdmin && (
         <>
