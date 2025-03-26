@@ -158,7 +158,7 @@ const EventAnnouncement = ({
                     </div>
                     <div className="flex items-center justify-between">
                       <TruncatedText text={announcement.message} />
-                      {isAdmin ? (
+                      {isAdmin && (
                         <Button
                           variant={"ghost"}
                           onClick={() => {
@@ -167,8 +167,6 @@ const EventAnnouncement = ({
                         >
                           <XIcon className="w-4 h-4" />
                         </Button>
-                      ) : (
-                        <Button>Respond</Button>
                       )}
                     </div>{" "}
                     <Button
