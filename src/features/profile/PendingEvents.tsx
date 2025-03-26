@@ -35,10 +35,12 @@ const PendingEvents = () => {
     const eventStatus = getEventStatus(event._id);
     const hasResponded =
       eventStatus.isGoing || eventStatus.isFavourite || eventStatus.isRefused;
+    const hasHidden = event.hiddenByUsers?.some((id) => id === userInfo?._id);
     return (
       event.guests?.some((guest) => guest._id === userInfo?._id) &&
       isUpcomingOrOngoing(event) &&
-      !hasResponded
+      !hasResponded &&
+      !hasHidden
     );
   });
 
