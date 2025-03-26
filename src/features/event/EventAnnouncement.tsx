@@ -91,7 +91,6 @@ const EventAnnouncement = ({
     <>
       {filteredAnnouncements && filteredAnnouncements.length > 0 && (
         <div className="flex flex-col gap-2">
-          <h3 className="text-eventoPink text-base">New Update</h3>
           {filteredAnnouncements.map((announcement: Announcement) => {
             const sender =
               user && user._id === announcement.senderId

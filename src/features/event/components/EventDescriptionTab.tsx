@@ -83,6 +83,7 @@ const EventDescriptionTab: React.FC<EventDescriptionTabProps> = ({
         isLocal
       />
       <AddToCalendar event={event} />
+      <h3 className="text-base">Event Description</h3>
       <TruncatedText
         expand={
           filteredAnnouncements && filteredAnnouncements.length > 0
@@ -92,13 +93,6 @@ const EventDescriptionTab: React.FC<EventDescriptionTabProps> = ({
         className="px-0 text-muted-foreground"
         text={event?.details?.description || ""}
       />
-      {filteredAnnouncements && filteredAnnouncements.length > 0 && (
-        <EventAnnouncement
-          event={event}
-          isAdmin={isAdmin}
-          setEvent={setEvent}
-        />
-      )}
       <Link
         href={event?.details?.URLlink || ""}
         target="_blank"
@@ -107,7 +101,15 @@ const EventDescriptionTab: React.FC<EventDescriptionTabProps> = ({
         <TruncateText
           text={event?.details?.URLtitle || event?.details?.URLlink || ""}
         />
-      </Link>
+      </Link>{" "}
+      <h3 className="text-base">Event Activity</h3>
+      {filteredAnnouncements && filteredAnnouncements.length > 0 && (
+        <EventAnnouncement
+          event={event}
+          isAdmin={isAdmin}
+          setEvent={setEvent}
+        />
+      )}
     </div>
   );
 };

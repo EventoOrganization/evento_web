@@ -323,7 +323,7 @@ const EventEdit = ({
       <EditableSelect
         value={type}
         onChange={setType}
-        field="EventType"
+        field="Event Type"
         handleUpdate={() => handleUpdate("eventType", type)}
         handleCancel={() => handleCancel("eventType")}
         isUpdating={isUpdating}

@@ -81,7 +81,7 @@ const EventAttendeesTab: React.FC<EventAttendeesTabProps> = ({
       )}
       {isGuest && event?.guestsAllowFriend && (
         <div className="grid grid-cols-2 items-center justify-between gap-2 mb-2">
-          <Label>You are autorized to invite friends</Label>
+          <Label>You are authorized to invite friends</Label>
           <EventGuestModal event={event} setEvent={setEvent} />{" "}
         </div>
       )}
