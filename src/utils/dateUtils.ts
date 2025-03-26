@@ -166,3 +166,10 @@ export const setDateWithTime = (
 
   return date.toISOString();
 };
+export const formatISODate = (
+  iso: string,
+  formatStr = "dd MMM yyyy HH:mm",
+  tz = Intl.DateTimeFormat().resolvedOptions().timeZone, // timezone locale
+) => {
+  return formatInTimeZone(new Date(iso), tz, formatStr);
+};

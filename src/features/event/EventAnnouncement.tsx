@@ -1,21 +1,15 @@
-import EventoSpinner from "@/components/EventoSpinner";
-import SmartImage from "@/components/SmartImage";
+import EzUserPreview from "@/components/EzUserPreview";
 import TruncatedText from "@/components/TruncatedText";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { useSession } from "@/contexts/SessionProvider";
 import { useToast } from "@/hooks/use-toast";
 import { useUsersStore } from "@/store/useUsersStore";
 import { Announcement, EventType } from "@/types/EventType";
+import { formatISODate } from "@/utils/dateUtils";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
-import { Trash } from "lucide-react";
+import { XIcon } from "lucide-react";
+import { useState } from "react";
+import QuestionModal from "./components/QuestionModal";
 interface EventAnnouncementProps {
   event: EventType;
   isAdmin?: boolean;
@@ -29,6 +23,9 @@ const EventAnnouncement = ({
   const { user, token } = useSession();
   const { users } = useUsersStore();
   const { toast } = useToast();
+  const [activeAnnouncement, setActiveAnnouncement] =
+    useState<Announcement | null>(null);
+  const [showQuestionModal, setShowQuestionModal] = useState(false);
   const filteredAnnouncements =
     event.announcements &&
     event.announcements.filter((announcement) => {
@@ -46,6 +43,7 @@ const EventAnnouncement = ({
 
       return isDirectRecipient || hasMatchingStatus;
     });
+
   const handleDeleteAnnoncement = async (announcementId: string) => {
     try {
       const response = await fetchData<any>(
@@ -86,7 +84,7 @@ const EventAnnouncement = ({
   };
 
   // const handleDeleteComment = async (commentId: string) => {};
-  const handleComment = async () => {};
+  // const handleComment = async () => {};
   return (
     <>
       {filteredAnnouncements && filteredAnnouncements.length > 0 && (
@@ -96,138 +94,190 @@ const EventAnnouncement = ({
               user && user._id === announcement.senderId
                 ? user
                 : users.find((u) => u._id === announcement.senderId);
+            const hasAlreadyAnswered = !!announcement.responses?.some(
+              (response) => response.userId === user?._id,
+            );
 
-            return (
-              <div
-                key={announcement._id}
-                className="bg-muted border-none shadow-none p-2 rounded-lg"
-              >
-                <div className="flex items-center gap-2 justify-between">
-                  <div className="flex items-center gap-2">
-                    {sender ? (
-                      <SmartImage
-                        src={sender.profileImage || "/evento-logo.png"}
-                        alt={sender.username || "User"}
-                        width={30}
-                        height={30}
-                        className="w-6 h-6 rounded-full"
-                        forceImg
-                      />
-                    ) : (
-                      <Avatar>
-                        <AvatarImage
-                          src={"/evento-logo.png"}
-                          className="rounded-full w-6 h-6"
-                        />
-                        <AvatarFallback>CN</AvatarFallback>
-                      </Avatar>
-                    )}
-                    <p className="font-bold">
-                      {sender?.username || "Unknown User"}
-                    </p>
+            if (!sender) return null;
+            switch (announcement.type) {
+              case "info":
+                return (
+                  <div
+                    key={announcement._id}
+                    className="bg-muted border shadow p-2 rounded-lg"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <EzUserPreview user={sender} />
+                        {isAdmin && (
+                          <span className="italic text-xs text-muted-foreground">
+                            {announcement.type} to{" "}
+                            {announcement.receivers.status}
+                          </span>
+                        )}
+                      </div>
+                      <span className="text-xs text-muted-foreground">
+                        {formatISODate(announcement.createdAt)}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <TruncatedText text={announcement.message} />
+                      {isAdmin && (
+                        <Button
+                          variant={"ghost"}
+                          onClick={() => {
+                            handleDeleteAnnoncement(announcement._id);
+                          }}
+                        >
+                          <XIcon className="w-4 h-4" />
+                        </Button>
+                      )}
+                    </div>
                   </div>
-                  {isAdmin && (
+                );
+
+              case "questionnaire":
+                return (
+                  <div
+                    key={announcement._id}
+                    className="bg-muted border shadow p-2 rounded-lg flex flex-col"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <EzUserPreview user={sender} />
+                        {isAdmin && (
+                          <span className="italic text-xs text-muted-foreground">
+                            {announcement.type} to{" "}
+                            {announcement.receivers.status}
+                          </span>
+                        )}
+                      </div>
+                      <span className="text-xs text-muted-foreground">
+                        {formatISODate(announcement.createdAt)}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <TruncatedText text={announcement.message} />
+                      {isAdmin ? (
+                        <Button
+                          variant={"ghost"}
+                          onClick={() => {
+                            handleDeleteAnnoncement(announcement._id);
+                          }}
+                        >
+                          <XIcon className="w-4 h-4" />
+                        </Button>
+                      ) : (
+                        <Button>Respond</Button>
+                      )}
+                    </div>{" "}
                     <Button
-                      variant={"ghost"}
+                      className="self-center w-fit"
+                      disabled={hasAlreadyAnswered}
+                      variant={hasAlreadyAnswered ? "outline" : "eventoPrimary"}
                       onClick={() => {
-                        handleDeleteAnnoncement(announcement._id);
+                        if (!hasAlreadyAnswered) {
+                          setActiveAnnouncement(announcement);
+                          setShowQuestionModal(true);
+                        }
                       }}
                     >
-                      <Trash className="w-4 h-4 mr-2" />
-                      <span className="hidden md:flex">Delete</span>
+                      {hasAlreadyAnswered ? "Already answered" : "Respond"}
                     </Button>
-                  )}
-                </div>
-                <TruncatedText
-                  expand
-                  className="mt-2 text-sm text-muted-foreground pl-8 "
-                  text={announcement.message}
-                />
+                  </div>
+                );
 
-                {announcement.comments && announcement.comments.length > 0 && (
-                  <Accordion type="single" collapsible className="p-0">
-                    <AccordionItem value="comments">
-                      <AccordionTrigger
-                        className="text-sm text-eventoPink justify-end p-0"
-                        onClick={() => {
-                          toast({
-                            title: "In progress",
-                            description: `This button will show comments in the future`,
-                            variant: "evento",
-                          });
-                        }}
-                      >
-                        {announcement.comments.length} comments
-                      </AccordionTrigger>
-                      {announcement.comments.length > 0 && (
-                        <AccordionContent>
-                          {announcement.comments.map((comment) => (
-                            <>
-                              {comment.userId ? (
-                                <SmartImage
-                                  src={
-                                    users.find((u) => u._id === comment.userId)
-                                      ?.profileImage || "/evento-logo.png"
-                                  }
-                                  alt={
-                                    users.find((u) => u._id === comment.userId)
-                                      ?.username || "User"
-                                  }
-                                  width={30}
-                                  height={30}
-                                  className="w-8 h-8 rounded-full"
-                                  forceImg
-                                />
-                              ) : (
-                                <Avatar>
-                                  <AvatarImage
-                                    src={"/evento-logo.png"}
-                                    className="rounded-full w-8 h-8"
-                                  />
-                                  <AvatarFallback>CN</AvatarFallback>
-                                </Avatar>
-                              )}
-                              <p>{comment.content}</p>
-                            </>
-                          ))}
-                        </AccordionContent>
-                      )}
-                    </AccordionItem>
-                  </Accordion>
-                )}
-                <div className="flex items-center gap-2 py-2 pl-8">
-                  {user ? (
-                    <SmartImage
-                      src={user.profileImage || "/evento-logo.png"}
-                      alt={user.username || "User"}
-                      width={30}
-                      height={30}
-                      className="w-6 h-6 rounded-full"
-                      forceImg
-                    />
-                  ) : (
-                    <Avatar>
-                      <AvatarImage
-                        src={"/evento-logo.png"}
-                        className="rounded-full w-6 h-6"
-                      />
-                      <AvatarFallback>CN</AvatarFallback>
-                    </Avatar>
-                  )}
-                  <Input type="text" placeholder="Add a comment" disabled />
-                  <Button
-                    variant={"eventoPrimary"}
-                    onClick={() => {
-                      handleComment();
-                    }}
+              default:
+                return (
+                  <div
+                    key={announcement._id}
+                    className="p-2 bg-red-50 border border-red-200 rounded-md"
                   >
-                    <EventoSpinner />
-                  </Button>
-                </div>
-              </div>
-            );
+                    <p className="text-red-500 text-sm">
+                      Unknown announcement type: {announcement.type}
+                    </p>
+                  </div>
+                );
+            }
           })}
         </div>
+      )}
+      {showQuestionModal && activeAnnouncement && (
+        <QuestionModal
+          questions={activeAnnouncement.questions}
+          context="announcement"
+          onSubmit={async (answers) => {
+            console.log("Answers:", answers);
+            try {
+              const res = await fetchData(
+                `/events/announcements/${activeAnnouncement._id}/respond`,
+                HttpMethod.POST,
+                {
+                  eventId: activeAnnouncement.eventId,
+                  answers,
+                },
+                token,
+              );
+
+              if (res.ok) {
+                toast({
+                  title: "Success",
+                  description: "Your response has been submitted!",
+                  variant: "evento",
+                });
+
+                if (setEvent && user?._id) {
+                  const updatedAnnouncements = event.announcements?.map((a) => {
+                    if (a._id === activeAnnouncement._id) {
+                      return {
+                        ...a,
+                        responses: [
+                          ...(a.responses || []),
+                          {
+                            _id: "",
+                            announcementId: activeAnnouncement._id,
+                            eventId: activeAnnouncement.eventId,
+                            userId: user._id,
+                            answers,
+                            createdAt: "",
+                            updatedAt: "",
+                          },
+                        ],
+                      };
+                    }
+                    return a;
+                  });
+
+                  setEvent({
+                    ...event,
+                    announcements: updatedAnnouncements,
+                  });
+                }
+              } else {
+                toast({
+                  title: "Error",
+                  description: res.error || "Failed to submit response",
+                  variant: "destructive",
+                });
+              }
+            } catch (error) {
+              console.error("Error submitting response:", error);
+              toast({
+                title: "Error",
+                description:
+                  "Something went wrong while submitting your response.",
+                variant: "destructive",
+              });
+            } finally {
+              setShowQuestionModal(false);
+              setActiveAnnouncement(null);
+            }
+          }}
+          onClose={() => {
+            setShowQuestionModal(false);
+            setActiveAnnouncement(null);
+          }}
+        />
       )}
     </>
   );

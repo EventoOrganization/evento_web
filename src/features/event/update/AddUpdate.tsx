@@ -85,11 +85,18 @@ const AddAnnouncement = ({
 
   const handleAnnouncement = async () => {
     if (!message.trim()) {
-      toast({
-        title: "Error",
-        description: "Message cannot be empty",
-        variant: "destructive",
-      });
+      switch (announcementType) {
+        case "info":
+          toast({
+            title: "Error",
+            description: "Message cannot be empty",
+            variant: "destructive",
+          });
+          break;
+        case "questionnaire":
+          setMessage("Hello, please complete the questionnaire!");
+          break;
+      }
       return;
     }
 
@@ -211,9 +218,9 @@ const AddAnnouncement = ({
               {questions.map((q, idx) => (
                 <div
                   key={idx}
-                  className="border p-2 rounded-md bg-eventoPurpleDark"
+                  className="border p-2 space-y-2 rounded-md bg-card"
                 >
-                  {" "}
+                  <h3 className="text-lg font-semibold">Question {idx + 1}</h3>
                   <Select
                     value={
                       q.type === "multiple-choice"

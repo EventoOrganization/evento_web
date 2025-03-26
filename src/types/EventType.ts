@@ -26,10 +26,13 @@ export type Announcement = {
   eventId: string;
   senderId: string;
   message: string;
+  type: "info" | "questionnaire";
   receivers: {
-    userIds?: string[]; // Liste d'IDs des utilisateurs
-    status?: "going" | "invited" | "decline"; // Filtrage par statut
+    userIds?: string[];
+    status?: "going" | "invited" | "decline";
   };
+  questions: QuestionType[];
+  responses: AnnouncementResponseType[];
   comments: {
     _id: string;
     userId: string;
@@ -39,13 +42,28 @@ export type Announcement = {
   createdAt: string;
   updatedAt: string;
 };
+export type AnnouncementAnswer = {
+  questionId: string;
+  answer: string | string[]; // dépend du type de la question
+};
+
+export type AnnouncementResponseType = {
+  _id: string;
+  announcementId: string;
+  eventId: string;
+  userId: string; // ou UserType si tu veux peupler les infos user
+  answers: AnnouncementAnswer[];
+  createdAt: string;
+  updatedAt: string;
+};
 
 export type QuestionType = {
-  id: string;
+  _id: string;
   question: string;
   type: "text" | "multiple-choice" | "checkbox";
   options?: string[];
-  required: boolean;
+  required?: boolean;
+  displayType?: "radio" | "checkbox";
 };
 
 export type EventType = {
@@ -111,7 +129,33 @@ export type EventType = {
   isRefused?: boolean;
   requiresApproval?: boolean;
   approvedUserIds?: string[];
+  eventComments?: CommentType[];
 };
+export type ReactionType = "like" | "love" | "laugh" | "angry" | "sad";
+
+export type Reaction = {
+  userId: string;
+  type: ReactionType;
+};
+
+// Type principal d’un commentaire
+export type CommentType = {
+  _id: string;
+  eventId: string;
+  userId: {
+    _id: string;
+    username: string;
+    profileImage?: string;
+  };
+  content: string;
+  parentId?: string | null;
+  depth: number;
+  isDeleted: boolean;
+  reactions: Reaction[];
+  createdAt: string;
+  updatedAt: string;
+};
+
 export type FileType = {
   name: string;
   size: number;

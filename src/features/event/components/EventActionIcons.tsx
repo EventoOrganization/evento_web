@@ -429,6 +429,7 @@ const EventActionIcons: React.FC<EventActionIconsProps> = ({
 
         {showQuestionModal && (
           <QuestionModal
+            context="rsvp"
             questions={event?.questions || []}
             onSubmit={handleSubmitQuestions}
             onClose={() => setShowQuestionModal(false)}

@@ -114,7 +114,7 @@ const EditableQuestionsForm = ({
         <>
           <h4 className="text-eventoPurpleLight font-bold">Create Your RSVP</h4>
           {questions.map((question, questionIndex) => (
-            <div key={question.id} className="space-y-2">
+            <div key={question._id} className="space-y-2">
               <Input
                 value={question.question}
                 onChange={(e) =>

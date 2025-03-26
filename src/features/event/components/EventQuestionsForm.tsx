@@ -64,7 +64,7 @@ const EventQuestionsForm = () => {
         <>
           {Array.isArray(questions) &&
             questions.map((question, index) => (
-              <div key={question.id} className="space-y-2">
+              <div key={question._id} className="space-y-2">
                 {" "}
                 <div className="flex items-center justify-between mt-2 gap-2">
                   <Select

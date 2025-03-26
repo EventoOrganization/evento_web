@@ -3,16 +3,19 @@
 import AddressModal from "@/components/AddressModal";
 import AddToCalendar from "@/components/AddToCalendar";
 import EventoLoader from "@/components/EventoLoader";
+import EzUserPreview from "@/components/EzUserPreview";
 import {
   default as TruncatedText,
   default as TruncateText,
 } from "@/components/TruncatedText";
 import { useSession } from "@/contexts/SessionProvider";
 import EventActionIcons from "@/features/event/components/EventActionIcons";
+import { useUsersStore } from "@/store/useUsersStore";
 import { EventType } from "@/types/EventType";
 import { renderDate } from "@/utils/dateUtils";
 import Link from "next/link";
 import EventAnnouncement from "../EventAnnouncement";
+import CommentForm from "./comments/CommentForm";
 import { EventStatusKeys } from "./EventIdTabs";
 interface EventDescriptionTabProps {
   event: EventType;
@@ -31,6 +34,7 @@ const EventDescriptionTab: React.FC<EventDescriptionTabProps> = ({
   setEvent,
 }) => {
   const { user } = useSession();
+  const { users } = useUsersStore();
   const filteredAnnouncements =
     event.announcements &&
     event.announcements.filter((announcement) => {
@@ -110,6 +114,34 @@ const EventDescriptionTab: React.FC<EventDescriptionTabProps> = ({
           setEvent={setEvent}
         />
       )}
+      {event.eventComments && event.eventComments.length > 0 && (
+        <div className="flex flex-col gap-2 p-2">
+          {event.eventComments.map((comment) => {
+            const sender =
+              user && user._id === comment.userId._id
+                ? user
+                : users.find((u) => u._id === comment.userId._id);
+            if (!sender) return null;
+            return (
+              <div key={comment._id} className="flex flex-col gap-2">
+                <EzUserPreview user={sender} />
+                <TruncatedText text={comment.content} />
+              </div>
+            );
+          })}
+        </div>
+      )}
+      <CommentForm
+        eventId={event._id}
+        onSuccess={(newComment) => {
+          if (setEvent) {
+            setEvent({
+              ...event,
+              eventComments: [...(event.eventComments ?? []), newComment],
+            });
+          }
+        }}
+      />
     </div>
   );
 };

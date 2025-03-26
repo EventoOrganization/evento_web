@@ -1,16 +1,22 @@
+import { Button } from "@/components/ui/button";
+import { QuestionType } from "@/types/EventType";
 import { XIcon } from "lucide-react";
 import React, { useState } from "react";
 
 type QuestionModalProps = {
-  questions: any[];
-  onSubmit: (answers: any) => void;
+  questions: QuestionType[];
+  onSubmit: (
+    answers: { questionId: string; answer: string | string[] }[],
+  ) => void;
   onClose: () => void;
+  context?: "rsvp" | "announcement";
 };
 
 const QuestionModal: React.FC<QuestionModalProps> = ({
   questions,
   onSubmit,
   onClose,
+  context,
 }) => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<
@@ -51,6 +57,10 @@ const QuestionModal: React.FC<QuestionModalProps> = ({
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     }
   };
+  const isQuestionRequired = (question: QuestionType): boolean => {
+    if (context === "announcement") return true;
+    return !!question.required;
+  };
 
   const handleSkip = () => {
     if (currentQuestionIndex < questions.length - 1) {
@@ -86,7 +96,7 @@ const QuestionModal: React.FC<QuestionModalProps> = ({
         <div key={currentQuestion._id} className="mb-4">
           <p>
             {currentQuestion.question}{" "}
-            {!currentQuestion.required && (
+            {!currentQuestion.required && context !== "announcement" && (
               <span className="text-gray-500">(Optional)</span>
             )}
           </p>
@@ -101,7 +111,8 @@ const QuestionModal: React.FC<QuestionModalProps> = ({
             />
           )}
 
-          {currentQuestion.type === "multiple-choice" && (
+          {(currentQuestion.type === "multiple-choice" ||
+            currentQuestion.displayType === "checkbox") && (
             <select
               multiple
               className="border rounded p-2 w-full"
@@ -112,7 +123,7 @@ const QuestionModal: React.FC<QuestionModalProps> = ({
                 )
               }
             >
-              {currentQuestion.options.map((option: string, idx: number) => (
+              {currentQuestion.options?.map((option: string, idx: number) => (
                 <option key={idx} value={option}>
                   {option}
                 </option>
@@ -120,9 +131,10 @@ const QuestionModal: React.FC<QuestionModalProps> = ({
             </select>
           )}
 
-          {currentQuestion.type === "checkbox" && (
+          {(currentQuestion.type === "checkbox" ||
+            currentQuestion.displayType === "radio") && (
             <div className="flex flex-wrap gap-2">
-              {currentQuestion.options.map((option: string, idx: number) => (
+              {currentQuestion.options?.map((option: string, idx: number) => (
                 <label key={idx} className="flex items-center gap-2">
                   <input
                     type="checkbox"
@@ -172,19 +184,50 @@ const QuestionModal: React.FC<QuestionModalProps> = ({
 
           {currentQuestionIndex < questions.length - 1 ? (
             <>
-              {!currentQuestion.required && (
+              {!currentQuestion.required && context != "announcement" && (
                 <button className="btn" onClick={handleSkip}>
                   Skip
                 </button>
               )}
-              <button className="btn" onClick={handleNext}>
+              <Button
+                disabled={
+                  isQuestionRequired(currentQuestion) &&
+                  !answers.some(
+                    (ans) =>
+                      ans.questionId === currentQuestion._id &&
+                      ans.answer &&
+                      (Array.isArray(ans.answer)
+                        ? ans.answer.length > 0
+                        : true),
+                  )
+                }
+                className="btn"
+                onClick={handleNext}
+                variant={"eventoPrimary"}
+              >
                 Next
-              </button>
+              </Button>
             </>
           ) : (
-            <button className="btn" onClick={handleSubmit}>
+            <Button
+              disabled={questions.some(
+                (question) =>
+                  isQuestionRequired(question) &&
+                  !answers.some(
+                    (ans) =>
+                      ans.questionId === question._id &&
+                      ans.answer &&
+                      (Array.isArray(ans.answer)
+                        ? ans.answer.length > 0
+                        : true),
+                  ),
+              )}
+              className="btn"
+              onClick={handleSubmit}
+              variant={"eventoPrimary"}
+            >
               Submit
-            </button>
+            </Button>
           )}
         </div>
       </div>
