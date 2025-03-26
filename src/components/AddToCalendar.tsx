@@ -17,7 +17,15 @@ const AddToCalendar: React.FC<AddToCalendarProps> = ({ event }) => {
     return null;
   }
 
-  const { title = "Evento", description = "", location = "" } = event;
+  const {
+    title = "Evento",
+    description = event.details?.description || "",
+    location = event.details?.location || "",
+  } = event;
+  const host = event.user.username || "";
+  const eventLink = `https://www.evento-app.io/event/${event._id}` || "";
+  const fullDescription = `Host: ${host}\nEvent link: ${eventLink}\n\n${description}`;
+
   const startDateTime = new Date(
     `${details.date.split("T")[0]}T${details.startTime}`,
   );
@@ -36,9 +44,9 @@ const AddToCalendar: React.FC<AddToCalendarProps> = ({ event }) => {
 
   const handleGoogleCalendar = () => {
     const url = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(
-      title,
+      title + " hosted by " + host,
     )}&dates=${googleStartDateTime}/${googleEndDateTime}&details=${encodeURIComponent(
-      description,
+      fullDescription,
     )}&location=${encodeURIComponent(location)}&sf=true&output=xml`;
     window.open(url, "_blank");
   };
@@ -47,17 +55,17 @@ const AddToCalendar: React.FC<AddToCalendarProps> = ({ event }) => {
     const yahooStartDateTime = `${startDateTime.toISOString().replace(/[-:]/g, "").split(".")[0]}`;
     const yahooEndDateTime = `${endDateTime.toISOString().replace(/[-:]/g, "").split(".")[0]}`;
     const url = `https://calendar.yahoo.com/?v=60&view=d&type=20&title=${encodeURIComponent(
-      title,
+      title + " hosted by " + host,
     )}&st=${yahooStartDateTime}&et=${yahooEndDateTime}&desc=${encodeURIComponent(
-      description,
+      fullDescription,
     )}&in_loc=${encodeURIComponent(location)}`;
     window.open(url, "_blank");
   };
 
   const handleOutlookCalendar = () => {
     const url = `https://outlook.live.com/calendar/0/deeplink/compose?subject=${encodeURIComponent(
-      title,
-    )}&body=${encodeURIComponent(description)}&location=${encodeURIComponent(
+      title + " hosted by " + host,
+    )}&body=${encodeURIComponent(fullDescription)}&location=${encodeURIComponent(
       location,
     )}&startdt=${startDateTime.toISOString()}&enddt=${endDateTime.toISOString()}&allday=false&path=/calendar/view/Month`;
     window.open(url, "_blank");
@@ -69,7 +77,7 @@ BEGIN:VCALENDAR
 VERSION:2.0
 BEGIN:VEVENT
 SUMMARY:${title}
-DESCRIPTION:${description}
+DESCRIPTION:${fullDescription}
 LOCATION:${location}
 DTSTART:${formatDateForCalendar(startDateTime)}
 DTEND:${formatDateForCalendar(endDateTime)}
