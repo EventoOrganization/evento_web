@@ -224,7 +224,11 @@ const PastEventGallery: React.FC<PastEventGalleryProps> = ({ event }) => {
                   : "You only are allowed to upload media"}
               </p>
             ) : (
-              <p className="text-sm">You are not allowed to upload media</p>
+              <p className="text-sm">
+                {allUploadPhotoVideo
+                  ? "You are allowed to upload media"
+                  : "You are not allowed to upload media"}
+              </p>
             )}
             <div>
               <Input
