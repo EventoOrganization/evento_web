@@ -146,7 +146,7 @@ const EditableLocation: React.FC<EditableLocationProps> = ({
               <Input
                 type="text"
                 placeholder="Enter a location"
-                className="flex-grow flex " // Ensure it's growing and filling the space
+                className="flex-grow flex "
                 value={location}
                 disabled={!editMode}
                 onChange={(e) => setLocation(e.target.value)}

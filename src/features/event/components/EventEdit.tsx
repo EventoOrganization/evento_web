@@ -1,5 +1,7 @@
 // src/features/event/components/EventEdit.tsx
 import RequiresApprovalToggle from "@/components/RequiresApprovalToggle";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Switch } from "@/components/ui/togglerbtn";
 import { useSession } from "@/contexts/SessionProvider";
 import { useToast } from "@/hooks/use-toast";
@@ -88,14 +90,18 @@ const EventEdit = ({
   const [timeSlots, setTimeSlots] = useState(event.details?.timeSlots || []);
   const [coHosts, setCoHosts] = useState(event.coHosts || []);
   const { token } = useSession();
+  const [showNotifyModal, setShowNotifyModal] = useState(false);
+  const [pendingField, setPendingField] = useState<string | null>(null);
+  const [pendingData, setPendingData] = useState<any>(null);
 
-  const handleUpdate = async (field: string, value: any) => {
+  const handleUpdate = async (field: string, value: any, notify?: boolean) => {
     console.log("field", field, "value", value);
     setIsUpdating(true);
     try {
       const body = {
         field,
         value,
+        notify,
       };
       const response = await fetchData(
         `/events/updateEvent/${event._id}`,
@@ -294,18 +300,51 @@ const EventEdit = ({
         break;
     }
   };
+  const triggerUpdateWithConfirmation = (field: string, value: any) => {
+    setPendingField(field);
+    setPendingData(value);
+    setShowNotifyModal(true);
+  };
 
-  const handleUpdateLocation = async () => {
+  const handleUpdateLocation = () => {
     const locationData = {
       location,
       longitude: Number(longitude),
       latitude: Number(latitude),
     };
-    await handleUpdate("locationData", locationData);
+    triggerUpdateWithConfirmation("locationData", locationData);
+    setEditMode({ ...editMode, location: false });
   };
+
   console.log("event", event);
   return (
     <div className="space-y-4 pb-20 w-full">
+      <Dialog open={showNotifyModal} onOpenChange={setShowNotifyModal}>
+        <DialogContent>
+          <p>Do you want to notify participants update?</p>
+          <div className="flex gap-4 justify-between mt-4">
+            <Button
+              variant="outline"
+              onClick={() => {
+                pendingField && handleUpdate(pendingField, pendingData, false);
+                setShowNotifyModal(false);
+              }}
+            >
+              Update Without Notifying
+            </Button>
+            <Button
+              variant={"eventoPrimary"}
+              onClick={() => {
+                pendingField && handleUpdate(pendingField, pendingData, true);
+                setShowNotifyModal(false);
+              }}
+            >
+              Update & Notify
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       <h2>Edit Event</h2>
       {/* Title */}
       <EditableInputText
@@ -430,7 +469,9 @@ const EventEdit = ({
         endTime={endTime}
         timeZone={timeZone}
         timeSlots={timeSlots}
-        handleUpdate={(field, value) => handleUpdate(field, value)}
+        handleUpdate={async (field, value) => {
+          triggerUpdateWithConfirmation(field, value);
+        }}
         handleCancel={() => handleCancel("date")}
         handleReset={() => handleReset("date")}
         isUpdating={isUpdating}
