@@ -33,6 +33,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import NewAPIGoogleMapComponent from "../discover/NewAPIGoogleMapComponent";
 import CreateEventLimitedGuests from "../event/components/CreateEventLimitedGuests";
+import RestrictedToggle from "../event/components/RestrictedToggle";
 
 const DuplicateEventContent = () => {
   const eventStore = useCreateEventStore();
@@ -144,6 +145,10 @@ const DuplicateEventContent = () => {
         "requiresApproval",
         existingEvent.requiresApproval || false,
       );
+      eventStore.setEventField(
+        "isRestricted",
+        existingEvent.restricted || false,
+      );
       console.log("Event Store Updated:", eventStore);
     }
   }, [existingEvent]);
@@ -168,6 +173,7 @@ const DuplicateEventContent = () => {
       timeSlots: eventStore.timeSlots || [],
       coHosts: eventStore.coHosts || [],
       medias: eventStore.mediaPreviews || [],
+      restricted: eventStore.isRestricted || false,
       createRSVP: eventStore.createRSVP || false,
       questions: eventStore.questions || [],
       additionalField: eventStore.additionalField || [],
@@ -197,6 +203,7 @@ const DuplicateEventContent = () => {
     medias: eventStore.mediaPreviews || [],
     longitude: eventStore.longitude || "",
     timeSlots: eventStore.timeSlots || [],
+    restricted: eventStore.isRestricted || false,
     coHosts: eventStore.coHosts || [],
     createRSVP: eventStore.createRSVP || false,
     questions: eventStore.questions || [],
@@ -531,7 +538,7 @@ const DuplicateEventContent = () => {
                 </Label>
               </RadioGroup>
             </div>
-            {eventStore.eventType === "public" && (
+            {eventStore.eventType === "public" ? (
               <div>
                 <Label htmlFor="interests">Interests Category</Label>
                 <ul className="flex flex-wrap gap-2 mt-2">
@@ -579,6 +586,8 @@ const DuplicateEventContent = () => {
                   })}
                 </ul>
               </div>
+            ) : (
+              <RestrictedToggle />
             )}
             <div className="">
               <Label htmlFor="mode">
