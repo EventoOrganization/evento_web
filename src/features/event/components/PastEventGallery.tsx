@@ -208,7 +208,7 @@ const PastEventGallery: React.FC<PastEventGalleryProps> = ({ event }) => {
     <div className="w-full md:p-4 pb-20 md:pb-32">
       <div className="flex w-full items-center gap-2 justify-between  pb-4 mb-4">
         {event.isHosted && (
-          <div className="flex items-center gap-2 justify-between ">
+          <div className="flex items-center gap-2 pb-4 justify-between ">
             <Switch
               checked={allUploadPhotoVideo}
               onCheckedChange={handleAllUploadPhotoVideo}
