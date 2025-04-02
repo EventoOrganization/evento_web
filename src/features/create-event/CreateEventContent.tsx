@@ -33,6 +33,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import NewAPIGoogleMapComponent from "../discover/NewAPIGoogleMapComponent";
 import CreateEventLimitedGuests from "../event/components/CreateEventLimitedGuests";
+import RestrictedToggle from "../event/components/RestrictedToggle";
 
 const CreateEventContent = () => {
   const eventStore = useCreateEventStore();
@@ -83,6 +84,7 @@ const CreateEventContent = () => {
       longitude: eventStore.longitude || "",
       timeSlots: eventStore.timeSlots || [],
       coHosts: eventStore.coHosts || [],
+      restricted: eventStore.isRestricted || false,
       medias: eventStore.mediaPreviews || [],
       createRSVP: eventStore.createRSVP || false,
       questions: eventStore.questions || [],
@@ -114,6 +116,7 @@ const CreateEventContent = () => {
     longitude: eventStore.longitude || "",
     timeSlots: eventStore.timeSlots || [],
     coHosts: eventStore.coHosts || [],
+    restricted: eventStore.isRestricted || false,
     createRSVP: eventStore.createRSVP || false,
     questions: eventStore.questions || [],
     additionalField: eventStore.additionalField || [],
@@ -447,7 +450,7 @@ const CreateEventContent = () => {
                 </Label>
               </RadioGroup>
             </div>
-            {eventStore.eventType === "public" && (
+            {eventStore.eventType === "public" ? (
               <div>
                 <Label htmlFor="interests">Interests Category</Label>
                 <ul className="flex flex-wrap gap-2 mt-2">
@@ -495,6 +498,8 @@ const CreateEventContent = () => {
                   })}
                 </ul>
               </div>
+            ) : (
+              <RestrictedToggle />
             )}
             <div className="">
               <Label htmlFor="mode">

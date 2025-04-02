@@ -12,13 +12,13 @@ import { Switch } from "@/components/ui/togglerbtn";
 import { useSession } from "@/contexts/SessionProvider";
 import CSVImport from "@/features/event/components/CSVImport";
 import EventAddTempGuest from "@/features/event/components/EventAddTempGuest";
+import RestrictedToggle from "@/features/event/components/RestrictedToggle";
 import { useToast } from "@/hooks/use-toast";
 import { useUsersStore } from "@/store/useUsersStore";
 import { EventType } from "@/types/EventType";
 import { TempUserType, UserType } from "@/types/UserType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { cn } from "@nextui-org/theme";
-import { InfoIcon } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -30,7 +30,6 @@ const EventSuccessPage = () => {
   const { users } = useUsersStore();
   const [isGuestAllowed, setIsGuestAllowed] = useState<boolean | null>(null);
   const { user, token } = useSession();
-  const [showTooltip, setShowTooltip] = useState(false);
 
   const { toast } = useToast();
   const [currentSelectedUsers, setCurrentSelectedUsers] = useState<
@@ -45,7 +44,6 @@ const EventSuccessPage = () => {
     ? event.favouritees.map((f) => f?._id || "")
     : [];
   const excludedUserIds = [...attendeeIds, ...favouriteIds];
-  const [isRestricted, setIsRestricted] = useState(false);
   useEffect(() => {
     const fetchEventData = async () => {
       try {
@@ -58,7 +56,6 @@ const EventSuccessPage = () => {
         );
         setEvent(response.data as EventType);
         setIsGuestAllowed(response.data?.guestsAllowFriend || false);
-        setIsRestricted(response.data?.restricted || false);
       } catch {
         toast({ description: "Error fetching event", variant: "destructive" });
       }
@@ -93,39 +90,6 @@ const EventSuccessPage = () => {
       console.error("Error updating guestsAllowFriend:", error);
       toast({
         description: "Error updating guestsAllowFriend",
-        variant: "destructive",
-        duration: 3000,
-      });
-    }
-  };
-  const handleRestricted = async () => {
-    try {
-      const response = await fetchData(
-        `/events/updateEvent/${eventId}`,
-        HttpMethod.PUT,
-        { field: "restricted", value: !isRestricted },
-        token,
-      );
-      if (response.ok) {
-        setIsRestricted(!isRestricted);
-        toast({
-          description: `Event ${!isRestricted ? "unrestricted" : "restricted"} successfully!`,
-          className: "bg-evento-gradient text-white",
-          duration: 3000,
-        });
-      }
-      if (response.error) {
-        console.error("Error updating event:", response.error);
-        toast({
-          description: response.error,
-          variant: "destructive",
-          duration: 3000,
-        });
-      }
-    } catch (error) {
-      console.error("Error updating event:", error);
-      toast({
-        description: "Error updating event",
         variant: "destructive",
         duration: 3000,
       });
@@ -276,27 +240,7 @@ const EventSuccessPage = () => {
               })}
             >
               {event?.eventType === "private" && (
-                <>
-                  <div className="flex gap-2 items-center">
-                    <InfoIcon
-                      className="w-4 text-gray-500 cursor-pointer"
-                      onMouseEnter={() => setShowTooltip(true)}
-                      onMouseLeave={() => setShowTooltip(false)}
-                    />
-                    {showTooltip && (
-                      <span className="absolute bg-gray-800 text-white text-xs rounded py-1 px-2 -mt-10 ml-4 z-10">
-                        When <b>Restricted</b> is enabled, users accessing the
-                        event through the link will need to send a request to
-                        the host to join, unless they are explicitly invited.
-                      </span>
-                    )}
-                    <p className="text-sm text-muted-foreground">Restricted</p>
-                    <Switch
-                      checked={isRestricted}
-                      onCheckedChange={handleRestricted}
-                    />
-                  </div>{" "}
-                </>
+                <RestrictedToggle event={event} />
               )}
               <ShareModal
                 eventUrl={`${process.env.NEXT_PUBLIC_FRONTEND_URL}/event/${event?._id}`}

@@ -28,6 +28,7 @@ type EventFormState = {
   UrlTitle?: string;
   coHosts?: string[];
   interests: InterestType[];
+  isRestricted: boolean;
   isTimeSlotsEnabled: boolean;
   timeSlots: TimeSlotType[];
   privateEventLink?: string;
@@ -117,6 +118,7 @@ export const useCreateEventStore = create<EventFormState>()(
       mediaPreviews: [],
       tempMediaPreview: [],
       timeSlots: [],
+      isRestricted: false,
       isTimeSlotsEnabled: false,
       coHosts: [],
       interests: [],

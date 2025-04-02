@@ -2,7 +2,6 @@
 import RequiresApprovalToggle from "@/components/RequiresApprovalToggle";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { Switch } from "@/components/ui/togglerbtn";
 import { useSession } from "@/contexts/SessionProvider";
 import { useToast } from "@/hooks/use-toast";
 import { useEventStore } from "@/store/useEventsStore";
@@ -11,7 +10,6 @@ import { EventType, InterestType, QuestionType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { startOfDay } from "date-fns";
-import { InfoIcon } from "lucide-react";
 import { useState } from "react";
 import EditEventLimit from "../edit/EditEventLimit";
 import CoHostManagementModal from "./CoHostManagementModal";
@@ -23,6 +21,7 @@ import EditableSelect from "./EditableSelect";
 import EditableTextArea from "./EditableTextArea";
 import EditableURLInput from "./EditableURLInput";
 import EventDateComponent from "./EventDateComponent";
+import RestrictedToggle from "./RestrictedToggle";
 
 const EventEdit = ({
   event,
@@ -35,7 +34,6 @@ const EventEdit = ({
 }) => {
   const { toast } = useToast();
   const { updateEvent } = useEventStore();
-  const [showTooltip, setShowTooltip] = useState(false);
   const today = startOfDay(new Date());
   const [title, setTitle] = useState(event?.title || "");
   const [type, setType] = useState<string>(event?.eventType || "");
@@ -43,7 +41,6 @@ const EventEdit = ({
   const [url, setUrl] = useState(event?.details?.URLlink || "");
   const [timeZone, setTimeZone] = useState(event?.details?.timeZone || "");
   const [urlTitle, setUrlTitle] = useState(event?.details?.URLtitle || "");
-  const [isRestricted, setIsRestricted] = useState(event?.restricted || false);
   const [limitedGuests, setLimitedGuests] = useState<number | null>(
     event?.limitedGuests || 0,
   );
@@ -316,7 +313,6 @@ const EventEdit = ({
     setEditMode({ ...editMode, location: false });
   };
 
-  console.log("event", event);
   return (
     <div className="space-y-4 pb-20 w-full">
       <Dialog open={showNotifyModal} onOpenChange={setShowNotifyModal}>
@@ -373,33 +369,7 @@ const EventEdit = ({
           { value: "private", label: "Private" },
         ]}
       />
-      {type === "private" && (
-        <div className="flex items-center gap-2">
-          <InfoIcon
-            className="w-4 text-gray-500 cursor-pointer"
-            onMouseEnter={() => setShowTooltip(true)}
-            onMouseLeave={() => setShowTooltip(false)}
-          />
-          {showTooltip && (
-            <span
-              className="absolute bg-gray-800 text-white text-xs rounded py-1 px-2 -mt-10 ml-4 z-10 max-w-36
-            "
-            >
-              When <b>Restricted</b> is enabled, users accessing the event
-              through the link will need to send a request to the host to join,
-              unless they are explicitly invited.
-            </span>
-          )}
-          <p className="text-sm text-muted-foreground">Restricted</p>
-          <Switch
-            checked={isRestricted}
-            onClick={() => {
-              handleUpdate("restricted", !isRestricted);
-              setIsRestricted(!isRestricted);
-            }}
-          />
-        </div>
-      )}
+      {type === "private" && <RestrictedToggle event={event} />}
       {/* Mode */}
       <EditableSelect
         value={mode}
