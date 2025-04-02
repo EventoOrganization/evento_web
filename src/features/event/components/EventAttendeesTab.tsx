@@ -139,12 +139,14 @@ const EventAttendeesTab: React.FC<EventAttendeesTabProps> = ({
       )}
       {isAdmin && (
         <>
-          <CollapsibleList
-            isAdmin={isAdmin}
-            title="Requested to Join"
-            count={event?.requested?.length || 0}
-            users={event?.requested || []}
-          />
+          {Array.isArray(event?.requested) && event.requested.length > 0 && (
+            <CollapsibleList
+              isAdmin={isAdmin}
+              title="Requested to Join"
+              count={event.requested.length}
+              users={event.requested}
+            />
+          )}
           <CollapsibleList
             title={event?.eventType === "public" ? "Favourite" : "Maybe"}
             count={event?.favouritees?.length || 0}
