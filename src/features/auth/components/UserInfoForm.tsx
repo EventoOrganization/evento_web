@@ -56,12 +56,25 @@ const UserInfoForm = ({ onAuthSuccess }: { onAuthSuccess: () => void }) => {
 
     formData.append("username", data.username);
 
-    // Si une image est recadrée, la transformer en blob
-    if (croppedProfileImage) {
-      const response = await fetch(croppedProfileImage);
-      const blob = await response.blob();
-      const file = new File([blob], "profile.jpg", { type: "image/jpeg" });
-      formData.append("profileImage", file);
+    const isAlreadyUploaded = croppedProfileImage?.startsWith(
+      "https://evento-media-bucket.s3",
+    );
+
+    if (croppedProfileImage && !isAlreadyUploaded) {
+      try {
+        const response = await fetch(croppedProfileImage);
+        const blob = await response.blob();
+        const file = new File([blob], "profile.jpg", { type: "image/jpeg" });
+        formData.append("profileImage", file);
+      } catch (error) {
+        console.error("❌ Error fetching cropped image:", error);
+        toast({
+          description: "Failed to process profile image. Please retry.",
+          variant: "destructive",
+        });
+        setIsFetching(false);
+        return;
+      }
     }
 
     try {

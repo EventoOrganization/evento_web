@@ -186,16 +186,7 @@ const EventAnnouncement = ({
                 );
 
               default:
-                return (
-                  <div
-                    key={announcement._id}
-                    className="p-2 bg-red-50 border border-red-200 rounded-md"
-                  >
-                    <p className="text-red-500 text-sm">
-                      Unknown announcement type: {announcement.type}
-                    </p>
-                  </div>
-                );
+                return null;
             }
           })}
         </div>
