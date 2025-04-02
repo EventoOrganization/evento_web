@@ -1,6 +1,7 @@
 import Section from "@/components/layout/Section";
 import { Button } from "@/components/ui/button";
 import { useSession } from "@/contexts/SessionProvider";
+import HiddenEvent from "@/features/profile/HiddenEvent";
 import PendingEvents from "@/features/profile/PendingEvents";
 import { cn } from "@/lib/utils";
 import { useEventStore } from "@/store/useEventsStore";
@@ -21,6 +22,7 @@ const EventSection = ({
   const pathname = usePathname();
   const { user } = useSession();
   const { eventsStatus } = useEventStore();
+
   const canSeePrivateEvent = (event: any) => {
     if (event.eventType === "public") {
       return true;
@@ -54,15 +56,28 @@ const EventSection = ({
   };
 
   // 🔍 Filtrer les événements affichés
-  const visibleEvents = events ? events.filter(canSeePrivateEvent) : [];
+  const visibleEvents = events
+    ? events
+        .filter((event) => {
+          const isHidden = event.hiddenByUsers?.some(
+            (id: any) => id?.toString?.() === user?._id?.toString(),
+          );
+          return !isHidden;
+        })
+        .filter(canSeePrivateEvent)
+    : [];
+
   return (
     <Section className={sectionStyle}>
       <div className="flex items-center w-full justify-between mb-4">
         <h4 className="font-medium">
-          {title} ({events?.length || 0})
+          {title} ({visibleEvents?.length || 0})
         </h4>
         {title === "Upcoming Events" && !pathname.startsWith("/profile/") && (
-          <PendingEvents />
+          <div className="flex gap-4">
+            <HiddenEvent />
+            <PendingEvents />
+          </div>
         )}
       </div>
       <div className={cn("grid grid-cols-2 sm:grid-cols-3  w-full gap-2")}>
