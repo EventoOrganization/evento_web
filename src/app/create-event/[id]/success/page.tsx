@@ -131,6 +131,8 @@ const EventSuccessPage = () => {
         _id: user._id,
         email: user.email.toLowerCase(),
         username: user.username,
+        firstName: user.firstName,
+        lastName: user.lastName,
         profileImage: user.profileImage,
       })),
       tempGuests: newTempGuests.map((tempGuest) => ({

@@ -106,7 +106,7 @@ const QuestionModal: React.FC<QuestionModalProps> = ({
               type="text"
               className="border rounded p-2 w-full"
               onChange={(e) =>
-                handleAnswerChange(currentQuestion._id, e.target.value)
+                handleAnswerChange(currentQuestion._id!, e.target.value)
               }
             />
           )}
@@ -118,7 +118,7 @@ const QuestionModal: React.FC<QuestionModalProps> = ({
               className="border rounded p-2 w-full"
               onChange={(e) =>
                 handleAnswerChange(
-                  currentQuestion._id,
+                  currentQuestion._id!,
                   Array.from(e.target.selectedOptions, (opt) => opt.value),
                 )
               }
@@ -145,7 +145,7 @@ const QuestionModal: React.FC<QuestionModalProps> = ({
                       )?.answer;
 
                       handleAnswerChange(
-                        currentQuestion._id,
+                        currentQuestion._id!,
                         e.target.checked
                           ? Array.isArray(currentAnswers)
                             ? [...currentAnswers, e.target.value]

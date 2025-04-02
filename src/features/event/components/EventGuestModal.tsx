@@ -80,6 +80,8 @@ const EventGuestModal: React.FC<EventGuestModalProps> = ({
         id: user._id,
         email: user.email.toLowerCase(),
         username: user.username,
+        firstName: user.firstName,
+        lastName: user.lastName,
       }));
 
     const tempGuests = currentSelectedUsers

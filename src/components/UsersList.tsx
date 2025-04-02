@@ -107,7 +107,13 @@ const UsersList = ({
           duration: 2000,
           className: "bg-evento-gradient text-white",
         });
-        removeUserLocally?.(user._id);
+        console.log("user", user);
+        setEvent?.({
+          ...event!,
+          requested: event?.requested?.filter((r) => r._id !== user._id),
+          guests: event?.guests ? [...event.guests, user] : [user],
+        });
+
         fetchUsers?.();
       } else {
         console.error("Error:", response.error);

@@ -58,7 +58,7 @@ export type AnnouncementResponseType = {
 };
 
 export type QuestionType = {
-  _id: string;
+  _id?: string;
   question: string;
   type: "text" | "multiple-choice" | "checkbox";
   options?: string[];

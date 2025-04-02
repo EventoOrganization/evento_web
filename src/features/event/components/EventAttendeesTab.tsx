@@ -143,6 +143,8 @@ const EventAttendeesTab: React.FC<EventAttendeesTabProps> = ({
             <CollapsibleList
               isAdmin={isAdmin}
               title="Requested to Join"
+              setEvent={setEvent}
+              event={event}
               count={event.requested.length}
               users={event.requested}
             />

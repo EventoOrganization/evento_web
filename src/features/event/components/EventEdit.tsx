@@ -158,7 +158,6 @@ const EventEdit = ({
     setQuestions([
       ...questions,
       {
-        _id: Date.now().toString(),
         question: "",
         type: "text",
         options: [],

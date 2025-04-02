@@ -135,7 +135,6 @@ export const useCreateEventStore = create<EventFormState>()(
           questions: [
             ...state.questions,
             {
-              _id: Date.now().toString(),
               question: "",
               type: "text",
               required: false,
