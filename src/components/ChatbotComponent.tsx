@@ -73,7 +73,7 @@ const ChatbotComponent = ({ className }: { className?: string }) => {
   return (
     <div
       className={cn(
-        "z-30  fixed bottom-0 right-0 w-fit md:bottom-6 md:right-6",
+        "z-30 fixed bottom-0 right-0 w-fit md:bottom-6 md:right-6",
         className,
         { "w-full md:w-fit": isOpen, hidden: !token },
       )}
@@ -92,16 +92,16 @@ const ChatbotComponent = ({ className }: { className?: string }) => {
             alt="Chatbot Icon"
             className={cn(
               isOpen ? "block" : "hidden md:block",
-              "object-contain w-20 h-20 md:w-24 md:h-24",
+              "object-contain  w-12 h-12",
             )}
-            width={80}
-            height={80}
+            width={40}
+            height={40}
             forceImg
           />
 
           {isOpen ? (
             <>
-              <p className="">
+              <p className="text-sm md:text-base">
                 Report bugs or <br className="hidden" />
                 make suggestions
               </p>
@@ -114,20 +114,23 @@ const ChatbotComponent = ({ className }: { className?: string }) => {
 
         {/* Zone de texte visible lorsque le chatbot est ouvert */}
         {isOpen && (
-          <div className=" w-full flex flex-col gap-2 p-2">
+          <div className=" w-full flex flex-col gap-2 px-2">
             <textarea
               ref={textareaRef}
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               onInput={handleInput}
               onKeyDown={handleKeyDown}
-              className="w-full px-4 py-2 bg-gray-300 text-gray-800 rounded-full border-2 border-none focus:outline-none  focus:black placeholder:text-gray-600"
+              className="w-full px-4 py-2 bg-gray-300 text-gray-800 rounded-full border-2 border-none focus:outline-none  focus:black placeholder:text-gray-600 text-sm md:text-base"
               placeholder="Type here..."
               rows={1}
               style={{ resize: "none", maxHeight: "150px", overflowY: "auto" }}
               onClick={(e) => e.stopPropagation()}
             />
-            <Button onClick={handleSendMessage} className=" self-end w-fit">
+            <Button
+              onClick={handleSendMessage}
+              className=" self-end w-fit mb-2"
+            >
               Send
             </Button>
           </div>
