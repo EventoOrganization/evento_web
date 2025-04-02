@@ -285,7 +285,7 @@ const EventSuccessPage = () => {
                       {user.username}
                     </span>
                     <span className="text-xs">
-                      {user.lastName} {user.firstName}
+                      {user.firstName} {user.lastName}
                     </span>
                   </div>
                 </div>
@@ -345,7 +345,7 @@ const EventSuccessPage = () => {
                         {user.username}
                       </span>
                       <span className="text-xs">
-                        {user.lastName} {user.firstName}
+                        {user.firstName} {user.lastName}
                       </span>
                     </div>
                   </div>

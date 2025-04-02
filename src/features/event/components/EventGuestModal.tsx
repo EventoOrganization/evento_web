@@ -217,7 +217,7 @@ const EventGuestModal: React.FC<EventGuestModalProps> = ({
                         {user.username}
                       </span>
                       <span className="text-xs">
-                        {user.lastName} {user.firstName}
+                        {user.firstName} {user.lastName}
                       </span>
                     </div>
                   </div>
@@ -263,7 +263,7 @@ const EventGuestModal: React.FC<EventGuestModalProps> = ({
                         {user.username}
                       </span>
                       <span className="text-xs">
-                        {user.lastName} {user.firstName}
+                        {user.firstName} {user.lastName}
                       </span>
                     </div>
                   </div>
