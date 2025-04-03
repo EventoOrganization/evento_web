@@ -1,17 +1,17 @@
 // components/EventAttendeesTab.tsx
 
 import CollapsibleList from "@/components/CollapsibleList";
-import ExportCSVButton from "@/components/ExportCSVButton";
 import GuestAllowFriendToggle from "@/components/GuestAllowFriendToggle";
+import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { EventType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { isApproved } from "../eventActions";
 import AddAnnoncement from "../update/AddUpdate";
 import EventGuestModal from "./EventGuestModal";
 import HideGuestList from "./HideGuestList";
-
 interface EventAttendeesTabProps {
   event: EventType | undefined;
   isAdmin?: boolean;
@@ -69,7 +69,12 @@ const EventAttendeesTab: React.FC<EventAttendeesTabProps> = ({
           <GuestAllowFriendToggle event={event} />
           <EventGuestModal event={event} setEvent={setEvent} />
           <HideGuestList event={event} />
-          <ExportCSVButton event={event} />
+          <Button asChild variant={"link"} className="text-eventoPurpleLight">
+            <Link href={`${event?.googleSheetUrl}`} target="_blank">
+              Event Sheet
+            </Link>
+          </Button>
+          {/* <ExportCSVButton event={event} /> */}
           <AddAnnoncement
             event={event}
             setEvent={setEvent}

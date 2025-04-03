@@ -88,6 +88,7 @@ export type EventType = {
   user: UserType;
   eventType: "public" | "private";
   name: string;
+  googleSheetUrl?: string;
   mode: "virtual" | "in-person" | "both";
   date: string;
   endDate?: string;
