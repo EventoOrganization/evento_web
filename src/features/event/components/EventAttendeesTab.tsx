@@ -4,6 +4,7 @@ import CollapsibleList from "@/components/CollapsibleList";
 import GuestAllowFriendToggle from "@/components/GuestAllowFriendToggle";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { cn } from "@/lib/utils";
 import { EventType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
 import Link from "next/link";
@@ -69,11 +70,34 @@ const EventAttendeesTab: React.FC<EventAttendeesTabProps> = ({
           <GuestAllowFriendToggle event={event} />
           <EventGuestModal event={event} setEvent={setEvent} />
           <HideGuestList event={event} />
-          <Button asChild variant={"link"} className="text-eventoPurpleLight">
-            <Link href={`${event?.googleSheetUrl}`} target="_blank">
-              Event Sheet
-            </Link>
-          </Button>
+
+          {event?.googleSheetUrl ? (
+            <Button
+              asChild
+              variant={"link"}
+              className={cn(`text-eventoPurpleLight`, {})}
+              onClick={() => {
+                if (!event?.googleSheetUrl) {
+                  alert("No Google Sheet URL found");
+                  return;
+                }
+              }}
+            >
+              <Link href={`${event?.googleSheetUrl}`} target="_blank">
+                Google Sheet
+              </Link>
+            </Button>
+          ) : (
+            <Button
+              variant={"link"}
+              className={cn(`text-eventoPurpleLight`)}
+              onClick={() => {
+                alert("Sorry, this event is to old. No Google Sheet URL found");
+              }}
+            >
+              Google Sheet
+            </Button>
+          )}
           {/* <ExportCSVButton event={event} /> */}
           <AddAnnoncement
             event={event}

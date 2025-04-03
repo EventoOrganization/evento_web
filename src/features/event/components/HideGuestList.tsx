@@ -55,11 +55,11 @@ const HideGuestList = ({ event }: Props) => {
   return (
     <div className="flex items-center gap-2">
       <Switch
-        id="guestsAllowFriend"
+        id="hideGuestlist"
         checked={isHideGuestlist}
         onCheckedChange={handleToggle}
       />
-      <Label htmlFor="guestsAllowFriend" className="cursor-pointer">
+      <Label htmlFor="hideGuestlist" className="cursor-pointer">
         {isHideGuestlist ? "🔒 Guestlist is Hidden" : "👀 Guestlist is Visible"}
       </Label>
     </div>
