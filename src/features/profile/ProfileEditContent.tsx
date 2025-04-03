@@ -200,11 +200,29 @@ const ProfileEditContent = () => {
     // add ProfileImage
     console.log("📸 Image à uploader :", croppedProfileImage);
 
-    if (croppedProfileImage) {
-      const response = await fetch(croppedProfileImage);
-      const blob = await response.blob();
-      const file = new File([blob], "profile.jpg", { type: "image/jpeg" });
-      dataToSend.append("profileImage", file);
+    if (croppedProfileImage && typeof croppedProfileImage === "string") {
+      let file;
+
+      try {
+        if (croppedProfileImage.startsWith("data:image")) {
+          const res = await fetch(croppedProfileImage);
+          const blob = await res.blob();
+          file = new File([blob], "profile.jpg", { type: blob.type });
+        } else if (
+          croppedProfileImage.startsWith("blob:") ||
+          croppedProfileImage.startsWith("http")
+        ) {
+          const res = await fetch(croppedProfileImage);
+          const blob = await res.blob();
+          file = new File([blob], "profile.jpg", { type: blob.type });
+        }
+
+        if (file) {
+          dataToSend.append("profileImage", file);
+        }
+      } catch (err) {
+        console.warn("⚠️ Failed to process croppedProfileImage:", err);
+      }
     }
 
     // Add interests
