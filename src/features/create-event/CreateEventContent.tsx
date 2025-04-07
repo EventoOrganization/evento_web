@@ -28,6 +28,7 @@ import { useUsersStore } from "@/store/useUsersStore";
 import { EventType, InterestType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
+import heic2any from "heic2any";
 import { Check, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -174,15 +175,75 @@ const CreateEventContent = () => {
   };
   const selectedMedia =
     eventStore.mediaPreviews[carouselIndex] || eventStore.mediaPreviews[0];
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files) {
-      const previews = Array.from(files).map((file) => ({
+      const heicFiles = Array.from(files).filter((file) =>
+        file.name.toLowerCase().endsWith(".heic"),
+      );
+
+      if (heicFiles.length > 0) {
+        toast({
+          title: `Conversion HEIC en cours`,
+          description: `Please note that ${heicFiles.length} file${heicFiles.length > 1 ? "s" : ""} .HEIC will be converted to ${heicFiles.length > 1 ? "s" : ""} JPEG. This may take a few minutes...`,
+          variant: "evento",
+          duration: Infinity,
+        });
+      }
+
+      const processedFiles = await Promise.all(
+        Array.from(files).map(async (file) => {
+          if (file.name.toLowerCase().endsWith(".heic")) {
+            try {
+              const convertHEICtoJPEG = async (file: File): Promise<File> => {
+                const blob = await heic2any({
+                  blob: file,
+                  toType: "image/jpeg",
+                  quality: 0.9,
+                });
+
+                return new File(
+                  [blob as Blob],
+                  file.name.replace(/\.heic$/, ".jpeg"),
+                  {
+                    type: "image/jpeg",
+                  },
+                );
+              };
+              const jpegFile = await convertHEICtoJPEG(file);
+
+              toast({
+                title: "Success",
+                description: `${file.name} is successfully converted.`,
+                variant: "evento",
+                duration: 3000,
+              });
+
+              return jpegFile;
+            } catch (error) {
+              console.error("Erreur conversion HEIC:", error);
+              toast({
+                title: "Erreur de conversion",
+                description: `Impossible de convertir ${file.name}.`,
+                className: "bg-red-500 text-white",
+                duration: 4000,
+              });
+              return null; // skip it
+            }
+          }
+
+          return file;
+        }),
+      );
+
+      // ⚠️ Filtrer les fichiers null (erreurs ou HEIC échoué)
+      const validFiles = processedFiles.filter((f): f is File => f !== null);
+
+      const previews = validFiles.map((file) => ({
         url: URL.createObjectURL(file),
         type: file.type.startsWith("video/") ? "video" : "image",
       }));
 
-      // Add the temporary previews to the state
       setTempMediaPreviews((prev) => [...prev, ...previews]);
       handleFieldChange("tempMediaPreview", [
         ...tempMediaPreviews,
@@ -190,6 +251,7 @@ const CreateEventContent = () => {
       ]);
     }
   };
+
   useEffect(() => {
     tempMediaPreviews.forEach((media, index) => {
       if (!uploadingMediaStatus[index]) {
@@ -203,6 +265,7 @@ const CreateEventContent = () => {
   }): media is MediaItem => {
     return media.type === "image" || media.type === "video";
   };
+
   const uploadMedia = async (
     media: { url: string; type: string },
     index: number,
@@ -236,6 +299,16 @@ const CreateEventContent = () => {
       }
     } catch (error) {
       console.error("Error uploading media:", error);
+      // 🧹 Nettoyage si échec
+      setTempMediaPreviews((prev) => prev.filter((_, i) => i !== index));
+      useCreateEventStore.setState((state) => ({
+        tempMediaPreview: state.tempMediaPreview?.filter((_, i) => i !== index),
+      }));
+      toast({
+        title: "Upload failed",
+        description: "One or more media files could not be uploaded.",
+        className: "bg-red-500 text-white",
+      });
     } finally {
       setUploadingMediaStatus((prev) =>
         prev.map((status, i) => (i === index ? false : status)),

@@ -224,6 +224,7 @@ export const useCreateEventStore = create<EventFormState>()(
           limitedGuests: null,
           UrlLink: undefined,
           UrlTitle: undefined,
+          tempMediaPreview: [],
           mediaPreviews: [],
           timeSlots: [],
           isTimeSlotsEnabled: false,
