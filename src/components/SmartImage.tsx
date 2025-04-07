@@ -1,9 +1,10 @@
 "use client";
+import { MediaItem } from "@/store/useCreateEventStore";
 import Image from "next/image";
 import { useState } from "react";
 
 type Props = {
-  src: string;
+  src: string | MediaItem;
   alt: string;
   width?: number;
   height?: number;
@@ -32,13 +33,24 @@ const SmartImage = ({
   onClick,
 }: Props) => {
   const [useFallback, setUseFallback] = useState(false); // 👈 Indépendant de forceImg
+  const resolveSmartSrc = (): string => {
+    if (typeof src === "string") return src;
 
+    const maxSize = Math.max(width, height);
+
+    if (maxSize <= 300 && src.thumbnailUrl) return src.thumbnailUrl;
+    if (maxSize <= 800 && src.mediumUrl) return src.mediumUrl;
+
+    return src.url; // fallback full size
+  };
+
+  const resolvedSrc = resolveSmartSrc();
   // 🔹 Si `forceImg` est activé → on ne tente même pas d'afficher Next.js Image
   if (forceImg) {
     return (
       /* eslint-disable-next-line @next/next/no-img-element */
       <img
-        src={src}
+        src={resolvedSrc}
         alt={alt}
         width={width}
         height={height}
@@ -56,7 +68,7 @@ const SmartImage = ({
     return (
       /* eslint-disable-next-line @next/next/no-img-element */
       <img
-        src={src}
+        src={resolvedSrc}
         alt={alt}
         width={width}
         height={height}
@@ -71,7 +83,7 @@ const SmartImage = ({
   // 🔹 Sinon, on tente de charger avec Next.js Image
   return (
     <Image
-      src={src}
+      src={resolvedSrc}
       alt={alt}
       {...(!fill && { width })}
       {...(!fill && { height })}

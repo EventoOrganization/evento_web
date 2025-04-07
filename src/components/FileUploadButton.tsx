@@ -26,7 +26,7 @@ const FileUploadButton = ({
       {/* Input caché */}
       <input
         type="file"
-        accept="image/*,video/*"
+        accept="image/*"
         onChange={onChange}
         ref={fileInputRef}
         className="hidden"
