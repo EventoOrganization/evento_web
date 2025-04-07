@@ -3,7 +3,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware"; // Ajout de PersistOptions
 export type MediaItem = {
   url: string;
-  type: "image" | "video";
+  type: "image" | "video" | "converting";
   _id?: string;
 };
 type EventFormState = {

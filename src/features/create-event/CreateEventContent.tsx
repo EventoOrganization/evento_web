@@ -42,6 +42,7 @@ const CreateEventContent = () => {
   // const [carouselItems, setCarouselItems] = useState<any>(mediaPreviews);
   const [isEventModalOpen, setIsEventModalOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isConverting, setIsConverting] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
   const { addEvent } = useEventStore();
@@ -195,6 +196,7 @@ const CreateEventContent = () => {
         Array.from(files).map(async (file) => {
           if (file.name.toLowerCase().endsWith(".heic")) {
             try {
+              setIsConverting(true);
               const convertHEICtoJPEG = async (file: File): Promise<File> => {
                 const blob = await heic2any({
                   blob: file,
@@ -211,7 +213,7 @@ const CreateEventContent = () => {
                 );
               };
               const jpegFile = await convertHEICtoJPEG(file);
-
+              setIsConverting(false);
               toast({
                 title: "Success",
                 description: `${file.name} is successfully converted.`,
@@ -251,14 +253,34 @@ const CreateEventContent = () => {
       ]);
     }
   };
+  const cleanupInvalidTemp = (index: number) => {
+    setTempMediaPreviews((prev) => prev.filter((_, i) => i !== index));
+    useCreateEventStore.setState((state) => ({
+      tempMediaPreview: state.tempMediaPreview?.filter((_, i) => i !== index),
+    }));
+  };
 
   useEffect(() => {
     tempMediaPreviews.forEach((media, index) => {
       if (!uploadingMediaStatus[index]) {
-        uploadMedia(media, index);
+        // Vérifie si l'URL blob est encore accessible
+        fetch(media.url)
+          .then((res) => {
+            if (res.ok) {
+              uploadMedia(media, index);
+            } else {
+              console.warn("Blob invalide (HTTP non OK), supprimé:", media.url);
+              cleanupInvalidTemp(index);
+            }
+          })
+          .catch(() => {
+            console.warn("Blob invalide (fetch error), supprimé:", media.url);
+            cleanupInvalidTemp(index);
+          });
       }
     });
   }, [tempMediaPreviews]);
+
   const isMediaItem = (media: {
     url: string;
     type: string;
@@ -342,9 +364,24 @@ const CreateEventContent = () => {
       selectedInterests.filter((i) => i._id !== interestId),
     );
   };
+  const isUploadingComplete = () => {
+    const stillUploading = uploadingMediaStatus.some((s) => s === true);
+    const hasTemp = tempMediaPreviews.length > 0;
+    return !stillUploading && !hasTemp;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isUploadingComplete()) {
+      toast({
+        title: "Upload en cours",
+        description:
+          "Veuillez patienter que tous les fichiers soient uploadés avant de créer l’événement.",
+        className: "bg-yellow-500 text-white",
+        duration: 3000,
+      });
+      return;
+    }
 
     if (!isAuthenticated) {
       setIsAuthModalOpen(!isAuthModalOpen);
@@ -641,6 +678,7 @@ const CreateEventContent = () => {
               <div className="flex mt-2 w-full">
                 <FileUploadButton onChange={handleFileSelect} />
                 <ul className="flex gap-2 overflow-x-scroll max-w-full ml-2 scroll-container p-2">
+                  {isConverting && <EventoLoader />}
                   {[...tempMediaPreviews, ...eventStore.mediaPreviews].map(
                     (media, index) => (
                       <li
