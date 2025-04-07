@@ -28,6 +28,7 @@ import { useUsersStore } from "@/store/useUsersStore";
 import { EventType, InterestType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
+import heic2any from "heic2any";
 import { Check, Trash } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -57,6 +58,7 @@ const DuplicateEventContent = () => {
   const [selectedInterests, setSelectedInterests] = useState<InterestType[]>(
     eventStore.interests || [],
   );
+  const [isConverting, setIsConverting] = useState(false);
   const [location, setLocation] = useState({ lat: 0, lng: 0 });
   useEffect(() => {
     // console.log("user", user);
@@ -264,15 +266,76 @@ const DuplicateEventContent = () => {
   };
   const selectedMedia =
     eventStore.mediaPreviews[carouselIndex] || eventStore.mediaPreviews[0];
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files) {
-      const previews = Array.from(files).map((file) => ({
+      const heicFiles = Array.from(files).filter((file) =>
+        file.name.toLowerCase().endsWith(".heic"),
+      );
+
+      if (heicFiles.length > 0) {
+        toast({
+          title: `Conversion HEIC en cours`,
+          description: `Please note that ${heicFiles.length} file${heicFiles.length > 1 ? "s" : ""} .HEIC will be converted to ${heicFiles.length > 1 ? "s" : ""} JPEG. This may take a few minutes...`,
+          variant: "evento",
+          duration: Infinity,
+        });
+      }
+
+      const processedFiles = await Promise.all(
+        Array.from(files).map(async (file) => {
+          if (file.name.toLowerCase().endsWith(".heic")) {
+            try {
+              setIsConverting(true);
+              const convertHEICtoJPEG = async (file: File): Promise<File> => {
+                const blob = await heic2any({
+                  blob: file,
+                  toType: "image/jpeg",
+                  quality: 0.9,
+                });
+
+                return new File(
+                  [blob as Blob],
+                  file.name.replace(/\.heic$/, ".jpeg"),
+                  {
+                    type: "image/jpeg",
+                  },
+                );
+              };
+              const jpegFile = await convertHEICtoJPEG(file);
+              setIsConverting(false);
+              toast({
+                title: "Success",
+                description: `${file.name} is successfully converted.`,
+                variant: "evento",
+                duration: 3000,
+              });
+
+              return jpegFile;
+            } catch (error) {
+              console.error("Erreur conversion HEIC:", error);
+              toast({
+                title: "Erreur de conversion",
+                description: `Impossible de convertir ${file.name}.`,
+                className: "bg-red-500 text-white",
+                duration: 4000,
+              });
+              return null; // skip it
+            }
+          }
+
+          return file;
+        }),
+      );
+
+      // ⚠️ Filtrer les fichiers null (erreurs ou HEIC échoué)
+      const validFiles = processedFiles.filter((f): f is File => f !== null);
+
+      const previews: MediaItem[] = validFiles.map((file) => ({
         url: URL.createObjectURL(file),
         type: file.type.startsWith("video/") ? "video" : "image",
       }));
 
-      // Add the temporary previews to the state
       setTempMediaPreviews((prev) => [...prev, ...previews]);
       handleFieldChange("tempMediaPreview", [
         ...tempMediaPreviews,
@@ -280,10 +343,30 @@ const DuplicateEventContent = () => {
       ]);
     }
   };
+  const cleanupInvalidTemp = (index: number) => {
+    setTempMediaPreviews((prev) => prev.filter((_, i) => i !== index));
+    useCreateEventStore.setState((state) => ({
+      tempMediaPreview: state.tempMediaPreview?.filter((_, i) => i !== index),
+    }));
+  };
+
   useEffect(() => {
     tempMediaPreviews.forEach((media, index) => {
       if (!uploadingMediaStatus[index]) {
-        uploadMedia(media, index);
+        // Vérifie si l'URL blob est encore accessible
+        fetch(media.url)
+          .then((res) => {
+            if (res.ok) {
+              uploadMedia(media, index);
+            } else {
+              console.warn("Blob invalide (HTTP non OK), supprimé:", media.url);
+              cleanupInvalidTemp(index);
+            }
+          })
+          .catch(() => {
+            console.warn("Blob invalide (fetch error), supprimé:", media.url);
+            cleanupInvalidTemp(index);
+          });
       }
     });
   }, [tempMediaPreviews]);
@@ -292,6 +375,30 @@ const DuplicateEventContent = () => {
     type: string;
   }): media is MediaItem => {
     return media.type === "image" || media.type === "video";
+  };
+  const resizeImage = async (blob: Blob, width: number): Promise<Blob> => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => {
+        const scale = width / img.width;
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = img.height * scale;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) return reject("No context");
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        canvas.toBlob(
+          (resizedBlob) => {
+            if (resizedBlob) resolve(resizedBlob);
+            else reject("Failed to resize");
+          },
+          "image/jpeg",
+          0.8,
+        );
+      };
+      img.onerror = reject;
+      img.src = URL.createObjectURL(blob);
+    });
   };
   const uploadMedia = async (
     media: { url: string; type: string },
@@ -302,30 +409,72 @@ const DuplicateEventContent = () => {
         prev.map((status, i) => (i === index ? true : status)),
       );
 
-      const formData = new FormData();
-      const file = await fetch(media.url).then((r) => r.blob());
-      formData.append("file", file);
+      const blob = await fetch(media.url).then((r) => r.blob());
 
-      const urls = await handleUpload(formData, "events/initialMedia");
-      const s3Url = urls[0];
+      if (media.type === "image") {
+        const [thumb, medium] = await Promise.all([
+          resizeImage(blob, 300),
+          resizeImage(blob, 800),
+        ]);
 
-      if (media.type === "image" || media.type === "video") {
-        const mediaItemType = media.type === "image" ? "image" : "video";
+        const uploadBlob = async (b: Blob) => {
+          const fd = new FormData();
+          fd.append("file", b);
+          const [url] = await handleUpload(fd, "events/initialMedia");
+          return url;
+        };
+
+        const [thumbUrl, mediumUrl, fullUrl] = await Promise.all([
+          uploadBlob(thumb),
+          uploadBlob(medium),
+          uploadBlob(blob),
+        ]);
+
         useCreateEventStore.setState((state) => ({
           tempMediaPreview: state.tempMediaPreview?.filter(
             (_, i) => i !== index,
           ),
           mediaPreviews: [
             ...state.mediaPreviews,
-            { url: s3Url, type: mediaItemType },
+            {
+              type: "image",
+              url: fullUrl,
+              thumbnailUrl: thumbUrl,
+              mediumUrl: mediumUrl,
+            },
           ],
         }));
-        setTempMediaPreviews((prev) => prev.filter((_, i) => i !== index));
+      } else if (media.type === "video") {
+        // Pour les vidéos, pas besoin de resize, juste upload
+        const formData = new FormData();
+        formData.append("file", blob);
+        const [videoUrl] = await handleUpload(formData, "events/initialMedia");
+
+        useCreateEventStore.setState((state) => ({
+          tempMediaPreview: state.tempMediaPreview?.filter(
+            (_, i) => i !== index,
+          ),
+          mediaPreviews: [
+            ...state.mediaPreviews,
+            { type: "video", url: videoUrl },
+          ],
+        }));
       } else {
         console.error("Invalid media type:", media.type);
       }
+
+      setTempMediaPreviews((prev) => prev.filter((_, i) => i !== index));
     } catch (error) {
       console.error("Error uploading media:", error);
+      setTempMediaPreviews((prev) => prev.filter((_, i) => i !== index));
+      useCreateEventStore.setState((state) => ({
+        tempMediaPreview: state.tempMediaPreview?.filter((_, i) => i !== index),
+      }));
+      toast({
+        title: "Upload failed",
+        description: "One or more media files could not be uploaded.",
+        className: "bg-red-500 text-white",
+      });
     } finally {
       setUploadingMediaStatus((prev) =>
         prev.map((status, i) => (i === index ? false : status)),
@@ -334,18 +483,40 @@ const DuplicateEventContent = () => {
   };
 
   const deleteMedia = async (index: number, mediaItem: MediaItem) => {
-    const isUploaded = mediaItem.url.startsWith(
-      "https://evento-media-bucket.s3.",
+    const urlsToDelete = [];
+
+    if (mediaItem.url?.startsWith("https://evento-media-bucket.s3.")) {
+      urlsToDelete.push(mediaItem.url);
+    }
+
+    if (mediaItem.thumbnailUrl?.startsWith("https://evento-media-bucket.s3.")) {
+      urlsToDelete.push(mediaItem.thumbnailUrl);
+    }
+
+    if (mediaItem.mediumUrl?.startsWith("https://evento-media-bucket.s3.")) {
+      urlsToDelete.push(mediaItem.mediumUrl);
+    }
+
+    // Supprimer chaque fichier
+    const deletionResults = await Promise.all(
+      urlsToDelete.map(async (url) => {
+        const key = new URL(url).pathname.substring(1); // remove leading slash
+        return handleDeleteMedia(key);
+      }),
     );
-    if (isUploaded) {
-      const fileKey = new URL(mediaItem.url).pathname.substring(1);
-      const success = await handleDeleteMedia(fileKey);
-      if (success) {
-        useCreateEventStore.setState((state) => ({
-          mediaPreviews: state.mediaPreviews?.filter((_, i) => i !== index),
-        }));
-      }
+
+    const allDeleted = deletionResults.every((result) => result === true);
+
+    if (allDeleted) {
+      useCreateEventStore.setState((state) => ({
+        mediaPreviews: state.mediaPreviews?.filter((_, i) => i !== index),
+      }));
     } else {
+      console.warn("Certaines images n’ont pas pu être supprimées.");
+    }
+
+    // Si c'était un fichier non uploadé encore (temp)
+    if (!urlsToDelete.length) {
       useCreateEventStore.setState((state) => ({
         tempMediaPreview: state.tempMediaPreview?.filter((_, i) => i !== index),
       }));
@@ -434,6 +605,8 @@ const DuplicateEventContent = () => {
       .map((media: any) => ({
         url: media.url,
         type: media.type,
+        thumbnailUrl: media.thumbnailUrl,
+        mediumUrl: media.mediumUrl,
       }));
     console.log("initialMedia", initialMedia);
     const predefinedMedia = (eventStore.mediaPreviews || [])
@@ -444,7 +617,7 @@ const DuplicateEventContent = () => {
           media.url.startsWith("https://evento-media-bucket.s3.") &&
           !media.url.includes("/events/initialMedia"),
       )
-      .map((media: any) => ({
+      .map((media: MediaItem) => ({
         url: media.url,
         type: media.type,
       }));
@@ -657,6 +830,7 @@ const DuplicateEventContent = () => {
               <div className="flex mt-2 w-full">
                 <FileUploadButton onChange={handleFileSelect} />
                 <ul className="flex gap-2 overflow-x-scroll max-w-full ml-2 scroll-container p-2">
+                  {isConverting && <EventoLoader />}
                   {[...tempMediaPreviews, ...eventStore.mediaPreviews].map(
                     (media, index) => (
                       <li

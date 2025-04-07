@@ -535,6 +535,8 @@ const CreateEventContent = () => {
       )
       .map((media: any) => ({
         url: media.url,
+        thumbnailUrl: media.thumbnailUrl,
+        mediumUrl: media.mediumUrl,
         type: media.type,
       }));
 
@@ -546,7 +548,7 @@ const CreateEventContent = () => {
           media.url.startsWith("https://evento-media-bucket.s3.") &&
           !media.url.includes("/events/initialMedia"),
       )
-      .map((media: any) => ({
+      .map((media: MediaItem) => ({
         url: media.url,
         type: media.type,
       }));
