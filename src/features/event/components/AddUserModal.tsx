@@ -201,7 +201,7 @@ const AddUserModal = ({
             </ScrollArea>
           </div>
         </div>
-        <Button className="bg-evento-gradient mt-4" onClick={handleSave}>
+        <Button variant={"eventoPrimary"} onClick={handleSave}>
           Save
         </Button>
       </DialogContent>

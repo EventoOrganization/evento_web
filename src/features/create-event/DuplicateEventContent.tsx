@@ -29,7 +29,7 @@ import { EventType, InterestType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 import heic2any from "heic2any";
-import { Check, Trash } from "lucide-react";
+import { Check, Loader2, Trash } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import NewAPIGoogleMapComponent from "../discover/NewAPIGoogleMapComponent";
@@ -41,6 +41,7 @@ const DuplicateEventContent = () => {
   const pathname = usePathname();
   const [isEventModalOpen, setIsEventModalOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
   const { addEvent, events } = useEventStore();
@@ -532,6 +533,7 @@ const DuplicateEventContent = () => {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
+    setIsSubmitting(true);
     e.preventDefault();
 
     if (!isAuthenticated) {
@@ -654,6 +656,7 @@ const DuplicateEventContent = () => {
         router.push(`/profile`);
       }
     }
+    setIsSubmitting(false);
   };
   if (!existingEvent) return <div>Event not found</div>;
   return (
@@ -895,7 +898,12 @@ const DuplicateEventContent = () => {
             >
               Preview
             </Button>
-            <Button className="bg-evento-gradient w-full text-white hidden md:flex">
+            <Button
+              disabled={isSubmitting}
+              variant={"eventoPrimary"}
+              className="w-full"
+            >
+              {isSubmitting && <Loader2 className="animate-spin w-5 h-5" />}
               Create Event
             </Button>
           </form>
