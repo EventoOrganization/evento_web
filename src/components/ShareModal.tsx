@@ -55,7 +55,8 @@ const ShareModal = ({ eventUrl }: { eventUrl: string }) => {
     <div>
       <Button
         onClick={() => setIsModalOpen(true)}
-        className="bg-evento-gradient flex gap-2 w-full md:w-fit"
+        variant={"eventoPrimary"}
+        className="w-full md:w-fit"
       >
         <ExternalLink /> Share link
       </Button>

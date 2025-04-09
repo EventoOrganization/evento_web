@@ -17,6 +17,7 @@ import { EventType } from "@/types/EventType";
 import { TempUserType, UserType } from "@/types/UserType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { sortUsersByPriority } from "@/utils/sortUsersByPriority";
+import { Loader2 } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import CSVImport from "./CSVImport";
@@ -49,7 +50,7 @@ const EventGuestModal: React.FC<EventGuestModalProps> = ({
   const { toast } = useToast();
   const { user, token } = useSession();
   const [filter, setFilter] = useState<string>("");
-
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFilter(e.target.value.toLowerCase());
   };
@@ -74,6 +75,7 @@ const EventGuestModal: React.FC<EventGuestModalProps> = ({
   };
 
   const handleSubmitGuests = async () => {
+    setIsSubmitting(true);
     const guests = currentSelectedUsers
       .filter((user) => !!user._id)
       .map((user) => ({
@@ -134,6 +136,8 @@ const EventGuestModal: React.FC<EventGuestModalProps> = ({
         variant: "destructive",
         duration: 3000,
       });
+    } finally {
+      setIsSubmitting(false);
     }
 
     setIsOpen(false);
@@ -294,10 +298,13 @@ const EventGuestModal: React.FC<EventGuestModalProps> = ({
 
         <div className="mt-4 flex items-center justify-between">
           <Button
+            disabled={currentSelectedUsers.length === 0}
             type="button"
-            className="bg-evento-gradient-button border shadow mt-2"
+            variant="eventoPrimary"
+            className="mt-2 w-full"
             onClick={handleSubmitGuests} // Call the submission handler here
           >
+            {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}{" "}
             Save
           </Button>
         </div>

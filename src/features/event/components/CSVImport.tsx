@@ -130,8 +130,8 @@ const CSVImport = ({ onAddTempGuests }: CSVImportProps) => {
         />
         <Button
           type="button"
+          variant={"eventoPrimary"}
           onClick={handleImportCSV}
-          className="bg-evento-gradient-button hover:bg-evento-gradient-button/80 border shadow"
         >
           Import CSV
         </Button>

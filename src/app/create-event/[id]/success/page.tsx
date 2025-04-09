@@ -19,6 +19,7 @@ import { EventType } from "@/types/EventType";
 import { TempUserType, UserType } from "@/types/UserType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { cn } from "@nextui-org/theme";
+import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -44,6 +45,7 @@ const EventSuccessPage = () => {
     ? event.favouritees.map((f) => f?._id || "")
     : [];
   const excludedUserIds = [...attendeeIds, ...favouriteIds];
+  const [isSubmitting, setIsSubmitting] = useState(false);
   useEffect(() => {
     const fetchEventData = async () => {
       try {
@@ -118,6 +120,7 @@ const EventSuccessPage = () => {
     );
   };
   const handleSubmitGuests = async () => {
+    setIsSubmitting(true);
     const newGuests = currentSelectedUsers.filter(
       (user): user is UserType => !!user._id,
     );
@@ -179,6 +182,8 @@ const EventSuccessPage = () => {
         variant: "destructive",
         duration: 3000,
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -364,10 +369,13 @@ const EventSuccessPage = () => {
             {currentSelectedUsers.length > 0 && (
               <Button
                 type="button"
-                className="bg-evento-gradient border shadow mt-2 w-full"
+                disabled={isSubmitting}
+                variant={"eventoPrimary"}
+                className="mt-2 w-full"
                 onClick={handleSubmitGuests}
               >
-                Send invitation
+                {isSubmitting && <Loader2 className="mr-2 animate-spin" />} Send
+                invitation
               </Button>
             )}
             <CollapsibleList
@@ -377,7 +385,7 @@ const EventSuccessPage = () => {
               event={event}
               setEvent={setEvent}
             />
-            <Button className="bg-evento-gradient-button w-full p-0">
+            <Button variant={"eventoPrimary"} className="w-full">
               <Link
                 href={`/event/${event._id}`}
                 className=" w-full h-full flex justify-center items-center"

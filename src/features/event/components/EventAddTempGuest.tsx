@@ -38,10 +38,7 @@ const EventAddTempGuest = ({ onAddTempGuest }: { onAddTempGuest: any }) => {
             required
           />
         </div>
-        <Button
-          type="submit"
-          className="w-fit bg-evento-gradient-button hover:bg-evento-gradient-button/80"
-        >
+        <Button type="submit" variant={"eventoPrimary"} className="w-fit">
           Add
         </Button>
       </form>
