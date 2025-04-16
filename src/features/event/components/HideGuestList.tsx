@@ -51,7 +51,6 @@ const HideGuestList = ({ event }: Props) => {
       });
     }
   };
-
   return (
     <div className="flex items-center gap-2">
       <Switch

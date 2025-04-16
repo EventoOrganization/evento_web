@@ -31,14 +31,14 @@ const EventAnnouncement = ({
     event.announcements.filter((announcement) => {
       if (isAdmin) return true;
       if (!user) return false;
-
+      const isInvited = event?.guests?.some((guest) => guest._id === user._id);
       const isDirectRecipient = announcement.receivers.userIds?.includes(
         user._id,
       );
       const hasMatchingStatus =
         announcement.receivers.status &&
         ((announcement.receivers.status === "going" && event.isGoing) ||
-          (announcement.receivers.status === "invited" && event.isFavourite) ||
+          (announcement.receivers.status === "invited" && isInvited) ||
           (announcement.receivers.status === "decline" && event.isRefused));
 
       return isDirectRecipient || hasMatchingStatus;
