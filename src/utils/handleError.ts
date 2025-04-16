@@ -22,6 +22,11 @@ export const handleError = (error: any, source: string = "Unknown") => {
   if (error?.response?.data) {
     formattedError.message = error.response.data.message || "API error.";
     formattedError.statusCode = error.response.status;
+  } else if (
+    error instanceof TypeError &&
+    error.message === "Failed to fetch"
+  ) {
+    formattedError.message = "Please check your internet or switch browser.";
   } else if (error?.message && error?.name === "FetchError") {
     formattedError.message = "Network error. Please check your connection.";
   } else if (typeof error === "string") {

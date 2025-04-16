@@ -116,19 +116,12 @@ export const fetchData = async <T, B = any>(
 
     return { data: null, error: null, status: response.status, ok: true };
   } catch (error) {
-    console.error("[fetchData ERROR]", error);
-
-    const isFailedToFetch =
-      error instanceof TypeError && error.message === "Failed to fetch";
+    const formattedError = handleError(error, `fetchData: ${endpoint}`);
 
     return {
       data: null,
-      error: isFailedToFetch
-        ? "Impossible de contacter le serveur. Vérifiez votre connexion ou les CORS."
-        : error instanceof Error
-          ? error.message
-          : "Une erreur inconnue est survenue.",
-      status: 500,
+      error: formattedError.message,
+      status: formattedError.statusCode || 500,
       ok: false,
     };
   }
