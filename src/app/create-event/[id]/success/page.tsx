@@ -217,7 +217,7 @@ const EventSuccessPage = () => {
 
   return (
     <>
-      <Section className="md:px-0 px-4 text-left h-full">
+      <Section className="px-4 xl:px-0 text-left h-full ">
         <h1 className="text-3xl font-bold w-full h-full">
           Congratulations
           <span className="md:hidden  ml-2">!</span>
