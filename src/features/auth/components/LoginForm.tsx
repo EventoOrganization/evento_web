@@ -59,7 +59,7 @@ const LoginForm = ({
     try {
       // Call fetchData and handle the result
       const { data: loginResult, error } = await fetchData<any>(
-        "/auth/logn",
+        "/auth/login",
         HttpMethod.POST,
         {
           email: data.email.toLowerCase(),
