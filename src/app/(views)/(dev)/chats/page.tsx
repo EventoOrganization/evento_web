@@ -1,12 +1,43 @@
-import ChatPageContent from "@/app/(views)/(dev)/chats/components/ChatPageContent";
-import { Metadata } from "next";
-export const metadata: Metadata = {
-  title: "Chats",
-  description:
-    "Stay connected with Evento’s integrated chat. Seamlessly coordinate event details, share updates, and engage attendees—all through a user-friendly event app designed for effortless communication.",
-};
-const page = () => {
-  return <ChatPageContent />;
+"use client";
+import { cn } from "@/lib/utils";
+import { useState } from "react";
+import { ChatHeader } from "./ChatHeader";
+import { ChatInput } from "./ChatInput";
+import { ChatMessages } from "./ChatMessages";
+import { ConversationSidebar } from "./ConversationSidebar";
+
+const ChatPage = () => {
+  const [isConvSelected, setIsConvSelected] = useState(false);
+
+  return (
+    <>
+      <ChatHeader
+        isConvSelected={isConvSelected}
+        onBack={() => setIsConvSelected(false)}
+      />
+
+      <div className="flex h-full pb-16">
+        <ConversationSidebar
+          isConvSelected={isConvSelected}
+          onSelect={() => setIsConvSelected(true)}
+        />
+
+        <div
+          className={cn("flex-1 flex flex-col h-full bg-background", {
+            "hidden md:flex": !isConvSelected,
+          })}
+        >
+          <div className="bg-muted p-4 border-b font-bold text-lg h-16">
+            <h2>Chat with Alice</h2>
+            <p className="text-xs text-muted-foreground">Online</p>
+          </div>
+
+          <ChatMessages />
+          <ChatInput />
+        </div>
+      </div>
+    </>
+  );
 };
 
-export default page;
+export default ChatPage;

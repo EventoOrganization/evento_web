@@ -1,81 +1,24 @@
-"use client";
-
-import ChatHeader from "@/app/(views)/(dev)/chats/components/ChatHeader";
-import ConversationList from "@/app/(views)/(dev)/chats/components/ConversationList";
 import ComingSoon from "@/components/ComingSoon";
-import { useSocket } from "@/contexts/(dev)/SocketProvider";
-import { cn } from "@/lib/utils";
-import { CircleArrowLeftIcon } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-
+import { Metadata } from "next";
+export const metadata: Metadata = {
+  title: "Chats",
+  description:
+    "Stay connected with Evento’s integrated chat. Seamlessly coordinate event details, share updates, and engage attendees—all through a user-friendly event app designed for effortless communication.",
+};
 export default function ChatLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const router = useRouter();
-  const [isOpen, setIsOpen] = useState(true);
-  const { setActiveConversation } = useSocket();
-  const handleSelectConversation = () => {
-    setIsOpen(false);
-  };
   const dev = process.env.NODE_ENV === "development";
-  const old = false;
+
   if (!dev) {
     return <ComingSoon message="This feature is currently under development" />;
   }
-  if (!old) {
-    return <div>{children}</div>;
-  } else {
-    return (
-      <>
-        <CircleArrowLeftIcon
-          className={cn(
-            "z-10 absolute top-4 right-5 md:hidden w-10 h-10 text-white transition-opacity duration-300",
-            {
-              "opacity-0": isOpen,
-            },
-          )}
-          onClick={() => {
-            setActiveConversation(false);
-            setIsOpen(true);
-            router.replace("/chats", undefined);
-          }}
-        />
-        <div className="h-screen w-screen fixed inset-0 md:pb-0">
-          <div className="flex w-full h-full">
-            {/* Sidebar for Conversations */}
-            <div
-              className={cn(
-                "md:flex transition-all md:opacity-100 md:translate-x-0 duration-300 md:w-1/4  md:min-w-72 h-full flex-col",
-                {
-                  "translate-x-[-100%] w-0 opacity-0": !isOpen,
-                  "translate-x-0 w-full opacity-100": isOpen,
-                },
-              )}
-            >
-              <ConversationList
-                setIsOpen={setIsOpen}
-                onSelectConversation={handleSelectConversation}
-              />
-            </div>
 
-            {/* Chat content (messages) */}
-            <div
-              className={cn(
-                "md:w-3/4 w-full transition-all duration-300 flex flex-col h-full",
-                {
-                  "w-0 opacity-0": isOpen,
-                },
-              )}
-            >
-              <ChatHeader />
-              {children}
-            </div>
-          </div>
-        </div>
-      </>
-    );
-  }
+  return (
+    <div className="fixed top-0 pb-16 h-screen w-full overflow-hidden">
+      {children}
+    </div>
+  );
 }

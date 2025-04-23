@@ -1,6 +1,11 @@
+"use client";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import SmartImage from "../SmartImage";
 const Footer = () => {
+  const pathname = usePathname();
+  const isChatView = pathname.startsWith("/chat");
+  if (isChatView) return null;
   return (
     <footer className=" w-full flex flex-col justify-center items-center min-h-40 pt-10 pb-20 gap-10 border-t-2 max-w-2xl mx-auto">
       <ul className="flex flex-wrap justify-center gap-6 w-full max-w-96">

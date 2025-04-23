@@ -69,7 +69,7 @@ const ChatbotComponent = ({ className }: { className?: string }) => {
       handleSendMessage();
     }
   };
-
+  if (pathname.startsWith("/chat")) return null;
   return (
     <div
       className={cn(

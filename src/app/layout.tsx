@@ -1,5 +1,4 @@
 import CustomLayout from "@/components/layout/CustomLayout";
-import NavbarApp from "@/components/Navbar";
 import AppInitializer from "@/components/system/AppInitializer";
 import { Toaster } from "@/components/ui/toaster";
 import { SocketProvider } from "@/contexts/(dev)/SocketProvider";
@@ -100,7 +99,6 @@ export default function RootLayout({
             <TooltipProvider delayDuration={100}>
               <CustomLayout>{children}</CustomLayout>
             </TooltipProvider>
-            <NavbarApp />
           </SocketProvider>
         </SessionProvider>
       </body>

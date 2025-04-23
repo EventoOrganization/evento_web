@@ -2,6 +2,7 @@ import ChatbotComponent from "@/components/ChatbotComponent";
 import Footer from "@/components/layout/Footer";
 import { cn } from "@nextui-org/theme";
 import React from "react";
+import NavbarApp from "../Navbar";
 
 const CustomLayout = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -9,6 +10,7 @@ const CustomLayout = ({ children }: { children: React.ReactNode }) => {
       {children}
       <Footer />
       <ChatbotComponent />
+      <NavbarApp />
     </main>
   );
 };

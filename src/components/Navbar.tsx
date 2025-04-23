@@ -3,7 +3,6 @@
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
 import CreateEventIcon from "./icons/CreateEventIcon";
 import DiscoverIcon from "./icons/DiscoverIcon";
 import HomeIcon2 from "./icons/HomeIcon2";
@@ -12,19 +11,14 @@ import TchatIcon from "./TchatIcon";
 
 export default function NavbarApp() {
   const pathname = usePathname();
-  // const { activeConversation } = useSocket();
-  const [isVisible, setIsVisible] = useState(true);
-  // useEffect(() => {
-  //   setIsVisible(!activeConversation);
-  // }, [activeConversation]);
-
+  const isChatView = pathname.startsWith("/chat");
   return (
     <nav
       key={pathname}
       className={cn(
-        "fixed w-full bg-background z-20 h-24  flex border-2 sm:rounded-t-xl justify-evenly md:min-w-72 md:py-4 items-center left-1/2 bottom-0 -translate-x-1/2  max-w-md",
+        "fixed w-full bg-background z-20 h-24 justify-center gap-10 flex md:min-w-72 items-center left-1/2 bottom-0 -translate-x-1/2  ",
         "transition-all duration-500 ease-in-out",
-        isVisible ? "opacity-100" : "opacity-0 pointer-events-none",
+        !isChatView ? " max-w-md sm:rounded-t-xl border-2" : "h-16 border-t",
       )}
     >
       <Link href="/" className="relative group">
