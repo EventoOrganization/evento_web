@@ -1,7 +1,7 @@
 "use client";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { EventType } from "@/types/EventType";
-import { Briefcase, Calendar, Download, Globe, Mail } from "lucide-react";
+import { Briefcase, Calendar, Globe, Mail } from "lucide-react";
 import { Button } from "./ui/button";
 
 type AddToCalendarProps = {
@@ -127,14 +127,14 @@ END:VCALENDAR
           <Briefcase size={24} />
           Outlook Calendar
         </Button>
-        <Button
+        {/* <Button
           variant={"outline"}
           onClick={downloadICS}
           className="flex items-center gap-2 text-green-500"
         >
           <Download size={24} />
           Download ICS
-        </Button>
+        </Button> */}
       </DialogContent>
     </Dialog>
   );
