@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { useJsApiLoader } from "@react-google-maps/api";
 import { ChevronDown } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import GoogleMapsMap from "./GoogleMapsMap"; // Ton composant map
+import GoogleMapsMap from "./GoogleMapsMap";
 
 const libraries: "places"[] = ["places"];
 

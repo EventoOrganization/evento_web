@@ -1,4 +1,4 @@
-import { handleUpload } from "@/app/create-event/action";
+import { handleUpload } from "@/app/(views)/(prod)/create-event/action";
 import EventoLoader from "@/components/EventoLoader";
 import SmartImage from "@/components/SmartImage";
 import { Button } from "@/components/ui/button";

@@ -1,5 +1,6 @@
-import { handleUpload } from "@/app/create-event/action"; // Importer votre fonction d'upload
+import { handleUpload } from "@/app/(views)/(prod)/create-event/action"; // Importer votre fonction d'upload
 import EventoLoader from "@/components/EventoLoader";
+import SmartImage from "@/components/SmartImage";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -13,7 +14,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useEffect, useState } from "react";
 import { handleFieldChange } from "../eventActions";
-import SmartImage from "@/components/SmartImage";
 
 const MediaSelectionModal = ({
   isOpen,

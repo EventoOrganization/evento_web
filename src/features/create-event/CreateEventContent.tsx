@@ -1,5 +1,8 @@
 "use client";
-import { handleDeleteMedia, handleUpload } from "@/app/create-event/action";
+import {
+  handleDeleteMedia,
+  handleUpload,
+} from "@/app/(views)/(prod)/create-event/action";
 import EventoLoader from "@/components/EventoLoader";
 import FileUploadButton from "@/components/FileUploadButton";
 import Section from "@/components/layout/Section";

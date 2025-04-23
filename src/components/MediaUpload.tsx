@@ -1,4 +1,4 @@
-import { handleUpload } from "@/app/create-event/action"; // Importing the upload function
+import { handleUpload } from "@/app/(views)/(prod)/create-event/action"; // Importing the upload function
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useSession } from "@/contexts/SessionProvider";
