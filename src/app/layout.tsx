@@ -2,6 +2,7 @@ import CustomLayout from "@/components/layout/CustomLayout";
 import NavbarApp from "@/components/Navbar";
 import AppInitializer from "@/components/system/AppInitializer";
 import { Toaster } from "@/components/ui/toaster";
+import { SocketProvider } from "@/contexts/(dev)/SocketProvider";
 import { SessionProvider } from "@/contexts/(prod)/SessionProvider";
 import GoogleAnalytics from "@/features/googleAnalitics/GoogleAnalytics";
 import { cn } from "@/lib/utils";
@@ -93,12 +94,14 @@ export default function RootLayout({
           sessionUser={session?.user || null}
           sessionToken={session?.token || null}
         >
-          <AppInitializer />
-          <Toaster />
-          <TooltipProvider delayDuration={100}>
-            <CustomLayout>{children}</CustomLayout>
-          </TooltipProvider>
-          <NavbarApp />
+          <SocketProvider>
+            <AppInitializer />
+            <Toaster />
+            <TooltipProvider delayDuration={100}>
+              <CustomLayout>{children}</CustomLayout>
+            </TooltipProvider>
+            <NavbarApp />
+          </SocketProvider>
         </SessionProvider>
       </body>
     </html>
