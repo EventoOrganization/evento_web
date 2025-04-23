@@ -32,7 +32,7 @@ import heic2any from "heic2any";
 import { Check, Loader2, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import NewAPIGoogleMapComponent from "../discover/NewAPIGoogleMapComponent";
+import SmartGooglePlacesInput from "../discover/SmartGooglePlacesInput";
 import CreateEventLimitedGuests from "../event/components/CreateEventLimitedGuests";
 import RestrictedToggle from "../event/components/RestrictedToggle";
 
@@ -502,6 +502,7 @@ const CreateEventContent = () => {
         className: "bg-red-500 text-white",
         duration: 3000,
       });
+      setIsSubmitting(false);
       return;
     }
     if (
@@ -559,6 +560,13 @@ const CreateEventContent = () => {
       uploadedMedia: [...initialMedia],
       predefinedMedia: [...predefinedMedia],
     };
+    console.log(
+      "eventStore.mediaPreviews",
+      eventStore.location,
+      eventStore.latitude,
+      eventStore.longitude,
+    );
+    return;
     const response = await fetchData<EventType>(
       "/events/createEvent",
       HttpMethod.POST,
@@ -719,9 +727,13 @@ const CreateEventContent = () => {
               </RadioGroup>
             </div>
             <div className={`${eventStore.mode !== "virtual" ? "" : "hidden"}`}>
-              <NewAPIGoogleMapComponent
+              <SmartGooglePlacesInput
                 location={location || { lat: 0, lng: 0 }}
                 setLocation={setLocation}
+                onAddressChange={(address) => {
+                  eventStore.setEventField("location", address);
+                  console.log("Selected:", address);
+                }}
               />
             </div>
             <EventDateComponent />

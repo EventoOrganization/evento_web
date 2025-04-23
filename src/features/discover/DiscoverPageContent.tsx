@@ -36,7 +36,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import NewAPIGoogleMapComponent from "./NewAPIGoogleMapComponent";
+import SmartGooglePlacesInput from "./SmartGooglePlacesInput";
 
 interface Location {
   lat: number;
@@ -299,14 +299,18 @@ const DiscoverPageContent = () => {
                 />
               </div>
               <div className="flex flex-col gap-2 md:p-4 py-0 pt-0 rounded bg-muted">
-                <NewAPIGoogleMapComponent
+                {/* <NewAPIGoogleMapComponent
                   location={location || { lat: 0, lng: 0 }}
                   setLocation={setLocation}
-                />
+                /> */}
                 {/* <MyGoogleMapComponent
                   location={location || { lat: 0, lng: 0 }}
                   setLocation={setLocation}
                 /> */}
+                <SmartGooglePlacesInput
+                  location={location || { lat: 0, lng: 0 }}
+                  setLocation={setLocation}
+                />
               </div>
               <div className="md:p-4  gap-4 ">
                 <div className="flex justify-between items-center ">
