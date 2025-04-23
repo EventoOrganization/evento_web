@@ -2,7 +2,6 @@
 import { UserType } from "@/types/UserType";
 import { JwtPayload } from "jsonwebtoken";
 import { cookies } from "next/headers";
-import { decodeToken } from "./auth";
 
 export const mapJwtPayloadToUser = (payload: JwtPayload): UserType => {
   const data = payload;
@@ -15,16 +14,20 @@ export const mapJwtPayloadToUser = (payload: JwtPayload): UserType => {
 };
 
 export const getSessionSSR = () => {
-  const token = getTokenSSR();
-  const decodedToken = token ? decodeToken(token) : null;
-  const user = decodedToken ? mapJwtPayloadToUser(decodedToken) : null;
-  // console.log("User from token:", user);
+  const raw = cookies().get("sessionData")?.value;
+  if (!raw) return { token: null, user: null, isLoggedIn: false };
 
-  return {
-    token,
-    user,
-    isLoggedIn: !!token,
-  };
+  try {
+    const parsed = JSON.parse(decodeURIComponent(raw));
+    return {
+      token: parsed.token || null,
+      user: parsed.user || null,
+      isLoggedIn: !!parsed.token,
+    };
+  } catch (error) {
+    console.error("❌ Failed to parse sessionData cookie:", error);
+    return { token: null, user: null, isLoggedIn: false };
+  }
 };
 
 export const getTokenSSR = () => {

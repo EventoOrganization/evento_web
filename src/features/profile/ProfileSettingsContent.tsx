@@ -2,7 +2,7 @@
 
 import ComingSoon from "@/components/ComingSoon";
 import ToggleSwitch from "@/components/ToggleSwitch";
-import { useSession } from "@/contexts/SessionProvider";
+import { useSession } from "@/contexts/(prod)/SessionProvider";
 import DeleteAccountBtn from "@/features/auth/components/DeleteAccountBtn";
 import LogoutBtn from "@/features/auth/components/LogoutBtn";
 import InstallPWAButton from "@/features/pwa/InstallPWAButton";

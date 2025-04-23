@@ -4,7 +4,7 @@ import Section from "@/components/layout/Section";
 import SmartImage from "@/components/SmartImage";
 import { Button } from "@/components/ui/button";
 import UserListModal from "@/components/UserListModal";
-import { useSession } from "@/contexts/SessionProvider";
+import { useSession } from "@/contexts/(prod)/SessionProvider";
 import { toast } from "@/hooks/use-toast";
 import { useUsersStore } from "@/store/useUsersStore";
 import { InterestType } from "@/types/EventType";

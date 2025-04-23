@@ -6,7 +6,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useSession } from "@/contexts/SessionProvider";
+import { useSession } from "@/contexts/(prod)/SessionProvider";
 import AuthModal from "@/features/auth/components/AuthModal";
 import { useState } from "react";
 import Event from "./Event";

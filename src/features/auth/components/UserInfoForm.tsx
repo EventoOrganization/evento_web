@@ -8,11 +8,10 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useSession } from "@/contexts/SessionProvider";
+import { useSession } from "@/contexts/(prod)/SessionProvider";
 import EditProfileImage from "@/features/profile/EditProfileImage";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
-import { useAuthStore } from "@/store/useAuthStore";
 import { useProfileStore } from "@/store/useProfileStore";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -28,7 +27,6 @@ const userInfoSchema = z.object({
 const UserInfoForm = ({ onAuthSuccess }: { onAuthSuccess: () => void }) => {
   const [isFetching, setIsFetching] = useState(false);
   const { toast } = useToast();
-  const { setUser } = useAuthStore();
   const session = useSession();
   const { setProfileData } = useProfileStore();
   const [croppedProfileImage, setCroppedProfileImage] = useState<string | null>(
@@ -105,7 +103,7 @@ const UserInfoForm = ({ onAuthSuccess }: { onAuthSuccess: () => void }) => {
           profileImage: updateRes.data.profileImage || croppedProfileImage,
         };
 
-        setUser(updatedUser);
+        session.updateUser(updatedUser);
         setProfileData(updateRes.data);
         onAuthSuccess();
       }

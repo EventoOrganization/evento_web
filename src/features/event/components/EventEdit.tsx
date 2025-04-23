@@ -2,7 +2,7 @@
 import RequiresApprovalToggle from "@/components/RequiresApprovalToggle";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { useSession } from "@/contexts/SessionProvider";
+import { useSession } from "@/contexts/(prod)/SessionProvider";
 import { useToast } from "@/hooks/use-toast";
 import { useEventStore } from "@/store/useEventsStore";
 import { useInterestsStore } from "@/store/useInterestsStore";

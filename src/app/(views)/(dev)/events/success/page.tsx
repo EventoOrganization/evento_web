@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Switch } from "@/components/ui/togglerbtn";
-import { useSession } from "@/contexts/SessionProvider";
+import { useSession } from "@/contexts/(prod)/SessionProvider";
 import CSVImport from "@/features/event/components/CSVImport";
 import EventAddTempGuest from "@/features/event/components/EventAddTempGuest";
 import RestrictedToggle from "@/features/event/components/RestrictedToggle";

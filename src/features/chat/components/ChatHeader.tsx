@@ -3,7 +3,7 @@
 
 import SmartImage from "@/components/SmartImage";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useSocket } from "@/contexts/SocketProvider";
+import { useSocket } from "@/contexts/(dev)/SocketProvider";
 import { useEffect, useState } from "react";
 const ChatHeader = () => {
   const { activeConversation } = useSocket();

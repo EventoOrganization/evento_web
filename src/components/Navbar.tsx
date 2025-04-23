@@ -1,9 +1,9 @@
 "use client";
-import { useSocket } from "@/contexts/SocketProvider";
+// import { useSocket } from "@/contexts/(dev)/SocketProvider";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import CreateEventIcon from "./icons/CreateEventIcon";
 import DiscoverIcon from "./icons/DiscoverIcon";
 import HomeIcon2 from "./icons/HomeIcon2";
@@ -12,11 +12,11 @@ import TchatIcon from "./TchatIcon";
 
 export default function NavbarApp() {
   const pathname = usePathname();
-  const { activeConversation } = useSocket();
+  // const { activeConversation } = useSocket();
   const [isVisible, setIsVisible] = useState(true);
-  useEffect(() => {
-    setIsVisible(!activeConversation);
-  }, [activeConversation]);
+  // useEffect(() => {
+  //   setIsVisible(!activeConversation);
+  // }, [activeConversation]);
 
   return (
     <nav

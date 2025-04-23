@@ -8,7 +8,7 @@ import {
   default as TruncatedText,
   default as TruncateText,
 } from "@/components/TruncatedText";
-import { useSession } from "@/contexts/SessionProvider";
+import { useSession } from "@/contexts/(prod)/SessionProvider";
 import EventActionIcons from "@/features/event/components/EventActionIcons";
 import { useUsersStore } from "@/store/useUsersStore";
 import { EventType } from "@/types/EventType";

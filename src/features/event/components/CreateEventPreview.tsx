@@ -4,7 +4,7 @@ import SmartImage from "@/components/SmartImage";
 import TruncatedText from "@/components/TruncatedText";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Label } from "@/components/ui/label";
-import { useSession } from "@/contexts/SessionProvider";
+import { useSession } from "@/contexts/(prod)/SessionProvider";
 import { cn } from "@/lib/utils";
 import { useCreateEventStore } from "@/store/useCreateEventStore";
 import CreateEventCarousel from "./CreateEventCarousel";

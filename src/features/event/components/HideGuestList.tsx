@@ -1,7 +1,7 @@
 "use client";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/togglerbtn";
-import { useSession } from "@/contexts/SessionProvider";
+import { useSession } from "@/contexts/(prod)/SessionProvider";
 import { useToast } from "@/hooks/use-toast";
 import { EventType } from "@/types/EventType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";

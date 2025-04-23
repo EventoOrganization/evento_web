@@ -8,7 +8,7 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useSession } from "@/contexts/SessionProvider";
+import { useSession } from "@/contexts/(prod)/SessionProvider";
 import AuthModal from "@/features/auth/components/AuthModal";
 import { cn } from "@/lib/utils";
 import { useCreateEventStore } from "@/store/useCreateEventStore";

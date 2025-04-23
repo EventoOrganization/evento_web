@@ -1,4 +1,4 @@
-import { useSession } from "@/contexts/SessionProvider";
+import { useSession } from "@/contexts/(prod)/SessionProvider";
 import DuplicateEventButton from "@/features/create-event/DuplicateEventButton";
 import DeleteEventButton from "@/features/event/components/DeleteEventButton";
 import { hasEventhost } from "@/features/event/eventActions";

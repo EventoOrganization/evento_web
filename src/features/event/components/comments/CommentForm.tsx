@@ -3,7 +3,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { useSession } from "@/contexts/SessionProvider";
+import { useSession } from "@/contexts/(prod)/SessionProvider";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { useState } from "react";
 

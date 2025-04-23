@@ -1,7 +1,7 @@
 "use client";
 import EventoLoader from "@/components/EventoLoader";
 import Section from "@/components/layout/Section";
-import { useAuthStore } from "@/store/useAuthStore";
+import { useToast } from "@/hooks/use-toast";
 import { UserType } from "@/types/UserType";
 import React, { createContext, useContext, useEffect, useState } from "react";
 
@@ -10,7 +10,9 @@ interface SessionContextProps {
   token: string | null;
   startSession: (user: UserType, token: string) => void;
   endSession: () => void;
+  updateUser: (user: UserType) => void;
   isAuthenticated: boolean;
+  isTokenChecked: boolean;
   tokenExpiredMessage: string | null;
 }
 
@@ -20,19 +22,16 @@ const SessionContext = createContext<SessionContextProps | undefined>(
 
 export const SessionProvider: React.FC<{
   children: React.ReactNode;
-  initialUser?: UserType | null;
-  initialToken?: string | null;
-}> = ({ children, initialUser = null, initialToken = null }) => {
-  const auth = useAuthStore();
-  const [user, setUser] = useState<UserType | null>(
-    initialUser || auth.user || null,
-  );
-  const [token, setToken] = useState<string | null>(
-    initialToken || auth?.user?.token || null,
-  );
+  sessionUser?: UserType | null;
+  sessionToken?: string | null;
+}> = ({ children, sessionUser = null, sessionToken = null }) => {
+  const { toast } = useToast();
+  const [user, setUser] = useState<UserType | null>(sessionUser || null);
+  const [token, setToken] = useState<string | null>(sessionToken || null);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(
     !!user && !!token,
   );
+
   const [tokenExpiredMessage, setTokenExpiredMessage] = useState<string | null>(
     null,
   );
@@ -68,11 +67,17 @@ export const SessionProvider: React.FC<{
     }
   };
 
-  // Vérification du token lors du chargement initial
+  // Vérification du token lors du chargement session
   useEffect(() => {
     if (!token) {
       setIsAuthenticated(false);
       setIsTokenChecked(true);
+      toast({
+        title: "👋 Hello there!",
+        description: "✨ We're loading public content for you.",
+        variant: "eventoSuccess",
+        duration: 3000,
+      });
       return;
     }
 
@@ -80,16 +85,29 @@ export const SessionProvider: React.FC<{
       const valid = await isTokenValid(token);
       setIsAuthenticated(valid);
       setIsTokenChecked(true);
+      toast({
+        title: "🎉 Welcome back!",
+        description: "🔐 Your personal data is being loaded.",
+        variant: "eventoSuccess",
+        duration: 3000,
+      });
 
       if (!valid) {
         endSession();
+        toast({
+          title: "⚠️ Session expired",
+          description:
+            "⏳ Your session has ended. We're switching to guest mode. Please log in again to access your data.",
+          variant: "eventoPending",
+          duration: 3000,
+        });
       }
     })();
-  });
+  }, [token]);
 
   // Récupération de la session depuis les cookies ou le store
   useEffect(() => {
-    if (!initialUser && !initialToken) {
+    if (!sessionUser && !sessionToken) {
       const sessionData = document.cookie
         .split("; ")
         .find((row) => row.startsWith("sessionData="))
@@ -99,22 +117,19 @@ export const SessionProvider: React.FC<{
         const session = JSON.parse(decodeURIComponent(sessionData));
         setUser(session.user);
         setToken(session.token);
-      } else if (auth.user && auth.user.token) {
-        setUser(auth.user);
-        setToken(auth.user.token);
       } else {
         setUser(null);
         setToken(null);
       }
     }
-  }, [initialUser, initialToken, auth.user]);
+  }, [sessionUser, sessionToken]);
 
   const startSession = (user: UserType, token: string) => {
     setUser(user);
     setToken(token);
     setIsAuthenticated(true);
     setIsTokenChecked(true);
-    document.cookie = `token=${token}; path=/;`;
+    document.cookie = `sessionData=${encodeURIComponent(JSON.stringify({ user, token }))}; path=/;`;
   };
 
   const endSession = () => {
@@ -124,15 +139,20 @@ export const SessionProvider: React.FC<{
     setIsTokenChecked(true);
     document.cookie = `token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
   };
+  const updateUser = (updatedUser: UserType) => {
+    setUser(updatedUser);
+  };
 
   return (
     <SessionContext.Provider
       value={{
         user,
         token,
+        updateUser,
         startSession,
         endSession,
         isAuthenticated,
+        isTokenChecked,
         tokenExpiredMessage,
       }}
     >

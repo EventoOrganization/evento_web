@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { useSession } from "@/contexts/SessionProvider";
+import { useSession } from "@/contexts/(prod)/SessionProvider";
 import { useToast } from "@/hooks/use-toast";
 import { useEventStore } from "@/store/useEventsStore";
 import { EventType } from "@/types/EventType";

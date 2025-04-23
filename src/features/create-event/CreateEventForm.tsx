@@ -1,7 +1,7 @@
 "use client";
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-// import { useSession } from "@/contexts/SessionProvider";
+// import { useSession } from "@/contexts/(prod)/SessionProvider";
 import { useCreateEventStore } from "@/store/useCreateEventStore";
 import { useInterestsStore } from "@/store/useInterestsStore";
 import { InterestType } from "@/types/EventType";

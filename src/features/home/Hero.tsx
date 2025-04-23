@@ -2,7 +2,7 @@
 import SmartImage from "@/components/SmartImage";
 import { BackgroundGradientAnimation } from "@/components/ui/background-gradient-animation";
 import { Button } from "@/components/ui/button";
-import { useSession } from "@/contexts/SessionProvider";
+import { useSession } from "@/contexts/(prod)/SessionProvider";
 import Link from "next/link";
 import { useState } from "react";
 import AuthModal from "../auth/components/AuthModal";

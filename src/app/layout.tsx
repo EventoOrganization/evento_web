@@ -2,11 +2,9 @@ import ChatbotComponent from "@/components/ChatbotComponent";
 import Footer from "@/components/Footer";
 import Main from "@/components/layout/Main";
 import NavbarApp from "@/components/Navbar";
+import AppInitializer from "@/components/system/AppInitializer";
 import { Toaster } from "@/components/ui/toaster";
-import GlobalDataProvider from "@/contexts/GlobalDataProvider";
-import PWAProvider from "@/contexts/PWAProvider";
-import { SessionProvider } from "@/contexts/SessionProvider";
-import { SocketProvider } from "@/contexts/SocketProvider";
+import { SessionProvider } from "@/contexts/(prod)/SessionProvider";
 import GoogleAnalytics from "@/features/googleAnalitics/GoogleAnalytics";
 import { cn } from "@/lib/utils";
 import { getSessionSSR } from "@/utils/authUtilsSSR";
@@ -94,24 +92,19 @@ export default function RootLayout({
         </noscript>
         <GoogleAnalytics />
         <SessionProvider
-          initialUser={session?.user || null}
-          initialToken={session?.token || null}
+          sessionUser={session?.user || null}
+          sessionToken={session?.token || null}
         >
-          <PWAProvider>
-            <SocketProvider>
-              <GlobalDataProvider>
-                <Toaster />
-                <TooltipProvider delayDuration={100}>
-                  <Main className={cn("pb-14 md:pb-28")}>
-                    {children}
-                    <Footer />
-                    <ChatbotComponent />
-                  </Main>
-                </TooltipProvider>
-                <NavbarApp />
-              </GlobalDataProvider>
-            </SocketProvider>
-          </PWAProvider>
+          <AppInitializer />
+          <Toaster />
+          <TooltipProvider delayDuration={100}>
+            <Main className={cn("pb-14 md:pb-28")}>
+              {children}
+              <Footer />
+              <ChatbotComponent />
+            </Main>
+          </TooltipProvider>
+          <NavbarApp />
         </SessionProvider>
       </body>
     </html>

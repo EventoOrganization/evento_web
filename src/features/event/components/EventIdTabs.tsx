@@ -10,7 +10,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useSession } from "@/contexts/SessionProvider";
+import { useSession } from "@/contexts/(prod)/SessionProvider";
 import AuthModal from "@/features/auth/components/AuthModal";
 import TabSelector from "@/features/discover/TabSelector";
 import EventAttendeesTab from "@/features/event/components/EventAttendeesTab";

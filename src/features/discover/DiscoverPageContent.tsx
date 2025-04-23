@@ -12,7 +12,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import UsersList from "@/components/UsersList";
-import { useSession } from "@/contexts/SessionProvider";
+import { useSession } from "@/contexts/(prod)/SessionProvider";
 import AuthModal from "@/features/auth/components/AuthModal";
 import { filterEvents, filterUsers } from "@/features/discover/discoverActions";
 import TabSelector from "@/features/discover/TabSelector";

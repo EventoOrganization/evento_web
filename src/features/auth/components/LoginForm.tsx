@@ -1,7 +1,6 @@
 "use client";
 import PasswordInput from "@/components/PasswordInput";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   FormControl,
   FormField,
@@ -9,15 +8,13 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useSession } from "@/contexts/SessionProvider";
+import { useSession } from "@/contexts/(prod)/SessionProvider";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { signInSchema } from "@/lib/zod";
-import { useAuthStore } from "@/store/useAuthStore";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 import { formStyle } from "./AuthModal";
@@ -46,10 +43,7 @@ const LoginForm = ({
       rememberMe: false,
     },
   });
-  const { setUser, user, rememberMe, toggleRememberMe } = useAuthStore(
-    (state) => state,
-  );
-  const { startSession } = useSession();
+  const { startSession, user, updateUser } = useSession();
   const { toast } = useToast();
   const onSubmit: SubmitHandler<z.infer<typeof extendedSignInSchema>> = async (
     data,
@@ -89,7 +83,7 @@ const LoginForm = ({
         token: token,
       };
       // Set user data in the store
-      setUser(loginUserData);
+      updateUser(loginUserData);
       startSession(loginUserData, token);
 
       toast({
@@ -108,11 +102,6 @@ const LoginForm = ({
       setIsFetching(false);
     }
   };
-  useEffect(() => {
-    if (rememberMe && user) {
-      form.setValue("email", user.email);
-    }
-  }, [rememberMe, user, form]);
   return (
     <FormProvider {...form}>
       <form
@@ -158,31 +147,6 @@ const LoginForm = ({
           />
           <div className="flex flex-col">
             <div className="flex justify-between items-center">
-              <FormField
-                control={form.control}
-                name="rememberMe"
-                render={({ field }) => (
-                  <FormItem>
-                    <span className="flex gap-2 items-center text-lg font-semibold">
-                      <Checkbox
-                        id="remember"
-                        checked={rememberMe}
-                        onCheckedChange={(checked: boolean | string | null) => {
-                          field.onChange(!!checked);
-                          toggleRememberMe(!!checked);
-                        }}
-                        className="h-6 w-6"
-                      />
-                      <Label
-                        htmlFor="remember"
-                        className="text-eventoPurple hover:text-eventoPurpleLight transition-colors duration-300 cursor-pointer"
-                      >
-                        Remember me
-                      </Label>
-                    </span>
-                  </FormItem>
-                )}
-              />
               <p className="text-sm text-muted-foreground mt-1">
                 <button
                   type="button"

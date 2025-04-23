@@ -1,6 +1,6 @@
 "use client";
-import { useSession } from "@/contexts/SessionProvider";
-import { useSocket } from "@/contexts/SocketProvider";
+import { useSocket } from "@/contexts/(dev)/SocketProvider";
+import { useSession } from "@/contexts/(prod)/SessionProvider";
 import ChatInput from "@/features/chat/components/ChatInput";
 import MessageList from "@/features/chat/components/MessageList";
 import { useSearchParams } from "next/navigation";

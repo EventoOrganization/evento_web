@@ -6,9 +6,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useSession } from "@/contexts/SessionProvider";
+import { useSession } from "@/contexts/(prod)/SessionProvider";
 import { useToast } from "@/hooks/use-toast";
-import { useAuthStore } from "@/store/useAuthStore";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { useState } from "react";
 import ForgotForm from "./ForgotForm";
@@ -37,7 +36,6 @@ const AuthModal = ({
     "signup",
   );
   const { startSession } = useSession();
-  const { setUser } = useAuthStore();
   const [resetPasswordToken, setResetPasswordToken] = useState<string | null>(
     null,
   );
@@ -82,7 +80,6 @@ const AuthModal = ({
       });
       return;
     }
-    setUser(loginRes.data);
     console.log("loginRes.data", loginRes.data);
     startSession(loginRes.data, loginRes.data.token);
     if (!quickSignup) switchForm("verify");

@@ -1,7 +1,7 @@
 "use client";
 
 import ComingSoon from "@/components/ComingSoon";
-import { useSocket } from "@/contexts/SocketProvider";
+import { useSocket } from "@/contexts/(dev)/SocketProvider";
 import ChatHeader from "@/features/chat/components/ChatHeader";
 import ConversationList from "@/features/chat/components/ConversationList";
 import { cn } from "@/lib/utils";

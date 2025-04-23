@@ -1,5 +1,5 @@
 import { Switch } from "@/components/ui/togglerbtn";
-import { useSession } from "@/contexts/SessionProvider";
+import { useSession } from "@/contexts/(prod)/SessionProvider";
 import { toast } from "@/hooks/use-toast";
 import { useCreateEventStore } from "@/store/useCreateEventStore";
 import { EventType } from "@/types/EventType";

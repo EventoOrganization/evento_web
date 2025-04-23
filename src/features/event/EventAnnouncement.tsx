@@ -1,7 +1,7 @@
 import EzUserPreview from "@/components/EzUserPreview";
 import TruncatedText from "@/components/TruncatedText";
 import { Button } from "@/components/ui/button";
-import { useSession } from "@/contexts/SessionProvider";
+import { useSession } from "@/contexts/(prod)/SessionProvider";
 import { useToast } from "@/hooks/use-toast";
 import { useUsersStore } from "@/store/useUsersStore";
 import { Announcement, EventType } from "@/types/EventType";

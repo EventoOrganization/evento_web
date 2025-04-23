@@ -6,7 +6,7 @@ import {
 import EventoLoader from "@/components/EventoLoader";
 import FileUploadButton from "@/components/FileUploadButton";
 import SmartImage from "@/components/SmartImage";
-import { useSession } from "@/contexts/SessionProvider";
+import { useSession } from "@/contexts/(prod)/SessionProvider";
 import { useToast } from "@/hooks/use-toast";
 import { MediaItem, useCreateEventStore } from "@/store/useCreateEventStore";
 import { useEventStore } from "@/store/useEventsStore";

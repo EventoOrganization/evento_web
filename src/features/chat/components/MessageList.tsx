@@ -1,7 +1,7 @@
 import SmartImage from "@/components/SmartImage";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useSession } from "@/contexts/SessionProvider";
-import { useSocket } from "@/contexts/SocketProvider";
+import { useSocket } from "@/contexts/(dev)/SocketProvider";
+import { useSession } from "@/contexts/(prod)/SessionProvider";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { useEffect, useRef } from "react";
 

@@ -4,7 +4,6 @@ import { useInterestsStore } from "@/store/useInterestsStore";
 import { useProfileStore } from "@/store/useProfileStore";
 import { useUsersStore } from "@/store/useUsersStore";
 import React, { useEffect } from "react";
-import { useSession } from "./SessionProvider";
 
 const GlobalDataProvider: React.FC<{ children: React.ReactNode }> = ({
   children,

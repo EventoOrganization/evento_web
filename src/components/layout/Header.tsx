@@ -1,5 +1,5 @@
 "use client";
-import { useSession } from "@/contexts/SessionProvider";
+import { useSession } from "@/contexts/(prod)/SessionProvider";
 import useOnScroll from "@/hooks/useOnScroll";
 import { cn } from "@/lib/utils";
 import Link from "next/link";

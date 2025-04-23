@@ -1,6 +1,6 @@
 import Section from "@/components/layout/Section";
 import { Button } from "@/components/ui/button";
-import { useSession } from "@/contexts/SessionProvider";
+import { useSession } from "@/contexts/(prod)/SessionProvider";
 import HiddenEvent from "@/features/profile/HiddenEvent";
 import PendingEvents from "@/features/profile/PendingEvents";
 import { cn } from "@/lib/utils";
