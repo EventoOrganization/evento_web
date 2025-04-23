@@ -1,4 +1,5 @@
 import ShareEventModal from "@/components/ShareEventModal";
+import AuthModal from "@/components/system/auth/AuthModal";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -8,7 +9,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useSession } from "@/contexts/(prod)/SessionProvider";
-import AuthModal from "@/features/auth/components/AuthModal";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { useEventStore } from "@/store/useEventsStore";

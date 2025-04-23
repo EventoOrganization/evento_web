@@ -1,9 +1,9 @@
 "use client";
 
+import ChatHeader from "@/app/(views)/(dev)/chats/components/ChatHeader";
+import ConversationList from "@/app/(views)/(dev)/chats/components/ConversationList";
 import ComingSoon from "@/components/ComingSoon";
 import { useSocket } from "@/contexts/(dev)/SocketProvider";
-import ChatHeader from "@/features/chat/components/ChatHeader";
-import ConversationList from "@/features/chat/components/ConversationList";
 import { cn } from "@/lib/utils";
 import { CircleArrowLeftIcon } from "lucide-react";
 import { useRouter } from "next/navigation";

@@ -1,6 +1,6 @@
 "use client";
+import AuthModal from "@/components/system/auth/AuthModal";
 import { useSession } from "@/contexts/(prod)/SessionProvider";
-import AuthModal from "@/features/auth/components/AuthModal";
 import StaticProfilePage from "@/features/profile/StaticProfilePage";
 import UserProfile from "@/features/profile/UserProfile";
 import { useEventStore } from "@/store/useEventsStore";

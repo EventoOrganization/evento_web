@@ -1,4 +1,4 @@
-import ChatPageContent from "@/features/chat/components/ChatPageContent";
+import ChatPageContent from "@/app/(views)/(dev)/chats/components/ChatPageContent";
 import { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Chats",

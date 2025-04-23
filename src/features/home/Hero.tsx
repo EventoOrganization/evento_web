@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useSession } from "@/contexts/(prod)/SessionProvider";
 import Link from "next/link";
 import { useState } from "react";
-import AuthModal from "../auth/components/AuthModal";
+import AuthModal from "../../components/system/auth/AuthModal";
 const Hero = () => {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
   const { user, isAuthenticated } = useSession();

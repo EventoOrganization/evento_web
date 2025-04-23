@@ -2,6 +2,7 @@
 
 import EventoLoader from "@/components/EventoLoader";
 import Section from "@/components/layout/Section";
+import AuthModal from "@/components/system/auth/AuthModal";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
@@ -13,7 +14,6 @@ import {
 } from "@/components/ui/popover";
 import UsersList from "@/components/UsersList";
 import { useSession } from "@/contexts/(prod)/SessionProvider";
-import AuthModal from "@/features/auth/components/AuthModal";
 import { filterEvents, filterUsers } from "@/features/discover/discoverActions";
 import TabSelector from "@/features/discover/TabSelector";
 import Event from "@/features/event/components/Event";

@@ -1,5 +1,6 @@
 // src\components\UsersList.tsx
 "use client";
+import AuthModal from "@/components/system/auth/AuthModal";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Dialog,
@@ -13,7 +14,6 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useSession } from "@/contexts/(prod)/SessionProvider";
-import AuthModal from "@/features/auth/components/AuthModal";
 import ApproveGoingUser from "@/features/event/update/ApproveGoingUser";
 import { useToast } from "@/hooks/use-toast";
 import { useEventStore } from "@/store/useEventsStore";

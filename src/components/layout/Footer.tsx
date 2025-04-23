@@ -1,128 +1,70 @@
-// "use client";
-// import Link from "next/link";
-// import { usePathname } from "next/navigation";
-// import { AiFillTwitterCircle, AiFillYoutube } from "react-icons/ai";
-// import { CgWebsite } from "react-icons/cg";
-// import { FaDiscord } from "react-icons/fa";
-// import Logo from "../ui/Logo";
+import Link from "next/link";
+import SmartImage from "../SmartImage";
+const Footer = () => {
+  return (
+    <footer className=" w-full flex flex-col justify-center items-center min-h-40 pt-10 pb-20 gap-10 border-t-2 max-w-2xl mx-auto">
+      <ul className="flex flex-wrap justify-center gap-6 w-full max-w-96">
+        <li>
+          <Link href={"https://www.instagram.com/eventoapp.io/"}>
+            <SmartImage
+              src={"/Instagram_logo_2022.png"}
+              alt="Instagram_logo_2022"
+              width={50}
+              height={50}
+              forceImg
+            />
+          </Link>
+        </li>
+        <li>
+          <Link
+            href={
+              "https://open.spotify.com/user/31msifekspkjzjhhedzyywi7nicy?si=8a85e82182bd4d9b"
+            }
+          >
+            <SmartImage
+              src={"/spotify.png"}
+              alt="spotify_logo"
+              width={50}
+              height={50}
+              className="rounded-lg"
+              forceImg
+            />
+          </Link>
+        </li>
+        <li>
+          <Link href={"https://www.tiktok.com/@eventoapp.io"}>
+            <SmartImage
+              src={"/tiktok-logo.webp"}
+              alt="tiktok_logo"
+              width={50}
+              height={50}
+              forceImg
+            />
+          </Link>
+        </li>
+      </ul>
+      <div className="grid grid-cols-1 md:flex gap-4 md:gap-10 text-center">
+        <Link
+          target="_blank"
+          href="https://enormous-curler-2a0.notion.site/Welcome-to-Evento-How-it-Works-Guide-1a8c972b8ab481a192a1c7018ab1527d"
+        >
+          How It Works: Guide
+        </Link>
+        <Link href="/faq">FAQs</Link>
+        <Link href="/terms">Terms & Conditions</Link>
+        <Link href="/privacy">Privacy Policy</Link>
+        <Link href={"mailto:help@evento-app.io"}>Contact Us</Link>
+      </div>
+      <SmartImage
+        src="/evento-logo.png"
+        alt="logo"
+        width={60}
+        height={60}
+        className="object-contain"
+        forceImg
+      />
+    </footer>
+  );
+};
 
-// interface FooterLink {
-//   id: number;
-//   url: string;
-//   newTab: boolean;
-//   text: string;
-//   social?: string;
-// }
-
-// function FooterLink({ url, text }: FooterLink) {
-//   const path = usePathname();
-//   return (
-//     <li className="flex">
-//       <Link
-//         href={url}
-//         className={`hover:dark:text-violet-400 ${
-//           path === url && "dark:text-violet-400 dark:border-violet-400"
-//         }}`}
-//       >
-//         {text}
-//       </Link>
-//     </li>
-//   );
-// }
-
-// function RenderSocialIcon({ social }: { social: string | undefined }) {
-//   switch (social) {
-//     case "WEBSITE":
-//       return <CgWebsite />;
-//     case "TWITTER":
-//       return <AiFillTwitterCircle />;
-//     case "YOUTUBE":
-//       return <AiFillYoutube />;
-//     case "DISCORD":
-//       return <FaDiscord />;
-//     default:
-//       return null;
-//   }
-// }
-
-// export default function Footer({
-//   logoUrl,
-//   logoText,
-//   //menuLinks,
-//   //categoryLinks,
-//   //legalLinks,
-//   socialLinks,
-// }: {
-//   logoUrl: string | null;
-//   logoText: string | null;
-//   //menuLinks: Array<FooterLink>;
-//   //categoryLinks: Array<CategoryLink>;
-//   //legalLinks: Array<FooterLink>;
-//   socialLinks: Array<FooterLink>;
-// }) {
-//   return (
-//     <footer className="py-6 dark:bg-black dark:text-gray-50">
-//       <div className="container px-6 mx-auto space-y-6 divide-y divide-gray-400 md:space-y-12 divide-opacity-50">
-//         <div className="grid grid-cols-12">
-//           <div className="pb-6 col-span-full md:pb-0 md:col-span-6">
-//             <Logo src={logoUrl}>
-//               {logoText && <h2 className="text-2xl font-bold">{logoText}</h2>}
-//             </Logo>
-//           </div>
-
-//           {/* <div className="col-span-6 text-center md:text-left md:col-span-3">
-//             <p className="pb-1 text-lg font-medium">Categories</p>
-//             <ul>
-//               {categoryLinks.map((link: CategoryLink) => (
-//                 <CategoryLink key={link.id} {...link} />
-//               ))}
-//             </ul>
-//           </div> */}
-
-//           {/* <div className="col-span-6 text-center md:text-left md:col-span-3">
-//             <p className="pb-1 text-lg font-medium">Menu</p>
-//             <ul>
-//               {menuLinks.map((link: FooterLink) => (
-//                 <FooterLink key={link.id} {...link} />
-//               ))}
-//             </ul>
-//           </div> */}
-//         </div>
-//         <div className="grid justify-center pt-6 lg:justify-between">
-//           <div className="flex">
-//             <span className="mr-2">
-//               ©{new Date().getFullYear()} All rights reserved
-//             </span>
-//             {/* <ul className="flex">
-//               {legalLinks.map((link: FooterLink) => (
-//                 <Link
-//                   href={link.url}
-//                   className="text-gray-400 hover:text-gray-300 mr-2"
-//                   key={link.id}
-//                 >
-//                   {link.text}
-//                 </Link>
-//               ))}
-//             </ul> */}
-//           </div>
-//           <div className="flex justify-center pt-4 space-x-4 lg:pt-0 lg:col-end-13">
-//             {socialLinks.map((link: FooterLink) => {
-//               return (
-//                 <a
-//                   key={link.id}
-//                   rel="noopener noreferrer"
-//                   href={link.url}
-//                   title={link.text}
-//                   target={link.newTab ? "_blank" : "_self"}
-//                   className="flex items-center justify-center w-10 h-10 rounded-full dark:bg-violet-400 dark:text-gray-900"
-//                 >
-//                   <RenderSocialIcon social={link.social} />
-//                 </a>
-//               );
-//             })}
-//           </div>
-//         </div>
-//       </div>
-//     </footer>
-//   );
-// }
+export default Footer;

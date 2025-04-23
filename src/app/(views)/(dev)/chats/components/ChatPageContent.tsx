@@ -1,8 +1,8 @@
 "use client";
+import ChatInput from "@/app/(views)/(dev)/chats/components/ChatInput";
+import MessageList from "@/app/(views)/(dev)/chats/components/MessageList";
 import { useSocket } from "@/contexts/(dev)/SocketProvider";
 import { useSession } from "@/contexts/(prod)/SessionProvider";
-import ChatInput from "@/features/chat/components/ChatInput";
-import MessageList from "@/features/chat/components/MessageList";
 import { useSearchParams } from "next/navigation";
 
 export default function ChatPageContent() {

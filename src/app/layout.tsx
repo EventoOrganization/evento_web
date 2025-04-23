@@ -1,6 +1,4 @@
-import ChatbotComponent from "@/components/ChatbotComponent";
-import Footer from "@/components/Footer";
-import Main from "@/components/layout/Main";
+import CustomLayout from "@/components/layout/CustomLayout";
 import NavbarApp from "@/components/Navbar";
 import AppInitializer from "@/components/system/AppInitializer";
 import { Toaster } from "@/components/ui/toaster";
@@ -98,11 +96,7 @@ export default function RootLayout({
           <AppInitializer />
           <Toaster />
           <TooltipProvider delayDuration={100}>
-            <Main className={cn("pb-14 md:pb-28")}>
-              {children}
-              <Footer />
-              <ChatbotComponent />
-            </Main>
+            <CustomLayout>{children}</CustomLayout>
           </TooltipProvider>
           <NavbarApp />
         </SessionProvider>

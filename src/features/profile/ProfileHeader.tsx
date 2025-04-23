@@ -13,7 +13,7 @@ import { Pencil, Settings, UserRoundPlus } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import AuthModal from "../auth/components/AuthModal";
+import AuthModal from "../../components/system/auth/AuthModal";
 interface Props {
   profile: UserType | null | undefined;
   totalEvents: number;

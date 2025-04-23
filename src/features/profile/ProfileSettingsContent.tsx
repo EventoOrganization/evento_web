@@ -1,10 +1,10 @@
 "use client";
 
 import ComingSoon from "@/components/ComingSoon";
+import DeleteAccountBtn from "@/components/system/auth/DeleteAccountBtn";
+import LogoutBtn from "@/components/system/auth/LogoutBtn";
 import ToggleSwitch from "@/components/ToggleSwitch";
 import { useSession } from "@/contexts/(prod)/SessionProvider";
-import DeleteAccountBtn from "@/features/auth/components/DeleteAccountBtn";
-import LogoutBtn from "@/features/auth/components/LogoutBtn";
 import InstallPWAButton from "@/features/pwa/InstallPWAButton";
 import { cn } from "@/lib/utils";
 import { usePWAStore } from "@/store/usePWAStore";

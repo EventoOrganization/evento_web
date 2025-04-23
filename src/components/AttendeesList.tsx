@@ -1,8 +1,8 @@
 // src\components\UsersList.tsx
 "use client";
+import AuthModal from "@/components/system/auth/AuthModal";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useSession } from "@/contexts/(prod)/SessionProvider";
-import AuthModal from "@/features/auth/components/AuthModal";
 import { cn } from "@/lib/utils";
 import { UserType } from "@/types/UserType";
 import Link from "next/link";

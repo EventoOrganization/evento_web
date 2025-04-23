@@ -4,6 +4,7 @@ import Section from "@/components/layout/Section";
 import RenderMedia from "@/components/RenderMedia";
 import RequestModal from "@/components/RequestModal";
 import SmartImage from "@/components/SmartImage";
+import AuthModal from "@/components/system/auth/AuthModal";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Tooltip,
@@ -11,7 +12,6 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useSession } from "@/contexts/(prod)/SessionProvider";
-import AuthModal from "@/features/auth/components/AuthModal";
 import TabSelector from "@/features/discover/TabSelector";
 import EventAttendeesTab from "@/features/event/components/EventAttendeesTab";
 import EventDescriptionTab from "@/features/event/components/EventDescriptionTab";
