@@ -1,10 +1,10 @@
 "use client";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
-import { ChatHeader } from "./ChatHeader";
-import { ChatInput } from "./ChatInput";
-import { ChatMessages } from "./ChatMessages";
-import { ConversationSidebar } from "./ConversationSidebar";
+import { ChatHeader } from "./components/ChatHeader";
+import ChatInput from "./components/ChatInput";
+import ChatMessages from "./components/ChatMessages";
+import { ConversationSidebar } from "./components/ConversationSidebar";
 
 const ChatPage = () => {
   const [isConvSelected, setIsConvSelected] = useState(false);
@@ -32,8 +32,8 @@ const ChatPage = () => {
             <p className="text-xs text-muted-foreground">Online</p>
           </div>
 
-          <ChatMessages />
-          <ChatInput />
+          <ChatMessages receiverId="123" />
+          <ChatInput receiverId="123" />
         </div>
       </div>
     </>

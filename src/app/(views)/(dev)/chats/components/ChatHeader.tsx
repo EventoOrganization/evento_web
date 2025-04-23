@@ -1,54 +1,45 @@
-// features/chat/components/ChatHeader.tsx
 "use client";
 
 import SmartImage from "@/components/SmartImage";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useSocket } from "@/contexts/(dev)/SocketProvider";
-import { useEffect, useState } from "react";
-const ChatHeader = () => {
-  const { activeConversation } = useSocket();
-  const [animationClass, setAnimationClass] = useState("");
-  useEffect(() => {
-    if (activeConversation) {
-      setAnimationClass("animate-fade-in");
-      const timeout = setTimeout(() => {
-        setAnimationClass("");
-      }, 500);
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { ArrowLeftIcon } from "lucide-react";
 
-      return () => clearTimeout(timeout);
-    }
-  }, [activeConversation]);
-  return (
-    <div className="fixed w-full flex items-center p-4 bg-evento-gradient text-white border-b z-10 ">
-      {activeConversation ? (
-        <>
-          <div className={`relative w-10 h-10 mr-3 ${animationClass}`}>
-            {activeConversation?.initialMedia[0]?.url ? (
-              <SmartImage
-                src={activeConversation?.initialMedia[0]?.url || ""}
-                alt={activeConversation?.title || ""}
-                fill
-                className="rounded-full "
-              />
-            ) : (
-              <Avatar className="w-10 h-10 rounded-full">
-                <AvatarImage
-                  className="w-10 h-10 rounded-full"
-                  src="/evento-logo.png"
-                />
-                <AvatarFallback>CN</AvatarFallback>
-              </Avatar>
-            )}
-          </div>{" "}
-        </>
-      ) : (
-        <p className={`py-2 ${animationClass}`}>Select a conversation</p>
+export const ChatHeader = ({
+  isConvSelected,
+  onBack,
+}: {
+  isConvSelected: boolean;
+  onBack: () => void;
+}) => (
+  <div className="p-4 border-b font-bold text-lg flex items-center gap-2 h-16 bg-background">
+    <Button
+      variant={"ghost"}
+      className={cn("transition-all md:hidden", !isConvSelected && "p-0 w-0")}
+      onClick={onBack}
+    >
+      {isConvSelected && (
+        <ArrowLeftIcon className="w-5 h-5 text-muted-foreground" />
       )}
-      <h3 className={`text-lg font-bold ${animationClass}`}>
-        {activeConversation && activeConversation.title}
-      </h3>
-    </div>
-  );
-};
+    </Button>
 
-export default ChatHeader;
+    <div
+      className={cn(
+        "flex items-center gap-2 transition-all duration-300 ease-in-out",
+        {
+          "translate-x-2": isConvSelected,
+        },
+      )}
+    >
+      <SmartImage
+        src="/evento-logo.png"
+        alt="logo"
+        width={30}
+        height={30}
+        className="object-contain"
+        forceImg
+      />
+      <span>Evento Chats</span>
+    </div>
+  </div>
+);

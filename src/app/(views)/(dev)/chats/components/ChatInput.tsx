@@ -1,46 +1,46 @@
-// features/chat/components/ChatInput.tsx
 "use client";
-
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { KeyboardEvent, useState } from "react";
+import { useSocket } from "@/contexts/(dev)/SocketProvider";
+import { useSession } from "@/contexts/(prod)/SessionProvider";
+import { Send } from "lucide-react";
+import { useState } from "react";
 
 interface ChatInputProps {
-  onSendMessage: (message: string) => void;
+  receiverId: string;
 }
 
-const ChatInput = ({ onSendMessage }: ChatInputProps) => {
-  const [message, setMessage] = useState("");
+export default function ChatInput({ receiverId }: ChatInputProps) {
+  const [text, setText] = useState("");
+  const { socket } = useSocket();
+  const { user } = useSession();
 
-  const handleSendMessage = () => {
-    if (message.trim()) {
-      onSendMessage(message);
-      setMessage("");
-    }
-  };
+  const handleSend = () => {
+    if (!text.trim() || !user) return;
 
-  const handleKeyPress = (event: KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter" && !event.shiftKey) {
-      event.preventDefault(); // Prevent the default action to avoid line breaks for example
-      handleSendMessage();
-    }
+    const message = {
+      senderId: user._id,
+      receiverId,
+      text,
+      createdAt: new Date().toISOString(),
+    };
+
+    socket?.emit("message:send", message);
+    setText("");
   };
 
   return (
-    <div className="fixed w-full xl:w-3/4 bottom-0 right-0 p-2 border-t flex gap-2 items-center bg-evento-gradient">
-      <Input
-        type="text"
-        className=""
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
-        onKeyPress={handleKeyPress}
+    <div className="p-4 border-t flex gap-2">
+      <input
+        className="flex-1 border px-4 py-2 rounded-lg text-sm"
         placeholder="Type a message..."
+        value={text}
+        onChange={(e) => setText(e.target.value)}
       />
-      <Button variant={"outline"} onClick={handleSendMessage} className="">
-        Send
-      </Button>
+      <button
+        onClick={handleSend}
+        className="bg-evento-gradient text-white px-4 py-2 rounded-lg text-sm"
+      >
+        <Send className="w-4 h-4" />
+      </button>
     </div>
   );
-};
-
-export default ChatInput;
+}
