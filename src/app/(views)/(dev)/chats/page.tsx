@@ -19,7 +19,7 @@ const ChatPage = () => {
       />
 
       <div className="flex h-full pb-16">
-        {dev ? (
+        {!dev ? (
           <ComingSoon
             className="w-full md:w-fit"
             message="Conversation sidebar is currently under development"
@@ -37,7 +37,7 @@ const ChatPage = () => {
           })}
         >
           <div className="bg-muted p-4 border-b font-bold text-lg">
-            {dev ? (
+            {!dev ? (
               <>
                 <h2>Receiver Name</h2>
                 <p className="text-xs text-muted-foreground">Statue</p>
@@ -50,7 +50,7 @@ const ChatPage = () => {
             )}
           </div>
 
-          {dev ? (
+          {!dev ? (
             <ComingSoon message="Chat messages is currently under development" />
           ) : (
             <ChatMessages receiverId="123" />
