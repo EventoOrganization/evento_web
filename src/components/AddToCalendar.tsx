@@ -71,28 +71,28 @@ const AddToCalendar: React.FC<AddToCalendarProps> = ({ event }) => {
     window.open(url, "_blank");
   };
 
-  const downloadICS = () => {
-    const icsContent = `
-BEGIN:VCALENDAR
-VERSION:2.0
-BEGIN:VEVENT
-SUMMARY:${title}
-DESCRIPTION:${fullDescription}
-LOCATION:${location}
-DTSTART:${formatDateForCalendar(startDateTime)}
-DTEND:${formatDateForCalendar(endDateTime)}
-END:VEVENT
-END:VCALENDAR
-`;
-    const blob = new Blob([icsContent], { type: "text/calendar" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `${title}.ics`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
+  //   const downloadICS = () => {
+  //     const icsContent = `
+  // BEGIN:VCALENDAR
+  // VERSION:2.0
+  // BEGIN:VEVENT
+  // SUMMARY:${title}
+  // DESCRIPTION:${fullDescription}
+  // LOCATION:${location}
+  // DTSTART:${formatDateForCalendar(startDateTime)}
+  // DTEND:${formatDateForCalendar(endDateTime)}
+  // END:VEVENT
+  // END:VCALENDAR
+  // `;
+  //     const blob = new Blob([icsContent], { type: "text/calendar" });
+  //     const url = URL.createObjectURL(blob);
+  //     const link = document.createElement("a");
+  //     link.href = url;
+  //     link.download = `${title}.ics`;
+  //     document.body.appendChild(link);
+  //     link.click();
+  //     document.body.removeChild(link);
+  //   };
   if (isPastEvent) return;
   return (
     <Dialog>
