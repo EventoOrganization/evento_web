@@ -36,7 +36,7 @@ const toastVariants = cva(
         eventoSuccess: "bg-evento-gradient text-white",
         eventoError:
           "destructive group border-destructive bg-destructive text-destructive-foreground",
-        eventoPending: "bg-yellow-500 text-black",
+        eventoPending: "bg-yellow-300 text-black",
       },
     },
     defaultVariants: {
@@ -130,6 +130,5 @@ export {
   ToastTitle,
   ToastViewport,
   type ToastActionElement,
-  type ToastProps
+  type ToastProps,
 };
-

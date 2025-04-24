@@ -103,7 +103,7 @@ export const SessionProvider: React.FC<{
         });
       }
     })();
-  }, [token]);
+  }, []);
 
   // Récupération de la session depuis les cookies ou le store
   useEffect(() => {

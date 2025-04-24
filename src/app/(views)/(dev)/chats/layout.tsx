@@ -1,4 +1,3 @@
-import ComingSoon from "@/components/ComingSoon";
 import { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Chats",
@@ -10,12 +9,6 @@ export default function ChatLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const dev = process.env.NODE_ENV === "development";
-
-  if (!dev) {
-    return <ComingSoon message="This feature is currently under development" />;
-  }
-
   return (
     <div className="fixed top-0 pb-16 h-screen w-full overflow-hidden">
       {children}

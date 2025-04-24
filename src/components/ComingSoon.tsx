@@ -20,7 +20,7 @@ const ComingSoon: React.FC<ComingSoonProps> = ({ message, className }) => {
       </p>
       <div className="mt-4">
         <svg
-          className="w-12 h-12 text-gray-300 animate-spin"
+          className="max-w-12 max-h-12 w-full h-full text-gray-300 animate-spin"
           fill="none"
           viewBox="0 0 24 24"
         >
