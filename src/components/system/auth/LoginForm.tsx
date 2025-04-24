@@ -43,7 +43,7 @@ const LoginForm = ({
       rememberMe: false,
     },
   });
-  const { startSession, user, updateUser } = useSession();
+  const { startSession, updateUser } = useSession();
   const { toast } = useToast();
   const onSubmit: SubmitHandler<z.infer<typeof extendedSignInSchema>> = async (
     data,

@@ -1,7 +1,6 @@
 "use client";
 
 import { useSession } from "@/contexts/(prod)/SessionProvider";
-import { useToast } from "@/hooks/use-toast";
 import { useEventStore } from "@/store/useEventsStore";
 import { useInterestsStore } from "@/store/useInterestsStore";
 import { useProfileStore } from "@/store/useProfileStore";
@@ -10,7 +9,6 @@ import { useEffect } from "react";
 
 const AppInitializer = () => {
   const { user, token, isTokenChecked } = useSession();
-  const { toast } = useToast();
   const { loadEvents } = useEventStore();
   const { loadUser } = useProfileStore();
   const { loadInterests } = useInterestsStore();
