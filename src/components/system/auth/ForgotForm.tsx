@@ -9,10 +9,10 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
+import { cn } from "@/lib/utils";
 import { emailSchema } from "@/lib/zod";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { cn } from "@nextui-org/theme";
 import { useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";

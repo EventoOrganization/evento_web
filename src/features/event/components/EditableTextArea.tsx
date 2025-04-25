@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { cn } from "@nextui-org/theme";
+import { cn } from "@/lib/utils";
 
 interface EditableTextAreaProps {
   value: string;

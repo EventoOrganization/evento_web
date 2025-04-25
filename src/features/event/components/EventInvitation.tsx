@@ -1,3 +1,5 @@
+import SmartImage from "@/components/SmartImage";
+
 const EventInvitation = ({ event, user, eventLink }: any) => {
   return (
     <div
@@ -16,7 +18,7 @@ const EventInvitation = ({ event, user, eventLink }: any) => {
     >
       <div className="flex flex-col items-center md:flex-row gap-4">
         <span className="bg-evento-gradient rounded-full h-40 w-40 flex justify-center items-center">
-          <img
+          <SmartImage
             src={
               "https://evento-media-bucket.s3.ap-southeast-2.amazonaws.com/logo.png"
             }
@@ -37,7 +39,7 @@ const EventInvitation = ({ event, user, eventLink }: any) => {
         <div className="p-4 bg-white border rounded m-4 max-w-96">
           <div className="flex items-center justify-between pb-4">
             <div className="flex items-center gap-2">
-              <img
+              <SmartImage
                 src={user.profileImage}
                 alt="User Image"
                 className="w-10 h-10 rounded-full"
@@ -46,7 +48,7 @@ const EventInvitation = ({ event, user, eventLink }: any) => {
             </div>
             {event?.details.date}
           </div>
-          <img
+          <SmartImage
             src={event?.initialMedia[0]?.url}
             alt="Event Image"
             style={{

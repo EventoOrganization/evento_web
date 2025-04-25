@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import GoogleMapsMap from "@/features/discover/GoogleMapsMap";
-import { cn } from "@nextui-org/theme";
+import { cn } from "@/lib/utils";
 import { StandaloneSearchBox, useJsApiLoader } from "@react-google-maps/api";
 import { ChevronDown } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";

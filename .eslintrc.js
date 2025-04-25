@@ -13,5 +13,6 @@ module.exports = {
     "prettier/prettier": ["error", { endOfLine: "auto" }],
     "@typescript-eslint/no-explicit-any": ["off"], // Disable the 'any' type warning
     "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_" }], // Enable no-unused-vars for TypeScript
+    "react-hooks/exhaustive-deps": "off", // Disable the 'exhaustive-deps' warning
   },
 };

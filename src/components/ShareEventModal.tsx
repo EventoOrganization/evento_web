@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { cn } from "@nextui-org/theme";
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 
 const ShareEventModal = ({ eventId }: { eventId: string }) => {

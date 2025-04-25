@@ -1,8 +1,8 @@
 import Section from "@/components/layout/Section";
 import Event from "@/features/event/components/Event";
+import { cn } from "@/lib/utils";
 import { EventType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
-import { cn } from "@nextui-org/theme";
 import EventPreview from "../features/event/components/EventPreview";
 import UserPrevirew from "./UsersList";
 

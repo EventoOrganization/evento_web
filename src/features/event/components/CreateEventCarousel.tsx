@@ -1,7 +1,7 @@
 "use client";
 import SmartImage from "@/components/SmartImage";
+import { cn } from "@/lib/utils";
 import { useCreateEventStore } from "@/store/useCreateEventStore";
-import { cn } from "@nextui-org/theme";
 import { useEffect, useRef, useState } from "react";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";

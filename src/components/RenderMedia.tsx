@@ -1,6 +1,6 @@
 "use client";
+import { cn } from "@/lib/utils";
 import { EventType } from "@/types/EventType";
-import { cn } from "@nextui-org/theme";
 import { useRef, useState } from "react";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";

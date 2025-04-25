@@ -1,4 +1,4 @@
-import { cn } from "@nextui-org/theme";
+import { cn } from "@/lib/utils";
 
 export default function TchatIcon({
   className,

@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { cn } from "@nextui-org/theme";
+import { cn } from "@/lib/utils";
 interface EditableSelectProps {
   value: string;
   onChange: (value: string) => void;

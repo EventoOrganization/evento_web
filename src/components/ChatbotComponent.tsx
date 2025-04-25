@@ -1,8 +1,8 @@
 "use client";
 import { useSession } from "@/contexts/(prod)/SessionProvider";
 import { useToast } from "@/hooks/use-toast";
+import { cn } from "@/lib/utils";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
-import { cn } from "@nextui-org/theme";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useRef, useState } from "react";

@@ -18,7 +18,7 @@ import { useUsersStore } from "@/store/useUsersStore";
 import { EventType } from "@/types/EventType";
 import { TempUserType, UserType } from "@/types/UserType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
-import { cn } from "@nextui-org/theme";
+import { cn } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";

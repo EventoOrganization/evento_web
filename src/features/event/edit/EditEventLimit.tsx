@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/togglerbtn";
-import { cn } from "@nextui-org/theme";
+import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
 
 interface EditableInputProps {

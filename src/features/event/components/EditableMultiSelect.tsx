@@ -1,6 +1,6 @@
 // src/features/event/components/EditableMultiSelect.tsx
 import { Button } from "@/components/ui/button";
-import { cn } from "@nextui-org/theme";
+import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
 
 interface EditableMultiSelectProps {

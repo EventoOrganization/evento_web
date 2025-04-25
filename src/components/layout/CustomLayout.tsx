@@ -1,6 +1,6 @@
 import ChatbotComponent from "@/components/ChatbotComponent";
 import Footer from "@/components/layout/Footer";
-import { cn } from "@nextui-org/theme";
+import { cn } from "@/lib/utils";
 import React from "react";
 import NavbarApp from "../Navbar";
 
