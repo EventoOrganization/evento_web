@@ -1,6 +1,7 @@
 "use client";
 import { useSocket } from "@/contexts/(dev)/SocketProvider";
 import { useSession } from "@/contexts/(prod)/SessionProvider";
+import EzTag from "@ezstart/ez-tag";
 import { Send } from "lucide-react";
 import { useState } from "react";
 
@@ -28,7 +29,7 @@ export default function ChatInput({ receiverId }: ChatInputProps) {
   };
 
   return (
-    <div className="p-4 border-t flex gap-2">
+    <EzTag as="div" className="p-4 border-t flex gap-2">
       <input
         className="flex-1 border px-4 py-2 rounded-lg text-sm"
         placeholder="Type a message..."
@@ -41,6 +42,6 @@ export default function ChatInput({ receiverId }: ChatInputProps) {
       >
         <Send className="w-4 h-4" />
       </button>
-    </div>
+    </EzTag>
   );
 }

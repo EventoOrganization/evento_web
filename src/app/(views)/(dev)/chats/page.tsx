@@ -1,6 +1,7 @@
 "use client";
 import ComingSoon from "@/components/ComingSoon";
 import { cn } from "@/lib/utils";
+import EzTag from "@ezstart/ez-tag";
 import { useState } from "react";
 import { ChatHeader } from "./components/ChatHeader";
 import ChatInput from "./components/ChatInput";
@@ -18,7 +19,7 @@ const ChatPage = () => {
         onBack={() => setIsConvSelected(false)}
       />
 
-      <div className="flex h-full pb-16">
+      <EzTag as="div" className="flex h-full pb-16">
         {!dev ? (
           <ComingSoon
             className="w-full md:w-fit"
@@ -31,12 +32,13 @@ const ChatPage = () => {
           />
         )}
 
-        <div
+        <EzTag
+          as="div"
           className={cn("flex-1 flex flex-col h-full bg-background", {
             "hidden md:flex": !isConvSelected,
           })}
         >
-          <div className="bg-muted p-4 border-b font-bold text-lg">
+          <EzTag as="div" className="bg-muted p-4 border-b font-bold text-lg">
             {!dev ? (
               <>
                 <h2>Receiver Name</h2>
@@ -48,7 +50,7 @@ const ChatPage = () => {
                 <p className="text-xs text-muted-foreground">Online</p>
               </>
             )}
-          </div>
+          </EzTag>
 
           {!dev ? (
             <ComingSoon message="Chat messages is currently under development" />
@@ -56,8 +58,8 @@ const ChatPage = () => {
             <ChatMessages receiverId="123" />
           )}
           <ChatInput receiverId="123" />
-        </div>
-      </div>
+        </EzTag>
+      </EzTag>
     </>
   );
 };

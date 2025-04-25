@@ -1,3 +1,4 @@
+import EzTag from "@ezstart/ez-tag";
 import { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Chats",
@@ -10,8 +11,11 @@ export default function ChatLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="fixed top-0 pb-16 h-screen w-full overflow-hidden">
+    <EzTag
+      as="div"
+      className="fixed top-0 pb-16 h-screen w-full overflow-hidden"
+    >
       {children}
-    </div>
+    </EzTag>
   );
 }

@@ -3,6 +3,7 @@
 import SmartImage from "@/components/SmartImage";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import EzTag from "@ezstart/ez-tag";
 import { ArrowLeftIcon } from "lucide-react";
 
 export const ChatHeader = ({
@@ -31,6 +32,13 @@ export const ChatHeader = ({
         },
       )}
     >
+      <EzTag
+        as="img"
+        src="/evento-logo.png"
+        alt="logo"
+        width={30}
+        height={30}
+      />
       <SmartImage
         src="/evento-logo.png"
         alt="logo"
