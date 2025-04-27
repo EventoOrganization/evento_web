@@ -7,7 +7,7 @@ import { useConversations } from "../hooks/useConversations";
 import { useSocket } from "./SocketProvider";
 
 export function ConversationsInitializer() {
-  const { data, loading, error, refetch } = useConversations();
+  const { data, loading, error } = useConversations();
   const { socket, updateConversations } = useSocket();
   const { toast } = useToast();
 

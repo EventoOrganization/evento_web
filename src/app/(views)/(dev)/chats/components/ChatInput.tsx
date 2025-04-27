@@ -1,7 +1,5 @@
 "use client";
 
-import { useSocket } from "@/app/(views)/(dev)/chats/contexts/SocketProvider";
-import { useSession } from "@/contexts/(prod)/SessionProvider";
 import EzTag from "@ezstart/ez-tag";
 import { Send } from "lucide-react";
 import { useState } from "react";
@@ -13,8 +11,6 @@ interface ChatInputProps {
 
 export default function ChatInput({ conversationId }: ChatInputProps) {
   const [text, setText] = useState("");
-  const { socket } = useSocket();
-  const { user } = useSession();
   const sendMessage = useSendMessage();
   const handleSend = async () => {
     if (!text.trim()) return;
