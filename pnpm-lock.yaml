@@ -12,8 +12,8 @@ importers:
         specifier: ^3.797.0
         version: 3.797.0
       '@ezstart/ez-tag':
-        specifier: ^0.2.3
-        version: 0.2.3(clsx@2.1.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(tailwind-merge@2.6.0)
+        specifier: ^0.2.4
+        version: 0.2.4(clsx@2.1.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(tailwind-merge@2.6.0)
       '@hookform/resolvers':
         specifier: ^3.10.0
         version: 3.10.0(react-hook-form@7.56.1(react@18.3.1))
@@ -1071,8 +1071,8 @@ packages:
     resolution: {integrity: sha512-d9zaMRSTIKDLhctzH12MtXvJKSSUhaHcjV+2Z+GK+EEY7XKpP5yR4x+N3TAcHTcu963nIr+TMcCb4DBCYX1z6Q==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
 
-  '@ezstart/ez-tag@0.2.3':
-    resolution: {integrity: sha512-Vnm81TY5NNFWAzngmZqxwQAJR8HMlTNW+cejtqhf6FclCvemf0TJUg8xg/TWhKxMA2cCzFyZmWtPmTW1VbH6Bw==}
+  '@ezstart/ez-tag@0.2.4':
+    resolution: {integrity: sha512-cOMD6lL5GWshe2OjsaglZvImsmma7ltbgb1vrTyUiOhsBSiDnsqV4rwNE44A7X3uVQURpBW4g2GKlZgXcaST8w==}
     peerDependencies:
       clsx: ^2.0.0
       react: ^18.0.0
@@ -7115,7 +7115,7 @@ snapshots:
 
   '@eslint/js@8.57.1': {}
 
-  '@ezstart/ez-tag@0.2.3(clsx@2.1.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(tailwind-merge@2.6.0)':
+  '@ezstart/ez-tag@0.2.4(clsx@2.1.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(tailwind-merge@2.6.0)':
     dependencies:
       clsx: 2.1.1
       react: 18.3.1
