@@ -4,15 +4,20 @@ import { useSession } from "@/contexts/(prod)/SessionProvider";
 import { useToast } from "@/hooks/use-toast";
 import { createContext, useContext, useEffect, useState } from "react";
 import io, { Socket } from "socket.io-client";
+import { ConversationsInitializer } from "./ConversationsInitializer";
 
 interface SocketContextType {
   socket: Socket | null;
   isConnected: boolean;
+  conversations: any[];
+  updateConversations: (updater: (prev: any[]) => any[]) => void;
 }
 
 const SocketContext = createContext<SocketContextType>({
   socket: null,
   isConnected: false,
+  conversations: [],
+  updateConversations: () => {},
 });
 
 export const useSocket = () => useContext(SocketContext);
@@ -23,6 +28,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
 
   const [socket, setSocket] = useState<Socket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
+  const [conversations, setConversations] = useState<any[]>([]);
 
   useEffect(() => {
     // 1) On n’essaie de se connecter qu’après validation du token
@@ -63,7 +69,6 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
       });
     });
 
-    // Nettoyage quand token change ou quand on se déconnecte
     return () => {
       sock.off("connect");
       sock.off("disconnect");
@@ -72,8 +77,15 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     };
   }, [isTokenChecked, isAuthenticated, token]);
 
+  const updateConversations = (updater: (prev: any[]) => any[]) => {
+    setConversations((prev) => updater(prev));
+  };
+
   return (
-    <SocketContext.Provider value={{ socket, isConnected }}>
+    <SocketContext.Provider
+      value={{ socket, isConnected, conversations, updateConversations }}
+    >
+      <ConversationsInitializer />
       {children}
     </SocketContext.Provider>
   );

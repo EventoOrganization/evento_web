@@ -21,7 +21,6 @@ export function PresenceSwitcher() {
   };
 
   useEffect(() => {
-    console.log("socket", socket);
     if (socket) {
       socket.emit("user_presence_update", {
         status: appearOnline ? "online" : "offline",
