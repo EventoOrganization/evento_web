@@ -1,7 +1,18 @@
+import { UserType } from "@/types/UserType";
+
 export type MessageType = {
   _id: string;
-  senderId: string;
-  receiverId: string; // userId or eventId
-  text: string;
+  senderId: string; // l’_id de l’expéditeur
+  conversationId: string; // l’_id de la conversation (anciennement constantId)
+  message: string; // le texte du message
+  messageType: string; // ex. "text", "image", etc.
   createdAt: string;
 };
+export interface ConversationType {
+  _id: string;
+  participants: UserType[]; // ou un tableau d’objets si tu as populé
+  event?: string | null;
+  title?: string;
+  lastMessage?: string;
+  // ajoute ici les champs dont tu as besoin…
+}

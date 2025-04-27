@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import EzTag from "@ezstart/ez-tag";
 import { ArrowLeftIcon } from "lucide-react";
-import { PresenceSwitcher } from "./PresenceSwitcher";
 
 export const ChatHeader = ({
   isConvSelected,
@@ -48,8 +47,8 @@ export const ChatHeader = ({
       />
       Evento Chats
     </EzTag>
-    <EzTag as="div" className="ml-auto">
+    {/* <EzTag as="div" className="ml-auto">
       <PresenceSwitcher />
-    </EzTag>
+    </EzTag> */}
   </EzTag>
 );
