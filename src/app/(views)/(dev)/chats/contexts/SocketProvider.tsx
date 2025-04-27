@@ -31,16 +31,13 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
   const [conversations, setConversations] = useState<any[]>([]);
 
   useEffect(() => {
-    // 1) On n’essaie de se connecter qu’après validation du token
     if (!isTokenChecked || !isAuthenticated || !token) {
-      // Si l’utilisateur s’est déconnecté, on nettoie la socket
       socket?.disconnect();
       setSocket(null);
       setIsConnected(false);
       return;
     }
 
-    // 2) Maintenant que le token est validé, on peut se connecter
     const sock = io(process.env.NEXT_PUBLIC_API_URL!, {
       transports: ["websocket"],
       auth: { token },

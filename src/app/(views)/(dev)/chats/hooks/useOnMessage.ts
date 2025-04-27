@@ -4,11 +4,13 @@ import { useEffect } from "react";
 
 export function useOnMessage(handler: (msg: any) => void) {
   const { socket } = useSocket();
+
   useEffect(() => {
     if (!socket) return;
-    socket.on("send_message_emit", handler);
+    console.log("useOnMessage is running");
+    socket.on("new_message", handler);
     return () => {
-      socket.off("send_message_emit", handler);
+      socket.off("new_message", handler);
     };
   }, [socket, handler]);
 }

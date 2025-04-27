@@ -70,7 +70,9 @@ export const ConversationSidebar = ({
           <>
             {filteredUsers.length > 0 ? (
               <ul className="flex flex-col gap-1">
-                <EzTag as="p">Select to start chat</EzTag>
+                <EzTag key={"select"} as="p">
+                  Select to start chat
+                </EzTag>
                 {filteredUsers.map((u) => (
                   <li
                     key={u._id}

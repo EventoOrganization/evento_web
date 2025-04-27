@@ -9,6 +9,7 @@ import { useState } from "react";
 import { ChatHeader } from "./components/ChatHeader";
 import ChatInput from "./components/ChatInput";
 import ChatMessages from "./components/ChatMessages";
+import ConversationManager from "./components/ConversationManager";
 import { ConversationSidebar } from "./components/ConversationSidebar";
 import { useCreateConversation } from "./hooks/useCreateConversation";
 
@@ -23,6 +24,7 @@ export default function ChatPage() {
   const handleSelect = async (convOrData: any) => {
     // 1) Si c'est déjà une conversation (avec un _id)...
     if (convOrData._id) {
+      console.log("Conversation selected:", convOrData);
       setActiveConversation(convOrData);
       return;
     }
@@ -34,6 +36,7 @@ export default function ChatPage() {
         convOrData.event || null,
       );
       setActiveConversation(newConv);
+      console.log("Conversation created:", newConv);
       toast({
         title: "Conversation created",
         description: "You have successfully created a conversation",
@@ -77,7 +80,7 @@ export default function ChatPage() {
               {/* Header de la conversation */}
               <EzTag
                 as="div"
-                className="bg-muted p-4 border-b font-bold text-lg"
+                className="bg-muted p-4 border-b flex items-center justify-between"
               >
                 <h2>
                   {" "}
@@ -120,6 +123,10 @@ export default function ChatPage() {
                     </div>
                   )}
                 </h2>
+                <ConversationManager
+                  conversation={activeConversation}
+                  onConversationEnded={() => setActiveConversation(null)}
+                />
               </EzTag>
 
               {/* Messages */}

@@ -5,26 +5,26 @@ import { useSession } from "@/contexts/(prod)/SessionProvider";
 import EzTag from "@ezstart/ez-tag";
 import { Send } from "lucide-react";
 import { useState } from "react";
+import { useSendMessage } from "../hooks/useSendMessage";
 
 interface ChatInputProps {
-  conversationId: string; // remplace receiverId
+  conversationId: string;
 }
 
 export default function ChatInput({ conversationId }: ChatInputProps) {
   const [text, setText] = useState("");
   const { socket } = useSocket();
   const { user } = useSession();
+  const sendMessage = useSendMessage();
+  const handleSend = async () => {
+    if (!text.trim()) return;
 
-  const handleSend = () => {
-    if (!text.trim() || !user) return;
-
-    socket?.emit("send_message", {
-      conversationId,
-      senderId: user._id,
-      message: text,
-      messageType: "text",
-    });
-    setText("");
+    try {
+      await sendMessage(conversationId, text);
+      setText("");
+    } catch (e) {
+      console.error("Message failed:", e);
+    }
   };
 
   const disabled = !conversationId;

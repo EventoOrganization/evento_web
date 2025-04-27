@@ -1,6 +1,9 @@
 "use client";
-import { useSocket } from "@/app/(views)/(dev)/chats/contexts/SocketProvider";
+
+import { useSession } from "@/contexts/(prod)/SessionProvider";
 import { useEffect, useState } from "react";
+import { useSocket } from "../contexts/SocketProvider";
+import { useOnMessage } from "../hooks/useOnMessage";
 import { MessageType } from "../types";
 
 interface ChatMessagesProps {
@@ -8,35 +11,36 @@ interface ChatMessagesProps {
 }
 
 export default function ChatMessages({ conversationId }: ChatMessagesProps) {
-  const { socket } = useSocket();
   const [messages, setMessages] = useState<MessageType[]>([]);
+  const { user } = useSession();
+  const { conversations } = useSocket();
+
+  useOnMessage((msg: MessageType) => {
+    console.log("[Chat] New message received in ChatMessages:", msg);
+    if (msg.conversationId === conversationId) {
+      setMessages((prev) => [...prev, msg]);
+    }
+  });
 
   useEffect(() => {
-    const handler = (msg: MessageType) => {
-      // ton schéma doit inclure `msg.constantId` ou `msg.conversationId`
-      if (msg.conversationId === conversationId) {
-        setMessages((prev) => [...prev, msg]);
-      }
-    };
-
-    socket?.on("send_message_emit", handler);
-    return () => {
-      socket?.off("send_message_emit", handler);
-    };
-  }, [socket, conversationId]);
+    if (!conversationId) return;
+    const conv = conversations.find((c) => c._id === conversationId);
+    if (!conv) return;
+    setMessages(conv.recentMessages || []);
+  }, [conversationId]);
 
   return (
     <div className="flex-1 overflow-y-auto px-4 py-2 space-y-4">
-      {messages.map((msg, i) => (
+      {messages.map((msg) => (
         <div
-          key={i}
+          key={msg._id}
           className={`max-w-[75%] p-3 rounded-lg ${
-            msg.senderId /* ton user._id */ === conversationId
-              ? "self-start bg-muted"
-              : "self-end bg-evento-gradient text-white"
+            msg.senderId === user?._id
+              ? "self-end bg-evento-gradient text-white"
+              : "self-start bg-muted"
           }`}
         >
-          {msg.message /* ou msg.text selon ton modèle */}
+          {msg.message}
         </div>
       ))}
     </div>
