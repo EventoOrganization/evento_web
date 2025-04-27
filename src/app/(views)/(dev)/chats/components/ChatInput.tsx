@@ -1,5 +1,5 @@
 "use client";
-import { useSocket } from "@/contexts/(dev)/SocketProvider";
+import { useSocket } from "@/app/(views)/(dev)/chats/contexts/SocketProvider";
 import { useSession } from "@/contexts/(prod)/SessionProvider";
 import EzTag from "@ezstart/ez-tag";
 import { Send } from "lucide-react";

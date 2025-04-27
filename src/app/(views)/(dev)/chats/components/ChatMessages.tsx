@@ -1,5 +1,5 @@
 "use client";
-import { useSocket } from "@/contexts/(dev)/SocketProvider";
+import { useSocket } from "@/app/(views)/(dev)/chats/contexts/SocketProvider";
 import { useEffect, useState } from "react";
 import { MessageType } from "../types";
 

@@ -1,7 +1,7 @@
+import { SocketProvider } from "@/app/(views)/(dev)/chats/contexts/SocketProvider";
 import CustomLayout from "@/components/layout/CustomLayout";
 import AppInitializer from "@/components/system/AppInitializer";
 import { Toaster } from "@/components/ui/toaster";
-import { SocketProvider } from "@/contexts/(dev)/SocketProvider";
 import { SessionProvider } from "@/contexts/(prod)/SessionProvider";
 import GoogleAnalytics from "@/features/googleAnalitics/GoogleAnalytics";
 import { cn } from "@/lib/utils";
