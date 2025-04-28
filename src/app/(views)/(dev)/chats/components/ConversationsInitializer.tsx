@@ -1,13 +1,12 @@
 "use client";
 
-import EventoLoader from "@/components/EventoLoader";
 import { useToast } from "@/hooks/use-toast";
 import { useEffect } from "react";
 import { useSocket } from "../contexts/SocketProvider";
 import { useConversations } from "../hooks/useConversations";
 
 export function ConversationsInitializer() {
-  const { data, loading, error } = useConversations();
+  const { data, error } = useConversations();
   const { socket, updateConversations } = useSocket();
   const { toast } = useToast();
 
@@ -23,11 +22,6 @@ export function ConversationsInitializer() {
       console.log("[Chat] No conversations found.");
     }
   }, [data, socket]);
-
-  if (loading) {
-    console.log("[Chat] Fetching conversations…");
-    return <EventoLoader />;
-  }
 
   if (error) {
     console.error("[Chat] Error fetching conversations:", error);
