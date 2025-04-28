@@ -16,7 +16,7 @@ import { useCreateConversation } from "./hooks/useCreateConversation";
 import { ConversationType } from "./types";
 
 export default function ChatPage() {
-  const { user, isTokenChecked } = useSession();
+  const { user } = useSession();
   const userId = user?._id;
   const [activeConversation, setActiveConversation] =
     useState<ConversationType | null>(null);
