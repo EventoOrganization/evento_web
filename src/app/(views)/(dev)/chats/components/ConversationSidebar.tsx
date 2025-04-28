@@ -162,7 +162,7 @@ export const ConversationSidebar = ({
                     </EzTag>
                   )}
                 </EzTag>
-                <EzTag as="p" className="text-xs truncate">
+                <EzTag as="p" className="text-xs line-clamp-1">
                   {conv.lastMessage?.message || "No message yet"}
                 </EzTag>
               </li>

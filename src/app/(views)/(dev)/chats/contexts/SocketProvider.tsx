@@ -73,10 +73,29 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
       });
     });
 
+    sock.on("read-receipt", (payload) => {
+      console.log("[SocketProvider] 📨 Received read-receipt:", payload);
+
+      setConversations((prevConvs) =>
+        prevConvs.map((conv) =>
+          conv._id === payload.conversationId
+            ? {
+                ...conv,
+                readReceipts: {
+                  ...(conv.readReceipts || {}),
+                  [payload.userId]: payload.lastSeenMessageId,
+                },
+              }
+            : conv,
+        ),
+      );
+    });
+
     return () => {
       sock.off("connect");
       sock.off("disconnect");
       sock.off("connect_error");
+      sock.off("read-receipt");
       sock.disconnect();
     };
   }, [isTokenChecked, isAuthenticated, token]);

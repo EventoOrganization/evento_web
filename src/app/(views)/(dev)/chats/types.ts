@@ -15,5 +15,8 @@ export interface ConversationType {
   title?: string;
   recentMessages?: MessageType[];
   lastMessage?: MessageType | null;
+  readReceipts?: {
+    [userId: string]: string; // Mapping userId => lastReadMessageId
+  };
   // ajoute ici les champs dont tu as besoin…
 }

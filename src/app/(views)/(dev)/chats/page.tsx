@@ -99,7 +99,7 @@ export default function ChatPage() {
                             key={p._id}
                             src={p.profileImage || "/evento-logo.png"}
                             alt={p.username}
-                            className="w-6 h-6 rounded-full"
+                            className="w-10 h-10 rounded-full"
                           />
                         ))}
 

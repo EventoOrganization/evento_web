@@ -12,11 +12,18 @@ interface ChatMessagesProps {
 export default function ChatMessages({
   activeConversation,
 }: ChatMessagesProps) {
-  const { messages, user, loadOlderMessages, noMoreMessages, bottomRef } =
-    useChatMessages(activeConversation);
+  const {
+    messages,
+    user,
+    loadOlderMessages,
+    noMoreMessages,
+    bottomRef,
+    scrollRef,
+  } = useChatMessages(activeConversation);
 
   return (
     <div
+      ref={scrollRef}
       onScroll={(e) => {
         if (noMoreMessages) return;
         if (e.currentTarget.scrollTop === 0) {
@@ -37,6 +44,7 @@ export default function ChatMessages({
         messages={messages}
         userId={user?._id}
         bottomRef={bottomRef}
+        conv={activeConversation}
       />
     </div>
   );

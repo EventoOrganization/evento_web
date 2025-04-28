@@ -1,6 +1,7 @@
 import { useSession } from "@/contexts/(prod)/SessionProvider";
 import { useEffect, useRef, useState } from "react";
 import { useSocket } from "../contexts/SocketProvider";
+import { markAsRead } from "../functions/markAsRead";
 import { useOnMessage } from "../hooks/useOnMessage";
 import { ConversationType, MessageType } from "../types";
 import { sortMessagesByCreatedAt } from "../utils/sortMessages";
@@ -10,16 +11,26 @@ export function useChatMessages(activeConversation: ConversationType | null) {
   const [messages, setMessages] = useState<MessageType[]>([]);
   const [noMoreMessages, setNoMoreMessages] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
   const [canScrollDown, setCanScrollDown] = useState(true);
-  const { user } = useSession();
-  const { conversations, updateConversations } = useSocket();
+  const { user, token } = useSession();
+  const { conversations, updateConversations, socket } = useSocket();
   const { fetchOlderMessages } = useOlderMessages(
     activeConversation?._id || null,
   );
+
+  // Puis dans ton useEffect:
   useEffect(() => {
-    console.log("canScrollDown ?", canScrollDown);
-    if (!canScrollDown) return;
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (canScrollDown) {
+      bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+      if (!token) return;
+      markAsRead({
+        socket,
+        activeConversationId: activeConversation?._id || "",
+        messages,
+        scrollRef,
+      });
+    }
   }, [messages]);
 
   useOnMessage((msg: MessageType) => {
@@ -47,10 +58,6 @@ export function useChatMessages(activeConversation: ConversationType | null) {
     if (!conv) return;
     setMessages(sortMessagesByCreatedAt(conv.recentMessages || []));
     setNoMoreMessages(false);
-    console.log(
-      "[Chat] 🎯 Conversation changed. Messages loaded:",
-      conv.recentMessages?.length || 0,
-    );
   }, [activeConversation]);
 
   const loadOlderMessages = async () => {
@@ -89,5 +96,6 @@ export function useChatMessages(activeConversation: ConversationType | null) {
     loadOlderMessages,
     noMoreMessages,
     bottomRef,
+    scrollRef,
   };
 }
