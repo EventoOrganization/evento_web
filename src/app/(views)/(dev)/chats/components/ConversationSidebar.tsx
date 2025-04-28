@@ -60,7 +60,7 @@ export const ConversationSidebar = ({
           onChange={(e) => setFilter(e.target.value.toLowerCase())}
         />
       </EzTag>
-      <ScrollArea className="flex-1 p-4" id="conversation-list">
+      <ScrollArea className="flex-1 px-4" id="conversation-list">
         {/* Si on a un filtre non vide, on affiche d'abord les utilisateurs */}
         {filter && (
           <>
