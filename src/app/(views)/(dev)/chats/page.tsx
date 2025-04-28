@@ -1,5 +1,6 @@
 "use client";
 
+import AuthModal from "@/components/system/auth/AuthModal";
 import { useSession } from "@/contexts/(prod)/SessionProvider";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
@@ -14,7 +15,7 @@ import { ConversationSidebar } from "./components/ConversationSidebar";
 import { useCreateConversation } from "./hooks/useCreateConversation";
 
 export default function ChatPage() {
-  const { user } = useSession();
+  const { user, isTokenChecked } = useSession();
   const userId = user?._id;
   const [activeConversation, setActiveConversation] = useState<any | null>(
     null,
@@ -138,6 +139,7 @@ export default function ChatPage() {
           )}
         </EzTag>
       </EzTag>
+      {!user && <AuthModal onAuthSuccess={() => {}} defaultForm="login" />}
     </>
   );
 }
