@@ -48,7 +48,11 @@ export default function ChatMessages({
     if (!activeConversation) return;
     const conv = conversations.find((c) => c._id === activeConversation._id);
     if (!conv) return;
-    setMessages(conv.recentMessages || []);
+    const sortedMessages = [...(conv.recentMessages || [])].sort(
+      (a, b) =>
+        new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+    );
+    setMessages(sortedMessages || []);
   }, [activeConversation]);
 
   // Scroll to bottom
