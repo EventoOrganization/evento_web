@@ -2,7 +2,6 @@
 
 import { useSession } from "@/contexts/(prod)/SessionProvider";
 import { useToast } from "@/hooks/use-toast";
-import { usePathname } from "next/navigation";
 import {
   createContext,
   useCallback,
@@ -39,7 +38,6 @@ export const useSocket = () => useContext(SocketContext);
 export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
   const { token, isAuthenticated, isTokenChecked, user } = useSession();
   const { toast } = useToast();
-  const pathname = usePathname();
   const [socket, setSocket] = useState<Socket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [conversations, setConversations] = useState<ConversationType[]>([]);
