@@ -7,7 +7,6 @@ export function useOnMessage(handler: (msg: any) => void) {
 
   useEffect(() => {
     if (!socket) return;
-    console.log("useOnMessage is running");
     socket.on("new_message", handler);
     return () => {
       socket.off("new_message", handler);

@@ -13,13 +13,29 @@ interface ChatMessagesProps {
 export default function ChatMessages({ conversationId }: ChatMessagesProps) {
   const [messages, setMessages] = useState<MessageType[]>([]);
   const { user } = useSession();
-  const { conversations } = useSocket();
+  const { conversations, updateConversations } = useSocket();
 
   useOnMessage((msg: MessageType) => {
-    console.log("[Chat] New message received in ChatMessages:", msg);
+    console.log("[Chat] New message received:", msg);
+
     if (msg.conversationId === conversationId) {
       setMessages((prev) => [...prev, msg]);
     }
+
+    updateConversations((prevConvs) =>
+      prevConvs.map((conv) => {
+        if (conv._id === msg.conversationId) {
+          const updatedConv = {
+            ...conv,
+            recentMessages: [...(conv.recentMessages || []), msg],
+            lastMessage: msg,
+          };
+          console.log("[Chat] Updating conversation:", updatedConv);
+          return updatedConv;
+        }
+        return conv;
+      }),
+    );
   });
 
   useEffect(() => {

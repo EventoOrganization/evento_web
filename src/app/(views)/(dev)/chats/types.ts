@@ -13,6 +13,7 @@ export interface ConversationType {
   participants: UserType[]; // ou un tableau d’objets si tu as populé
   event?: string | null;
   title?: string;
-  lastMessage?: string;
+  recentMessages?: MessageType[];
+  lastMessage?: MessageType | null;
   // ajoute ici les champs dont tu as besoin…
 }

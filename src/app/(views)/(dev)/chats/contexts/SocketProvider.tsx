@@ -2,14 +2,21 @@
 
 import { useSession } from "@/contexts/(prod)/SessionProvider";
 import { useToast } from "@/hooks/use-toast";
-import { createContext, useContext, useEffect, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import io, { Socket } from "socket.io-client";
-import { ConversationsInitializer } from "./ConversationsInitializer";
+import { ConversationsInitializer } from "../components/ConversationsInitializer";
+import { ConversationType } from "../types";
 
 interface SocketContextType {
   socket: Socket | null;
   isConnected: boolean;
-  conversations: any[];
+  conversations: ConversationType[];
   updateConversations: (updater: (prev: any[]) => any[]) => void;
 }
 
@@ -74,9 +81,9 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     };
   }, [isTokenChecked, isAuthenticated, token]);
 
-  const updateConversations = (updater: (prev: any[]) => any[]) => {
+  const updateConversations = useCallback((updater: (prev: any[]) => any[]) => {
     setConversations((prev) => updater(prev));
-  };
+  }, []);
 
   return (
     <SocketContext.Provider

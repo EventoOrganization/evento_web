@@ -13,13 +13,13 @@ import ChatMessages from "./components/ChatMessages";
 import ConversationManager from "./components/ConversationManager";
 import { ConversationSidebar } from "./components/ConversationSidebar";
 import { useCreateConversation } from "./hooks/useCreateConversation";
+import { ConversationType } from "./types";
 
 export default function ChatPage() {
   const { user, isTokenChecked } = useSession();
   const userId = user?._id;
-  const [activeConversation, setActiveConversation] = useState<any | null>(
-    null,
-  );
+  const [activeConversation, setActiveConversation] =
+    useState<ConversationType | null>(null);
   const createConversation = useCreateConversation();
   const { toast } = useToast();
   const handleSelect = async (convOrData: any) => {

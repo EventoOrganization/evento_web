@@ -24,12 +24,8 @@ export const ConversationSidebar = ({
   const userId = user?._id;
 
   // 2. Filtrer les conversations (par titre)
-  const filteredConversations = useMemo(
-    () =>
-      conversations.filter((conv) =>
-        (conv.title ?? "").toLowerCase().includes(filter),
-      ),
-    [conversations, filter],
+  const filteredConversations = conversations.filter((conv) =>
+    (conv.title ?? "").toLowerCase().includes(filter),
   );
 
   // 3. Filtrer directement les utilisateurs (éviter ceux déjà en 1-1)
@@ -103,9 +99,9 @@ export const ConversationSidebar = ({
                 ))}
               </ul>
             ) : (
-              <div className="text-center text-muted-foreground">
-                Aucun utilisateur trouvé
-              </div>
+              <EzTag as="p" className="text-center text-muted-foreground">
+                No users found
+              </EzTag>
             )}
             <hr className="border-t border-muted/50" />
           </>
@@ -126,11 +122,13 @@ export const ConversationSidebar = ({
                   setFilter("");
                 }}
               >
-                <div className="font-medium">
+                <EzTag as="div" className="font-medium">
                   {conv.title ? (
-                    <div className="font-medium">{conv.title}</div>
+                    <EzTag as="p" className="font-medium">
+                      {conv.title}
+                    </EzTag>
                   ) : (
-                    <div className="flex items-center gap-2">
+                    <EzTag as="div" className="flex items-center gap-2">
                       {conv.participants
                         .filter((p: UserType) => p._id !== userId)
                         .slice(0, 4) // 4 images max
@@ -146,35 +144,35 @@ export const ConversationSidebar = ({
                       {conv.participants.filter(
                         (p: UserType) => p._id !== userId,
                       ).length > 4 && (
-                        <span className="text-xs text-muted-foreground">
+                        <EzTag as="p" className="text-xs text-muted-foreground">
                           +
                           {conv.participants.filter(
                             (p: UserType) => p._id !== userId,
                           ).length - 4}{" "}
                           others
-                        </span>
+                        </EzTag>
                       )}
 
-                      <span className="ml-2 font-medium truncate">
+                      <EzTag as="p" className="ml-2 font-medium truncate">
                         {conv.participants
                           .filter((p: UserType) => p._id !== userId)
                           .map((p: UserType) => p.username)
                           .join(", ")}
-                      </span>
-                    </div>
+                      </EzTag>
+                    </EzTag>
                   )}
-                </div>
-                <div className="text-xs text-muted-foreground truncate">
-                  {conv.lastMessage || "No message yet"}
-                </div>
+                </EzTag>
+                <EzTag as="p" className="text-xs truncate">
+                  {conv.lastMessage?.message || "No message yet"}
+                </EzTag>
               </li>
             ))}
           </ul>
         ) : (
           !filter && (
-            <div className="p-4 text-center text-muted-foreground">
-              Aucune conversation
-            </div>
+            <EzTag as="p" className="p-4 text-center text-muted-foreground">
+              No conversation yet, start a new one from input above
+            </EzTag>
           )
         )}
       </ScrollArea>

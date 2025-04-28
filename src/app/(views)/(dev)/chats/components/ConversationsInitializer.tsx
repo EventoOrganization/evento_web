@@ -3,8 +3,8 @@
 import EventoLoader from "@/components/EventoLoader";
 import { useToast } from "@/hooks/use-toast";
 import { useEffect } from "react";
+import { useSocket } from "../contexts/SocketProvider";
 import { useConversations } from "../hooks/useConversations";
-import { useSocket } from "./SocketProvider";
 
 export function ConversationsInitializer() {
   const { data, loading, error } = useConversations();
@@ -22,7 +22,7 @@ export function ConversationsInitializer() {
     } else {
       console.log("[Chat] No conversations found.");
     }
-  }, [data, socket, updateConversations]);
+  }, [data, socket]);
 
   if (loading) {
     console.log("[Chat] Fetching conversations…");
