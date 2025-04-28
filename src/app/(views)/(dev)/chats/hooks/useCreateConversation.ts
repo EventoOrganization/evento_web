@@ -35,10 +35,13 @@ export function useCreateConversation(): (
 
     const newConv = res.data;
 
-    // 2) On l’ajoute au contexte
+    toast({
+      title: "Conversation created",
+      description: "You have successfully created a conversation",
+      variant: "evento",
+    });
     updateConversations((prev) => [newConv, ...prev]);
 
-    // 3) On rejoint la room en temps réel
     socket?.emit("join_conversations", {
       conversationIds: [newConv._id],
     });

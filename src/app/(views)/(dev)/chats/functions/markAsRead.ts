@@ -7,34 +7,34 @@ interface MarkAsReadParams {
   socket: any;
   activeConversationId: string;
   messages: MessageType[];
-  scrollRef: React.RefObject<HTMLDivElement>;
+  bottomRef: React.RefObject<HTMLDivElement>;
 }
 
 export async function markAsRead({
   socket,
   activeConversationId,
   messages,
-  scrollRef,
+  bottomRef,
 }: MarkAsReadParams) {
-  if (!messages.length || !scrollRef.current || !socket) return;
+  if (!messages.length || !bottomRef.current || !socket) {
+    console.log("[markAsRead] ❌ Missing messages, bottomRef or socket, abort");
+    return;
+  }
 
-  const isBottom = isAtBottom(scrollRef.current);
-  if (!isBottom) return;
+  const isBottom = isAtBottom(bottomRef.current);
+
+  if (!isBottom) {
+    console.log("[markAsRead] ⬆️ User not at bottom, not marking as read.");
+    return;
+  }
 
   const lastMessage = messages[messages.length - 1];
-
-  console.log("[markAsRead] ✉️ Sending mark-as-read:", {
-    conversationId: activeConversationId,
-    lastSeenMessageId: lastMessage._id,
-  });
 
   try {
     socket.emit("mark-as-read", {
       conversationId: activeConversationId,
       lastSeenMessageId: lastMessage._id,
     });
-
-    console.log("[markAsRead] ✅ Emitted successfully!");
   } catch (err) {
     console.error("[markAsRead] ❌ Error emitting mark-as-read:", err);
   }

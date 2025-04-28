@@ -9,6 +9,7 @@ import { UserType } from "@/types/UserType";
 import EzTag from "@ezstart/ez-tag";
 import { useMemo, useState } from "react";
 import { useSocket } from "../contexts/SocketProvider";
+import { ConversationListItem } from "./ConversationListItem";
 
 export const ConversationSidebar = ({
   isConvSelected,
@@ -111,61 +112,15 @@ export const ConversationSidebar = ({
         {filteredConversations.length > 0 ? (
           <ul className="flex flex-col gap-1">
             {filteredConversations.map((conv) => (
-              <li
+              <ConversationListItem
                 key={conv._id}
-                className={cn(
-                  "rounded-md p-3 cursor-pointer bg-card  hover:bg-evento-gradient-button transition-colors",
-                  { "bg-background": isConvSelected },
-                )}
-                onClick={() => {
+                conversation={conv}
+                isSelected={isConvSelected}
+                onSelect={(conv) => {
                   onSelect(conv);
                   setFilter("");
                 }}
-              >
-                <EzTag as="div" className="font-medium">
-                  {conv.title ? (
-                    <EzTag as="p" className="font-medium">
-                      {conv.title}
-                    </EzTag>
-                  ) : (
-                    <EzTag as="div" className="flex items-center gap-2">
-                      {conv.participants
-                        .filter((p: UserType) => p._id !== userId)
-                        .slice(0, 4) // 4 images max
-                        .map((p: UserType) => (
-                          <img
-                            key={p._id}
-                            src={p.profileImage || "/evento-logo.png"}
-                            alt={p.username}
-                            className="w-6 h-6 rounded-full"
-                          />
-                        ))}
-
-                      {conv.participants.filter(
-                        (p: UserType) => p._id !== userId,
-                      ).length > 4 && (
-                        <EzTag as="p" className="text-xs text-muted-foreground">
-                          +
-                          {conv.participants.filter(
-                            (p: UserType) => p._id !== userId,
-                          ).length - 4}{" "}
-                          others
-                        </EzTag>
-                      )}
-
-                      <EzTag as="p" className="ml-2 font-medium truncate">
-                        {conv.participants
-                          .filter((p: UserType) => p._id !== userId)
-                          .map((p: UserType) => p.username)
-                          .join(", ")}
-                      </EzTag>
-                    </EzTag>
-                  )}
-                </EzTag>
-                <EzTag as="p" className="text-xs line-clamp-1">
-                  {conv.lastMessage?.message || "No message yet"}
-                </EzTag>
-              </li>
+              />
             ))}
           </ul>
         ) : (

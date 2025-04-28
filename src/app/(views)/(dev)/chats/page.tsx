@@ -2,54 +2,33 @@
 
 import AuthModal from "@/components/system/auth/AuthModal";
 import { useSession } from "@/contexts/(prod)/SessionProvider";
-import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { UserType } from "@/types/UserType";
 import EzTag from "@ezstart/ez-tag";
-import { useState } from "react";
 import { ChatHeader } from "./components/ChatHeader";
 import ChatInput from "./components/ChatInput";
 import ChatMessages from "./components/ChatMessages";
 import ConversationManager from "./components/ConversationManager";
 import { ConversationSidebar } from "./components/ConversationSidebar";
+import { useSocket } from "./contexts/SocketProvider";
 import { useCreateConversation } from "./hooks/useCreateConversation";
-import { ConversationType } from "./types";
 
 export default function ChatPage() {
   const { user } = useSession();
   const userId = user?._id;
-  const [activeConversation, setActiveConversation] =
-    useState<ConversationType | null>(null);
+  const { activeConversation, setActiveConversation } = useSocket();
   const createConversation = useCreateConversation();
-  const { toast } = useToast();
   const handleSelect = async (convOrData: any) => {
-    // 1) Si c'est déjà une conversation (avec un _id)...
     if (convOrData._id) {
       console.log("Conversation selected:", convOrData);
       setActiveConversation(convOrData);
       return;
     }
-
-    // 2) Sinon on suppose qu'on a { participants: [...], event?: ... }
-    try {
-      const newConv = await createConversation(
-        convOrData.participants,
-        convOrData.event || null,
-      );
-      setActiveConversation(newConv);
-      console.log("Conversation created:", newConv);
-      toast({
-        title: "Conversation created",
-        description: "You have successfully created a conversation",
-        variant: "evento",
-      });
-    } catch (err: any) {
-      toast({
-        title: "Error",
-        description: err.message,
-        variant: "destructive",
-      });
-    }
+    const newConv = await createConversation(
+      convOrData.participants,
+      convOrData.event || null,
+    );
+    setActiveConversation(newConv);
   };
   return (
     <>

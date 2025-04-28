@@ -2,7 +2,7 @@ import { useSession } from "@/contexts/(prod)/SessionProvider";
 import { useEffect, useRef, useState } from "react";
 import { useSocket } from "../contexts/SocketProvider";
 import { markAsRead } from "../functions/markAsRead";
-import { useOnMessage } from "../hooks/useOnMessage";
+// import { useOnMessage } from "../hooks/useOnMessage";
 import { ConversationType, MessageType } from "../types";
 import { sortMessagesByCreatedAt } from "../utils/sortMessages";
 import { useOlderMessages } from "./useOlderMessages";
@@ -11,46 +11,58 @@ export function useChatMessages(activeConversation: ConversationType | null) {
   const [messages, setMessages] = useState<MessageType[]>([]);
   const [noMoreMessages, setNoMoreMessages] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const lastSeenMessageId = useRef<string | null>(null);
   const [canScrollDown, setCanScrollDown] = useState(true);
   const { user, token } = useSession();
-  const { conversations, updateConversations, socket } = useSocket();
+  const { conversations, socket, updateConversations } = useSocket();
   const { fetchOlderMessages } = useOlderMessages(
     activeConversation?._id || null,
   );
 
-  // Puis dans ton useEffect:
   useEffect(() => {
     if (canScrollDown) {
       bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-      if (!token) return;
-      markAsRead({
-        socket,
-        activeConversationId: activeConversation?._id || "",
-        messages,
-        scrollRef,
-      });
     }
   }, [messages]);
 
-  useOnMessage((msg: MessageType) => {
-    if (msg.conversationId !== activeConversation?._id) return;
-    setCanScrollDown(true);
-    console.log("[Chat] 🔔 New incoming message:", msg);
+  useEffect(() => {
+    if (!activeConversation || !user || !messages.length || !socket || !token) {
+      return;
+    }
 
-    setMessages((prev) => [...prev, msg]);
+    const latestMessage = messages[messages.length - 1];
+
+    if (lastSeenMessageId.current === latestMessage._id) {
+      return;
+    }
+
+    lastSeenMessageId.current = latestMessage._id;
+
+    markAsRead({
+      socket,
+      activeConversationId: activeConversation._id,
+      messages,
+      bottomRef,
+    });
+
     updateConversations((prevConvs) =>
       prevConvs.map((conv) =>
-        conv._id === msg.conversationId
+        conv._id === activeConversation._id
           ? {
               ...conv,
-              recentMessages: [...(conv.recentMessages || []), msg],
-              lastMessage: msg,
+              readReceipts: {
+                ...(conv.readReceipts || {}),
+                [user._id]: latestMessage._id,
+              },
+              unreadCounts: {
+                ...(conv.unreadCounts || {}),
+                [user._id]: 0,
+              },
             }
           : conv,
       ),
     );
-  });
+  }, [messages, activeConversation, socket, token]);
 
   useEffect(() => {
     if (!activeConversation) return;
@@ -58,7 +70,7 @@ export function useChatMessages(activeConversation: ConversationType | null) {
     if (!conv) return;
     setMessages(sortMessagesByCreatedAt(conv.recentMessages || []));
     setNoMoreMessages(false);
-  }, [activeConversation]);
+  }, [activeConversation, conversations]);
 
   const loadOlderMessages = async () => {
     setCanScrollDown(false);
@@ -67,18 +79,12 @@ export function useChatMessages(activeConversation: ConversationType | null) {
       return;
     }
 
-    console.log(
-      "[Chat] 📜 Fetching older messages before:",
-      messages[0]?.createdAt,
-    );
-
     const oldest = messages[0];
     const { messages: older, hasMore } = await fetchOlderMessages(
       oldest.createdAt,
     );
 
     if (older.length) {
-      console.log(`[Chat] ✅ Fetched ${older.length} older messages`);
       setMessages((prev) => sortMessagesByCreatedAt([...older, ...prev]));
     } else {
       console.log("[Chat] 🛑 No older messages fetched (empty array)");
@@ -96,6 +102,5 @@ export function useChatMessages(activeConversation: ConversationType | null) {
     loadOlderMessages,
     noMoreMessages,
     bottomRef,
-    scrollRef,
   };
 }

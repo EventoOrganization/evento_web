@@ -18,5 +18,8 @@ export interface ConversationType {
   readReceipts?: {
     [userId: string]: string; // Mapping userId => lastReadMessageId
   };
+  unreadCounts?: {
+    [userId: string]: number; // Mapping userId => unreadMessagesCount
+  };
   // ajoute ici les champs dont tu as besoin…
 }

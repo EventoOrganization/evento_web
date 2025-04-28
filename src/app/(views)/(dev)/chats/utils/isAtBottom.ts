@@ -1,6 +1,8 @@
-export function isAtBottom(scrollEl: HTMLDivElement): boolean {
-  const threshold = 100; // px, tu peux ajuster
-  const position = scrollEl.scrollTop + scrollEl.clientHeight;
-  const height = scrollEl.scrollHeight;
-  return height - position < threshold;
+export function isAtBottom(element: HTMLElement, tolerance = 30) {
+  const distanceFromBottom =
+    element.scrollHeight - element.scrollTop - element.clientHeight;
+
+  console.log("[isAtBottom] Distance from bottom:", distanceFromBottom);
+
+  return distanceFromBottom <= tolerance;
 }
