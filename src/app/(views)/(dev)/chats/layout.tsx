@@ -13,7 +13,7 @@ export default function ChatLayout({
   return (
     <EzTag
       as="div"
-      className="fixed top-0 pb-16 h-screen w-full overflow-hidden"
+      className="fixed top-16 pb-16 h-screen w-full overflow-hidden"
     >
       {children}
     </EzTag>

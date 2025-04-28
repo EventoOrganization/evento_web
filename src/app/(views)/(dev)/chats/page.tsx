@@ -131,7 +131,7 @@ export default function ChatPage() {
               </EzTag>
 
               {/* Messages */}
-              <ChatMessages conversationId={activeConversation._id} />
+              <ChatMessages activeConversation={activeConversation} />
 
               {/* Input */}
               <ChatInput conversationId={activeConversation._id} />

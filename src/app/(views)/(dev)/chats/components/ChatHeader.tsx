@@ -14,7 +14,7 @@ export const ChatHeader = ({
 }) => (
   <EzTag
     as="header"
-    className="p-4 border-b font-bold text-lg flex items-center gap-2 h-16 bg-background"
+    className="fixed top-0 p-4 border-b font-bold text-lg flex items-center gap-2 h-16 bg-background"
   >
     <Button
       variant={"ghost"}
