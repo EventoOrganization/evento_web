@@ -2,6 +2,7 @@
 
 import { useSession } from "@/contexts/(prod)/SessionProvider";
 import { useToast } from "@/hooks/use-toast";
+import { usePathname } from "next/navigation";
 import {
   createContext,
   useCallback,
@@ -12,6 +13,7 @@ import {
 } from "react";
 import io, { Socket } from "socket.io-client";
 import { ConversationsInitializer } from "../components/ConversationsInitializer";
+import { ConversationWatcher } from "../components/ConversationWatcher";
 import { ConversationType, MessageType } from "../types";
 
 interface SocketContextType {
@@ -37,7 +39,7 @@ export const useSocket = () => useContext(SocketContext);
 export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
   const { token, isAuthenticated, isTokenChecked, user } = useSession();
   const { toast } = useToast();
-
+  const pathname = usePathname();
   const [socket, setSocket] = useState<Socket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [conversations, setConversations] = useState<ConversationType[]>([]);
@@ -165,6 +167,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
       }}
     >
       <ConversationsInitializer />
+      <ConversationWatcher />
       {children}
     </SocketContext.Provider>
   );

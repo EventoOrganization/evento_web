@@ -1,5 +1,6 @@
 "use client";
 // import { useSocket } from "@/contexts/(dev)/SocketProvider";
+import { UnreadBadge } from "@/app/(views)/(dev)/chats/components/UnreadBadge";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -57,6 +58,7 @@ export default function NavbarApp() {
         <span className="hidden md:block absolute left-1/2 border shadow -translate-x-1/2 bottom-full mb-2 px-2 py-1 bg-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap overflow-hidden text-ellipsis w-max">
           Chat
         </span>
+        <UnreadBadge className="absolute -top-2 -right-2" />
       </Link>
     </nav>
   );

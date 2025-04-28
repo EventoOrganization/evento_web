@@ -48,7 +48,7 @@ export const ConversationSidebar = ({
     <EzTag
       as="aside"
       className={cn(
-        "w-full max-w-full md:max-w-xs border-r border-muted h-full overflow-y-auto bg-muted",
+        "w-full max-w-full md:max-w-xs border-r border-muted h-full overflow-y-auto bg-muted p-0",
         "flex flex-col h-full",
         { "hidden md:block": isConvSelected },
       )}
