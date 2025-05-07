@@ -21,9 +21,9 @@ export default function ChatPage() {
   const { activeConversation, setActiveConversation } = useSocket();
   const isChatView = pathname.startsWith("/chat");
   const createConversation = useCreateConversation();
+
   const handleSelect = async (convOrData: any) => {
     if (convOrData._id) {
-      console.log("Conversation selected:", convOrData);
       setActiveConversation(convOrData);
       return;
     }
@@ -33,100 +33,82 @@ export default function ChatPage() {
     );
     setActiveConversation(newConv);
   };
+
   return (
-    <>
+    <EzTag
+      as="div"
+      className="fixed inset-0 top-16 flex h-[calc(100dvh-4rem)]" // 4rem = h-16 header
+    >
       <ChatHeader
         isConvSelected={!!activeConversation}
         onBack={() => setActiveConversation(null)}
       />
-
+      {/* Sidebar */}
+      <ConversationSidebar
+        isConvSelected={!!activeConversation}
+        onSelect={handleSelect}
+      />
+      {/* Main zone */}
       <EzTag
         as="div"
-        className={cn("flex h-full ", {
-          "pb-0 md:pb-16": isChatView && activeConversation,
+        className={cn("flex-1 flex flex-col bg-background ", {
+          "hidden md:flex": !activeConversation,
+          "md:pb-16": isChatView && activeConversation,
         })}
       >
-        {/* Sidebar */}
-        <ConversationSidebar
-          isConvSelected={!!activeConversation}
-          onSelect={handleSelect}
-        />
-
-        {/* Zone de chat ou placeholder */}
-        <EzTag
-          as="div"
-          className={cn("flex-1 flex flex-col min-h-0 bg-background", {
-            "hidden md:flex": !activeConversation,
-          })}
-        >
-          {!activeConversation ? (
-            <div className="flex-1 flex items-center justify-center text-muted-foreground">
-              Select a conversation
-            </div>
-          ) : (
-            <>
-              {/* Header de la conversation */}
-              <EzTag
-                as="div"
-                className="bg-muted p-4 border-b flex items-center justify-between"
-              >
-                <h2>
-                  {" "}
-                  {activeConversation.title ? (
-                    <div className="font-medium">
-                      {activeConversation.title}
-                    </div>
-                  ) : (
-                    <div className="flex items-center gap-2">
+        {!activeConversation ? (
+          <div className="flex-1 flex items-center justify-center text-muted-foreground">
+            Select a conversation
+          </div>
+        ) : (
+          <>
+            {/* Header */}
+            <EzTag
+              as="div"
+              className="bg-muted p-4 border-b flex items-center justify-between"
+            >
+              <h2>
+                {activeConversation.title ? (
+                  <div className="font-medium">{activeConversation.title}</div>
+                ) : (
+                  <div className="flex items-center gap-2">
+                    {activeConversation.participants
+                      .filter((p: UserType) => p._id !== userId)
+                      .slice(0, 4)
+                      .map((p: UserType) => (
+                        <img
+                          key={p._id}
+                          src={p.profileImage || "/evento-logo.png"}
+                          alt={p.username}
+                          className="w-10 h-10 rounded-full"
+                        />
+                      ))}
+                    <span className="ml-2 font-medium truncate">
                       {activeConversation.participants
                         .filter((p: UserType) => p._id !== userId)
-                        .slice(0, 4) // 4 images max
-                        .map((p: UserType) => (
-                          <img
-                            key={p._id}
-                            src={p.profileImage || "/evento-logo.png"}
-                            alt={p.username}
-                            className="w-10 h-10 rounded-full"
-                          />
-                        ))}
+                        .map((p: UserType) => p.username)
+                        .join(", ")}
+                    </span>
+                  </div>
+                )}
+              </h2>
+              <ConversationManager
+                conversation={activeConversation}
+                onConversationEnded={() => setActiveConversation(null)}
+              />
+            </EzTag>
 
-                      {activeConversation.participants.filter(
-                        (p: UserType) => p._id !== userId,
-                      ).length > 4 && (
-                        <span className="text-xs text-muted-foreground">
-                          +
-                          {activeConversation.participants.filter(
-                            (p: UserType) => p._id !== userId,
-                          ).length - 4}{" "}
-                          others
-                        </span>
-                      )}
-
-                      <span className="ml-2 font-medium truncate">
-                        {activeConversation.participants
-                          .filter((p: UserType) => p._id !== userId)
-                          .map((p: UserType) => p.username)
-                          .join(", ")}
-                      </span>
-                    </div>
-                  )}
-                </h2>
-                <ConversationManager
-                  conversation={activeConversation}
-                  onConversationEnded={() => setActiveConversation(null)}
-                />
-              </EzTag>
-
-              {/* Messages */}
+            {/* Scrollable messages */}
+            <div className="flex-1 overflow-y-auto">
               <ChatMessages activeConversation={activeConversation} />
+            </div>
 
-              {/* Input */}
-              <ChatInput conversationId={activeConversation._id} />
-            </>
-          )}
-        </EzTag>
+            {/* Input always visible */}
+            <ChatInput conversationId={activeConversation._id} />
+          </>
+        )}
       </EzTag>
       {!user && <AuthModal onAuthSuccess={() => {}} defaultForm="login" />}
-    </>
+    </EzTag>
   );
 }
