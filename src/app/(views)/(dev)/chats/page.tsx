@@ -55,7 +55,7 @@ export default function ChatPage() {
         {/* Zone de chat ou placeholder */}
         <EzTag
           as="div"
-          className={cn("flex-1 flex flex-col h-full bg-background", {
+          className={cn("flex-1 flex flex-col min-h-0 bg-background", {
             "hidden md:flex": !activeConversation,
           })}
         >

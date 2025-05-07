@@ -130,3 +130,10 @@
     }
   }
 }
+@supports (-webkit-touch-callout: none) {
+  html,
+  body {
+    height: 100%;
+    height: -webkit-fill-available;
+  }
+}
