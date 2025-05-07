@@ -1,9 +1,10 @@
 "use client";
-// import { useSocket } from "@/contexts/(dev)/SocketProvider";
 import { UnreadBadge } from "@/app/(views)/(dev)/chats/components/UnreadBadge";
+import { useSocket } from "@/app/(views)/(dev)/chats/contexts/SocketProvider";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import CreateEventIcon from "./icons/CreateEventIcon";
 import DiscoverIcon from "./icons/DiscoverIcon";
 import HomeIcon2 from "./icons/HomeIcon2";
@@ -11,8 +12,23 @@ import ProfileIcon from "./ProfileIcon";
 import TchatIcon from "./TchatIcon";
 
 export default function NavbarApp() {
+  const { activeConversation } = useSocket();
+
   const pathname = usePathname();
   const isChatView = pathname.startsWith("/chat");
+  const [isDesktop, setIsDesktop] = useState(false);
+  useEffect(() => {
+    const handleResize = () => {
+      setIsDesktop(window.innerWidth >= 768);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  if (isChatView && activeConversation && !isDesktop) return null;
   return (
     <nav
       key={pathname}

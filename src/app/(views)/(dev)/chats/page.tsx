@@ -5,6 +5,7 @@ import { useSession } from "@/contexts/(prod)/SessionProvider";
 import { cn } from "@/lib/utils";
 import { UserType } from "@/types/UserType";
 import EzTag from "@ezstart/ez-tag";
+import { usePathname } from "next/navigation";
 import { ChatHeader } from "./components/ChatHeader";
 import ChatInput from "./components/ChatInput";
 import ChatMessages from "./components/ChatMessages";
@@ -14,9 +15,11 @@ import { useSocket } from "./contexts/SocketProvider";
 import { useCreateConversation } from "./hooks/useCreateConversation";
 
 export default function ChatPage() {
+  const pathname = usePathname();
   const { user } = useSession();
   const userId = user?._id;
   const { activeConversation, setActiveConversation } = useSocket();
+  const isChatView = pathname.startsWith("/chat");
   const createConversation = useCreateConversation();
   const handleSelect = async (convOrData: any) => {
     if (convOrData._id) {
@@ -37,7 +40,12 @@ export default function ChatPage() {
         onBack={() => setActiveConversation(null)}
       />
 
-      <EzTag as="div" className="flex h-full pb-16">
+      <EzTag
+        as="div"
+        className={cn("flex h-full ", {
+          "pb-0 md:pb-16": isChatView && activeConversation,
+        })}
+      >
         {/* Sidebar */}
         <ConversationSidebar
           isConvSelected={!!activeConversation}
