@@ -13,6 +13,7 @@ import { EventType } from "@/types/EventType";
 import { MessageCircle, MessageCircleMore } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useJoinConversation } from "../hooks/useJoinConversation";
+import { UnreadBadge } from "./UnreadBadge";
 
 export const StartEventChatButton = ({ event }: { event: EventType }) => {
   const { setActiveConversation } = useSocket();
@@ -20,9 +21,13 @@ export const StartEventChatButton = ({ event }: { event: EventType }) => {
   const { user } = useSession();
   const conv = event.conversation;
   const router = useRouter();
-  const alreadyChatting =
-    conv && conv.participants.find((p) => p._id === user?._id);
+  console.log("user", user?._id);
+  console.log("conv", conv?.participants);
+  const alreadyChatting = conv?.participants.some(
+    (participant) => participant._id === user?._id,
+  );
 
+  console.log("alreadyChatting", alreadyChatting);
   const handleClick = async () => {
     if (!conv) return;
     try {
@@ -37,12 +42,17 @@ export const StartEventChatButton = ({ event }: { event: EventType }) => {
     }
   };
   return (
-    <Button variant="ghost">
+    <Button
+      size={"sm"}
+      variant="ghost"
+      className="relative"
+      onClick={handleClick}
+    >
       {alreadyChatting ? (
         <>
           <Tooltip>
             <TooltipTrigger className="flex items-center gap-2">
-              <MessageCircleMore onClick={handleClick} />
+              <MessageCircleMore size={20} />
             </TooltipTrigger>
             <TooltipContent>Continu to chat</TooltipContent>
           </Tooltip>
@@ -51,13 +61,17 @@ export const StartEventChatButton = ({ event }: { event: EventType }) => {
         <>
           <Tooltip>
             <TooltipTrigger className="flex items-center gap-2">
-              Start Chatting in this event
-              <MessageCircle onClick={handleClick} />
+              Start Chatting
+              <MessageCircle size={20} />
             </TooltipTrigger>
             <TooltipContent>Click to start participate</TooltipContent>
           </Tooltip>
         </>
       )}
+      <UnreadBadge
+        conversationId={conv?._id}
+        className="absolute top-0 right-1"
+      />
     </Button>
   );
 };

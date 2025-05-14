@@ -1,5 +1,10 @@
 import { Button } from "@/components/ui/button";
-import { Trash } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { StepBackIcon, Trash } from "lucide-react";
 import { useSocket } from "../contexts/SocketProvider";
 import { useDeleteConversation } from "../hooks/useDeleteConversation";
 import { useLeaveConversation } from "../hooks/useLeaveConversation";
@@ -39,14 +44,26 @@ const ConversationManager = ({
 
   return (
     <>
-      {conversation.participants.length === 2 ? (
-        <Button variant="ghost" onClick={handleDeleteConversation}>
-          <Trash className="h-4 w-4" />
-        </Button>
+      {!conversation.eventId ? (
+        <Tooltip>
+          <TooltipTrigger className="flex items-center gap-2">
+            <Button variant="ghost" onClick={handleDeleteConversation}>
+              <Trash className="h-4 w-4" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent className="bg-background">
+            Delete conversation
+          </TooltipContent>
+        </Tooltip>
       ) : (
-        <Button variant="outline" onClick={handleLeaveConversation}>
-          <Trash className="h-4 w-4" />
-        </Button>
+        <Tooltip>
+          <TooltipTrigger className="flex items-center gap-2">
+            <Button variant="outline" onClick={handleLeaveConversation}>
+              <StepBackIcon className="h-4 w-4" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>Leave conversation</TooltipContent>
+        </Tooltip>
       )}
     </>
   );

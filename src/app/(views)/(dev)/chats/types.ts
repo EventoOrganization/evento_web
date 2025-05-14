@@ -11,7 +11,7 @@ export type MessageType = {
 export interface ConversationType {
   _id: string;
   participants: UserType[]; // ou un tableau d’objets si tu as populé
-  event?: string | null;
+  eventId?: string | null;
   title?: string;
   recentMessages?: MessageType[];
   lastMessage?: MessageType | null;

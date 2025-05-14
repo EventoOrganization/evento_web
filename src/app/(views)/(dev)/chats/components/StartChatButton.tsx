@@ -13,6 +13,7 @@ import {
 import { UserType } from "@/types/UserType";
 import { MessageCircle, MessageCircleMore } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { UnreadBadge } from "./UnreadBadge";
 
 export const StartChatButton = ({ user }: { user: UserType }) => {
   const { conversations, setActiveConversation } = useSocket();
@@ -20,48 +21,51 @@ export const StartChatButton = ({ user }: { user: UserType }) => {
   const createConversation = useCreateConversation();
   const alreadyChatting = useHasConversation(user._id);
 
+  // 1) On récupère la conv existante (ou undefined)
+  const conv = conversations.find((c) =>
+    c.participants.some((p) => p._id === user._id),
+  );
+
   const handleClick = async () => {
     try {
       if (!alreadyChatting) {
         const newConv = await createConversation([user._id]);
         setActiveConversation(newConv);
-      } else {
-        const conv = conversations.find((c) =>
-          c.participants.some((p) => p._id === user._id),
-        );
-        console.log("conv", conv);
-        if (!conv) return;
+      } else if (conv) {
         setActiveConversation(conv);
       }
     } catch (error) {
+      console.error(error);
     } finally {
       router.push("/chats");
     }
   };
 
   return (
-    <Button variant="ghost">
+    <Button variant="ghost" className="relative" onClick={handleClick}>
       {alreadyChatting ? (
-        <>
-          <Tooltip>
-            <TooltipTrigger>
-              <MessageCircleMore onClick={handleClick} />
-            </TooltipTrigger>
-            <TooltipContent>
-              You already have a conversation, click to open it
-            </TooltipContent>
-          </Tooltip>
-        </>
+        <Tooltip>
+          <TooltipTrigger>
+            <MessageCircleMore />
+          </TooltipTrigger>
+          <TooltipContent>
+            You already have a conversation, click to open it
+          </TooltipContent>
+        </Tooltip>
       ) : (
-        <>
-          <Tooltip>
-            <TooltipTrigger>
-              <MessageCircle onClick={handleClick} />
-            </TooltipTrigger>
-            <TooltipContent>Click to start a conversation</TooltipContent>
-          </Tooltip>
-        </>
+        <Tooltip>
+          <TooltipTrigger>
+            <MessageCircle />
+          </TooltipTrigger>
+          <TooltipContent>Click to start a conversation</TooltipContent>
+        </Tooltip>
       )}
+
+      {/* 2) On passe conv?._id à ton badge */}
+      <UnreadBadge
+        conversationId={conv?._id}
+        className="absolute top-0 right-2"
+      />
     </Button>
   );
 };
