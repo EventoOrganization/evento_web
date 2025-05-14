@@ -12,6 +12,7 @@ import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { startOfDay } from "date-fns";
 import { useState } from "react";
 import EditEventLimit from "../edit/EditEventLimit";
+import IncludeChatToggle from "../edit/IncludeChatToggle";
 import CoHostManagementModal from "./CoHostManagementModal";
 import EditableInputText from "./EditableInputText";
 import EditableLocation from "./EditableLocation";
@@ -495,6 +496,7 @@ const EventEdit = ({
           toggleEditMode={() => toggleEditMode("coHosts")}
         />
       )}
+      <IncludeChatToggle event={event} onUpdateField={onUpdateField} />
       {/* RSVP Questions */}
       <EditableQuestionsForm
         questions={questions}

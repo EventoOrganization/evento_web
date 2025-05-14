@@ -86,6 +86,8 @@ export function createUpdateEventField(event: EventType) {
           updatedEvent.initialMedia = value as [{ url: string; type: string }];
         }
         break;
+      case "includeChat":
+        updatedEvent.details.includeChat = value;
       default:
         console.warn("Unknown field", field);
     }

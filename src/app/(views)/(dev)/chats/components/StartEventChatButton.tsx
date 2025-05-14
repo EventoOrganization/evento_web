@@ -10,24 +10,24 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { UserType } from "@/types/UserType";
+import { EventType } from "@/types/EventType";
 import { MessageCircle, MessageCircleMore } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-export const StartChatButton = ({ user }: { user: UserType }) => {
+export const StartEventChatButton = ({ event }: { event: EventType }) => {
   const { conversations, setActiveConversation } = useSocket();
+  console.log("event", event.conversation);
   const router = useRouter();
   const createConversation = useCreateConversation();
-  const alreadyChatting = useHasConversation(user._id);
+  const alreadyChatting = useHasConversation(event._id);
 
   const handleClick = async () => {
     try {
       if (!alreadyChatting) {
-        const newConv = await createConversation([user._id]);
-        setActiveConversation(newConv);
+        // setActiveConversation();
       } else {
-        const conv = conversations.find((c) =>
-          c.participants.some((p) => p._id === user._id),
+        let conv = conversations.find((c) =>
+          c.participants.some((p) => p._id === event._id),
         );
         console.log("conv", conv);
         if (!conv) return;

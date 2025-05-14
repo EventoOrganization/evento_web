@@ -1,5 +1,6 @@
 // components/EventDescriptionTab.tsx
 
+import { StartEventChatButton } from "@/app/(views)/(dev)/chats/components/StartEventChatButton";
 import AddressModal from "@/components/AddressModal";
 import AddToCalendar from "@/components/AddToCalendar";
 import EventoLoader from "@/components/EventoLoader";
@@ -89,6 +90,7 @@ const EventDescriptionTab: React.FC<EventDescriptionTabProps> = ({
       />
       <div className="flex justify-between">
         <AddToCalendar event={event} />
+        {event?.details?.includeChat && <StartEventChatButton event={event} />}
       </div>
       <h3 className="text-base">Event Description</h3>
       <TruncatedText

@@ -1,3 +1,4 @@
+import { ConversationType } from "@/app/(views)/(dev)/chats/types";
 import { TempUserType, UserType } from "./UserType";
 
 // src/types/EventType.ts
@@ -104,6 +105,7 @@ export type EventType = {
   latitude?: string;
   longitude?: string;
   location?: string;
+  conversation?: ConversationType;
   requested?: UserType[];
   coHosts?: UserType[];
   guests?: UserType[];
