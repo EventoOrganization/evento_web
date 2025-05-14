@@ -1,3 +1,4 @@
+import { ChatButton } from "@/app/(views)/(prod)/profile/[id]/components/ChatButton";
 import LinkedinIcon from "@/components/icons/LinkedinIcon";
 import TiktokIcon from "@/components/icons/TiktokIcon";
 import Section from "@/components/layout/Section";
@@ -176,26 +177,29 @@ const ProfileHeader = ({ profile, totalEvents }: Props) => {
             <div></div>
           )}{" "}
           {user?._id !== profile?._id && (
-            <Button
-              variant={"ghost"}
-              className={` px-5 py-2 rounded-lg font-semibold text-white transition-all hover:scale-105 duration-300 hover:text-white
+            <div className="flex gap-2">
+              {profile && <ChatButton user={profile} />}
+              <Button
+                variant={"ghost"}
+                className={` px-5 py-2 rounded-lg font-semibold text-white transition-all hover:scale-105 duration-300 hover:text-white
         ${isIFollowingHim && !isFollowingMe ? "bg-gray-400 hover:bg-gray-500 " : ""}
         ${isFollowingMe && !isIFollowingHim ? "bg-eventoBlue hover:bg-eventoBlue/80 " : ""}
         ${isFollowingMe && isIFollowingHim ? " bg-evento-gradient " : ""}
         ${!isFollowingMe && !isIFollowingHim ? "bg-eventoPurpleDark hover:bg-eventoPurpleDark/80 " : ""}`}
-              onClick={handleFollow}
-              disabled={loading}
-            >
-              {loading
-                ? "Processing..."
-                : isFollowingMe && !isIFollowingHim
-                  ? "Follow Back"
-                  : isFollowingMe && isIFollowingHim
-                    ? "Friends"
-                    : !isFollowingMe && isIFollowingHim
-                      ? "Unfollow"
-                      : "Follow"}
-            </Button>
+                onClick={handleFollow}
+                disabled={loading}
+              >
+                {loading
+                  ? "Processing..."
+                  : isFollowingMe && !isIFollowingHim
+                    ? "Follow Back"
+                    : isFollowingMe && isIFollowingHim
+                      ? "Friends"
+                      : !isFollowingMe && isIFollowingHim
+                        ? "Unfollow"
+                        : "Follow"}
+              </Button>
+            </div>
           )}
         </div>
         <div className="w-full">
