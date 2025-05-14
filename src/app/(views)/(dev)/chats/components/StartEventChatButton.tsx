@@ -2,63 +2,59 @@
 "use client";
 
 import { useSocket } from "@/app/(views)/(dev)/chats/contexts/SocketProvider";
-import { useCreateConversation } from "@/app/(views)/(dev)/chats/hooks/useCreateConversation";
-import { useHasConversation } from "@/app/(views)/(dev)/chats/hooks/useHasConversation";
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useSession } from "@/contexts/(prod)/SessionProvider";
 import { EventType } from "@/types/EventType";
 import { MessageCircle, MessageCircleMore } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useJoinConversation } from "../hooks/useJoinConversation";
 
 export const StartEventChatButton = ({ event }: { event: EventType }) => {
-  const { conversations, setActiveConversation } = useSocket();
-  console.log("event", event.conversation);
+  const { setActiveConversation } = useSocket();
+  const joinConversation = useJoinConversation();
+  const { user } = useSession();
+  const conv = event.conversation;
   const router = useRouter();
-  const createConversation = useCreateConversation();
-  const alreadyChatting = useHasConversation(event._id);
+  const alreadyChatting =
+    conv && conv.participants.find((p) => p._id === user?._id);
 
   const handleClick = async () => {
+    if (!conv) return;
     try {
       if (!alreadyChatting) {
-        // setActiveConversation();
-      } else {
-        let conv = conversations.find((c) =>
-          c.participants.some((p) => p._id === event._id),
-        );
-        console.log("conv", conv);
-        if (!conv) return;
-        setActiveConversation(conv);
+        await joinConversation(conv._id);
       }
+      setActiveConversation(conv);
     } catch (error) {
+      console.log(error);
     } finally {
-      router.push("/chats");
+      router.push(`/chats`);
     }
   };
-
   return (
     <Button variant="ghost">
       {alreadyChatting ? (
         <>
           <Tooltip>
-            <TooltipTrigger>
+            <TooltipTrigger className="flex items-center gap-2">
               <MessageCircleMore onClick={handleClick} />
             </TooltipTrigger>
-            <TooltipContent>
-              You already have a conversation, click to open it
-            </TooltipContent>
+            <TooltipContent>Continu to chat</TooltipContent>
           </Tooltip>
         </>
       ) : (
         <>
           <Tooltip>
-            <TooltipTrigger>
+            <TooltipTrigger className="flex items-center gap-2">
+              Start Chatting in this event
               <MessageCircle onClick={handleClick} />
             </TooltipTrigger>
-            <TooltipContent>Click to start a conversation</TooltipContent>
+            <TooltipContent>Click to start participate</TooltipContent>
           </Tooltip>
         </>
       )}

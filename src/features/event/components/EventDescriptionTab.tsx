@@ -90,7 +90,9 @@ const EventDescriptionTab: React.FC<EventDescriptionTabProps> = ({
       />
       <div className="flex justify-between">
         <AddToCalendar event={event} />
-        {event?.details?.includeChat && <StartEventChatButton event={event} />}
+        {event?.details?.includeChat && event.conversation?._id && (
+          <StartEventChatButton event={event} />
+        )}
       </div>
       <h3 className="text-base">Event Description</h3>
       <TruncatedText
