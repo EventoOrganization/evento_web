@@ -569,7 +569,7 @@ const CreateEventContent = () => {
       eventStore.latitude,
       eventStore.longitude,
     );
-    return;
+
     const response = await fetchData<EventType>(
       "/events/createEvent",
       HttpMethod.POST,

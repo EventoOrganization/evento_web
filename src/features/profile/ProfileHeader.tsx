@@ -1,4 +1,4 @@
-import { ChatButton } from "@/app/(views)/(prod)/profile/[id]/components/ChatButton";
+import { StartChatButton } from "@/app/(views)/(dev)/chats/components/StartChatButton";
 import LinkedinIcon from "@/components/icons/LinkedinIcon";
 import TiktokIcon from "@/components/icons/TiktokIcon";
 import Section from "@/components/layout/Section";
@@ -178,7 +178,7 @@ const ProfileHeader = ({ profile, totalEvents }: Props) => {
           )}{" "}
           {user?._id !== profile?._id && (
             <div className="flex gap-2">
-              {profile && <ChatButton user={profile} />}
+              {profile && <StartChatButton user={profile} />}
               <Button
                 variant={"ghost"}
                 className={` px-5 py-2 rounded-lg font-semibold text-white transition-all hover:scale-105 duration-300 hover:text-white

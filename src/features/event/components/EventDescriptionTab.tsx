@@ -87,7 +87,9 @@ const EventDescriptionTab: React.FC<EventDescriptionTabProps> = ({
         updateEventStatusLocally={updateEventStatusLocally}
         isLocal
       />
-      <AddToCalendar event={event} />
+      <div className="flex justify-between">
+        <AddToCalendar event={event} />
+      </div>
       <h3 className="text-base">Event Description</h3>
       <TruncatedText
         expand={

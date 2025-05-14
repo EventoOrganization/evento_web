@@ -14,7 +14,7 @@ import { UserType } from "@/types/UserType";
 import { MessageCircle, MessageCircleMore } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-export const ChatButton = ({ user }: { user: UserType }) => {
+export const StartChatButton = ({ user }: { user: UserType }) => {
   const { conversations, setActiveConversation } = useSocket();
   const router = useRouter();
   const createConversation = useCreateConversation();
