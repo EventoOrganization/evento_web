@@ -49,6 +49,7 @@ export default function ChatInput({ conversationId }: ChatInputProps) {
           placeholder={
             disabled ? "Select a conversation" : "Write a message..."
           }
+          className="text-[16px]"
           value={text}
           onChange={(e) => setText(e.target.value)}
         />
