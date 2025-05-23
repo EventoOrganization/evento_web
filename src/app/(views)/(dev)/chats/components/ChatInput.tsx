@@ -2,20 +2,25 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useSession } from "@/contexts/(prod)/SessionProvider";
 import EzTag from "@ezstart/ez-tag";
 import { Send } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { useSocket } from "../contexts/SocketProvider";
 import { useSendMessage } from "../hooks/useSendMessage";
+import { ConversationType } from "../types";
 
 interface ChatInputProps {
-  conversationId: string;
+  activeConversation: ConversationType | null;
 }
 
-export default function ChatInput({ conversationId }: ChatInputProps) {
+export default function ChatInput({ activeConversation }: ChatInputProps) {
   const [text, setText] = useState("");
   const sendMessage = useSendMessage();
+  const { user } = useSession();
+  const { addPendingMessageToConversation } = useSocket();
   const inputRef = useRef<HTMLInputElement>(null);
-
+  const conversationId = activeConversation?._id;
   const disabled = !conversationId;
 
   useEffect(() => {
@@ -25,8 +30,19 @@ export default function ChatInput({ conversationId }: ChatInputProps) {
   }, [conversationId]);
 
   const handleSend = async () => {
-    if (!text.trim()) return;
-
+    if (!text.trim() || !conversationId || !user) return;
+    const clientId =
+      "cid_" + Date.now() + "_" + Math.random().toString(36).slice(2, 8);
+    const pendingMsg = {
+      _id: clientId,
+      senderId: user._id,
+      conversationId,
+      message: text,
+      messageType: "text",
+      createdAt: new Date().toISOString(),
+      pending: true,
+    };
+    addPendingMessageToConversation(conversationId, pendingMsg);
     try {
       await sendMessage(conversationId, text);
       setText("");

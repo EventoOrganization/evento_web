@@ -64,35 +64,42 @@ export function MessagesList({
                 }`}
               >
                 {msg.message}
-                {msg.createdAt && (
-                  <div className="text-[10px] text-right mt-1 opacity-50 flex items-center gap-1">
-                    {formatTime(msg.createdAt)}
+                {msg.createdAt &&
+                  (msg.clientId ? (
+                    <div className="text-[10px] text-right mt-1 opacity-50 flex items-center gap-1">
+                      Pending <span className="animate-bounce delay-75">.</span>
+                      <span className="animate-bounce delay-100">.</span>
+                      <span className="animate-bounce delay-150">.</span>
+                    </div>
+                  ) : (
+                    <div className="text-[10px] text-right mt-1 opacity-50 flex items-center gap-1">
+                      {formatTime(msg.createdAt)}
 
-                    {/* ✅ Affiche si c'est ton propre message */}
-                    {isMine && seenBy.length > 0 && (
-                      <div className="flex items-center ml-1">
-                        {seenBy.length === 1 ? (
-                          <span>✅</span> // simple double check
-                        ) : (
-                          <div className="flex -space-x-1">
-                            {seenBy.slice(0, 3).map((userId, idx) => (
-                              <div
-                                key={idx}
-                                className="w-3 h-3 rounded-full border-2 border-white bg-gray-300"
-                                title={userId}
-                              />
-                            ))}
-                            {seenBy.length > 3 && (
-                              <div className="w-3 h-3 rounded-full bg-gray-400 text-[8px] flex items-center justify-center">
-                                +{seenBy.length - 3}
-                              </div>
-                            )}
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                )}
+                      {/* ✅ Affiche si c'est ton propre message */}
+                      {isMine && seenBy.length > 0 && (
+                        <div className="flex items-center ml-1">
+                          {seenBy.length === 1 ? (
+                            <span>✅</span> // simple double check
+                          ) : (
+                            <div className="flex -space-x-1">
+                              {seenBy.slice(0, 3).map((userId, idx) => (
+                                <div
+                                  key={idx}
+                                  className="w-3 h-3 rounded-full border-2 border-white bg-gray-300"
+                                  title={userId}
+                                />
+                              ))}
+                              {seenBy.length > 3 && (
+                                <div className="w-3 h-3 rounded-full bg-gray-400 text-[8px] flex items-center justify-center">
+                                  +{seenBy.length - 3}
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  ))}
               </div>
             </div>
           </div>

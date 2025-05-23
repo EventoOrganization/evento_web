@@ -104,7 +104,7 @@ export default function ChatPage() {
             </div>
 
             {/* Input always visible */}
-            <ChatInput conversationId={activeConversation._id} />
+            <ChatInput activeConversation={activeConversation} />
           </>
         )}
       </EzTag>

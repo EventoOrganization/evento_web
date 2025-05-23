@@ -1,7 +1,6 @@
 "use client";
 
 import { useSession } from "@/contexts/(prod)/SessionProvider";
-import { useToast } from "@/hooks/use-toast";
 import {
   createContext,
   useCallback,
@@ -22,6 +21,8 @@ interface SocketContextType {
   activeConversation: ConversationType | null;
   setActiveConversation: (conv: ConversationType | null) => void;
   updateConversations: (updater: (prev: any[]) => any[]) => void;
+  addPendingMessageToConversation: (convId: string, msg: MessageType) => void;
+  replacePendingInConv: (convId: string, official: MessageType) => void;
 }
 
 const SocketContext = createContext<SocketContextType>({
@@ -31,13 +32,14 @@ const SocketContext = createContext<SocketContextType>({
   activeConversation: null,
   setActiveConversation: () => {},
   updateConversations: () => {},
+  addPendingMessageToConversation: () => {},
+  replacePendingInConv: () => {},
 });
 
 export const useSocket = () => useContext(SocketContext);
 
 export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
   const { token, isAuthenticated, isTokenChecked, user } = useSession();
-  const { toast } = useToast();
   const [socket, setSocket] = useState<Socket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [conversations, setConversations] = useState<ConversationType[]>([]);
@@ -79,16 +81,12 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
 
     sock.on("connect_error", (err) => {
       console.error("[Socket] connection error:", err.message);
-      toast({
-        title: "Socket error",
-        description: err.message,
-        variant: "destructive",
-      });
     });
+
     // new-message mean someone has sent a message in a conversation where you are
     sock.on("new_message", (payload: MessageType) => {
       console.log("[SocketProvider] 📨 Received new-message:", payload);
-
+      replacePendingInConv(payload.conversationId, payload);
       updateConversations((prevConvs) =>
         prevConvs.map((conv) => {
           if (conv._id !== payload.conversationId) return conv;
@@ -153,6 +151,44 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     setConversations((prev) => updater(prev));
   }, []);
 
+  const addPendingMessageToConversation = useCallback(
+    (convId: string, msg: MessageType) => {
+      updateConversations((prev) =>
+        prev.map((conv) =>
+          conv._id === convId
+            ? {
+                ...conv,
+                recentMessages: [...(conv.recentMessages || []), msg],
+              }
+            : conv,
+        ),
+      );
+    },
+    [updateConversations],
+  );
+
+  const replacePendingInConv = useCallback(
+    (convId: string, official: MessageType) => {
+      updateConversations((prev) =>
+        prev.map((conv) =>
+          conv._id === convId
+            ? {
+                ...conv,
+                recentMessages: (conv.recentMessages || []).map(
+                  (msg: MessageType) =>
+                    msg.clientId &&
+                    official.clientId &&
+                    msg.clientId === official.clientId
+                      ? official
+                      : msg,
+                ),
+              }
+            : conv,
+        ),
+      );
+    },
+    [updateConversations],
+  );
   return (
     <SocketContext.Provider
       value={{
@@ -162,6 +198,8 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
         updateConversations,
         activeConversation: _activeConversation,
         setActiveConversation,
+        addPendingMessageToConversation,
+        replacePendingInConv,
       }}
     >
       <ConversationsInitializer />

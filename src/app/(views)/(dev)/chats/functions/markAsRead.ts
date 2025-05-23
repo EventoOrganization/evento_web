@@ -29,7 +29,7 @@ export async function markAsRead({
   }
 
   const lastMessage = messages[messages.length - 1];
-
+  if (lastMessage.clientId) return;
   try {
     socket.emit("mark-as-read", {
       conversationId: activeConversationId,
