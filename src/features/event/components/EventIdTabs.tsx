@@ -13,9 +13,6 @@ import {
 } from "@/components/ui/tooltip";
 import { useSession } from "@/contexts/(prod)/SessionProvider";
 import TabSelector from "@/features/discover/TabSelector";
-import EventAttendeesTab from "@/features/event/components/EventAttendeesTab";
-import EventDescriptionTab from "@/features/event/components/EventDescriptionTab";
-import EventEdit from "@/features/event/components/EventEdit";
 import StructuredData from "@/features/SEO/StructuredEventData";
 import { useToast } from "@/hooks/use-toast";
 import { useUsersStore } from "@/store/useUsersStore";
@@ -29,6 +26,9 @@ import { useEffect, useState } from "react";
 import EditEventMedia from "../edit/EditEventMedia";
 import EventLimit from "../EventLimit";
 import DeleteEventButton from "./DeleteEventButton";
+import EventAttendeesTab from "./EventAttendeesTab";
+import EventDescriptionTab from "./EventDescriptionTab";
+import EventEdit from "./EventEdit";
 import PastEventGallery from "./PastEventGallery";
 export type EventStatusKeys = "isGoing" | "isFavourite" | "isRefused";
 

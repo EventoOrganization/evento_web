@@ -262,7 +262,7 @@ const DiscoverPageContent = () => {
                     asChild
                     className="bg-evento-gradient hover:opacity-80"
                   >
-                    <Link href="/create-event">Create one today!</Link>
+                    <Link href="/events/create">Create one today!</Link>
                   </Button>
                 </li>
               )}

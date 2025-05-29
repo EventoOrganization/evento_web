@@ -45,16 +45,16 @@ export default function NavbarApp() {
         </span>
       </Link>
 
-      <Link href="/discover" className="relative group">
-        <DiscoverIcon pathname={pathname === "/discover"} className="w-6 h-6" />
+      <Link href="/events" className="relative group">
+        <DiscoverIcon pathname={pathname === "/events"} className="w-6 h-6" />
         <p className="hidden md:block absolute left-1/2 border bg-white shadow -translate-x-1/2 bottom-full mb-2 px-2 py-1 text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap overflow-hidden text-ellipsis w-max">
           Discover events
         </p>
       </Link>
 
-      <Link href="/create-event" className="relative group">
+      <Link href="/events/create" className="relative group">
         <CreateEventIcon
-          pathname={pathname === "/create-event"}
+          pathname={pathname === "/events/create"}
           className="w-6 h-6"
         />
         <span className="hidden md:block absolute left-1/2 border shadow -translate-x-1/2 bottom-full mb-2 px-2 py-1 bg-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap overflow-hidden text-ellipsis w-max">

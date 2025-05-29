@@ -34,7 +34,9 @@ const Event = ({
         className={cn(
           " md:bg-white md:border maw-w-md md:shadow rounded py-4 md:p-4 w-full grid grid-cols-1 lg:grid-cols-2  h-fit gap-4 md:hover:shadow-xl md:hover:bg-slate-50 cursor-pointer relative",
           className,
-          { "lg:grid-cols-1": pathname === "/discover" },
+          {
+            "lg:grid-cols-1": pathname === "/events",
+          },
         )}
       >
         <div className=" ">

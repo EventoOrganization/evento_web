@@ -92,7 +92,7 @@ const EventSection = ({
             asChild
           >
             <Link
-              href={title === "Events Hosting" ? "/create-event" : "/discover"}
+              href={title === "Events Hosting" ? "/events/create" : "/events"}
             >
               {title === "Events Hosting"
                 ? "Create your event !"

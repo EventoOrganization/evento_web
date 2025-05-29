@@ -14,7 +14,7 @@ const DuplicateEventButton = ({ eventId }: DuplicateEventProps) => {
       description: "Start duplicating event, Think to change the date",
       variant: "evento",
     });
-    router.push(`/create-event/${eventId}`);
+    router.push(`/events/create/${eventId}`);
   };
   return (
     <Button

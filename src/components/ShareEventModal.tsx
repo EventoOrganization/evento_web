@@ -10,7 +10,7 @@ const ShareEventModal = ({ eventId }: { eventId: string }) => {
   const { toast } = useToast();
 
   const handleShareEvent = async () => {
-    const eventUrl = `${process.env.NEXT_PUBLIC_FRONTEND_URL}/event/${eventId}`;
+    const eventUrl = `${process.env.NEXT_PUBLIC_FRONTEND_URL}/events/${eventId}`;
 
     if (navigator.share) {
       try {
@@ -39,7 +39,7 @@ const ShareEventModal = ({ eventId }: { eventId: string }) => {
   };
 
   const handleCopyToClipboard = async () => {
-    const eventUrl = `${process.env.NEXT_PUBLIC_FRONTEND_URL}/event/${eventId}`;
+    const eventUrl = `${process.env.NEXT_PUBLIC_FRONTEND_URL}/events/${eventId}`;
     try {
       await navigator.clipboard.writeText(eventUrl);
       toast({

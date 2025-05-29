@@ -1,4 +1,4 @@
-// src/features/event/components/EditableMultiSelect.tsx
+// src/features/events/components/EditableMultiSelect.tsx
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";

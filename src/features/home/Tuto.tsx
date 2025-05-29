@@ -155,7 +155,7 @@ const Tuto = () => {
         <div className="space-y-6 px-6 md:px-12 flex flex-col ">
           <Button variant={"ghost"}>
             <Link
-              href="/create-event"
+              href="/events/create"
               className="text-center text-eventoPurpleDark text-base"
             >
               Explore all Features
@@ -166,7 +166,7 @@ const Tuto = () => {
             className="lg:w-fit self-center"
             asChild
           >
-            <Link href="/create-event" className="flex gap-2 items-center">
+            <Link href="/events/create" className="flex gap-2 items-center">
               <Plus />
               Create an Event
             </Link>
@@ -201,7 +201,7 @@ const Tuto = () => {
             className="w-fit self-center hidden lg:flex"
             asChild
           >
-            <Link href="/discover">
+            <Link href="/events">
               <Compass />
               Discover Events
             </Link>
@@ -254,7 +254,7 @@ const Tuto = () => {
             className="w-fit self-center lg:hidden"
             asChild
           >
-            <Link href="/discover">
+            <Link href="/events">
               <Compass />
               Discover Events
             </Link>

@@ -250,7 +250,7 @@ const EventSuccessPage = () => {
                 <RestrictedToggle event={event} />
               )}
               <ShareModal
-                eventUrl={`${process.env.NEXT_PUBLIC_FRONTEND_URL}/event/${event?._id}`}
+                eventUrl={`${process.env.NEXT_PUBLIC_FRONTEND_URL}/events/${event?._id}`}
               />
             </div>
           </div>
@@ -387,7 +387,7 @@ const EventSuccessPage = () => {
             />
             <Button variant={"eventoPrimary"} className="w-full">
               <Link
-                href={`/event/${event._id}`}
+                href={`/events/${event._id}`}
                 className=" w-full h-full flex justify-center items-center"
               >
                 See your event

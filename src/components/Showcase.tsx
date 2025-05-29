@@ -1,9 +1,9 @@
 import Section from "@/components/layout/Section";
-import Event from "@/features/event/components/Event";
+import Event from "@/features/events/components/Event";
 import { cn } from "@/lib/utils";
 import { EventType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
-import EventPreview from "../features/event/components/EventPreview";
+import EventPreview from "../features/events/components/EventPreview";
 import UserPrevirew from "./UsersList";
 
 const Showcase = ({

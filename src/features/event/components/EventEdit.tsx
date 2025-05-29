@@ -1,4 +1,4 @@
-// src/features/event/components/EventEdit.tsx
+// src/features/events/components/EventEdit.tsx
 import RequiresApprovalToggle from "@/components/RequiresApprovalToggle";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";

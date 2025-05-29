@@ -14,11 +14,11 @@ import CSVImport from "@/features/event/components/CSVImport";
 import EventAddTempGuest from "@/features/event/components/EventAddTempGuest";
 import RestrictedToggle from "@/features/event/components/RestrictedToggle";
 import { useToast } from "@/hooks/use-toast";
+import { cn } from "@/lib/utils";
 import { useUsersStore } from "@/store/useUsersStore";
 import { EventType } from "@/types/EventType";
 import { TempUserType, UserType } from "@/types/UserType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
-import { cn } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -219,8 +219,8 @@ const EventSuccessPage = () => {
 
   return (
     <>
-      <Section className="px-4 xl:px-0 text-left h-full ">
-        <h1 className="text-3xl font-bold w-full h-full">
+      <Section className="px-4 xl:px-0 text-left  ">
+        <h1 className="text-3xl font-bold w-full">
           Congratulations
           <span className="md:hidden  ml-2">!</span>
           <span className="hidden md:inline ml-2">on creating your event!</span>
@@ -252,7 +252,7 @@ const EventSuccessPage = () => {
                 <RestrictedToggle event={event} />
               )}
               <ShareModal
-                eventUrl={`${process.env.NEXT_PUBLIC_FRONTEND_URL}/event/${event?._id}`}
+                eventUrl={`${process.env.NEXT_PUBLIC_FRONTEND_URL}/events/${event?._id}`}
               />
             </div>
           </div>
@@ -389,7 +389,7 @@ const EventSuccessPage = () => {
             />
             <Button variant={"eventoPrimary"} className="w-full">
               <Link
-                href={`/event/${event._id}`}
+                href={`/events/${event._id}`}
                 className=" w-full h-full flex justify-center items-center"
               >
                 See your event

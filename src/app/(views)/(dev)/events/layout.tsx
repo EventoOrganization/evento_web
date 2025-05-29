@@ -1,12 +1,16 @@
-// src/app/(views)/(dev)/events/layout.tsx
+// src/app/(views)/(dev)/events/layoutEvents.tsx
 import { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Events discover",
   description:
     "Find exclusive events near you, tailored to your interests, on Evento. Explore curated gatherings, discover unique experiences, and connect with like-minded people through this intuitive event discovery app",
 };
-const layout = ({ children }: { children: React.ReactNode }) => {
-  return <>{children}</>;
+const layoutEvents = ({ children }: { children: React.ReactNode }) => {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 max-w-7xl mx-auto gap-2 md:gap-4 lg:gap-10 px-2 md:px-4 lg:px-10 relative">
+      {children}
+    </div>
+  );
 };
 
-export default layout;
+export default layoutEvents;

@@ -7,7 +7,7 @@ const Footer = () => {
   const isChatView = pathname.startsWith("/chat");
   if (isChatView) return null;
   return (
-    <footer className=" w-full flex flex-col justify-center items-center min-h-40 pt-10 pb-20 gap-10 border-t-2 max-w-2xl mx-auto">
+    <footer className=" w-full flex flex-col justify-center items-center min-h-40 pt-10 pb-20 gap-10 border-t-2 max-w-2xl mx-auto mt-20">
       <ul className="flex flex-wrap justify-center gap-6 w-full max-w-96">
         <li>
           <Link href={"https://www.instagram.com/eventoapp.io/"}>

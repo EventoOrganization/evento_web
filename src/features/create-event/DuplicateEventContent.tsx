@@ -15,14 +15,6 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 import { useSession } from "@/contexts/(prod)/SessionProvider";
-import CreateEventModal from "@/features/event/components/CreateEventModal";
-import CreateEventPreview from "@/features/event/components/CreateEventPreview";
-import EnableChatButton from "@/features/event/components/EnableChatButton";
-import EventCoHostsModal from "@/features/event/components/EventCoHostsModal";
-import EventDateComponent from "@/features/event/components/EventDateComponent";
-import EventQuestionsForm from "@/features/event/components/EventQuestionsForm";
-import EventURL from "@/features/event/components/EventURL";
-import { handleFieldChange } from "@/features/event/eventActions";
 import { useToast } from "@/hooks/use-toast";
 import { MediaItem, useCreateEventStore } from "@/store/useCreateEventStore";
 import { useEventStore } from "@/store/useEventsStore";
@@ -37,7 +29,15 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import SmartGooglePlacesInput from "../discover/SmartGooglePlacesInput";
 import CreateEventLimitedGuests from "../event/components/CreateEventLimitedGuests";
+import CreateEventModal from "../event/components/CreateEventModal";
+import CreateEventPreview from "../event/components/CreateEventPreview";
+import EnableChatButton from "../event/components/EnableChatButton";
+import EventCoHostsModal from "../event/components/EventCoHostsModal";
+import EventDateComponent from "../event/components/EventDateComponent";
+import EventQuestionsForm from "../event/components/EventQuestionsForm";
+import EventURL from "../event/components/EventURL";
 import RestrictedToggle from "../event/components/RestrictedToggle";
+import { handleFieldChange } from "../event/eventActions";
 
 const DuplicateEventContent = () => {
   const eventStore = useCreateEventStore();
@@ -654,7 +654,7 @@ const DuplicateEventContent = () => {
         duration: 3000,
       });
       if (response.data?.event._id) {
-        router.push(`/create-event/${response.data?.event?._id}/success`);
+        router.push(`/events/create/${response.data?.event?._id}/success`);
       } else {
         router.push(`/profile`);
       }

@@ -48,7 +48,7 @@ const EventModal = ({
             variant={"eventoPrimary"}
             // className="bg-evento-gradient  transition-transform duration-1000"
           >
-            <Link href={`/event/${event._id}`}>View Details</Link>
+            <Link href={`/events/${event._id}`}>View Details</Link>
           </Button>
         </div>
       </DialogContent>

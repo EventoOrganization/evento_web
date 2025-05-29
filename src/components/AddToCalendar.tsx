@@ -23,7 +23,7 @@ const AddToCalendar: React.FC<AddToCalendarProps> = ({ event }) => {
     location = event.details?.location || "",
   } = event;
   const host = event.user.username || "";
-  const eventLink = `https://www.evento-app.io/event/${event._id}` || "";
+  const eventLink = `https://www.evento-app.io/events/${event._id}` || "";
   const fullDescription = `Host: ${host}\nEvent link: ${eventLink}\n\n${description}`;
 
   const startDateTime = new Date(

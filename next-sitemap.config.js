@@ -18,7 +18,7 @@ module.exports = {
 
     // Générer les chemins dynamiques pour les événements
     const eventPaths = events.map((eventId) => ({
-      loc: `/event/${eventId}`, // URL dynamique pour chaque événement
+      loc: `/events/${eventId}`, // URL dynamique pour chaque événement
       changefreq: "daily",
       priority: 0.7,
     }));
@@ -34,8 +34,8 @@ module.exports = {
     return [
       { loc: "/chats", changefreq: "daily", priority: 0.7 },
       { loc: "/contact", changefreq: "weekly", priority: 0.8 },
-      { loc: "/create-event", changefreq: "weekly", priority: 0.9 },
-      { loc: "/discover", changefreq: "daily", priority: 1.0 },
+      { loc: "/events/create", changefreq: "weekly", priority: 0.9 },
+      { loc: "/events", changefreq: "daily", priority: 1.0 },
       { loc: "/terms", changefreq: "yearly", priority: 0.5 },
       ...eventPaths,
       ...profilePaths,

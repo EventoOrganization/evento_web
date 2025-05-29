@@ -64,7 +64,7 @@ const Hero = () => {
           variant={"eventoSecondary"}
           className=" hover:opacity-80 md:text-2xl md:py-8 px-10  w-fit"
         >
-          <Link href="/create-event">CREATE YOUR FIRST EVENT</Link>
+          <Link href="/events/create">CREATE YOUR FIRST EVENT</Link>
         </Button>
         {isAuthModalOpen && (
           <AuthModal

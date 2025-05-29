@@ -13,7 +13,7 @@ interface TabSelectorProps {
 const TabSelector = ({ onChange, tabs, className }: TabSelectorProps) => {
   const pathname = usePathname();
   const [activeTab, setActiveTab] = useState(
-    pathname.startsWith("/discover") ? "All events" : "Description",
+    pathname.startsWith("/events") ? "All events" : "Description",
   );
 
   const handleTabClick = (tab: string) => {
