@@ -3,7 +3,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useSession } from "@/contexts/(prod)/SessionProvider";
-import EzTag from "@ezstart/ez-tag";
 import { Send } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useSocket } from "../contexts/SocketProvider";
@@ -16,6 +15,7 @@ interface ChatInputProps {
 
 export default function ChatInput({ activeConversation }: ChatInputProps) {
   const [text, setText] = useState("");
+  const [isProgressing, setIsProgressing] = useState(false);
   const sendMessage = useSendMessage();
   const { user } = useSession();
   const { addPendingMessageToConversation } = useSocket();
@@ -30,6 +30,7 @@ export default function ChatInput({ activeConversation }: ChatInputProps) {
   }, [conversationId]);
 
   const handleSend = async () => {
+    setIsProgressing(true);
     if (!text.trim() || !conversationId || !user) return;
     const clientId =
       "cid_" + Date.now() + "_" + Math.random().toString(36).slice(2, 8);
@@ -48,6 +49,8 @@ export default function ChatInput({ activeConversation }: ChatInputProps) {
       setText("");
     } catch (e) {
       console.error("Message failed:", e);
+    } finally {
+      setIsProgressing(false);
     }
   };
 
@@ -58,21 +61,24 @@ export default function ChatInput({ activeConversation }: ChatInputProps) {
 
   return (
     <form onSubmit={handleSubmit}>
-      <EzTag as="div" className="p-4 border-t flex gap-2">
+      <div className="p-4 border-t flex gap-2">
         <Input
           ref={inputRef}
           disabled={disabled}
           placeholder={
             disabled ? "Select a conversation" : "Write a message..."
           }
-          className="text-[16px]"
+          style={{ fontSize: 16 }}
           value={text}
           onChange={(e) => setText(e.target.value)}
         />
-        <Button type="submit" disabled={disabled || !text.trim()}>
+        <Button
+          type="submit"
+          disabled={disabled || !text.trim() || isProgressing}
+        >
           <Send className="w-4 h-4" />
         </Button>
-      </EzTag>
+      </div>
     </form>
   );
 }

@@ -51,9 +51,7 @@ const AvatarStack = ({ event }: { event: EventType }) => {
           </div>
         ))}
       </div>
-      <span className="text-sm">
-        {friends.length > 0 ? friends.length : "No"} friends going
-      </span>
+      <span className="text-sm">{friends.length > 0 && "friends going"}</span>
     </div>
   );
 };
