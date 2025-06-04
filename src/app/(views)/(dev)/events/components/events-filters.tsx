@@ -94,7 +94,7 @@ const EventsFilters = ({
           {
             "translate-x-[-100%] md:translate-x-0 h-0 opacity-0 pointer-events-none":
               !showFilters,
-            "translate-x-0 border-b-2 opacity-100 z-20 top-0 pt-5 overflow-y-auto pb-2":
+            "translate-x-0 border-b-2 opacity-100 z-20 top-0  overflow-y-auto pb-2":
               showFilters,
           },
         )}
@@ -105,7 +105,7 @@ const EventsFilters = ({
         >
           <XIcon className=" w-6 h-6" />
         </Button>
-        <div className="relative flex items-center px-2">
+        <div className="relative  items-center px-2 hidden md:flex">
           <Search
             className="w-4 h-4 absolute left-3 md:left-6 text-muted-foreground"
             strokeWidth={2}
