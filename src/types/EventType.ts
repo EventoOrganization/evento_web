@@ -199,3 +199,33 @@ export type EventDetailsType = {
 export const getMediaType = (mimeType: string): "image" | "video" => {
   return mimeType.startsWith("video/") ? "video" : "image";
 };
+export type EventFormValuesType = {
+  title: string;
+  eventType: "public" | "private";
+  username: string;
+  date: string;
+  endDate: string;
+  startTime: string;
+  endTime: string;
+  timeZone: string;
+  description: string;
+  mode: "virtual" | "in-person" | "both";
+  limitedGuests: number | null;
+  location: string;
+  latitude: string;
+  medias: any[];
+  longitude: string;
+  timeSlots: TimeSlotType[];
+  coHosts: UserType[];
+  restricted: boolean;
+  createRSVP: boolean;
+  questions: QuestionType[];
+  additionalField: any[];
+  includeChat: boolean;
+  UrlLink: string;
+  UrlTitle: string;
+  uploadedMedia: { images: string[]; videos: string[] };
+  predefinedMedia: { images: string[]; videos: string[] };
+  interests: InterestType[];
+  requiresApproval: boolean;
+};

@@ -153,12 +153,16 @@ export const setDateWithTime = (
   dateString: string,
   timeString: string,
   isEndDate = false,
-) => {
+): string => {
+  if (!dateString || !timeString) return ""; // <-- Protection basique
+
   const date = new Date(dateString);
+  if (isNaN(date.getTime())) return ""; // <-- Vérifie si la date est invalide
+
   const [hours, minutes] = timeString.split(":").map(Number);
 
-  // Si c'est `endDate` et que l'heure n'est pas spécifiée, définir à la fin de la journée
-  if (isEndDate && (!hours || !minutes)) {
+  // Si c'est endDate et que l'heure n'est pas spécifiée, définir à la fin de la journée
+  if (isEndDate && (isNaN(hours) || isNaN(minutes))) {
     date.setHours(23, 59, 59, 999);
   } else {
     date.setHours(hours || 0, minutes || 0, 0, 0);
@@ -166,6 +170,7 @@ export const setDateWithTime = (
 
   return date.toISOString();
 };
+
 export const formatISODate = (
   iso: string,
   formatStr = "dd MMM yyyy HH:mm",

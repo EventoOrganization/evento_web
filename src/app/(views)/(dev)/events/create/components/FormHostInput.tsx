@@ -1,0 +1,30 @@
+import { Input } from "@/components/ui/input";
+import { Label } from "@radix-ui/react-label";
+
+type Porps = {
+  username: string;
+  handleChange: (
+    fieldName: string,
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => void;
+};
+
+const FormHostInput = ({ username, handleChange }: Porps) => {
+  return (
+    <div>
+      <Label className="sr-only" htmlFor="username">
+        Organizer Name
+      </Label>
+      <Input
+        id="username"
+        name="username"
+        value={username}
+        onChange={(e) => handleChange("username", e)}
+        className="hidden"
+        placeholder="Organizer name"
+      />
+    </div>
+  );
+};
+
+export default FormHostInput;
