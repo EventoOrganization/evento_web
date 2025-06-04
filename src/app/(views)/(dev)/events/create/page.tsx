@@ -1,8 +1,4 @@
 "use client";
-import {
-  handleDeleteMedia,
-  handleUpload,
-} from "@/app/(views)/(prod)/create-event/action";
 import EventoLoader from "@/components/EventoLoader";
 import FileUploadButton from "@/components/FileUploadButton";
 import Section from "@/components/layout/Section";
@@ -27,14 +23,15 @@ import EventURL from "@/features/event/components/EventURL";
 import RestrictedToggle from "@/features/event/components/RestrictedToggle";
 import { handleFieldChange } from "@/features/event/eventActions";
 import { useToast } from "@/hooks/use-toast";
+import { useEventMediaHandler } from "@/hooks/useEventMediaHandler";
 import { MediaItem, useCreateEventStore } from "@/store/useCreateEventStore";
 import { useEventStore } from "@/store/useEventsStore";
 import { useInterestsStore } from "@/store/useInterestsStore";
 import { useUsersStore } from "@/store/useUsersStore";
 import { EventType, InterestType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
+import { isMediaItem } from "@/utils/eventMediaUtils";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
-import heic2any from "heic2any";
 import { Check, Loader2, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -47,17 +44,20 @@ const PageEventsCreate = () => {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isConverting, setIsConverting] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const {
+    tempMediaPreviews,
+    uploadingMediaStatus,
+    cleanupInvalidTemp,
+    deleteMedia,
+    isUploadingComplete,
+    handleFileSelect,
+    uploadMedia,
+  } = useEventMediaHandler();
   const router = useRouter();
   const { toast } = useToast();
   const { addEvent } = useEventStore();
   const { users } = useUsersStore();
   const { interests } = useInterestsStore();
-  const [tempMediaPreviews, setTempMediaPreviews] = useState<MediaItem[]>(
-    eventStore.tempMediaPreview || [],
-  );
-  const [uploadingMediaStatus, setUploadingMediaStatus] = useState<boolean[]>(
-    Array(tempMediaPreviews.length).fill(false),
-  );
   const [carouselIndex, setCarouselIndex] = useState(0);
   const { isAuthenticated, token, user } = useSession();
   const [selectedInterests, setSelectedInterests] = useState<InterestType[]>(
@@ -180,89 +180,6 @@ const PageEventsCreate = () => {
   };
   const selectedMedia =
     eventStore.mediaPreviews[carouselIndex] || eventStore.mediaPreviews[0];
-  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (files) {
-      const heicFiles = Array.from(files).filter((file) =>
-        file.name.toLowerCase().endsWith(".heic"),
-      );
-
-      if (heicFiles.length > 0) {
-        toast({
-          title: `Conversion HEIC en cours`,
-          description: `Please note that ${heicFiles.length} file${heicFiles.length > 1 ? "s" : ""} .HEIC will be converted to ${heicFiles.length > 1 ? "s" : ""} JPEG. This may take a few minutes...`,
-          variant: "evento",
-          duration: Infinity,
-        });
-      }
-
-      const processedFiles = await Promise.all(
-        Array.from(files).map(async (file) => {
-          if (file.name.toLowerCase().endsWith(".heic")) {
-            try {
-              setIsConverting(true);
-              const convertHEICtoJPEG = async (file: File): Promise<File> => {
-                const blob = await heic2any({
-                  blob: file,
-                  toType: "image/jpeg",
-                  quality: 0.9,
-                });
-
-                return new File(
-                  [blob as Blob],
-                  file.name.replace(/\.heic$/, ".jpeg"),
-                  {
-                    type: "image/jpeg",
-                  },
-                );
-              };
-              const jpegFile = await convertHEICtoJPEG(file);
-              setIsConverting(false);
-              toast({
-                title: "Success",
-                description: `${file.name} is successfully converted.`,
-                variant: "evento",
-                duration: 3000,
-              });
-
-              return jpegFile;
-            } catch (error) {
-              console.error("Erreur conversion HEIC:", error);
-              toast({
-                title: "Erreur de conversion",
-                description: `Impossible de convertir ${file.name}.`,
-                className: "bg-red-500 text-white",
-                duration: 4000,
-              });
-              return null; // skip it
-            }
-          }
-
-          return file;
-        }),
-      );
-
-      // ⚠️ Filtrer les fichiers null (erreurs ou HEIC échoué)
-      const validFiles = processedFiles.filter((f): f is File => f !== null);
-
-      const previews: MediaItem[] = validFiles.map((file) => ({
-        url: URL.createObjectURL(file),
-        type: file.type.startsWith("video/") ? "video" : "image",
-      }));
-
-      setTempMediaPreviews((prev) => [...prev, ...previews]);
-      handleFieldChange("tempMediaPreview", [
-        ...tempMediaPreviews,
-        ...previews,
-      ]);
-    }
-  };
-  const cleanupInvalidTemp = (index: number) => {
-    setTempMediaPreviews((prev) => prev.filter((_, i) => i !== index));
-    useCreateEventStore.setState((state) => ({
-      tempMediaPreview: state.tempMediaPreview?.filter((_, i) => i !== index),
-    }));
-  };
 
   useEffect(() => {
     tempMediaPreviews.forEach((media, index) => {
@@ -285,172 +202,12 @@ const PageEventsCreate = () => {
     });
   }, [tempMediaPreviews]);
 
-  const isMediaItem = (media: {
-    url: string;
-    type: string;
-  }): media is MediaItem => {
-    return media.type === "image" || media.type === "video";
-  };
-
-  const resizeImage = async (blob: Blob, width: number): Promise<Blob> => {
-    return new Promise((resolve, reject) => {
-      const img = new Image();
-      img.onload = () => {
-        const scale = width / img.width;
-        const canvas = document.createElement("canvas");
-        canvas.width = width;
-        canvas.height = img.height * scale;
-        const ctx = canvas.getContext("2d");
-        if (!ctx) return reject("No context");
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-        canvas.toBlob(
-          (resizedBlob) => {
-            if (resizedBlob) resolve(resizedBlob);
-            else reject("Failed to resize");
-          },
-          "image/jpeg",
-          0.8,
-        );
-      };
-      img.onerror = reject;
-      img.src = URL.createObjectURL(blob);
-    });
-  };
-
-  const uploadMedia = async (
-    media: { url: string; type: string },
-    index: number,
-  ) => {
-    try {
-      setUploadingMediaStatus((prev) =>
-        prev.map((status, i) => (i === index ? true : status)),
-      );
-
-      const blob = await fetch(media.url).then((r) => r.blob());
-
-      if (media.type === "image") {
-        const [thumb, medium] = await Promise.all([
-          resizeImage(blob, 300),
-          resizeImage(blob, 800),
-        ]);
-
-        const uploadBlob = async (b: Blob) => {
-          const fd = new FormData();
-          fd.append("file", b);
-          const [url] = await handleUpload(fd, "events/initialMedia");
-          return url;
-        };
-
-        const [thumbUrl, mediumUrl, fullUrl] = await Promise.all([
-          uploadBlob(thumb),
-          uploadBlob(medium),
-          uploadBlob(blob),
-        ]);
-
-        useCreateEventStore.setState((state) => ({
-          tempMediaPreview: state.tempMediaPreview?.filter(
-            (_, i) => i !== index,
-          ),
-          mediaPreviews: [
-            ...state.mediaPreviews,
-            {
-              type: "image",
-              url: fullUrl,
-              thumbnailUrl: thumbUrl,
-              mediumUrl: mediumUrl,
-            },
-          ],
-        }));
-      } else if (media.type === "video") {
-        // Pour les vidéos, pas besoin de resize, juste upload
-        const formData = new FormData();
-        formData.append("file", blob);
-        const [videoUrl] = await handleUpload(formData, "events/initialMedia");
-
-        useCreateEventStore.setState((state) => ({
-          tempMediaPreview: state.tempMediaPreview?.filter(
-            (_, i) => i !== index,
-          ),
-          mediaPreviews: [
-            ...state.mediaPreviews,
-            { type: "video", url: videoUrl },
-          ],
-        }));
-      } else {
-        console.error("Invalid media type:", media.type);
-      }
-
-      setTempMediaPreviews((prev) => prev.filter((_, i) => i !== index));
-    } catch (error) {
-      console.error("Error uploading media:", error);
-      setTempMediaPreviews((prev) => prev.filter((_, i) => i !== index));
-      useCreateEventStore.setState((state) => ({
-        tempMediaPreview: state.tempMediaPreview?.filter((_, i) => i !== index),
-      }));
-      toast({
-        title: "Upload failed",
-        description: "One or more media files could not be uploaded.",
-        className: "bg-red-500 text-white",
-      });
-    } finally {
-      setUploadingMediaStatus((prev) =>
-        prev.map((status, i) => (i === index ? false : status)),
-      );
-    }
-  };
-
-  const deleteMedia = async (index: number, mediaItem: MediaItem) => {
-    const urlsToDelete = [];
-
-    if (mediaItem.url?.startsWith("https://evento-media-bucket.s3.")) {
-      urlsToDelete.push(mediaItem.url);
-    }
-
-    if (mediaItem.thumbnailUrl?.startsWith("https://evento-media-bucket.s3.")) {
-      urlsToDelete.push(mediaItem.thumbnailUrl);
-    }
-
-    if (mediaItem.mediumUrl?.startsWith("https://evento-media-bucket.s3.")) {
-      urlsToDelete.push(mediaItem.mediumUrl);
-    }
-
-    // Supprimer chaque fichier
-    const deletionResults = await Promise.all(
-      urlsToDelete.map(async (url) => {
-        const key = new URL(url).pathname.substring(1); // remove leading slash
-        return handleDeleteMedia(key);
-      }),
-    );
-
-    const allDeleted = deletionResults.every((result) => result === true);
-
-    if (allDeleted) {
-      useCreateEventStore.setState((state) => ({
-        mediaPreviews: state.mediaPreviews?.filter((_, i) => i !== index),
-      }));
-    } else {
-      console.warn("Certaines images n’ont pas pu être supprimées.");
-    }
-
-    // Si c'était un fichier non uploadé encore (temp)
-    if (!urlsToDelete.length) {
-      useCreateEventStore.setState((state) => ({
-        tempMediaPreview: state.tempMediaPreview?.filter((_, i) => i !== index),
-      }));
-    }
-  };
-
   const handleRemoveInterest = (interestId: string) => {
     setSelectedInterests((prev) => prev.filter((i) => i._id !== interestId));
     eventStore.setEventField(
       "interests",
       selectedInterests.filter((i) => i._id !== interestId),
     );
-  };
-  const isUploadingComplete = () => {
-    const stillUploading = uploadingMediaStatus.some((s) => s === true);
-    const hasTemp = tempMediaPreviews.length > 0;
-    return !stillUploading && !hasTemp;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
