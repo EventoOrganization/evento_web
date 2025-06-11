@@ -18,6 +18,7 @@ const PageEventsCreate = () => {
   const { user, isAuthenticated, token } = useSession();
   // local state
   const formRef = useRef<HTMLFormElement>(null);
+  const prevFormValues = useRef<EventFormValuesType | null>(null);
   const router = useRouter();
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -67,8 +68,27 @@ const PageEventsCreate = () => {
 
     [setFormValues],
   );
+
   useEffect(() => {
-    console.log("[ON CHANGE]formValues", formValues);
+    if (prevFormValues.current) {
+      const changedKeys = Object.keys(formValues).filter((key) => {
+        return (
+          prevFormValues.current?.[key as keyof EventFormValuesType] !==
+          formValues[key as keyof EventFormValuesType]
+        );
+      });
+
+      changedKeys.forEach((key) => {
+        console.log(
+          `[FORM CHANGE] ${key}:`,
+          prevFormValues.current?.[key as keyof EventFormValuesType],
+          "→",
+          formValues[key as keyof EventFormValuesType],
+        );
+      });
+    }
+
+    prevFormValues.current = formValues;
   }, [formValues]);
 
   const handleAuthSuccess = () => {
@@ -120,8 +140,14 @@ const PageEventsCreate = () => {
     Object.entries(formValues).forEach(([key, value]) => {
       if (Array.isArray(value) || typeof value === "object") {
         formData.append(key, JSON.stringify(value));
-      } else if (value !== undefined && value !== null) {
-        formData.append(key, value as string);
+      } else if (value === null || value === undefined) {
+        formData.append(key, ""); // on force "" pour les null / undefined
+      } else if (typeof value === "number") {
+        formData.append(key, value.toString()); // number → string
+      } else if (typeof value === "boolean") {
+        formData.append(key, value ? "true" : "false"); // boolean → string
+      } else {
+        formData.append(key, value as string); // string
       }
     });
 
@@ -131,6 +157,7 @@ const PageEventsCreate = () => {
 
     if (user?._id) formData.append("userId", user._id);
     console.log("Form Data before submission:", Array.from(formData.entries()));
+    setIsSubmitting(false);
     return;
     try {
       // Utilise fetch sans "Content-Type" (FormData le gère)
@@ -184,7 +211,7 @@ const PageEventsCreate = () => {
       <h1 className="animate-slideInLeft opacity-0 text-3xl md:text-4xl lg:text-5xl flex justify-center md:justify-start md:font-bold text-black w-full h-fit mt-10 px-4">
         Create Event
       </h1>
-      <div className=" w-full grid grid-cols-1 md:grid-cols-2 ">
+      <div className=" w-full grid grid-cols-1 md:grid-cols-2">
         <Section className="max-w-5xl w-full justify-start ">
           <EventForm
             formValues={formValues}
@@ -203,7 +230,7 @@ const PageEventsCreate = () => {
             formRef={formRef}
           />
         </Section>
-        <Section className="hidden md:block">
+        <Section className="hidden md:block md:sticky top-10 self-start">
           <h2 className="mb-4">Preview</h2>
           <CreateEventPreview
             user={user}

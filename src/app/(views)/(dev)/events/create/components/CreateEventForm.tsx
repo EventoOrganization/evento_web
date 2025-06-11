@@ -102,6 +102,10 @@ export default function EventForm({
             onChange("location", address);
             console.log("Selected:", address);
           }}
+          onCoordinatesChange={(coordinates) => {
+            onChange("latitude", coordinates.lat);
+            onChange("longitude", coordinates.lng);
+          }}
         />
       </div>
       <EventDateComponent

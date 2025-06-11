@@ -6,7 +6,7 @@ import NavbarApp from "../Navbar";
 
 const CustomLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <main className={cn("pb-14 md:pb-28 min-h-screen")}>
+    <main className={cn("pb-14 md:pb-28 min-h-screen relative")}>
       {children}
       <Footer />
       <ChatbotComponent />

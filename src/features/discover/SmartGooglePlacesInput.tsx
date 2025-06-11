@@ -19,12 +19,14 @@ interface Props {
   location: Location;
   setLocation: (location: Location) => void;
   onAddressChange?: (formattedAddress: string) => void;
+  onCoordinatesChange?: (coordinates: Location) => void;
 }
 
 const SmartMapLocationPicker = ({
   location,
   setLocation,
   onAddressChange,
+  onCoordinatesChange,
 }: Props) => {
   const { isLoaded } = useJsApiLoader({
     id: "google-maps-script",
@@ -77,6 +79,7 @@ const SmartMapLocationPicker = ({
         const formatted = results[0].formatted_address;
         setQuery(formatted);
         if (onAddressChange) onAddressChange(formatted);
+        if (onCoordinatesChange) onCoordinatesChange({ lat, lng });
       }
     });
   };
@@ -120,12 +123,15 @@ const SmartMapLocationPicker = ({
           const lat = place.geometry.location.lat();
           const lng = place.geometry.location.lng();
           const coords = { lat, lng };
+
           setLocation(coords);
           setMapCenter(coords);
+
           setQuery(description);
           setSuggestions([]);
           if (onAddressChange)
             onAddressChange(place.formatted_address || description);
+          if (onCoordinatesChange) onCoordinatesChange(coords);
           setSessionToken(new google.maps.places.AutocompleteSessionToken());
         }
       },
