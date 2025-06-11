@@ -4,6 +4,7 @@ import AuthModal from "@/components/system/auth/AuthModal";
 import { useSession } from "@/contexts/(prod)/SessionProvider";
 import { useToast } from "@/hooks/use-toast";
 import { EventFormValuesType, InterestType } from "@/types/EventType";
+import { getUTCOffset } from "@/utils/timezones";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import EventForm from "./components/CreateEventForm";
@@ -27,17 +28,23 @@ const PageEventsCreate = () => {
   const [selectedInterests, setSelectedInterests] = useState<InterestType[]>(
     [],
   );
-  const todayISO = new Date().toISOString().split("T")[0];
-  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const tzOffset = getUTCOffset();
+  const todayISODate = new Date();
+  const todayStartISO = new Date(
+    todayISODate.setHours(0, 0, 0, 0),
+  ).toISOString();
+  const todayEndISO = new Date(
+    todayISODate.setHours(23, 59, 0, 0),
+  ).toISOString();
   const [formValues, setFormValues] = useState<EventFormValuesType>({
     title: "",
     eventType: "public",
     username: user?.username || "",
-    date: todayISO,
-    endDate: todayISO,
+    date: todayStartISO,
+    endDate: todayEndISO,
     startTime: "08:00",
     endTime: "",
-    timeZone: tz,
+    timeZone: tzOffset,
     description: "",
     mode: "in-person",
     limitedGuests: null,

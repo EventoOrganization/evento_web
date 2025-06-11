@@ -8,43 +8,40 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
-import { useCreateEventStore } from "@/store/useCreateEventStore";
-import { timeZonesMap } from "@/utils/timezones";
-import { useEffect, useState } from "react";
-import { handleFieldChange } from "../eventActions";
+import { getTimezone, getUTCOffset, timeZonesMap } from "@/utils/timezones";
+import { useState } from "react";
 
 interface SelectTimeZoneProps {
-  selectedTimeZone: string;
+  selectedTimeZoneOffset: string;
   setSelectedTimeZone: (value: string) => void;
   editMode?: boolean;
   className?: string;
 }
 
 const SelectTimeZone = ({
-  selectedTimeZone,
+  selectedTimeZoneOffset,
   setSelectedTimeZone,
   editMode,
   className,
 }: SelectTimeZoneProps) => {
-  const [currentLabel, setCurrentLabel] = useState("Timezone");
-  const eventoStore = useCreateEventStore();
-  useEffect(() => {
-    // console.log("changed timezone", eventoStore.timeZone);
-    setCurrentLabel(
-      timeZonesMap.find((tz) => tz.offset === selectedTimeZone)?.label ||
-        "Timezone",
-    );
-  }, [eventoStore.timeZone]);
+  const [currentLabel, setCurrentLabel] = useState(
+    getUTCOffset() + " " + getTimezone(),
+  );
   return (
     <>
       <Label htmlFor="timeZoneSelect" className="sr-only">
         Select Timezone
       </Label>
       <Select
-        value={selectedTimeZone || ""}
+        value={selectedTimeZoneOffset || ""}
         onValueChange={(value) => {
           setSelectedTimeZone(value);
-          handleFieldChange("timeZone", value);
+          const tz = timeZonesMap.find((tz) => tz.offset === value);
+          if (tz) {
+            setCurrentLabel(tz.offset + " " + tz.iana);
+          } else {
+            setCurrentLabel(value);
+          }
         }}
         disabled={!editMode}
       >
@@ -67,7 +64,7 @@ const SelectTimeZone = ({
               value={tz.offset}
               className=" truncate text-ellipsis overflow-hidden"
             >
-              {tz.label}
+              {tz.offset + " " + tz.iana}
             </SelectItem>
           ))}
         </SelectContent>

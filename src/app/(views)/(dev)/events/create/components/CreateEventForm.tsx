@@ -17,7 +17,7 @@ import { UserType } from "@/types/UserType";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import CreateEventModal from "./CreateEventModal";
-import EventDateComponent from "./EventDateFields";
+import EventDateFields from "./EventDateFields";
 import FormDescriptionField from "./FormDescriptionField";
 import FormEventTypeField from "./FormEventTypeField";
 import FormHostInput from "./FormHostInput";
@@ -108,13 +108,13 @@ export default function EventForm({
           }}
         />
       </div>
-      <EventDateComponent
+      <EventDateFields
         startDate={formValues.date}
         endDate={formValues.endDate}
         startTime={formValues.startTime}
         endTime={formValues.endTime}
         timeSlots={formValues.timeSlots}
-        timeZone={formValues.timeZone}
+        timeZoneOffset={formValues.timeZone}
         onChange={onChange}
       />
       <div>

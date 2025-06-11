@@ -11,19 +11,20 @@ import {
 import { Switch } from "@/components/ui/togglerbtn";
 import SelectTimeZone from "@/features/event/components/SelectTimeZone";
 import { TimeSlotType } from "@/types/EventType";
+import { parseValidDateOrFallback } from "@/utils/date/parseValidDateOrFallback";
 import { isSameDay, setDateWithTime, updateTimeSlots } from "@/utils/dateUtils";
-import { getUTCOffset, timeZonesMap } from "@/utils/timezones";
+import { getUTCOffset } from "@/utils/timezones";
 import { format, startOfDay } from "date-fns";
 import { enGB } from "date-fns/locale";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 
-interface EventDateComponentProps {
+interface EventDateFieldsProps {
   startDate: string;
   endDate: string;
   startTime: string;
   endTime: string;
-  timeZone: string;
+  timeZoneOffset: string;
   timeSlots: TimeSlotType[];
   handleReset?: () => void;
   handleUpdate?: (field: string, value: any) => Promise<void>;
@@ -34,12 +35,12 @@ interface EventDateComponentProps {
   onChange?: (field: string, value: any) => void;
 }
 
-const EventDateComponent = ({
+const EventDateFields = ({
   startDate,
   endDate,
   startTime,
   endTime,
-  timeZone,
+  timeZoneOffset,
   timeSlots,
   handleUpdate,
   handleCancel,
@@ -48,38 +49,38 @@ const EventDateComponent = ({
   editMode = false,
   toggleEditMode,
   onChange,
-}: EventDateComponentProps) => {
-  const today = startOfDay(new Date());
+}: EventDateFieldsProps) => {
   const isEditMode = !!handleUpdate;
-  const defaultTimeZone = getUTCOffset();
-  const matchedTimeZone =
-    timeZonesMap.find((tz) => defaultTimeZone.includes(tz.offset))?.offset ||
-    defaultTimeZone;
-  const [selectedTimeZone, setSelectedTimeZone] = useState(
-    timeZone || matchedTimeZone,
-  );
   const [localStartDate, setLocalStartDate] = useState<string>(
-    setDateWithTime(startDate || "", startTime || "00:00"),
+    startDate || new Date().toISOString(),
   );
 
   const [localEndDate, setLocalEndDate] = useState<string>(
-    setDateWithTime(endDate || "", endTime || "23:59"),
+    endDate || new Date().toISOString(),
   );
-
   const [localStartTime, setLocalStartTime] = useState<string>(
     startTime || "08:00",
   );
   const [localEndTime, setLocalEndTime] = useState<string>(endTime || "");
-  const [localTimeSlots, setLocalTimeSlots] = useState<TimeSlotType[]>(
-    timeSlots || [],
+  const [selectedTimeZoneOffset, setSelectedTimeZone] = useState(
+    timeZoneOffset || getUTCOffset(),
   );
   const [useMultipleTimes, setUseMultipleTimes] = useState(
     timeSlots && timeSlots.length > 1 ? true : false,
   );
+  const [localTimeSlots, setLocalTimeSlots] = useState<TimeSlotType[]>(
+    timeSlots || [],
+  );
 
-  const isValidDateString = (s: string) => !!s && !isNaN(new Date(s).getTime());
+  const isValidDateString = (isoString: string) =>
+    parseValidDateOrFallback(isoString).toISOString() !== "";
 
-  // Mise à jour des time slots lors du changement des dates ou du toggle
+  const getSelectedDateForCalendar = (isoString: string): Date =>
+    startOfDay(parseValidDateOrFallback(isoString));
+
+  const getDisplayDate = (isoString: string): string =>
+    format(parseValidDateOrFallback(isoString), "dd/MM/yyyy");
+
   const updateSlots = () => {
     const newTimeSlots = updateTimeSlots(
       useMultipleTimes,
@@ -89,47 +90,88 @@ const EventDateComponent = ({
       localEndTime,
     );
     setLocalTimeSlots(newTimeSlots);
+    !isEditMode && onChange?.("timeSlots", newTimeSlots);
   };
 
   useEffect(() => {
     updateSlots();
   }, [useMultipleTimes, localStartDate, localEndDate]);
 
-  const handleStartDateChange = (date: Date | undefined) => {
-    if (date) {
-      const formattedDate = format(date, "yyyy-MM-dd");
-      const computedStartDate = setDateWithTime(formattedDate, localStartTime);
+  useEffect(() => {
+    // Recalculate localStartDate
+    const formattedStartDate = format(
+      parseValidDateOrFallback(localStartDate),
+      "yyyy-MM-dd",
+    );
+    const computedStartDate = setDateWithTime(
+      formattedStartDate,
+      localStartTime,
+      selectedTimeZoneOffset,
+    );
+    setLocalStartDate(computedStartDate);
 
-      setLocalStartDate(computedStartDate);
-      !isEditMode && onChange?.("date", computedStartDate);
+    // Recalculate localEndDate
+    const formattedEndDate = format(
+      parseValidDateOrFallback(localEndDate),
+      "yyyy-MM-dd",
+    );
+    const computedEndDate = setDateWithTime(
+      formattedEndDate,
+      localEndTime && localEndTime !== "" ? localEndTime : "23:59",
+      selectedTimeZoneOffset,
+    );
+    setLocalEndDate(computedEndDate);
 
-      // Si la nouvelle startDate dépasse la endDate, met à jour la endDate
-      if (new Date(computedStartDate) > new Date(localEndDate)) {
-        const computedEndDate = setDateWithTime(formattedDate, "23:59");
+    // Optionnel: notifier le parent (si tu veux avoir un onChange sur date auto)
+    if (!isEditMode) {
+      onChange?.("date", computedStartDate);
+      onChange?.("endDate", computedEndDate);
+    }
+  }, [localStartTime, localEndTime, selectedTimeZoneOffset]);
+
+  const handleDateChange = (type: "start" | "end", date?: Date) => {
+    const fallback = new Date();
+    const formattedDate = format(date ?? fallback, "yyyy-MM-dd");
+
+    const computedDate = setDateWithTime(
+      formattedDate,
+      type === "start"
+        ? localStartTime
+        : localEndTime && localEndTime !== ""
+          ? localEndTime
+          : "23:59",
+      selectedTimeZoneOffset,
+    );
+
+    // Mise à jour de la state
+    if (type === "start") {
+      setLocalStartDate(computedDate);
+      !isEditMode && onChange?.("date", computedDate);
+
+      // Si start > end → on corrige end
+      if (new Date(computedDate) > new Date(localEndDate)) {
+        const computedEndDate = setDateWithTime(
+          formattedDate,
+          "23:59",
+          selectedTimeZoneOffset,
+        );
         setLocalEndDate(computedEndDate);
         !isEditMode && onChange?.("endDate", computedEndDate);
       }
-    }
-  };
+    } else {
+      setLocalEndDate(computedDate);
+      !isEditMode && onChange?.("endDate", computedDate);
 
-  const handleEndDateChange = (date: Date | undefined) => {
-    if (date) {
-      const formattedDate = format(date, "yyyy-MM-dd");
-      const computedEndDate = setDateWithTime(
-        formattedDate,
-        localEndTime,
-        true,
-      );
-
-      // Vérifie si la endDate est inférieure à la startDate, ajuste si nécessaire
-      if (new Date(computedEndDate) < new Date(localStartDate)) {
-        const computedStartDate = setDateWithTime(formattedDate, "00:00");
+      // Si end < start → on corrige start
+      if (new Date(computedDate) < new Date(localStartDate)) {
+        const computedStartDate = setDateWithTime(
+          formattedDate,
+          "00:00",
+          selectedTimeZoneOffset,
+        );
         setLocalStartDate(computedStartDate);
         !isEditMode && onChange?.("date", computedStartDate);
       }
-
-      setLocalEndDate(computedEndDate);
-      !isEditMode && onChange?.("endDate", computedEndDate);
     }
   };
 
@@ -172,7 +214,6 @@ const EventDateComponent = ({
     field: string,
     value: string,
   ) => {
-    // Vérifier si l'entrée est valide (format HH:mm)
     const isValidTime = /^\d{2}:\d{2}$/.test(value);
 
     if (isValidTime) {
@@ -180,6 +221,7 @@ const EventDateComponent = ({
         i === index ? { ...slot, [field]: value } : slot,
       );
       setLocalTimeSlots(updatedSlots);
+      !isEditMode && onChange?.("timeSlots", updatedSlots);
     }
   };
 
@@ -199,7 +241,7 @@ const EventDateComponent = ({
                     endDate: new Date(localEndDate).toISOString(),
                     startTime: localStartTime,
                     endTime: localEndTime,
-                    timeZone: selectedTimeZone,
+                    timeZone: selectedTimeZoneOffset,
                     timeSlots: localTimeSlots,
                   })
                 }
@@ -231,17 +273,15 @@ const EventDateComponent = ({
               className="justify-start p-2"
             >
               <CalendarIcon className="mr-2 h-4 w-4" />
-              {localStartDate
-                ? format(new Date(localStartDate), "dd/MM/yyyy")
-                : "Select start date"}
+              {getDisplayDate(localStartDate) || "Select start date"}
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0">
             <Calendar
               mode="single"
-              selected={new Date(localStartDate)}
-              onSelect={handleStartDateChange}
-              fromDate={today}
+              selected={getSelectedDateForCalendar(localStartDate)}
+              onSelect={(date) => handleDateChange("start", date)}
+              fromDate={new Date()}
               locale={enGB}
             />
           </PopoverContent>
@@ -254,23 +294,23 @@ const EventDateComponent = ({
               className="justify-start p-2"
             >
               <CalendarIcon className="mr-2 h-4 w-4" />
-              {localEndDate
-                ? format(new Date(localEndDate), "dd/MM/yyyy")
-                : "Select end date"}
+              {getDisplayDate(localEndDate) || "Select end date"}
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0">
             <Calendar
               mode="single"
-              selected={new Date(localEndDate)}
-              onSelect={handleEndDateChange}
+              selected={getSelectedDateForCalendar(
+                localEndDate || localStartDate,
+              )}
+              onSelect={(date) => handleDateChange("end", date)}
               fromDate={new Date(localStartDate)}
               locale={enGB}
             />
           </PopoverContent>
         </Popover>
         <SelectTimeZone
-          selectedTimeZone={selectedTimeZone || ""}
+          selectedTimeZoneOffset={selectedTimeZoneOffset || ""}
           setSelectedTimeZone={(value) => {
             setSelectedTimeZone(value);
             !isEditMode && onChange?.("timeZone", value);
@@ -299,13 +339,14 @@ const EventDateComponent = ({
           {localTimeSlots.map((slot, index) => (
             <div key={index} className="flex gap-4 items-center mb-2">
               <p className="text-sm whitespace-nowrap text-black">
-                {format(new Date(slot.date), "dd MMM yyyy", { locale: enGB })}
+                {isValidDateString(slot.date)
+                  ? format(new Date(slot.date), "dd MMM yyyy", { locale: enGB })
+                  : "Invalid date"}
               </p>
               <TimeSelect
                 value={`${slot.startTime}`}
                 onChange={(value) => {
                   handleTimeSlotChange(index, "startTime", value);
-                  !isEditMode && onChange?.("timeSlots", localTimeSlots);
                 }}
                 disabled={!editMode && isEditMode}
               />
@@ -313,7 +354,6 @@ const EventDateComponent = ({
                 value={slot.endTime}
                 onChange={(value) => {
                   handleTimeSlotChange(index, "endTime", value);
-                  !isEditMode && onChange?.("timeSlots", localTimeSlots);
                 }}
                 filterOptions={(time) => time > slot.startTime}
                 disabled={!editMode && isEditMode}
@@ -365,4 +405,4 @@ const EventDateComponent = ({
   );
 };
 
-export default EventDateComponent;
+export default EventDateFields;

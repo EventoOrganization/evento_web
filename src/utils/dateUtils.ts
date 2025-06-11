@@ -150,22 +150,35 @@ export const renderDate = (event: any) => {
 };
 
 export const setDateWithTime = (
-  dateString: string,
-  timeString: string,
+  dateString = new Date().toISOString(),
+  timeString = "08:00",
+  timeZoneOffset = "+00:00",
   isEndDate = false,
 ): string => {
-  if (!dateString || !timeString) return ""; // <-- Protection basique
-
   const date = new Date(dateString);
-  if (isNaN(date.getTime())) return ""; // <-- Vérifie si la date est invalide
+  if (isNaN(date.getTime())) return "";
 
   const [hours, minutes] = timeString.split(":").map(Number);
 
-  // Si c'est endDate et que l'heure n'est pas spécifiée, définir à la fin de la journée
   if (isEndDate && (isNaN(hours) || isNaN(minutes))) {
     date.setHours(23, 59, 59, 999);
   } else {
     date.setHours(hours || 0, minutes || 0, 0, 0);
+  }
+
+  const sign = timeZoneOffset.startsWith("-") ? -1 : 1;
+  const [tzHours, tzMinutes] = timeZoneOffset.slice(1).split(":").map(Number);
+  const offsetInMinutes = sign * (tzHours * 60 + tzMinutes);
+
+  date.setMinutes(date.getMinutes() - offsetInMinutes);
+  if (isNaN(date.getTime())) {
+    console.warn("Invalid date computed in setDateWithTime", {
+      dateString,
+      timeString,
+      timeZoneOffset,
+      isEndDate,
+    });
+    return "";
   }
 
   return date.toISOString();
