@@ -18,6 +18,8 @@ const EventURL = ({
       onChange("UrlTitle", "");
     } else {
       setIsToggleOn(true);
+      onChange("UrlLink", URLLink);
+      onChange("UrlTitle", URLTitle);
     }
   };
   const handleUrlLinkChange = (value: string) => {

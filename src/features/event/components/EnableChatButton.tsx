@@ -1,4 +1,5 @@
 "use client";
+import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/togglerbtn";
 import { useState } from "react";
 const EnableChatButton = ({
@@ -16,7 +17,7 @@ const EnableChatButton = ({
   return (
     <div className="flex items-center gap-2">
       <Switch checked={checked} onClick={handleButtonClick} />
-      <h6 className="">Enable Chat</h6>
+      <Label>Enable Chat</Label>
     </div>
   );
 };

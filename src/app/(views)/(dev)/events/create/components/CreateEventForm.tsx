@@ -7,7 +7,6 @@ import SmartGooglePlacesInput from "@/features/discover/SmartGooglePlacesInput";
 import CreateEventLimitedGuests from "@/features/event/components/CreateEventLimitedGuests";
 import EnableChatButton from "@/features/event/components/EnableChatButton";
 import EventCoHostsModal from "@/features/event/components/EventCoHostsModal";
-import EventQuestionsForm from "@/features/event/components/EventQuestionsForm";
 import EventURL from "@/features/event/components/EventURL";
 import { useInterestsStore } from "@/store/useInterestsStore";
 import { useUsersStore } from "@/store/useUsersStore";
@@ -22,6 +21,7 @@ import FormEventTypeField from "./FormEventTypeField";
 import FormHostInput from "./FormHostInput";
 import FormInterestsField from "./FormInterestsField";
 import FormModeField from "./FormModeField";
+import FormQuestionsField from "./FormQuestionsField";
 import FormTitleInput from "./FormTitleInput";
 import MediaFilesInput from "./MediaFilesInput";
 
@@ -139,7 +139,7 @@ export default function EventForm({
           onChange={(e) => onChange("requiresApproval", e)}
         />
       </div>
-      <EventQuestionsForm />
+      <FormQuestionsField onChange={onChange} />
       <Button
         type="button"
         className="bg-evento-gradient w-full text-white md:hidden"
