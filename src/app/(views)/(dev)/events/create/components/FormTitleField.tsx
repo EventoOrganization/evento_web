@@ -9,7 +9,7 @@ type Props = {
   ) => void;
 };
 
-const FormTitleInput = ({ title, handleFieldUpdate }: Props) => {
+const FormTitleField = ({ title, handleFieldUpdate }: Props) => {
   return (
     <div className="space-y-1">
       <Label htmlFor="title">
@@ -26,4 +26,4 @@ const FormTitleInput = ({ title, handleFieldUpdate }: Props) => {
   );
 };
 
-export default FormTitleInput;
+export default FormTitleField;

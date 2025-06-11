@@ -23,7 +23,7 @@ const PageEventsCreate = () => {
   const router = useRouter();
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [mediaFiles, setMediaFiles] = useState<File[]>([]);
+  const [toUploadFiles, setToUploadFiles] = useState<File[]>([]);
   const [location, setLocation] = useState({ lat: 0, lng: 0 });
   const [selectedInterests, setSelectedInterests] = useState<InterestType[]>(
     [],
@@ -66,9 +66,8 @@ const PageEventsCreate = () => {
     questions: [],
     additionalField: [],
 
-    medias: [],
-    uploadedMedia: { images: [], videos: [] },
-    predefinedMedia: { images: [], videos: [] },
+    uploadedMedia: [],
+    predefinedMedia: [],
   });
   const handleInputChange = useMemo(
     () => handleInputChangeFactory(setFormValues),
@@ -162,7 +161,7 @@ const PageEventsCreate = () => {
       }
     });
 
-    mediaFiles.forEach((file) => {
+    toUploadFiles.forEach((file) => {
       formData.append("mediaFiles", file, file.name);
     });
 
@@ -228,8 +227,8 @@ const PageEventsCreate = () => {
             formValues={formValues}
             onChange={handleValueChange}
             onInputChange={handleInputChange}
-            mediaFiles={mediaFiles}
-            setMediaFiles={setMediaFiles}
+            toUploadFiles={toUploadFiles}
+            setToUploadFiles={setToUploadFiles}
             selectedInterests={selectedInterests}
             setSelectedInterests={setSelectedInterests}
             location={location}
@@ -257,7 +256,7 @@ const PageEventsCreate = () => {
             description={formValues.description}
             UrlTitle={formValues.UrlTitle}
             UrlLink={formValues.UrlLink}
-            mediaFiles={mediaFiles}
+            toUploadFiles={toUploadFiles}
             handleRemoveInterest={(interestId) => {
               setSelectedInterests((prev) =>
                 prev.filter((i) => i._id !== interestId),

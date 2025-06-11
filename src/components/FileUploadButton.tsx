@@ -19,7 +19,7 @@ const FileUploadButton = ({
     <div
       onClick={handleButtonClick}
       className={cn(
-        "cursor-pointer relative flex items-center justify-center mt-2 min-w-24 h-24 rounded-md  border-2 border-dashed border-gray-300 hover:border-eventoPurpleLight",
+        "cursor-pointer relative flex items-center justify-center max-w-24 min-w-24 h-24 rounded-md m-1 border-2 border-dashed border-gray-300 hover:border-eventoPurpleLight",
         className,
       )}
     >
@@ -27,6 +27,7 @@ const FileUploadButton = ({
       <input
         type="file"
         accept="image/*"
+        multiple
         onChange={onChange}
         ref={fileInputRef}
         className="hidden"

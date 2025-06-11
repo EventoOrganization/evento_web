@@ -24,7 +24,7 @@ type PreviewProps = {
   description: string;
   UrlTitle?: string;
   UrlLink?: string;
-  mediaFiles: File[]; // Array de blobs/images/vidéos
+  toUploadFiles: File[]; // Array de blobs/images/vidéos
   handleRemoveInterest?: (interestId: string) => void;
   className?: string;
   inModal?: boolean;
@@ -44,7 +44,7 @@ const CreateEventPreview = ({
   description,
   UrlTitle,
   UrlLink,
-  mediaFiles,
+  toUploadFiles,
   handleRemoveInterest,
   className,
   inModal = false,
@@ -134,7 +134,7 @@ const CreateEventPreview = ({
                 </div>
               </div>
             </div>
-            <CreateEventCarousel mediaFiles={mediaFiles} />
+            <CreateEventCarousel mediaFiles={toUploadFiles} />
           </div>
         </div>
         <div className="flex flex-col gap-2">

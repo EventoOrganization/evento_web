@@ -15,22 +15,22 @@ import { UserType } from "@/types/UserType";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import CreateEventModal from "./CreateEventModal";
-import EventDateFields from "./EventDateFields";
+import FormDateFields from "./FormDateFields";
 import FormDescriptionField from "./FormDescriptionField";
-import FormEventTypeField from "./FormEventTypeField";
-import FormHostInput from "./FormHostInput";
+import FormHostField from "./FormHostField";
 import FormInterestsField from "./FormInterestsField";
 import FormModeField from "./FormModeField";
 import FormQuestionsField from "./FormQuestionsField";
-import FormTitleInput from "./FormTitleInput";
-import MediaFilesInput from "./MediaFilesInput";
+import FormTitleField from "./FormTitleField";
+import FormEventTypeField from "./FormTypeField";
+import ToUploadFilesField from "./ToUploadFilesField";
 
 type EventFormProps = {
   formValues: EventFormValuesType;
   onChange: (field: string, value: any) => void;
   onInputChange: (field: string, e: React.ChangeEvent<any>) => void;
-  mediaFiles: File[];
-  setMediaFiles: (files: File[]) => void;
+  toUploadFiles: File[];
+  setToUploadFiles: (files: File[]) => void;
   selectedInterests: InterestType[];
   setSelectedInterests: React.Dispatch<React.SetStateAction<InterestType[]>>;
   location: { lat: number; lng: number };
@@ -46,8 +46,8 @@ export default function EventForm({
   formValues,
   onChange,
   onInputChange,
-  mediaFiles,
-  setMediaFiles,
+  toUploadFiles,
+  setToUploadFiles,
   selectedInterests,
   setSelectedInterests,
   location,
@@ -63,12 +63,12 @@ export default function EventForm({
   const [isEventModalOpen, setIsEventModalOpen] = useState(false);
   return (
     <form ref={formRef} onSubmit={onSubmit} className="space-y-4  w-full">
-      <FormTitleInput
+      <FormTitleField
         title={formValues.title}
         handleFieldUpdate={onInputChange}
       />
       {(!user || (user && !user.username)) && (
-        <FormHostInput
+        <FormHostField
           username={formValues.username}
           handleChange={onInputChange}
         />
@@ -107,7 +107,7 @@ export default function EventForm({
           }}
         />
       </div>
-      <EventDateFields
+      <FormDateFields
         startDate={formValues.date}
         endDate={formValues.endDate}
         startTime={formValues.startTime}
@@ -120,9 +120,8 @@ export default function EventForm({
         <Label>
           Event Photos<span className="text-red-500">*</span>
         </Label>
-        <MediaFilesInput value={mediaFiles} onChange={setMediaFiles} />
+        <ToUploadFilesField value={toUploadFiles} onChange={setToUploadFiles} />
       </div>
-
       <h4>More Options</h4>
       <div className="flex flex-wrap gap-2 flex-col">
         <EventCoHostsModal
@@ -157,7 +156,7 @@ export default function EventForm({
       </Button>
       <CreateEventModal
         formValues={formValues}
-        mediaFiles={mediaFiles}
+        toUploadFiles={toUploadFiles}
         user={user}
         formRef={formRef}
         selectedInterests={selectedInterests}

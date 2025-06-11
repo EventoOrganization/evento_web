@@ -13,7 +13,7 @@ import CreateEventPreview from "./CreateEventPreview";
 
 type CreateEventModalProps = {
   formValues: any;
-  mediaFiles: File[];
+  toUploadFiles: File[];
   user?: UserType | null;
   formRef?: React.RefObject<HTMLFormElement>;
   selectedInterests: InterestType[];
@@ -26,7 +26,7 @@ type CreateEventModalProps = {
 
 const CreateEventModal = ({
   formValues,
-  mediaFiles,
+  toUploadFiles,
   user,
   formRef,
   selectedInterests,
@@ -67,7 +67,7 @@ const CreateEventModal = ({
             description={formValues.description}
             UrlTitle={formValues.UrlTitle}
             UrlLink={formValues.UrlLink}
-            mediaFiles={mediaFiles}
+            toUploadFiles={toUploadFiles}
             handleRemoveInterest={(interestId: string) => {
               setSelectedInterests((prev) =>
                 prev.filter((i) => i._id !== interestId),

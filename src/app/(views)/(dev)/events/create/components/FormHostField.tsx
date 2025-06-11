@@ -1,5 +1,5 @@
 import { Input } from "@/components/ui/input";
-import { Label } from "@radix-ui/react-label";
+import { Label } from "@/components/ui/label";
 
 type Porps = {
   username: string;
@@ -9,7 +9,7 @@ type Porps = {
   ) => void;
 };
 
-const FormHostInput = ({ username, handleChange }: Porps) => {
+const FormHostField = ({ username, handleChange }: Porps) => {
   return (
     <div>
       <Label className="sr-only" htmlFor="username">
@@ -27,4 +27,4 @@ const FormHostInput = ({ username, handleChange }: Porps) => {
   );
 };
 
-export default FormHostInput;
+export default FormHostField;

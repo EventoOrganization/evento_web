@@ -1,24 +1,23 @@
-import { Trash } from "lucide-react";
-import { useRef, useState } from "react";
 import FileUploadButton from "@/components/FileUploadButton";
+import { cn } from "@/lib/utils";
+import { Trash } from "lucide-react";
+import { useState } from "react";
 
 // Type simple, tu peux le typiser plus strict si tu veux.
-type MediaFilesInputProps = {
+type ToUploadFilesFieldProps = {
   value?: File[];
   onChange?: (files: File[]) => void;
   className?: string;
 };
 
-const MediaFilesInput = ({
+const ToUploadFilesField = ({
   value,
   onChange,
   className,
-}: MediaFilesInputProps) => {
-  // State interne, fallback sur value si controlled
+}: ToUploadFilesFieldProps) => {
   const [files, setFiles] = useState<File[]>(value ?? []);
   const [carouselIndex, setCarouselIndex] = useState(0);
 
-  // Update parent à chaque changement
   const updateFiles = (next: File[]) => {
     setFiles(next);
     onChange?.(next);
@@ -27,7 +26,6 @@ const MediaFilesInput = ({
     }
   };
 
-  // Ajout
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
     const next = [...files, ...Array.from(e.target.files)];
@@ -35,22 +33,19 @@ const MediaFilesInput = ({
     e.target.value = "";
   };
 
-  // Suppression
   const handleRemoveFile = (idx: number) => {
     const next = files.filter((_, i) => i !== idx);
     updateFiles(next);
   };
 
-  // Carousel
   const handleSelectMedia = (idx: number) => {
     setCarouselIndex(idx);
   };
 
   return (
-    <div className={className}>
-      {/* Bouton d'ajout */}
+    <div className={cn("flex", className)}>
       <FileUploadButton onChange={handleFileChange} />
-      <ul className="flex gap-2 overflow-x-scroll max-w-full ml-2 scroll-container p-2">
+      <ul className="flex gap-2 overflow-x-scroll max-w-full scroll-container p-1">
         {files.map((file, index) => {
           const url = URL.createObjectURL(file);
           const isImage = file.type.startsWith("image/");
@@ -59,7 +54,7 @@ const MediaFilesInput = ({
             <li
               key={index}
               onClick={() => handleSelectMedia(index)}
-              className="relative w-24 h-24 overflow-hidden aspect-square border rounded-md flex-shrink-0 ring-offset-background hover:ring-2 hover:ring-ring group"
+              className="relative w-24 h-24 overflow-hidden aspect-square border rounded-md flex-shrink-0 group"
             >
               {isImage ? (
                 <img
@@ -91,4 +86,4 @@ const MediaFilesInput = ({
   );
 };
 
-export default MediaFilesInput;
+export default ToUploadFilesField;

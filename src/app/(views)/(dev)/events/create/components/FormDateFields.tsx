@@ -35,7 +35,7 @@ interface EventDateFieldsProps {
   onChange?: (field: string, value: any) => void;
 }
 
-const EventDateFields = ({
+const FormDateFields = ({
   startDate,
   endDate,
   startTime,
@@ -405,4 +405,4 @@ const EventDateFields = ({
   );
 };
 
-export default EventDateFields;
+export default FormDateFields;

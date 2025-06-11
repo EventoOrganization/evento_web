@@ -68,21 +68,12 @@ export type QuestionType = {
 };
 
 export type EventType = {
-  initialMedia: [
-    {
-      url: string;
-      type: string;
-    },
-  ];
+  initialMedia: { url: string; type: "image" | "video" }[];
+  uploadedMedia?: { url: string; type: "image" | "video" }[];
+  postEventMedia?: { url: string; type: "image" | "video" }[];
   allUploadPhotoVideo?: boolean;
   username?: string;
   _id: string;
-  postEventMedia?: [
-    {
-      url: string;
-      type: string;
-    },
-  ];
   limitedGuests?: number | null;
   hiddenByUsers?: string[];
   title: string;
@@ -213,7 +204,6 @@ export type EventFormValuesType = {
   limitedGuests: number | null;
   location: string;
   latitude: string;
-  medias: any[];
   longitude: string;
   timeSlots: TimeSlotType[];
   coHosts: UserType[];
@@ -224,8 +214,8 @@ export type EventFormValuesType = {
   includeChat: boolean;
   UrlLink: string;
   UrlTitle: string;
-  uploadedMedia: { images: string[]; videos: string[] };
-  predefinedMedia: { images: string[]; videos: string[] };
+  uploadedMedia: File[];
+  predefinedMedia: { url: string; type: "image" | "video" }[];
   interests: InterestType[];
   requiresApproval: boolean;
 };
