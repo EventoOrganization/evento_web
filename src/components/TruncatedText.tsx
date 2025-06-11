@@ -72,7 +72,7 @@ const TruncatedText = ({
             WebkitBoxOrient: "vertical",
             WebkitLineClamp: isExpanded ? undefined : 2,
             overflow: isExpanded ? "visible" : "hidden",
-            wordBreak: "break-word", // Évite la coupure des mots
+            wordBreak: "break-word",
             overflowWrap: "break-word",
           }}
         >

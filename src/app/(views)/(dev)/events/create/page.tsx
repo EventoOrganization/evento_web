@@ -54,19 +54,20 @@ const PageEventsCreate = () => {
     // optional
     endTime: "",
     timeSlots: [],
-    limitedGuests: null,
+    // more options
     coHosts: [],
+    limitedGuests: null,
+    requiresApproval: false,
+    includeChat: false,
 
     createRSVP: false,
     questions: [],
     additionalField: [],
-    includeChat: false,
     UrlLink: "",
     UrlTitle: "",
     uploadedMedia: { images: [], videos: [] },
     predefinedMedia: { images: [], videos: [] },
     interests: [],
-    requiresApproval: false,
     medias: [],
   });
   const handleInputChange = useMemo(

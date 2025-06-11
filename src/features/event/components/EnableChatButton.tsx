@@ -1,21 +1,16 @@
 "use client";
 import { Switch } from "@/components/ui/togglerbtn";
-import { useCreateEventStore } from "@/store/useCreateEventStore";
-import { useEffect, useState } from "react";
-const EnableChatButton = () => {
-  const eventStore = useCreateEventStore();
-  const [checked, setChecked] = useState(eventStore.includeChat || false);
-  useEffect(() => {
-    setChecked(eventStore.includeChat);
-  }, [eventStore.includeChat]);
+import { useState } from "react";
+const EnableChatButton = ({
+  onChange,
+}: {
+  onChange: (value: boolean) => void;
+}) => {
+  const [checked, setChecked] = useState(false);
+
   const handleButtonClick = () => {
-    return alert("Chat feature coming soon");
-    // setChecked((prevState) => {
-    //   const newState = !prevState;
-    //   handleFieldChange("includeChat", newState);
-    //   eventStore.setEventField("includeChat", newState); // Update the store value
-    //   return newState;
-    // });
+    setChecked(!checked);
+    onChange(!checked);
   };
 
   return (

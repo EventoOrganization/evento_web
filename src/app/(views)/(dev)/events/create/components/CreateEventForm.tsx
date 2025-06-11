@@ -130,8 +130,8 @@ export default function EventForm({
           currentUserId={user?._id || ""}
           onChange={(e) => onChange("coHosts", e)}
         />
-        <EnableChatButton />
-        <EventURL />
+        <EnableChatButton onChange={(e) => onChange("includeChat", e)} />
+        <EventURL onChange={onChange} />
         <CreateEventLimitedGuests
           onChange={(e) => onChange("limitedGuests", e)}
         />

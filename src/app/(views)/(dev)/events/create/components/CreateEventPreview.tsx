@@ -183,6 +183,7 @@ const CreateEventPreview = ({
 
           <TruncatedText
             isLink
+            url={UrlLink}
             className="text-eventoPink"
             text={UrlTitle || UrlLink || ""}
           />
