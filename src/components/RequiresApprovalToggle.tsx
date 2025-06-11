@@ -1,7 +1,6 @@
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/togglerbtn";
 import { useSession } from "@/contexts/(prod)/SessionProvider";
-import { handleFieldChange } from "@/features/event/eventActions";
 import { useToast } from "@/hooks/use-toast";
 import { useEventStore } from "@/store/useEventsStore";
 import { EventType } from "@/types/EventType";
@@ -10,20 +9,24 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 interface RequiresApprovalToggleProps {
   event?: EventType;
+  onChange?: (value: boolean) => void;
 }
-const RequiresApprovalToggle = ({ event }: RequiresApprovalToggleProps) => {
+const RequiresApprovalToggle = ({
+  event,
+  onChange,
+}: RequiresApprovalToggleProps) => {
   const pathname = usePathname();
   const { toast } = useToast();
   const { token } = useSession();
   const { updateEvent } = useEventStore();
-  const isCreatingEvent = pathname.startsWith("/create-event");
+  const isCreatingEvent = pathname.startsWith("/events/create");
   const [isApprovalRequired, setIsApprovalRequired] = useState(
     event?.requiresApproval || false,
   );
   const handleApprovalChange = async (value: boolean) => {
     setIsApprovalRequired(value);
     if (isCreatingEvent) {
-      handleFieldChange("requiresApproval", value);
+      onChange && onChange(value);
     } else {
       if (!event) return;
       try {

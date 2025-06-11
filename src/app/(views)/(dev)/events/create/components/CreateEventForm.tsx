@@ -3,7 +3,6 @@
 import RequiresApprovalToggle from "@/components/RequiresApprovalToggle";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import SmartGooglePlacesInput from "@/features/discover/SmartGooglePlacesInput";
 import CreateEventLimitedGuests from "@/features/event/components/CreateEventLimitedGuests";
 import EnableChatButton from "@/features/event/components/EnableChatButton";
@@ -118,18 +117,6 @@ export default function EventForm({
         onChange={onChange}
       />
       <div>
-        <Label htmlFor="description">
-          Description<span className="text-destructive">*</span>
-        </Label>
-        <Textarea
-          id="description"
-          name="description"
-          value={formValues.description}
-          onChange={(e) => onInputChange("description", e)}
-          placeholder="Enter event description"
-        />
-      </div>
-      <div>
         <Label>
           Event Photos<span className="text-red-500">*</span>
         </Label>
@@ -145,8 +132,12 @@ export default function EventForm({
         />
         <EnableChatButton />
         <EventURL />
-        <CreateEventLimitedGuests />
-        <RequiresApprovalToggle />
+        <CreateEventLimitedGuests
+          onChange={(e) => onChange("limitedGuests", e)}
+        />
+        <RequiresApprovalToggle
+          onChange={(e) => onChange("requiresApproval", e)}
+        />
       </div>
       <EventQuestionsForm />
       <Button

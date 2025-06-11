@@ -37,24 +37,26 @@ const PageEventsCreate = () => {
     todayISODate.setHours(23, 59, 0, 0),
   ).toISOString();
   const [formValues, setFormValues] = useState<EventFormValuesType>({
-    title: "",
-    eventType: "public",
+    // required and default values
     username: user?.username || "",
+    title: "",
+    description: "",
+    eventType: "public",
+    mode: "in-person",
+    timeZone: tzOffset,
     date: todayStartISO,
     endDate: todayEndISO,
     startTime: "08:00",
-    endTime: "",
-    timeZone: tzOffset,
-    description: "",
-    mode: "in-person",
-    limitedGuests: null,
     location: "",
     latitude: "",
-    medias: [],
     longitude: "",
-    timeSlots: [],
-    coHosts: [],
     restricted: false,
+    // optional
+    endTime: "",
+    timeSlots: [],
+    limitedGuests: null,
+    coHosts: [],
+
     createRSVP: false,
     questions: [],
     additionalField: [],
@@ -65,6 +67,7 @@ const PageEventsCreate = () => {
     predefinedMedia: { images: [], videos: [] },
     interests: [],
     requiresApproval: false,
+    medias: [],
   });
   const handleInputChange = useMemo(
     () => handleInputChangeFactory(setFormValues),
@@ -237,7 +240,7 @@ const PageEventsCreate = () => {
             formRef={formRef}
           />
         </Section>
-        <Section className="hidden md:block md:sticky top-10 self-start">
+        <Section className="hidden md:block md:sticky top-0 py-0 self-start">
           <h2 className="mb-4">Preview</h2>
           <CreateEventPreview
             user={user}

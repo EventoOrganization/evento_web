@@ -1,30 +1,22 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/togglerbtn";
-import { useCreateEventStore } from "@/store/useCreateEventStore";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
-const CreateEventLimitedGuests = () => {
-  const { limitedGuests, setEventField } = useCreateEventStore();
-  const [isLimited, setIsLimited] = useState(!!limitedGuests);
-  const [inputValue, setInputValue] = useState<number | "">(
-    limitedGuests !== null ? limitedGuests : "",
-  );
-
-  useEffect(() => {
-    if (limitedGuests !== null) {
-      setIsLimited(true);
-      setInputValue(limitedGuests);
-    }
-  }, [limitedGuests]);
+const CreateEventLimitedGuests = ({
+  onChange,
+}: {
+  onChange: (limit: number | null) => void;
+}) => {
+  const [isLimited, setIsLimited] = useState(false);
+  const [inputValue, setInputValue] = useState<number | null>(null);
 
   const handleToggle = () => {
-    const newIsLimited = !isLimited;
-    setIsLimited(newIsLimited);
-
-    if (!newIsLimited) {
-      setEventField("limitedGuests", null);
-      setInputValue("");
+    const newLimited = !isLimited;
+    setIsLimited(newLimited);
+    if (!newLimited) {
+      setInputValue(null);
+      onChange(null);
     }
   };
 
@@ -32,14 +24,9 @@ const CreateEventLimitedGuests = () => {
     const input = e.target.value;
 
     if (/^\d*$/.test(input)) {
-      const newValue = input === "" ? "" : Number(input);
+      const newValue = input === "" ? null : Number(input);
       setInputValue(newValue);
-
-      if (newValue !== "") {
-        setEventField("limitedGuests", newValue);
-      } else {
-        setEventField("limitedGuests", null);
-      }
+      onChange(newValue);
     }
   };
 
@@ -49,7 +36,7 @@ const CreateEventLimitedGuests = () => {
     if (invalidChars.includes(e.key)) {
       e.preventDefault();
     }
-    if (e.key === "0" && inputValue === "") {
+    if (e.key === "0" && inputValue === null) {
       e.preventDefault();
     }
   };
@@ -67,7 +54,7 @@ const CreateEventLimitedGuests = () => {
               ? "Enter the limit of attendees"
               : "Toggle to enter a limit capacity"
           }
-          value={isLimited ? inputValue : ""}
+          value={inputValue !== null ? inputValue : ""}
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
           className="w-full"
