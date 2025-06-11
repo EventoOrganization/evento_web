@@ -39,7 +39,7 @@ const PageEvents = () => {
 
   const [selectedEvent, setSelectedEvent] = useState<EventType | null>();
   const { users } = useUsersStore();
-  const [showFilters, setShowFilters] = useState(false);
+  const [showFilters, setShowFilters] = useState(true);
   const [isEventModalOpen, setIsEventModalOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [searchText, setSearchText] = useState("");
@@ -156,15 +156,10 @@ const PageEvents = () => {
             </li>
           )}
         </ul>
-        <EventUsersLists
-          className="hidden md:block"
-          searchText={searchText}
-          selectedInterests={selectedInterests}
-        />
       </main>
       <aside className="space-y-2">
         <EventsFilters
-          className="md:sticky top-0 z-10"
+          // className="md:sticky top-0 z-10"
           showFilters={showFilters}
           setShowFilters={setShowFilters}
           searchText={searchText}
@@ -181,6 +176,7 @@ const PageEvents = () => {
         />
         {isAuthenticated ? (
           <EventUsersLists
+            className="sticky top-16 z-10 space-y-2"
             searchText={searchText}
             selectedInterests={selectedInterests}
           />

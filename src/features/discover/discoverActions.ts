@@ -108,7 +108,7 @@ export const filterEvents = (
         location.lng,
         event.details?.loc?.coordinates[1] || 0,
         event.details?.loc?.coordinates[0] || 0,
-      ) < 10;
+      ) < 25;
 
     const isVirtual =
       selectedTab === "Virtual" &&

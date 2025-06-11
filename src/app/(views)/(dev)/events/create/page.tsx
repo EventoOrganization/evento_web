@@ -36,7 +36,7 @@ const PageEventsCreate = () => {
     endDate: todayISO,
     startTime: "08:00",
     endTime: "",
-    timeZone: "",
+    timeZone: tz,
     description: "",
     mode: "in-person",
     limitedGuests: null,
@@ -58,21 +58,19 @@ const PageEventsCreate = () => {
     interests: [],
     requiresApproval: false,
   });
-  useEffect(() => {
-    if (!formValues.timeZone) {
-      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-      setFormValues((prev) => ({ ...prev, timeZone: tz }));
-    }
-    // eslint-disable-next-line
-  }, []);
   const handleInputChange = useMemo(
     () => handleInputChangeFactory(setFormValues),
     [setFormValues],
   );
   const handleValueChange = useMemo(
     () => handleValueChangeFactory(setFormValues),
+
     [setFormValues],
   );
+  useEffect(() => {
+    console.log("[ON CHANGE]formValues", formValues);
+  }, [formValues]);
+
   const handleAuthSuccess = () => {
     setIsAuthModalOpen(false);
     setFormValues((prev) => ({
@@ -91,7 +89,6 @@ const PageEventsCreate = () => {
       return;
     }
 
-    // Validation (inchangée)
     const missingFields: string[] = [];
     const fields = [
       { name: "Title", value: formValues.title },
@@ -118,12 +115,9 @@ const PageEventsCreate = () => {
       return;
     }
 
-    // ⚡️1. Utilise FormData pour envoyer les fichiers + toutes les autres valeurs
     const formData = new FormData();
 
-    // Ajoute tous les champs du formulaire
     Object.entries(formValues).forEach(([key, value]) => {
-      // Sérialise les objets/arrays pour le backend si besoin
       if (Array.isArray(value) || typeof value === "object") {
         formData.append(key, JSON.stringify(value));
       } else if (value !== undefined && value !== null) {
@@ -131,13 +125,10 @@ const PageEventsCreate = () => {
       }
     });
 
-    // Ajoute les fichiers un par un
     mediaFiles.forEach((file) => {
-      // Le nom 'mediaFiles' doit matcher le champ attendu côté backend (ex: req.files['mediaFiles'])
       formData.append("mediaFiles", file, file.name);
     });
 
-    // Optionnel : ajoute le userId etc.
     if (user?._id) formData.append("userId", user._id);
     console.log("Form Data before submission:", Array.from(formData.entries()));
     return;
