@@ -141,6 +141,7 @@ export default function EventForm({
         <EventCoHostsModal
           allUsers={users as UserType[]}
           currentUserId={user?._id || ""}
+          onChange={(e) => onChange("coHosts", e)}
         />
         <EnableChatButton />
         <EventURL />

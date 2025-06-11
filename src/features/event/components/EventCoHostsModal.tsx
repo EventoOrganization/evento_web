@@ -8,9 +8,11 @@ import AddCoHostsModal from "./AddUserModal";
 const EventCoHostsModal = ({
   allUsers,
   currentUserId,
+  onChange,
 }: {
   allUsers: UserType[];
   currentUserId?: string;
+  onChange?: (coHosts: Partial<UserType>[]) => void;
 }) => {
   const eventStore = useCreateEventStore();
   const [coHosts, setCoHosts] = useState<
@@ -20,6 +22,7 @@ const EventCoHostsModal = ({
     selectedCoHosts: { userId: UserType; status: string }[],
   ) => {
     setCoHosts(selectedCoHosts);
+    if (onChange) onChange(selectedCoHosts);
     eventStore.setEventField("coHosts", selectedCoHosts);
   };
 
