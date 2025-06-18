@@ -1,9 +1,15 @@
+import CropImageDialog from "@/components/CropImageDialog";
 import FileUploadButton from "@/components/FileUploadButton";
+import { SUPPORTED_IMAGE_SIZES } from "@/constantes/supportedImageSize";
 import { cn } from "@/lib/utils";
 import { Trash } from "lucide-react";
 import { useState } from "react";
 
-// Type simple, tu peux le typiser plus strict si tu veux.
+type MediaFile = {
+  file: File;
+  previewUrl: string;
+};
+
 type ToUploadFilesFieldProps = {
   value?: File[];
   onChange?: (files: File[]) => void;
@@ -18,6 +24,9 @@ const ToUploadFilesField = ({
   const [files, setFiles] = useState<File[]>(value ?? []);
   const [carouselIndex, setCarouselIndex] = useState(0);
 
+  const [cropDialogOpen, setCropDialogOpen] = useState(false);
+  const [imageSrc, setImageSrc] = useState<string>("");
+
   const updateFiles = (next: File[]) => {
     setFiles(next);
     onChange?.(next);
@@ -27,10 +36,19 @@ const ToUploadFilesField = ({
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files) return;
-    const next = [...files, ...Array.from(e.target.files)];
-    updateFiles(next);
+    if (!e.target.files || e.target.files.length === 0) return;
+
+    const file = e.target.files[0];
+    const url = URL.createObjectURL(file);
+
+    setImageSrc(url);
+    setCropDialogOpen(true);
+
     e.target.value = "";
+  };
+
+  const handleCropComplete = (croppedFile: File) => {
+    updateFiles([...files, croppedFile]);
   };
 
   const handleRemoveFile = (idx: number) => {
@@ -82,6 +100,14 @@ const ToUploadFilesField = ({
           );
         })}
       </ul>
+
+      <CropImageDialog
+        open={cropDialogOpen}
+        imageSrc={imageSrc}
+        aspectOptions={SUPPORTED_IMAGE_SIZES}
+        onCropComplete={handleCropComplete}
+        onClose={() => setCropDialogOpen(false)}
+      />
     </div>
   );
 };

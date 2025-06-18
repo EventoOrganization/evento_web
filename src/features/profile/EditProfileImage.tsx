@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { UserType } from "@/types/UserType";
-import { getCroppedImg } from "@/utils/imageHelpers"; // Assurez-vous que cette fonction retourne une Data URL
+import { getCroppedProfileImage } from "@/utils/getCroppedProfileImage";
 import { useState } from "react";
 import Cropper, { Area } from "react-easy-crop";
 
@@ -39,7 +39,7 @@ const EditProfileImage = ({
         setImageSrc(reader.result as string);
         setOpenDialog(true);
       };
-      reader.readAsDataURL(file); // Directement en base64
+      reader.readAsDataURL(file);
     }
   };
 
@@ -50,7 +50,6 @@ const EditProfileImage = ({
   const handleSaveCroppedImage = async () => {
     if (croppedArea && imageSrc) {
       try {
-        // Obtenez la largeur et la hauteur réelles de l'image avant le recadrage
         const imageElement = new window.Image();
         imageElement.src = imageSrc;
         const imageWidth = imageElement.naturalWidth;
@@ -61,8 +60,7 @@ const EditProfileImage = ({
           imageHeight,
         });
 
-        // Passez les dimensions réelles et le zoom à `getCroppedImg`
-        const croppedImageDataUrl = await getCroppedImg(
+        const croppedImageDataUrl = await getCroppedProfileImage(
           imageSrc,
           croppedArea,
           imageWidth,

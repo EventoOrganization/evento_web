@@ -66,7 +66,7 @@ const PageEventsCreate = () => {
     questions: [],
     additionalField: [],
 
-    uploadedMedia: [],
+    toUploadFiles: [],
     predefinedMedia: [],
   });
   const handleInputChange = useMemo(

@@ -214,7 +214,7 @@ export type EventFormValuesType = {
   includeChat: boolean;
   UrlLink: string;
   UrlTitle: string;
-  uploadedMedia: File[];
+  toUploadFiles: File[];
   predefinedMedia: { url: string; type: "image" | "video" }[];
   interests: InterestType[];
   requiresApproval: boolean;

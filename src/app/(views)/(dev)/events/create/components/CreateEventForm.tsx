@@ -120,7 +120,13 @@ export default function EventForm({
         <Label>
           Event Photos<span className="text-red-500">*</span>
         </Label>
-        <ToUploadFilesField value={toUploadFiles} onChange={setToUploadFiles} />
+        <ToUploadFilesField
+          value={toUploadFiles}
+          onChange={(e) => {
+            setToUploadFiles(e);
+            onChange("toUploadFiles", e);
+          }}
+        />
       </div>
       <h4>More Options</h4>
       <div className="flex flex-wrap gap-2 flex-col">
