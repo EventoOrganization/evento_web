@@ -54,7 +54,6 @@ export const SessionProvider: React.FC<{
 
       if (!response.ok) throw new Error("Token is invalid or expired");
 
-      console.log("✅ Token is valid");
       return true;
     } catch (error) {
       if (user) {
@@ -62,7 +61,6 @@ export const SessionProvider: React.FC<{
           "Your session has expired. Please log in again.",
         );
       }
-      console.log("❌ Token is invalid or expired");
       return false;
     }
   };

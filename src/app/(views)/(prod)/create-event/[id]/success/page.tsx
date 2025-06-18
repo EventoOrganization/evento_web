@@ -127,8 +127,6 @@ const EventSuccessPage = () => {
     const newTempGuests = currentSelectedUsers.filter(
       (user): user is TempUserType => !user._id,
     );
-    console.log("newGuests", newGuests);
-    console.log("newTempGuests", newTempGuests);
     const updateData = {
       guests: newGuests.map((user) => ({
         _id: user._id,

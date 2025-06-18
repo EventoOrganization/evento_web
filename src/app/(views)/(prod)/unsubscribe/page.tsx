@@ -34,7 +34,6 @@ const UnsubscribePage = () => {
         `/profile/getPreferences?token=${token}`,
         HttpMethod.GET,
       );
-      console.log("responseGetPreferences", response);
       if (response.ok && response.data.preferences) {
         setPreferences(response.data.preferences);
       } else {
@@ -50,7 +49,6 @@ const UnsubscribePage = () => {
   const handleTogglePreference = (key: keyof typeof preferences) => {
     setPreferences((prev) => {
       const updated = { ...prev, [key]: !prev[key] };
-      console.log("Updated preferences:", updated);
       return updated;
     });
   };

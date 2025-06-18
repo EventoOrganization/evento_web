@@ -107,7 +107,6 @@ const UsersList = ({
           duration: 2000,
           className: "bg-evento-gradient text-white",
         });
-        console.log("user", user);
         setEvent?.({
           ...event!,
           requested: event?.requested?.filter((r) => r._id !== user._id),
@@ -221,8 +220,6 @@ const UsersList = ({
       return;
     }
     setLoading(true);
-    console.log("🔍 Checking setEvent: ", setEvent);
-    console.log("🔍 Checking event: ", event);
 
     try {
       const body = {
@@ -237,10 +234,7 @@ const UsersList = ({
       );
 
       if (response.ok) {
-        console.log("✅ User removed from Going list");
-
         if (setEvent) {
-          console.log("✅ Calling setEvent");
           setEvent({
             ...event!,
             attendees:
@@ -253,7 +247,9 @@ const UsersList = ({
               ) || [],
           });
         } else {
-          console.log("❌ setEvent is undefined, cannot update event locally.");
+          console.warn(
+            "❌ setEvent is undefined, cannot update event locally.",
+          );
         }
 
         updateEvent(eventId, {

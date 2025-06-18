@@ -65,7 +65,7 @@ const CreateEventContent = () => {
   );
   const [location, setLocation] = useState({ lat: 0, lng: 0 });
   useEffect(() => {
-    // console.log("user", user);
+    // console.log("user", user)
     if (isAuthenticated && user?.username) {
       handleFieldChange("username", user.username);
     }

@@ -1,10 +1,8 @@
 import SmartImage from "@/components/SmartImage";
 import { cn } from "@/lib/utils";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-
-type MediaItem = File;
 
 type Props = {
   mediaFiles: File[];
@@ -12,11 +10,15 @@ type Props = {
 
 const CreateEventCarousel = ({ mediaFiles }: Props) => {
   const [isSwiping, setIsSwiping] = useState(false);
+  const [medias, setMedias] = useState(mediaFiles);
+  useEffect(() => {
+    setMedias(mediaFiles);
+  }, [mediaFiles]);
   const touchStartX = useRef(0);
-
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.touches[0].clientX;
   };
+
   const handleTouchMove = (e: React.TouchEvent) => {
     const touchCurrentX = e.touches[0].clientX;
     if (Math.abs(touchCurrentX - touchStartX.current) > 10) {
@@ -27,7 +29,7 @@ const CreateEventCarousel = ({ mediaFiles }: Props) => {
     setIsSwiping(false);
   };
 
-  if (!mediaFiles.length) {
+  if (!medias.length) {
     return (
       <div className="relative w-full h-full bg-evento-gradient rounded">
         <SmartImage
@@ -58,7 +60,7 @@ const CreateEventCarousel = ({ mediaFiles }: Props) => {
         emulateTouch={true}
         useKeyboardArrows={true}
       >
-        {mediaFiles.map((file, index) => {
+        {medias.map((file, index) => {
           const url = URL.createObjectURL(file);
           if (file.type.startsWith("video/")) {
             return (
@@ -84,7 +86,7 @@ const CreateEventCarousel = ({ mediaFiles }: Props) => {
           return (
             <div
               key={index}
-              className="relative w-full aspect-auto"
+              className="relative w-full flex justify-center rounded"
               onClick={(e) => {
                 if (!isSwiping) {
                   e.stopPropagation();
@@ -94,9 +96,7 @@ const CreateEventCarousel = ({ mediaFiles }: Props) => {
               <img
                 src={url}
                 alt={`Preview media ${index + 1}`}
-                height={500}
-                width={500}
-                className="object-cover rounded"
+                className="object-contain h-fit w-full "
               />
             </div>
           );

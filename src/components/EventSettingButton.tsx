@@ -48,13 +48,11 @@ const EventSettingButton = ({
           )}
           asChild
           onClick={(e) => {
-            console.log("event", event);
             e.stopPropagation();
           }}
         >
           <DropdownMenuTrigger
             onClick={(e) => {
-              console.log("event", event);
               e.stopPropagation();
             }}
             className=""

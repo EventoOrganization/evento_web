@@ -5,7 +5,6 @@ import TruncatedText from "@/components/TruncatedText";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
-import { useCreateEventStore } from "@/store/useCreateEventStore";
 import { InterestType } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
 import CreateEventCarousel from "./CreateEventCarousel";
@@ -49,7 +48,6 @@ const CreateEventPreview = ({
   className,
   inModal = false,
 }: PreviewProps) => {
-  const eventStore = useCreateEventStore();
   const renderDate = () => {
     const startDate = date || new Date().toISOString();
     const formatDate = (
@@ -162,7 +160,6 @@ const CreateEventPreview = ({
               {`${endTime ? "- " + endTime : ""}`}
             </p>
           </div>
-          {/* <MapPinIcon2 className="w-5 h-5" /> */}
           <span
             className="truncate text-muted-foreground text-sm"
             onClick={() =>
@@ -172,10 +169,6 @@ const CreateEventPreview = ({
             {location}
           </span>
 
-          {/* <p className="whitespace-nowrap">{renderAverageTimes()}</p> */}
-          {/* <p className="whitespace-nowrap">{renderMinMaxTimes()}</p> */}
-
-          {/* Placeholder for TruncatedText */}
           {description && <Label htmlFor="description">Description</Label>}
           <p className="whitespace-pre-wrap text-sm text-muted-foreground">
             {description}

@@ -18,6 +18,7 @@ type CropImageDialogProps = {
   open: boolean;
   imageSrc: string;
   aspect?: number;
+  originalFileName?: string;
   aspectOptions?: SupportedAspectRatioOptions;
   onClose: () => void;
   onCropComplete: (croppedFile: File) => void;
@@ -28,6 +29,7 @@ const CropImageDialog = ({
   imageSrc,
   aspect = 1,
   aspectOptions,
+  originalFileName = "cropped-image.jpg",
   onClose,
   onCropComplete,
 }: CropImageDialogProps) => {
@@ -66,10 +68,6 @@ const CropImageDialog = ({
       const imageWidth = imageElement.naturalWidth;
       const imageHeight = imageElement.naturalHeight;
 
-      console.log("Crop values:", croppedAreaPixels);
-      console.log("imageSrc", imageSrc);
-      console.log("image natural size", imageWidth, imageHeight);
-
       const croppedBlob = await getCroppedBlob(
         imageSrc,
         croppedAreaPixels,
@@ -84,9 +82,7 @@ const CropImageDialog = ({
         return;
       }
 
-      console.log("croppedBlob", croppedBlob, "size:", croppedBlob.size);
-
-      const croppedFile = new File([croppedBlob], "cropped-image.jpg", {
+      const croppedFile = new File([croppedBlob], originalFileName, {
         type: "image/jpeg",
       });
 

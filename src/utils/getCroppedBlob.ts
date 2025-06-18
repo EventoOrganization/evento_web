@@ -6,11 +6,11 @@ export const getCroppedBlob = async (
   imageWidth: number,
   imageHeight: number,
   zoom: number,
-  outputWidth = 1080,
-  outputHeight = 1080,
+  maxOutputWidth = 1080,
 ): Promise<Blob | null> => {
   const image = new Image();
   image.src = imageSrc;
+
   await new Promise((res, rej) => {
     image.onload = res;
     image.onerror = rej;
@@ -21,6 +21,11 @@ export const getCroppedBlob = async (
   if (!ctx) return null;
 
   const { x, y, width, height } = crop;
+
+  const cropRatio = width / height;
+
+  const outputWidth = maxOutputWidth;
+  const outputHeight = Math.round(outputWidth / cropRatio);
 
   canvas.width = outputWidth;
   canvas.height = outputHeight;

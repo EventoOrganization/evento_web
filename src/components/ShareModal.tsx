@@ -36,7 +36,6 @@ const ShareModal = ({ eventUrl }: { eventUrl: string }) => {
           text: "Check out this event!",
           url: eventUrl,
         });
-        console.log("Successful share");
       } catch (error) {
         console.error("Error sharing:", error);
       }

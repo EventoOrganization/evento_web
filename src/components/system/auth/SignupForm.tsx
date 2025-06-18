@@ -77,7 +77,6 @@ const SignUpForm = ({
         className: "bg-evento-gradient-button text-white",
         duration: 3000,
       });
-      console.log("res", signUpRes.data);
       onAuthSuccess(data.email, data.password);
     } catch (error: unknown) {
       toast({

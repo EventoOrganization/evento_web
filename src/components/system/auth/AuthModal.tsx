@@ -80,7 +80,6 @@ const AuthModal = ({
       });
       return;
     }
-    console.log("loginRes.data", loginRes.data);
     startSession(loginRes.data, loginRes.data.token);
     if (!quickSignup) switchForm("verify");
   };

@@ -16,7 +16,7 @@ const AppInitializer = () => {
 
   useEffect(() => {
     if (!isTokenChecked) {
-      console.log("❌ Token not checked yet");
+      console.warn("❌ Token not checked yet");
       return;
     }
 

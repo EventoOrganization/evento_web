@@ -47,7 +47,6 @@ const ChatbotComponent = ({ className }: { className?: string }) => {
           duration: 3000,
         });
       }
-      console.log("Sending message:", message);
       setMessage("");
     } catch (error) {
       console.error("Error sending message:", error);

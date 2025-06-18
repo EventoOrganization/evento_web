@@ -41,7 +41,6 @@ const CollapsibleList = ({
       event?.guests?.filter((guest) => guest._id !== userId) || [];
     const updatedTempGuests =
       event?.tempGuests?.filter((tempGuest) => tempGuest._id !== userId) || [];
-    console.log("updateAttendees", updateAttendees);
     setEvent({
       ...event,
       attendees: updateAttendees,

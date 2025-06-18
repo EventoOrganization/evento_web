@@ -22,17 +22,13 @@ const ToUploadFilesField = ({
   className,
 }: ToUploadFilesFieldProps) => {
   const [files, setFiles] = useState<File[]>(value ?? []);
-  const [carouselIndex, setCarouselIndex] = useState(0);
-
+  const [currentFile, setCurrentFile] = useState<File | null>(null);
   const [cropDialogOpen, setCropDialogOpen] = useState(false);
   const [imageSrc, setImageSrc] = useState<string>("");
 
   const updateFiles = (next: File[]) => {
     setFiles(next);
     onChange?.(next);
-    if (carouselIndex > 0 && carouselIndex >= next.length) {
-      setCarouselIndex(next.length - 1);
-    }
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -43,6 +39,7 @@ const ToUploadFilesField = ({
 
     setImageSrc(url);
     setCropDialogOpen(true);
+    setCurrentFile(file);
 
     e.target.value = "";
   };
@@ -56,22 +53,17 @@ const ToUploadFilesField = ({
     updateFiles(next);
   };
 
-  const handleSelectMedia = (idx: number) => {
-    setCarouselIndex(idx);
-  };
-
   return (
     <div className={cn("flex", className)}>
       <FileUploadButton onChange={handleFileChange} />
       <ul className="flex gap-2 overflow-x-scroll max-w-full scroll-container p-1">
-        {files.map((file, index) => {
+        {files.map((file, index: number) => {
           const url = URL.createObjectURL(file);
           const isImage = file.type.startsWith("image/");
           const isVideo = file.type.startsWith("video/");
           return (
             <li
               key={index}
-              onClick={() => handleSelectMedia(index)}
               className="relative w-24 h-24 overflow-hidden aspect-square border rounded-md flex-shrink-0 group"
             >
               {isImage ? (
@@ -106,6 +98,7 @@ const ToUploadFilesField = ({
         imageSrc={imageSrc}
         aspectOptions={SUPPORTED_IMAGE_SIZES}
         onCropComplete={handleCropComplete}
+        originalFileName={currentFile?.name}
         onClose={() => setCropDialogOpen(false)}
       />
     </div>
