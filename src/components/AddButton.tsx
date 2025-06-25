@@ -6,7 +6,7 @@ type Props = {
   onClick?: () => void;
 };
 
-const AddMedia = ({ className, onClick }: Props) => {
+const AddButton = ({ className, onClick }: Props) => {
   return (
     <button
       onClick={onClick}
@@ -23,4 +23,4 @@ const AddMedia = ({ className, onClick }: Props) => {
   );
 };
 
-export default AddMedia;
+export default AddButton;

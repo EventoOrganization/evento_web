@@ -67,6 +67,11 @@ export type QuestionType = {
   displayType?: "radio" | "checkbox";
 };
 
+export type PresetMedia = {
+  key: string;
+  url: string;
+};
+
 export type EventType = {
   initialMedia: { url: string; type: "image" | "video" }[];
   uploadedMedia?: { url: string; type: "image" | "video" }[];
@@ -215,7 +220,7 @@ export type EventFormValuesType = {
   UrlLink: string;
   UrlTitle: string;
   toUploadFiles: File[];
-  predefinedMedia: { url: string; type: "image" | "video" }[];
+  predefinedMedia: PresetMedia[];
   interests: InterestType[];
   requiresApproval: boolean;
 };

@@ -7,7 +7,7 @@ export const metadata: Metadata = {
 };
 const layoutEvents = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 max-w-7xl mx-auto gap-2 md:gap-4 lg:gap-10 px-2 md:px-4 lg:px-10 ">
+    <div className="grid grid-cols-1 lg:grid-cols-2 max-w-xl lg:max-w-6xl mx-auto gap-2 md:gap-4 lg:gap-10 px-2 md:px-4 lg:px-10 ">
       {children}
     </div>
   );

@@ -88,7 +88,7 @@ const PageEvents = () => {
       >
         Discover Events
       </h1>
-      <main className="col-span-2 md:col-span-1 space-y-2">
+      <div className="col-span-2 lg:col-span-1 space-y-2">
         <div className="flex flex-col gap-2 bg-muted sticky top-0 z-50">
           <TabSelector
             onChange={setSelectedTab}
@@ -156,7 +156,7 @@ const PageEvents = () => {
             </li>
           )}
         </ul>
-      </main>
+      </div>
       <aside className="space-y-2">
         <EventsFilters
           // className="md:sticky top-0 z-10"

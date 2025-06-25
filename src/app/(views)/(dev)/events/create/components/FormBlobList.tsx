@@ -18,7 +18,7 @@ const FormBlobList = ({ value, onChange, className }: FormBlobListProps) => {
   };
 
   return (
-    <div className={cn("flex overflow-hidden", className)}>
+    <div className={cn("flex overflow-hidden min-w-24", className)}>
       <ul className="flex gap-2  overflow-x-scroll max-w-full scroll-container p-1">
         {value.map((file, index) => {
           const url = URL.createObjectURL(file);

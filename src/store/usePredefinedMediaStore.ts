@@ -1,3 +1,4 @@
+import { PresetMedia } from "@/types/EventType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
 import { handleError } from "@/utils/handleError";
 import { handleLog } from "@/utils/handleLog";
@@ -6,10 +7,10 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 export interface PredefinedMediaState {
-  predefinedMediaUrls: string[];
+  predefinedMediaUrls: PresetMedia[];
   loadPredefinedMedia: () => Promise<void>;
   refreshPredefinedMedia: () => Promise<void>;
-  setPredefinedMedia: (urls: string[]) => void;
+  setPredefinedMedia: (urls: PresetMedia[]) => void;
 }
 
 const isLocalStorageAvailable = () => {
@@ -60,7 +61,9 @@ export const usePredefinedMediaStore = create<PredefinedMediaState>()(
           );
 
           if (res.ok) {
-            set({ predefinedMediaUrls: res.data as string[] });
+            set({
+              predefinedMediaUrls: res.data as { key: string; url: string }[],
+            });
             handleLog("✅ Predefined media loaded successfully!");
           } else {
             handleWarning({
@@ -89,7 +92,9 @@ export const usePredefinedMediaStore = create<PredefinedMediaState>()(
             const newMedia = res.data;
             const current = get().predefinedMediaUrls;
             if (JSON.stringify(current) !== JSON.stringify(newMedia)) {
-              set({ predefinedMediaUrls: res.data as string[] });
+              set({
+                predefinedMediaUrls: res.data as { key: string; url: string }[],
+              });
               handleLog("✅ Predefined media refreshed.");
             }
           }

@@ -3,7 +3,11 @@ import Section from "@/components/layout/Section";
 import AuthModal from "@/components/system/auth/AuthModal";
 import { useSession } from "@/contexts/(prod)/SessionProvider";
 import { useToast } from "@/hooks/use-toast";
-import { EventFormValuesType, InterestType } from "@/types/EventType";
+import {
+  EventFormValuesType,
+  InterestType,
+  PresetMedia,
+} from "@/types/EventType";
 import { getUTCOffset } from "@/utils/timezones";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -24,6 +28,9 @@ const PageEventsCreate = () => {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [toUploadFiles, setToUploadFiles] = useState<File[]>([]);
+  const [selectedPredefinedMedia, setSelectedPredefinedMedia] = useState<
+    PresetMedia[]
+  >([]);
   const [location, setLocation] = useState({ lat: 0, lng: 0 });
   const [selectedInterests, setSelectedInterests] = useState<InterestType[]>(
     [],
@@ -78,6 +85,15 @@ const PageEventsCreate = () => {
 
     [setFormValues],
   );
+
+  useEffect(() => {
+    if (selectedPredefinedMedia) {
+      setFormValues((prev) => ({
+        ...prev,
+        predefinedMedia: selectedPredefinedMedia,
+      }));
+    }
+  }, [selectedPredefinedMedia]);
 
   useEffect(() => {
     if (prevFormValues.current) {
@@ -222,7 +238,7 @@ const PageEventsCreate = () => {
         Create Event
       </h1>
       <div className=" w-full grid grid-cols-1 md:grid-cols-2">
-        <Section className="max-w-5xl w-full justify-start ">
+        <Section className=" w-full justify-start ">
           <EventForm
             formValues={formValues}
             onChange={handleValueChange}
@@ -231,6 +247,8 @@ const PageEventsCreate = () => {
             setToUploadFiles={setToUploadFiles}
             selectedInterests={selectedInterests}
             setSelectedInterests={setSelectedInterests}
+            selectedPredefinedMedia={selectedPredefinedMedia}
+            setSelectedPredefinedMedia={setSelectedPredefinedMedia}
             location={location}
             setLocation={setLocation}
             user={user}
@@ -240,7 +258,7 @@ const PageEventsCreate = () => {
             formRef={formRef}
           />
         </Section>
-        <Section className="hidden md:block md:sticky top-0 py-0 self-start">
+        <Section className="hidden  max-w-md md:block md:sticky top-0 py-0 self-start">
           <h2 className="mb-4">Preview</h2>
           <CreateEventPreview
             user={user}
@@ -257,6 +275,7 @@ const PageEventsCreate = () => {
             UrlTitle={formValues.UrlTitle}
             UrlLink={formValues.UrlLink}
             toUploadFiles={toUploadFiles}
+            selectedPredefinedMedia={selectedPredefinedMedia}
             handleRemoveInterest={(interestId) => {
               setSelectedInterests((prev) =>
                 prev.filter((i) => i._id !== interestId),

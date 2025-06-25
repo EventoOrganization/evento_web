@@ -141,7 +141,7 @@ const DiscoverPageContent = () => {
             </h1>
           )}
           <Section className="flex flex-col-reverse md:grid  md:grid-cols-3  md:gap-0 items-start justify-end pt-0 px-0 ">
-            <ul className="w-full md:col-span-2 md:pl-4">
+            <ul className="w-full lg:col-span-2 md:pl-4">
               <li className="flex items-center sticky top-0 z-20 bg-muted p-2 md:mb-2 md:px-0 md:py-0 flex-col gap-2">
                 <TabSelector
                   onChange={setSelectedTab}

@@ -3,18 +3,28 @@
 import CropImageDialog from "@/components/CropImageDialog";
 import { Label } from "@/components/ui/label";
 import { SUPPORTED_IMAGE_SIZES } from "@/constantes/supportedImageSize";
+import { usePredefinedMediaStore } from "@/store/usePredefinedMediaStore";
+import { PresetMedia } from "@/types/EventType";
 import { useState } from "react";
-import AddMedia from "./AddMedia";
-import FormBlobList from "./FormBlobList";
-import MediaDialog from "./MediaDialog";
+import AddButton from "../../../../../../components/AddButton";
+import AddMediaDialog from "./AddMediaDialog";
+import FormMediaPreview from "./FormMediaPreview";
 
 type Props = {
   onChange?: (files: File[]) => void;
+  selectedPredefinedMedia?: PresetMedia[];
+  setSelectedPredefinedMedia?: React.Dispatch<
+    React.SetStateAction<PresetMedia[]>
+  >;
 };
 
-const FormMediaField = ({ onChange }: Props) => {
+const FormMediaField = ({
+  onChange,
+  selectedPredefinedMedia,
+  setSelectedPredefinedMedia,
+}: Props) => {
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [selectedMedia, setSelectedMedia] = useState<File[]>([]);
+  const { predefinedMediaUrls } = usePredefinedMediaStore();
   const [files, setFiles] = useState<File[]>([]);
   const [pendingCropFiles, setPendingCropFiles] = useState<File[]>([]);
   const [currentFile, setCurrentFile] = useState<File | null>(null);
@@ -26,12 +36,6 @@ const FormMediaField = ({ onChange }: Props) => {
       setCropDialogOpen(false);
       setDialogOpen(false);
     }
-  };
-
-  const handleMediaChange = (files: File[]) => {
-    setSelectedMedia(files);
-    onChange?.(files);
-    setDialogOpen(false);
   };
 
   const updateFiles = (next: File[]) => {
@@ -83,10 +87,13 @@ const FormMediaField = ({ onChange }: Props) => {
       </div>
 
       <div className="flex gap-2 min-w-0 w-full">
-        <MediaDialog
+        <AddMediaDialog
           open={dialogOpen}
           onOpenChange={setDialogOpen}
-          trigger={<AddMedia />}
+          presetImages={predefinedMediaUrls}
+          selectedPredefinedMedia={selectedPredefinedMedia}
+          setSelectedPredefinedMedia={setSelectedPredefinedMedia}
+          trigger={<AddButton />}
           onFileSelected={(file) => {
             setPendingCropFiles([file]);
             loadNextCrop(file);
@@ -96,9 +103,25 @@ const FormMediaField = ({ onChange }: Props) => {
             loadNextCrop(newFiles[0]);
           }}
         />
+        {/* TODO  remove if not needed*/}
+        {/* {selectedPredefinedMedia &&
+          selectedPredefinedMedia?.length > 0 &&
+          setSelectedPredefinedMedia && (
+            <FormPresetList
+              value={selectedPredefinedMedia}
+              onChange={setSelectedPredefinedMedia}
+            />
+          )}
+
         {files.length > 0 && (
           <FormBlobList value={files} onChange={updateFiles} />
-        )}
+        )} */}
+        <FormMediaPreview
+          files={files}
+          onFilesChange={updateFiles}
+          presetMedia={selectedPredefinedMedia ?? []}
+          onPresetMediaChange={(next) => setSelectedPredefinedMedia?.(next)}
+        />
         <CropImageDialog
           open={cropDialogOpen}
           onClose={() => setCropDialogOpen(false)}

@@ -9,7 +9,11 @@ import EventCoHostsModal from "@/features/event/components/EventCoHostsModal";
 import EventURL from "@/features/event/components/EventURL";
 import { useInterestsStore } from "@/store/useInterestsStore";
 import { useUsersStore } from "@/store/useUsersStore";
-import { EventFormValuesType, InterestType } from "@/types/EventType";
+import {
+  EventFormValuesType,
+  InterestType,
+  PresetMedia,
+} from "@/types/EventType";
 import { UserType } from "@/types/UserType";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
@@ -32,6 +36,10 @@ type EventFormProps = {
   setToUploadFiles: (files: File[]) => void;
   selectedInterests: InterestType[];
   setSelectedInterests: React.Dispatch<React.SetStateAction<InterestType[]>>;
+  selectedPredefinedMedia: PresetMedia[];
+  setSelectedPredefinedMedia: React.Dispatch<
+    React.SetStateAction<PresetMedia[]>
+  >;
   location: { lat: number; lng: number };
   setLocation: (loc: { lat: number; lng: number }) => void;
   user?: UserType | null;
@@ -49,6 +57,8 @@ export default function EventForm({
   setToUploadFiles,
   selectedInterests,
   setSelectedInterests,
+  selectedPredefinedMedia,
+  setSelectedPredefinedMedia,
   location,
   setLocation,
   user,
@@ -117,6 +127,8 @@ export default function EventForm({
       />
       <div>
         <FormMediaField
+          selectedPredefinedMedia={selectedPredefinedMedia}
+          setSelectedPredefinedMedia={setSelectedPredefinedMedia}
           onChange={(e) => {
             setToUploadFiles(e);
             onChange("toUploadFiles", e);
@@ -158,6 +170,7 @@ export default function EventForm({
       <CreateEventModal
         formValues={formValues}
         toUploadFiles={toUploadFiles}
+        selectedPredefinedMedia={selectedPredefinedMedia}
         user={user}
         formRef={formRef}
         selectedInterests={selectedInterests}

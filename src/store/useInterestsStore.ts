@@ -54,7 +54,7 @@ export const useInterestsStore = create<InterestState>()(
           const res = await fetchData("/users/getInterestsListing");
 
           if (res.ok) {
-            set({ interests: res.data as InterestType[] });
+            set({ interests: (res.data as any).body as InterestType[] });
             handleLog("✅ Interests loaded successfully!");
           } else {
             handleWarning({
@@ -80,7 +80,7 @@ export const useInterestsStore = create<InterestState>()(
             if (
               JSON.stringify(currentInterests) !== JSON.stringify(newInterests)
             ) {
-              set({ interests: newInterests });
+              set({ interests: (res.data as any).body as InterestType[] });
               handleLog("✅ Interests refreshed successfully!");
             }
           } else {

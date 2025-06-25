@@ -7,13 +7,14 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { InterestType } from "@/types/EventType";
+import { InterestType, PresetMedia } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
 import CreateEventPreview from "./CreateEventPreview";
 
 type CreateEventModalProps = {
   formValues: any;
   toUploadFiles: File[];
+  selectedPredefinedMedia: PresetMedia[];
   user?: UserType | null;
   formRef?: React.RefObject<HTMLFormElement>;
   selectedInterests: InterestType[];
@@ -27,6 +28,7 @@ type CreateEventModalProps = {
 const CreateEventModal = ({
   formValues,
   toUploadFiles,
+  selectedPredefinedMedia,
   user,
   formRef,
   selectedInterests,
@@ -68,6 +70,7 @@ const CreateEventModal = ({
             UrlTitle={formValues.UrlTitle}
             UrlLink={formValues.UrlLink}
             toUploadFiles={toUploadFiles}
+            selectedPredefinedMedia={selectedPredefinedMedia}
             handleRemoveInterest={(interestId: string) => {
               setSelectedInterests((prev) =>
                 prev.filter((i) => i._id !== interestId),

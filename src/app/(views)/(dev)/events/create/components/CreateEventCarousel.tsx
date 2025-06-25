@@ -1,19 +1,31 @@
 import SmartImage from "@/components/SmartImage";
 import { cn } from "@/lib/utils";
-import { useEffect, useRef, useState } from "react";
+import { PresetMedia } from "@/types/EventType";
+import { useRef, useState } from "react";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 
 type Props = {
   mediaFiles: File[];
+  presetMedia?: PresetMedia[];
 };
 
-const CreateEventCarousel = ({ mediaFiles }: Props) => {
+const CreateEventCarousel = ({ mediaFiles, presetMedia = [] }: Props) => {
+  const allMedia = [
+    ...mediaFiles.map((file) => ({
+      type: "blob" as const,
+      url: URL.createObjectURL(file),
+      file,
+    })),
+    ...presetMedia.map((media) => ({
+      type: "preset" as const,
+      url: media.url,
+      key: media.key,
+    })),
+  ];
+
   const [isSwiping, setIsSwiping] = useState(false);
-  const [medias, setMedias] = useState(mediaFiles);
-  useEffect(() => {
-    setMedias(mediaFiles);
-  }, [mediaFiles]);
+
   const touchStartX = useRef(0);
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.touches[0].clientX;
@@ -29,7 +41,7 @@ const CreateEventCarousel = ({ mediaFiles }: Props) => {
     setIsSwiping(false);
   };
 
-  if (!medias.length) {
+  if (allMedia.length === 0) {
     return (
       <div className="relative w-full h-full bg-evento-gradient rounded">
         <SmartImage
@@ -56,48 +68,34 @@ const CreateEventCarousel = ({ mediaFiles }: Props) => {
       <Carousel
         showThumbs={false}
         dynamicHeight={true}
-        infiniteLoop={true}
-        emulateTouch={true}
-        useKeyboardArrows={true}
+        infiniteLoop
+        emulateTouch
+        useKeyboardArrows
       >
-        {medias.map((file, index) => {
-          const url = URL.createObjectURL(file);
-          if (file.type.startsWith("video/")) {
-            return (
-              <div
-                key={index}
-                className="relative w-full pb-[56.25%]"
-                onClick={(e) => {
-                  if (!isSwiping) {
-                    e.stopPropagation();
-                  }
-                }}
-              >
-                <video
-                  controls
-                  className="absolute top-0 left-0 w-full h-full object-cover rounded "
-                  src={url}
-                >
-                  Your browser does not support the video tag.
-                </video>
-              </div>
-            );
-          }
+        {allMedia.map((media, index) => {
+          const isVideo =
+            media.type === "blob" && media.file?.type?.startsWith("video/");
           return (
             <div
               key={index}
               className="relative w-full flex justify-center rounded"
               onClick={(e) => {
-                if (!isSwiping) {
-                  e.stopPropagation();
-                }
+                if (!isSwiping) e.stopPropagation();
               }}
             >
-              <img
-                src={url}
-                alt={`Preview media ${index + 1}`}
-                className="object-contain h-fit w-full "
-              />
+              {isVideo ? (
+                <video
+                  controls
+                  src={media.url}
+                  className="w-full h-auto rounded object-cover"
+                />
+              ) : (
+                <img
+                  src={media.url}
+                  alt={`Preview ${index}`}
+                  className="object-contain h-fit w-full"
+                />
+              )}
             </div>
           );
         })}

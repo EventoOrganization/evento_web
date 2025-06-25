@@ -5,7 +5,7 @@ import TruncatedText from "@/components/TruncatedText";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
-import { InterestType } from "@/types/EventType";
+import { InterestType, PresetMedia } from "@/types/EventType";
 import { UserType } from "@/types/UserType";
 import CreateEventCarousel from "./CreateEventCarousel";
 
@@ -23,7 +23,8 @@ type PreviewProps = {
   description: string;
   UrlTitle?: string;
   UrlLink?: string;
-  toUploadFiles: File[]; // Array de blobs/images/vidéos
+  toUploadFiles: File[];
+  selectedPredefinedMedia: PresetMedia[];
   handleRemoveInterest?: (interestId: string) => void;
   className?: string;
   inModal?: boolean;
@@ -44,6 +45,7 @@ const CreateEventPreview = ({
   UrlTitle,
   UrlLink,
   toUploadFiles,
+  selectedPredefinedMedia,
   handleRemoveInterest,
   className,
   inModal = false,
@@ -132,7 +134,10 @@ const CreateEventPreview = ({
                 </div>
               </div>
             </div>
-            <CreateEventCarousel mediaFiles={toUploadFiles} />
+            <CreateEventCarousel
+              mediaFiles={toUploadFiles}
+              presetMedia={selectedPredefinedMedia}
+            />
           </div>
         </div>
         <div className="flex flex-col gap-2">

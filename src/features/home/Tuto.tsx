@@ -263,7 +263,7 @@ const Tuto = () => {
       </Section>
       <div className="border max-w-2xl mx-auto my-10"></div>
       <Section id="tuto-profile" className="grid md:grid-cols-3 gap-10">
-        <div className="space-y-6 px-4 md:px-12 flex flex-col md:col-span-2">
+        <div className="space-y-6 px-4 md:px-12 flex flex-col lg:col-span-2">
           <h2
             ref={sectionRefs.profileTitle}
             id="profile-title"
