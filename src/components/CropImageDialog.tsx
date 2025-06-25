@@ -22,6 +22,8 @@ type CropImageDialogProps = {
   aspectOptions?: SupportedAspectRatioOptions;
   onClose: () => void;
   onCropComplete: (croppedFile: File) => void;
+  outputType?: string;
+  outputQuality?: number;
 };
 
 const CropImageDialog = ({
@@ -30,6 +32,8 @@ const CropImageDialog = ({
   aspect = 1,
   aspectOptions,
   originalFileName = "cropped-image.jpg",
+  outputType = "image/jpeg",
+  outputQuality = 0.6,
   onClose,
   onCropComplete,
 }: CropImageDialogProps) => {
@@ -74,6 +78,8 @@ const CropImageDialog = ({
         imageWidth,
         imageHeight,
         zoom,
+        outputType,
+        outputQuality ?? 0.6,
       );
 
       if (!croppedBlob) {
@@ -87,7 +93,6 @@ const CropImageDialog = ({
       });
 
       onCropComplete(croppedFile);
-      onClose();
     } catch (err) {
       console.error("Error cropping image", err);
       alert("Error cropping image. Please try again.");

@@ -2,7 +2,6 @@
 
 import RequiresApprovalToggle from "@/components/RequiresApprovalToggle";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 import SmartGooglePlacesInput from "@/features/discover/SmartGooglePlacesInput";
 import CreateEventLimitedGuests from "@/features/event/components/CreateEventLimitedGuests";
 import EnableChatButton from "@/features/event/components/EnableChatButton";
@@ -19,11 +18,11 @@ import FormDateFields from "./FormDateFields";
 import FormDescriptionField from "./FormDescriptionField";
 import FormHostField from "./FormHostField";
 import FormInterestsField from "./FormInterestsField";
+import FormMediaField from "./FormMediaField";
 import FormModeField from "./FormModeField";
 import FormQuestionsField from "./FormQuestionsField";
 import FormTitleField from "./FormTitleField";
 import FormEventTypeField from "./FormTypeField";
-import ToUploadFilesField from "./ToUploadFilesField";
 
 type EventFormProps = {
   formValues: EventFormValuesType;
@@ -117,11 +116,7 @@ export default function EventForm({
         onChange={onChange}
       />
       <div>
-        <Label>
-          Event Photos<span className="text-red-500">*</span>
-        </Label>
-        <ToUploadFilesField
-          value={toUploadFiles}
+        <FormMediaField
           onChange={(e) => {
             setToUploadFiles(e);
             onChange("toUploadFiles", e);

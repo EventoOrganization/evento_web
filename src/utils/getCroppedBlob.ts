@@ -6,14 +6,16 @@ export const getCroppedBlob = async (
   imageWidth: number,
   imageHeight: number,
   zoom: number,
-  maxOutputWidth = 1080,
+  outputType: string = "image/jpeg", // 👈 ici
+  outputQuality: number = 0.6,
 ): Promise<Blob | null> => {
   const image = new Image();
   image.src = imageSrc;
+  image.crossOrigin = "anonymous";
 
-  await new Promise((res, rej) => {
-    image.onload = res;
-    image.onerror = rej;
+  await new Promise<void>((resolve, reject) => {
+    image.onload = () => resolve();
+    image.onerror = (err) => reject(err);
   });
 
   const canvas = document.createElement("canvas");
@@ -21,10 +23,10 @@ export const getCroppedBlob = async (
   if (!ctx) return null;
 
   const { x, y, width, height } = crop;
-
   const cropRatio = width / height;
 
-  const outputWidth = maxOutputWidth;
+  const outputWidth = width;
+
   const outputHeight = Math.round(outputWidth / cropRatio);
 
   canvas.width = outputWidth;
@@ -33,6 +35,6 @@ export const getCroppedBlob = async (
   ctx.drawImage(image, x, y, width, height, 0, 0, outputWidth, outputHeight);
 
   return new Promise<Blob | null>((resolve) => {
-    canvas.toBlob((blob) => resolve(blob ?? null), "image/jpeg", 0.6);
+    canvas.toBlob((blob) => resolve(blob ?? null), outputType, outputQuality);
   });
 };
