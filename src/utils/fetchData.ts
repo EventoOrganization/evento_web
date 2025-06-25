@@ -22,17 +22,12 @@ export const fetchData = async <T, B = any>(
   method: HttpMethod = HttpMethod.GET,
   body?: B | null,
   token?: string | null,
+  baseUrl?: string,
 ): Promise<FetchDataResult<T>> => {
   const headers: Record<string, string> = {};
-  if (token) {
-    headers["Authorization"] = `Bearer ${token}`;
-  }
+  if (token) headers["Authorization"] = `Bearer ${token}`;
 
-  const fetchOptions: RequestInit = {
-    method,
-    headers,
-    credentials: "include",
-  };
+  const fetchOptions: RequestInit = { method, headers, credentials: "include" };
 
   if (body && method !== HttpMethod.GET) {
     if (body instanceof FormData) {
@@ -46,49 +41,28 @@ export const fetchData = async <T, B = any>(
   const now = Date.now();
   const cachedResponse = requestCache.get(endpoint);
 
-  // 🔥 Vérifie si la réponse est en cache et encore valide
   if (
     cachedResponse &&
     now - cachedResponse.timestamp < REQUEST_CACHE_DURATION
   ) {
-    console.log(`⚡ Returning cached response for ${endpoint}`);
-    return {
-      data: cachedResponse.data,
-      error: null,
-      status: 200,
-      ok: true,
-    };
+    return { data: cachedResponse.data, error: null, status: 200, ok: true };
   }
 
   try {
-    const response = await fetch(
-      process.env.NEXT_PUBLIC_API_URL + endpoint,
-      fetchOptions,
-    );
+    const url = `${baseUrl ?? process.env.NEXT_PUBLIC_API_URL}${endpoint}`;
 
+    const response = await fetch(url, fetchOptions);
     const contentType = response.headers.get("content-type");
 
     if (!response.ok) {
-      let errorMessage = `HTTP error! status: ${response.status}`;
-      let errorData = null;
-
-      if (contentType?.includes("application/json")) {
-        errorData = await response.json();
-        errorMessage = errorData.message || JSON.stringify(errorData);
-      } else {
-        errorMessage = await response.text();
-      }
+      const errorMessage = contentType?.includes("application/json")
+        ? (await response.json()).message
+        : await response.text();
 
       handleError(
-        {
-          message: errorMessage,
-          statusCode: response.status,
-          source: `fetchData: ${endpoint}`,
-          originalError: errorData || null,
-        },
+        { message: errorMessage, statusCode: response.status },
         `fetchData: ${endpoint}`,
       );
-
       return {
         data: null,
         error: errorMessage,
@@ -97,31 +71,23 @@ export const fetchData = async <T, B = any>(
       };
     }
 
-    if (contentType?.includes("application/json")) {
-      const json = await response.json();
-
-      // 🔥 Stocke la réponse en cache
-      requestCache.set(endpoint, {
-        data: json.data || json.body || json,
-        timestamp: now,
-      });
-
-      return {
-        data: json.data || json.body || json,
-        error: null,
-        status: response.status,
-        ok: true,
-      };
-    }
-
-    return { data: null, error: null, status: response.status, ok: true };
-  } catch (error) {
-    const formattedError = handleError(error, `fetchData: ${endpoint}`);
+    const json = contentType?.includes("application/json")
+      ? await response.json()
+      : null;
+    requestCache.set(endpoint, { data: json?.data ?? json, timestamp: now });
 
     return {
+      data: json?.data ?? json,
+      error: null,
+      status: response.status,
+      ok: true,
+    };
+  } catch (error) {
+    const formatted = handleError(error, `fetchData: ${endpoint}`);
+    return {
       data: null,
-      error: formattedError.message,
-      status: formattedError.statusCode || 500,
+      error: formatted.message,
+      status: formatted.statusCode || 500,
       ok: false,
     };
   }

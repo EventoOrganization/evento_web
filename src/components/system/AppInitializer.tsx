@@ -3,6 +3,7 @@
 import { useSession } from "@/contexts/(prod)/SessionProvider";
 import { useEventStore } from "@/store/useEventsStore";
 import { useInterestsStore } from "@/store/useInterestsStore";
+import { usePredefinedMediaStore } from "@/store/usePredefinedMediaStore";
 import { useProfileStore } from "@/store/useProfileStore";
 import { useUsersStore } from "@/store/useUsersStore";
 import { useEffect } from "react";
@@ -13,6 +14,7 @@ const AppInitializer = () => {
   const { loadUser } = useProfileStore();
   const { loadInterests } = useInterestsStore();
   const { loadUsers } = useUsersStore();
+  const { loadPredefinedMedia } = usePredefinedMediaStore();
 
   useEffect(() => {
     if (!isTokenChecked) {
@@ -23,19 +25,22 @@ const AppInitializer = () => {
     const initAppData = async () => {
       const promises = [];
 
-      // 🔐 Utilisateur connecté
+      // 🔐 connected user
       if (user && token) {
         promises.push(loadEvents(user));
         promises.push(loadUser(token));
         promises.push(loadUsers(user._id, token));
       } else {
-        // 🙈 Utilisateur non connecté
+        // 🙈 not connected user
         promises.push(loadEvents(undefined));
         promises.push(loadUsers("", ""));
       }
 
-      // 📚 Intérêts sont toujours chargés
+      // 📚 interest are allways fetch
       promises.push(loadInterests());
+
+      // 🖼️ predefined media are allways fetch
+      promises.push(loadPredefinedMedia());
 
       try {
         await Promise.all(promises);

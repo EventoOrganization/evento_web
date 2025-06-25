@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { handleFieldChange } from "../eventActions";
 
 const MediaSelectionModal = ({
@@ -34,18 +34,6 @@ const MediaSelectionModal = ({
   const showPredefined = false;
   const selectedPredefinedMedia = [] as any;
   // Load predefined media when the component mounts
-  useEffect(() => {
-    const loadMedia = async () => {
-      try {
-        const response = await fetch("/api/fetchMedia");
-        const media = await response.json();
-        setPredefinedMedia(media);
-      } catch (error) {
-        console.error("Error fetching media:", error);
-      }
-    };
-    loadMedia();
-  }, []);
 
   // Generate temporary previews and store them in the state
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
