@@ -1,5 +1,5 @@
 export function getApiUrl(path = "") {
-  return `${process.env.API_URL || "http://localhost:8747"}/${path}`;
+  return `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080"}/${path}`;
 }
 
 export function getMediaUrl(url: string | null) {

@@ -71,13 +71,19 @@ export const fetchData = async <T, B = any>(
       };
     }
 
-    const json = contentType?.includes("application/json")
-      ? await response.json()
-      : null;
-    requestCache.set(endpoint, { data: json?.data ?? json, timestamp: now });
+    const extractData = (json: any) => {
+      if ("data" in json) return json.data;
+      if ("body" in json) return json.body;
+      return json;
+    };
+
+    const json = await response.json();
+    const extracted = extractData(json);
+
+    requestCache.set(endpoint, { data: extracted, timestamp: now });
 
     return {
-      data: json?.data ?? json,
+      data: extracted,
       error: null,
       status: response.status,
       ok: true,

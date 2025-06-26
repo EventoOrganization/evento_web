@@ -127,6 +127,12 @@ const PageEventsCreate = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     setIsSubmitting(true);
+    toast({
+      title: "Creating Event",
+      description: "Please wait while we create your event.",
+      variant: "eventoPending",
+      duration: Infinity,
+    });
     e.preventDefault();
 
     if (!isAuthenticated) {
@@ -147,9 +153,11 @@ const PageEventsCreate = () => {
       { name: "Time Zone", value: formValues.timeZone },
       { name: "Description", value: formValues.description },
     ];
+
     fields.forEach((field) => {
       if (!field.value) missingFields.push(field.name);
     });
+
     if (missingFields.length > 0) {
       toast({
         title: "Error",
@@ -161,71 +169,128 @@ const PageEventsCreate = () => {
       return;
     }
 
+    const cleanQuestions = (questions: any[]) => {
+      console.log("Cleaning questions:", questions);
+      return questions
+        .filter((q) => {
+          // Remove if question text is empty
+          if (!q.question?.trim()) return false;
+
+          // If type expects options, ensure it has at least one non-empty option
+          if (
+            (q.type === "multiple-choice" || q.type === "checkbox") &&
+            (!Array.isArray(q.options) ||
+              q.options.every((opt: string) => !opt?.trim()))
+          ) {
+            return false;
+          }
+
+          return true;
+        })
+        .map((q) => {
+          if (
+            (q.type === "multiple-choice" || q.type === "checkbox") &&
+            Array.isArray(q.options)
+          ) {
+            return {
+              ...q,
+              options: q.options.filter((opt: string) => opt?.trim()),
+            };
+          }
+          return q;
+        });
+    };
+
+    if (Array.isArray(formValues.questions)) {
+      formValues.questions = cleanQuestions(formValues.questions);
+      console.log("Cleaned questions:", formValues.questions);
+    }
+
     const formData = new FormData();
 
     Object.entries(formValues).forEach(([key, value]) => {
+      if (key === "toUploadFiles") return; // 🧼 on l'ignore ici
+
       if (Array.isArray(value) || typeof value === "object") {
         formData.append(key, JSON.stringify(value));
       } else if (value === null || value === undefined) {
-        formData.append(key, ""); // on force "" pour les null / undefined
+        formData.append(key, "");
       } else if (typeof value === "number") {
-        formData.append(key, value.toString()); // number → string
+        formData.append(key, value.toString());
       } else if (typeof value === "boolean") {
-        formData.append(key, value ? "true" : "false"); // boolean → string
+        formData.append(key, value ? "true" : "false");
       } else {
-        formData.append(key, value as string); // string
+        formData.append(key, value as string);
       }
     });
 
-    toUploadFiles.forEach((file) => {
+    const validFiles = toUploadFiles.filter(
+      (file) => file instanceof File && file.name && file.size > 0,
+    );
+
+    console.log("📦 Logging uploaded files from toUploadFiles:");
+    validFiles.forEach((file, i) => {
+      console.log(`🖼️ File[${i}]`, {
+        name: file.name,
+        type: file.type,
+        size: file.size,
+        instanceofFile: file instanceof File,
+      });
+
       formData.append("mediaFiles", file, file.name);
+      console.log(
+        `✅ Appended file: ${file.name} (${file.type}, ${file.size} bytes)`,
+      );
     });
 
     if (user?._id) formData.append("userId", user._id);
-    console.log("Form Data before submission:", Array.from(formData.entries()));
-    setIsSubmitting(false);
-    return;
-    try {
-      // Utilise fetch sans "Content-Type" (FormData le gère)
-      const response = await fetch("/api/events/create", {
-        method: "POST",
-        body: formData,
-        // Pas de headers : le navigateur gère le boundary/multipart
-        headers: { ...(token ? { Authorization: `Bearer ${token}` } : {}) },
-      });
 
+    formData.forEach((value, key) => {
+      if (value instanceof File) {
+        console.log(`📦 File "${key}":`, value.name, value.type, value.size);
+      } else {
+        console.log(`🔑 Field "${key}":`, value);
+      }
+    });
+
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/events/create`,
+        {
+          method: "POST",
+          body: formData,
+          credentials: "include",
+        },
+      );
       if (!response.ok) {
-        const error = await response.text();
+        const errorText = await response.text();
         toast({
           title: "Error creating event",
-          description: error,
-          className: "bg-red-500 text-white",
+          description: errorText || "Unknown error occurred",
+          variant: "eventoError",
         });
-        throw new Error(error);
+        throw new Error(errorText || "Event creation failed");
       }
 
       const data = await response.json();
+
       toast({
         title: "Event created successfully",
-        className: "bg-evento-gradient-button text-white",
+        variant: "eventoSuccess",
         duration: 3000,
       });
 
-      // Redirige comme avant
       if (data?.event?._id) {
         router.push(`/events/create/${data.event._id}/success`);
       } else {
         router.push(`/profile`);
       }
-      // Reset form etc.
-      // setFormValues(...reset)
-      // setMediaFiles([])
     } catch (err) {
       console.error(err);
       toast({
         title: "Erreur",
         description: (err as Error).message,
-        className: "bg-red-500 text-white",
+        variant: "eventoError",
       });
     } finally {
       setIsSubmitting(false);
