@@ -34,7 +34,7 @@ const FileUploadButton = ({
       />
       {/* Bouton stylisé */}
       <Button type="button" variant={"outline"}>
-        Import
+        Upload
       </Button>
       {/* <span className="flex items-center justify-center w-12 h-12 rounded-md bg-eventoPurpleDark text-white ">
         <Plus className="w-6 h-6" />

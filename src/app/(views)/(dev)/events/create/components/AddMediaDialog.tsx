@@ -68,11 +68,13 @@ const AddMediaDialog = ({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
 
-      <DialogContent className="max-w-[95%] lg:max-w-4xl">
+      <DialogContent className="max-w-[95%] lg:max-w-4xl rounded">
         <DialogHeader className="flex-row items-center gap-4 space-y-0">
-          <DialogTitle>
+          <DialogTitle className="text-left">
             Select from our templates
-            <p className="text-sm text-muted-foreground">or import your own:</p>
+            <p className="text-sm text-muted-foreground">
+              or upload your own media:
+            </p>
           </DialogTitle>
           <FileUploadButton
             onChange={(e) => {
@@ -92,7 +94,7 @@ const AddMediaDialog = ({
                 src={img.url}
                 alt={img.key}
                 onClick={() => handlePresetClick(img)}
-                className={`w-24 h-24 object-cover rounded border cursor-pointer hover:ring-2 ${img.key === pendingSelectedPredefinedMedia?.find((m) => m.key === img.key)?.key ? "ring-2 ring-eventoPurpleDark" : "ring-eventoBlue"}`}
+                className={`w-40 h-40 object-cover rounded border cursor-pointer hover:ring-2 ${img.key === pendingSelectedPredefinedMedia?.find((m) => m.key === img.key)?.key ? "ring-2 ring-eventoPurpleDark" : "ring-eventoBlue"}`}
               />
             ))}
         </div>
@@ -101,7 +103,7 @@ const AddMediaDialog = ({
             Cancel
           </Button>
           <Button variant={"eventoPrimary"} onClick={handleAddPresetToFrom}>
-            Continu
+            Continue
           </Button>
         </div>
       </DialogContent>
