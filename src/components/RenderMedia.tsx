@@ -1,5 +1,4 @@
 "use client";
-import { cn } from "@/lib/utils";
 import { EventType } from "@/types/EventType";
 import { useRef, useState } from "react";
 import { Carousel } from "react-responsive-carousel";
@@ -31,64 +30,56 @@ const RenderMedia = ({ event }: { event: EventType }) => {
 
   return (
     <div
+      className="relative w-full"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
-      onClick={handleClick}
-      className="h-full"
+      onTouchEnd={(e) => {
+        handleTouchEnd();
+        // ⚠️ Si le touch s’est terminé sans swipe → autoriser le click
+        if (!isSwiping) {
+          e.stopPropagation();
+        }
+      }}
+      onClick={(e) => {
+        // Empêche uniquement si c’est un faux click hors interactions
+        if (!isSwiping) {
+          e.stopPropagation();
+        }
+      }}
     >
-      {event.initialMedia.length > 0 ? (
-        <Carousel
-          showThumbs={false}
-          dynamicHeight={false}
-          infiniteLoop={true}
-          emulateTouch={true}
-          useKeyboardArrows={true}
-          className="relative"
-        >
-          {event.initialMedia.map(
-            (item, index) =>
-              item &&
-              (item.type === "video" ? (
-                <video
-                  key={index}
-                  controls
-                  autoPlay
-                  className="w-full h-auto max-h-screen rounded"
-                >
-                  <source src={item.url} type="video/mp4" />
-                  Your browser does not support the video tag.
-                </video>
-              ) : (
-                <SmartImage
-                  src={item.url}
-                  alt={`Preview media ${index + 1}`}
-                  key={index}
-                  width={800}
-                  height={0}
-                  priority
-                  className="w-full object-cover max-h-screen md:rounded"
-                  onClick={(e) => {
-                    if (!isSwiping) {
-                      e.stopPropagation();
-                    }
-                  }}
-                />
-              )),
-          )}
-        </Carousel>
-      ) : (
-        <div className="w-full bg-evento-gradient rounded">
-          <SmartImage
-            src="https://evento-media-bucket.s3.ap-southeast-2.amazonaws.com/evento-bg.jpg"
-            alt="Evento standard background"
-            height={500}
-            width={500}
-            className={cn("opacity-20 w-full object-cover")}
-            priority
-          />
-        </div>
-      )}
+      <Carousel
+        showThumbs={false}
+        dynamicHeight={true}
+        infiniteLoop
+        emulateTouch
+        useKeyboardArrows
+      >
+        {event.initialMedia.map(
+          (item, index) =>
+            item &&
+            (item.type === "video" ? (
+              <video
+                key={index}
+                controls
+                autoPlay
+                className="w-full h-auto max-h-screen rounded"
+              >
+                <source src={item.url} type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            ) : (
+              <SmartImage
+                src={item.url}
+                alt={`Preview media ${index + 1}`}
+                key={index}
+                width={800}
+                height={0}
+                priority
+                className="w-full object-cover max-h-screen md:rounded"
+              />
+            )),
+        )}
+      </Carousel>
     </div>
   );
 };

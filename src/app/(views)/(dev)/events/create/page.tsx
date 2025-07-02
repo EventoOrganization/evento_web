@@ -3,8 +3,10 @@ import Section from "@/components/layout/Section";
 import AuthModal from "@/components/system/auth/AuthModal";
 import { useSession } from "@/contexts/(prod)/SessionProvider";
 import { useToast } from "@/hooks/use-toast";
+import { useEventStore } from "@/store/useEventsStore";
 import {
   EventFormValuesType,
+  EventType,
   InterestType,
   PresetMedia,
 } from "@/types/EventType";
@@ -22,6 +24,7 @@ import {
 const PageEventsCreate = () => {
   // global state
   const { toast } = useToast();
+  const { addEvent } = useEventStore();
   const { user, isAuthenticated, token } = useSession();
   // local state
   const formRef = useRef<HTMLFormElement>(null);
@@ -257,10 +260,13 @@ const PageEventsCreate = () => {
 
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/events/create`,
+        `${process.env.NEXT_PUBLIC_API_URL}/events/createEvent`,
         {
           method: "POST",
           body: formData,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
           credentials: "include",
         },
       );
@@ -269,8 +275,8 @@ const PageEventsCreate = () => {
         toast({ title: "Error", description: msg, variant: "eventoError" });
         handleError(response);
       }
-
       const data = await response.json();
+      addEvent(data?.event as EventType);
 
       toast({
         title: "Event created successfully",
@@ -279,7 +285,7 @@ const PageEventsCreate = () => {
       });
 
       if (data?.event?._id) {
-        router.push(`/events/create/${data.event._id}/success`);
+        router.push(`/events/success?eventId=${data.event._id}`);
       } else {
         router.push(`/profile`);
       }

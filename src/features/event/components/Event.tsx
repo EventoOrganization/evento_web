@@ -32,14 +32,14 @@ const Event = ({
     <>
       <div
         className={cn(
-          " md:bg-white md:border md:shadow rounded py-4 md:p-4 w-full grid grid-cols-1 lg:grid-cols-2  h-fit gap-4 md:hover:shadow-xl md:hover:bg-slate-50 cursor-pointer relative",
+          " md:bg-white md:border md:shadow rounded py-4 md:p-4 w-full grid grid-cols-1 lg:grid-cols-2 h-fit gap-4 md:hover:shadow-xl md:hover:bg-slate-50 cursor-pointer relative",
           className,
           {
             "lg:grid-cols-1": pathname === "/events",
           },
         )}
       >
-        <div className=" ">
+        <div>
           <div className="flex items-center justify-between gap-4 mb-4 px-2 md:px-0">
             <Link
               href={`/profile/${event?.user?._id}`}
@@ -94,9 +94,7 @@ const Event = ({
             </Link>
             <EventLimit event={event} />
           </div>
-          <div>
-            <RenderMedia event={event} />
-          </div>
+          <RenderMedia event={event} />
         </div>
         <div>
           <div className="flex flex-col gap-2 px-4 md:px-0">

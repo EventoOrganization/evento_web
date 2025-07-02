@@ -27,6 +27,7 @@ const PageEvents = () => {
   const { isAuthenticated } = useSession();
   // Stored data
   const { interests } = useInterestsStore();
+
   const today = startOfDay(new Date());
   const events = useEventStore((state) => state.events).filter(
     (event) =>
