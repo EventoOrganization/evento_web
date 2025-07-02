@@ -31,26 +31,9 @@ const FormMediaField = ({
   const [cropDialogOpen, setCropDialogOpen] = useState(false);
   const [imageSrc, setImageSrc] = useState<string>("");
 
-  const handleCloseCropDialog = () => {
-    if (pendingCropFiles.length === 0) {
-      setCropDialogOpen(false);
-      setDialogOpen(false);
-    }
-  };
-
   const updateFiles = (next: File[]) => {
     setFiles(next);
     onChange?.(next);
-  };
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newFiles = e.target.files ? Array.from(e.target.files) : [];
-    if (!newFiles.length) return;
-
-    setPendingCropFiles(newFiles);
-    loadNextCrop(newFiles[0]);
-
-    e.target.value = "";
   };
 
   const loadNextCrop = (file: File) => {

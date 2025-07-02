@@ -34,7 +34,6 @@ const AddMediaDialog = ({
   presetImages,
   selectedPredefinedMedia,
   setSelectedPredefinedMedia,
-  onFileSelected,
   toUpload,
   open,
   onOpenChange,

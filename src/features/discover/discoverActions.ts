@@ -35,7 +35,6 @@ export const filterEvents = (
   endDate: Date | null,
   users: UserType[],
 ): EventType[] => {
-  console.log("FILTERING EVENTS");
   const getUTCDate = (date: Date) => {
     return new Date(
       Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()),

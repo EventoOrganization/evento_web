@@ -34,7 +34,6 @@ const CreateEventPreview = ({
   user,
   title,
   username,
-  profileImage,
   interests,
   date,
   endDate,

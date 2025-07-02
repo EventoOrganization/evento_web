@@ -65,7 +65,6 @@ export default function EventForm({
   onSubmit,
   formRef,
   isSubmitting,
-  setIsSubmitting,
 }: EventFormProps) {
   const { users } = useUsersStore();
   const { interests } = useInterestsStore();

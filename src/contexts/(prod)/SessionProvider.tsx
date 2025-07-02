@@ -3,6 +3,7 @@ import EventoLoader from "@/components/EventoLoader";
 import Section from "@/components/layout/Section";
 import { useToast } from "@/hooks/use-toast";
 import { UserType } from "@/types/UserType";
+import { getCookie } from "@/utils/getCookie";
 import React, { createContext, useContext, useEffect, useState } from "react";
 
 interface SessionContextProps {
@@ -67,28 +68,22 @@ export const SessionProvider: React.FC<{
 
   // Vérification du token lors du chargement session
   useEffect(() => {
-    if (!token) {
-      setIsAuthenticated(false);
-      setIsTokenChecked(true);
-      toast({
-        title: "👋 Hello there!",
-        description: "✨ We're loading public content for you.",
-        variant: "eventoSuccess",
-        duration: 3000,
-      });
-      return;
-    }
+    const checkAndValidateToken = async () => {
+      if (!token) {
+        setIsAuthenticated(false);
+        setIsTokenChecked(true);
+        toast({
+          title: "👋 Hello there!",
+          description: "✨ We're loading public content for you.",
+          variant: "eventoSuccess",
+          duration: 3000,
+        });
+        return;
+      }
 
-    (async () => {
       const valid = await isTokenValid(token);
       setIsAuthenticated(valid);
       setIsTokenChecked(true);
-      toast({
-        title: "🎉 Welcome back!",
-        description: "🔐 Your personal data is being loaded.",
-        variant: "eventoSuccess",
-        duration: 3000,
-      });
 
       if (!valid) {
         endSession();
@@ -99,28 +94,42 @@ export const SessionProvider: React.FC<{
           variant: "eventoPending",
           duration: 3000,
         });
+      } else {
+        toast({
+          title: "🎉 Welcome back!",
+          description: "🔐 Your personal data is being loaded.",
+          variant: "eventoSuccess",
+          duration: 3000,
+        });
       }
-    })();
-  }, []);
+    };
+
+    checkAndValidateToken();
+  }, [token]); // ← bien déclenché seulement si token est défini
 
   // Récupération de la session depuis les cookies ou le store
   useEffect(() => {
-    if (!sessionUser && !sessionToken) {
-      const sessionData = document.cookie
-        .split("; ")
-        .find((row) => row.startsWith("sessionData="))
-        ?.split("=")[1];
+    // Si la session est déjà fournie, ne rien faire
+    if (sessionUser || sessionToken) return;
 
-      if (sessionData) {
-        const session = JSON.parse(decodeURIComponent(sessionData));
-        setUser(session.user);
-        setToken(session.token);
-      } else {
-        setUser(null);
-        setToken(null);
+    const cookie = getCookie("sessionData");
+
+    if (cookie) {
+      try {
+        const parsed = JSON.parse(cookie);
+        if (parsed?.user && parsed?.token) {
+          setUser(parsed.user);
+          setToken(parsed.token);
+        }
+      } catch (err) {
+        console.error("❌ Failed to parse sessionData cookie:", err);
       }
+    } else {
+      // Aucune session → on nettoie
+      setUser(null);
+      setToken(null);
     }
-  }, [sessionUser, sessionToken]);
+  }, []);
 
   const startSession = (user: UserType, token: string) => {
     setUser(user);
@@ -135,7 +144,7 @@ export const SessionProvider: React.FC<{
     setToken(null);
     setIsAuthenticated(false);
     setIsTokenChecked(true);
-    document.cookie = `token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
+    document.cookie = `sessionData=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
   };
   const updateUser = (updatedUser: UserType) => {
     setUser(updatedUser);

@@ -8,6 +8,8 @@ import {
   InterestType,
   PresetMedia,
 } from "@/types/EventType";
+import { handleError } from "@/utils/handleError";
+import { parseApiError } from "@/utils/parseApiError";
 import { getUTCOffset } from "@/utils/timezones";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -263,13 +265,9 @@ const PageEventsCreate = () => {
         },
       );
       if (!response.ok) {
-        const errorText = await response.text();
-        toast({
-          title: "Error creating event",
-          description: errorText || "Unknown error occurred",
-          variant: "eventoError",
-        });
-        throw new Error(errorText || "Event creation failed");
+        const msg = await parseApiError(response, "Failed to create event");
+        toast({ title: "Error", description: msg, variant: "eventoError" });
+        handleError(response);
       }
 
       const data = await response.json();
@@ -286,12 +284,9 @@ const PageEventsCreate = () => {
         router.push(`/profile`);
       }
     } catch (err) {
-      console.error(err);
-      toast({
-        title: "Erreur",
-        description: (err as Error).message,
-        variant: "eventoError",
-      });
+      const msg = await parseApiError(err, "Something went wrong");
+      toast({ title: "Erreur", description: msg, variant: "eventoError" });
+      handleError(err);
     } finally {
       setIsSubmitting(false);
     }

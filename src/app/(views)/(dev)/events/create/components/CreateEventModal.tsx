@@ -36,7 +36,6 @@ const CreateEventModal = ({
   handleValueChange,
   isOpen,
   onClose,
-  onSuccess,
 }: CreateEventModalProps) => {
   if (!formValues) return null;
 

@@ -24,7 +24,6 @@ const EventUsersLists = ({
   const [SeeMoreCount, setSeeMoreCount] = useState<number>(10);
 
   const {
-    filteredUsers,
     friends,
     usersYouMayKnow,
     usersWithSharedInterests,
