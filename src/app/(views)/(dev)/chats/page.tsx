@@ -4,7 +4,6 @@ import AuthModal from "@/components/system/auth/AuthModal";
 import { useSession } from "@/contexts/(prod)/SessionProvider";
 import { cn } from "@/lib/utils";
 import { UserType } from "@/types/UserType";
-import EzTag from "@ezstart/ez-tag";
 import { usePathname } from "next/navigation";
 import { ChatHeader } from "./components/ChatHeader";
 import ChatInput from "./components/ChatInput";
@@ -35,8 +34,7 @@ export default function ChatPage() {
   };
 
   return (
-    <EzTag
-      as="div"
+    <div
       className="fixed inset-0 top-16 flex h-[calc(100dvh-4rem)]" // 4rem = h-16 header
     >
       <ChatHeader
@@ -49,8 +47,7 @@ export default function ChatPage() {
         onSelect={handleSelect}
       />
       {/* Main zone */}
-      <EzTag
-        as="div"
+      <div
         className={cn("flex-1 flex flex-col bg-background ", {
           "hidden md:flex": !activeConversation,
           "md:pb-16": isChatView && activeConversation,
@@ -63,10 +60,7 @@ export default function ChatPage() {
         ) : (
           <>
             {/* Header */}
-            <EzTag
-              as="div"
-              className="bg-muted p-4 border-b flex items-center justify-between"
-            >
+            <div className="bg-muted p-4 border-b flex items-center justify-between">
               <h2>
                 {activeConversation.title ? (
                   <div className="font-medium">{activeConversation.title}</div>
@@ -96,7 +90,7 @@ export default function ChatPage() {
                 conversation={activeConversation}
                 onConversationEnded={() => setActiveConversation(null)}
               />
-            </EzTag>
+            </div>
 
             {/* Scrollable messages */}
             <div className="flex-1 overflow-y-auto">
@@ -107,8 +101,8 @@ export default function ChatPage() {
             <ChatInput activeConversation={activeConversation} />
           </>
         )}
-      </EzTag>
+      </div>
       {!user && <AuthModal onAuthSuccess={() => {}} defaultForm="login" />}
-    </EzTag>
+    </div>
   );
 }

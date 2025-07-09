@@ -1,12 +1,12 @@
 "use client";
 
+import SmartImage from "@/components/SmartImage";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useSession } from "@/contexts/(prod)/SessionProvider";
 import { cn } from "@/lib/utils";
 import { useUsersStore } from "@/store/useUsersStore";
 import { UserType } from "@/types/UserType";
-import EzTag from "@ezstart/ez-tag";
 import { useMemo, useState } from "react";
 import { useSocket } from "../contexts/SocketProvider";
 import { ConversationListItem } from "./ConversationListItem";
@@ -45,31 +45,28 @@ export const ConversationSidebar = ({
   }, [users, conversations, filter]);
 
   return (
-    <EzTag
-      as="aside"
+    <aside
       className={cn(
         "w-full max-w-full md:max-w-xs border-r border-muted h-full overflow-y-auto bg-muted p-0",
         "flex flex-col h-full",
         { "hidden md:block": isConvSelected },
       )}
     >
-      <EzTag as="div" className="p-4">
+      <div className="p-4">
         <Input
           type="text"
           placeholder="Search conversations or users…"
           value={filter}
           onChange={(e) => setFilter(e.target.value.toLowerCase())}
         />
-      </EzTag>
+      </div>
       <ScrollArea className="flex-1 px-4" id="conversation-list">
         {/* Si on a un filtre non vide, on affiche d'abord les utilisateurs */}
         {filter && (
           <>
             {filteredUsers.length > 0 ? (
               <ul className="flex flex-col gap-1">
-                <EzTag key={"select"} as="p">
-                  Select to start chat
-                </EzTag>
+                <p>Select to start chat</p>
                 {filteredUsers.map((u) => (
                   <li
                     key={u._id}
@@ -82,8 +79,7 @@ export const ConversationSidebar = ({
                       setFilter("");
                     }}
                   >
-                    <EzTag
-                      as="img"
+                    <SmartImage
                       src={u.profileImage || "/evento-logo.png"}
                       alt={u.username}
                       width={40}
@@ -100,9 +96,9 @@ export const ConversationSidebar = ({
                 ))}
               </ul>
             ) : (
-              <EzTag as="p" className="text-center text-muted-foreground">
+              <p className="text-center text-muted-foreground">
                 No users found
-              </EzTag>
+              </p>
             )}
             <hr className="border-t border-muted/50" />
           </>
@@ -125,12 +121,12 @@ export const ConversationSidebar = ({
           </ul>
         ) : (
           !filter && (
-            <EzTag as="p" className="p-4 text-center text-muted-foreground">
+            <p className="p-4 text-center text-muted-foreground">
               No conversation yet, start a new one from input above
-            </EzTag>
+            </p>
           )
         )}
       </ScrollArea>
-    </EzTag>
+    </aside>
   );
 };

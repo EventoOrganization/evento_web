@@ -1,5 +1,4 @@
-// src/app/(views)/(dev)/chats/functions/markAsRead.ts
-
+import { isValidMongoObjectId } from "@/utils/isValidMongoObjectId";
 import { MessageType } from "../types";
 import { isAtBottom } from "../utils/isAtBottom";
 
@@ -29,7 +28,13 @@ export async function markAsRead({
   }
 
   const lastMessage = messages[messages.length - 1];
-  if (lastMessage.clientId) return;
+  if (!isValidMongoObjectId(lastMessage._id)) {
+    console.warn(
+      "[markAsRead] 🚫 Invalid message ID, skipping mark-as-read:",
+      lastMessage._id,
+    );
+    return;
+  }
   try {
     socket.emit("mark-as-read", {
       conversationId: activeConversationId,

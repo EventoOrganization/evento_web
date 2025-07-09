@@ -7,6 +7,7 @@ export function useSendMessage() {
   const { token } = useSession();
 
   return async (conversationId: string, message: string) => {
+    console.log("[useSendMessage] messagesent:", message);
     const res = await fetchData<MessageType>(
       "/chats/messages",
       HttpMethod.POST,

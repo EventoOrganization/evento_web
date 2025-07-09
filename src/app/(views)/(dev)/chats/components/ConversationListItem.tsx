@@ -3,7 +3,6 @@
 import { useSession } from "@/contexts/(prod)/SessionProvider";
 import { cn } from "@/lib/utils";
 import { UserType } from "@/types/UserType";
-import EzTag from "@ezstart/ez-tag";
 import { ConversationType } from "../types";
 import { UnreadBadge } from "./UnreadBadge";
 
@@ -34,14 +33,12 @@ export function ConversationListItem({
       )}
       onClick={() => onSelect(conversation)}
     >
-      <EzTag as="div" className="flex items-center justify-between">
+      <div className="flex items-center justify-between">
         <div className="flex items-center gap-2 truncate">
           {conversation.title ? (
-            <EzTag as="p" className="font-medium truncate">
-              {conversation.title}
-            </EzTag>
+            <p className="font-medium truncate">{conversation.title}</p>
           ) : (
-            <EzTag as="div" className="flex items-center gap-2 truncate">
+            <div className="flex items-center gap-2 truncate">
               {otherParticipants.slice(0, 4).map((p: UserType) => (
                 <img
                   key={p._id}
@@ -51,24 +48,24 @@ export function ConversationListItem({
                 />
               ))}
               {otherParticipants.length > 4 && (
-                <EzTag as="p" className="text-xs text-muted-foreground">
+                <p className="text-xs text-muted-foreground">
                   +{otherParticipants.length - 4}
-                </EzTag>
+                </p>
               )}
-              <EzTag as="p" className="ml-2 font-medium truncate">
+              <p className="ml-2 font-medium truncate">
                 {otherParticipants.map((p) => p.username).join(", ")}
-              </EzTag>
-            </EzTag>
+              </p>
+            </div>
           )}
         </div>
 
         {/* Badge des unread messages */}
         <UnreadBadge conversationId={conversation._id} />
-      </EzTag>
+      </div>
 
-      <EzTag as="p" className="text-xs line-clamp-1 mt-1 text-muted-foreground">
+      <p className="text-xs line-clamp-1 mt-1 text-muted-foreground">
         {conversation.lastMessage?.message || "No message yet"}
-      </EzTag>
+      </p>
     </li>
   );
 }

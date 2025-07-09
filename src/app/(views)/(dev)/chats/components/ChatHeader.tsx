@@ -1,8 +1,8 @@
 "use client";
 
+import SmartImage from "@/components/SmartImage";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import EzTag from "@ezstart/ez-tag";
 import { ArrowLeftIcon } from "lucide-react";
 
 export const ChatHeader = ({
@@ -12,10 +12,7 @@ export const ChatHeader = ({
   isConvSelected: boolean;
   onBack: () => void;
 }) => (
-  <EzTag
-    as="header"
-    className="fixed top-0 p-4 border-b font-bold text-lg flex items-center gap-2 h-16 bg-background"
-  >
+  <header className="fixed top-0 p-4 border-b font-bold text-lg flex items-center gap-2 h-16 bg-background w-full">
     <Button
       variant={"ghost"}
       className={cn(
@@ -29,26 +26,16 @@ export const ChatHeader = ({
       )}
     </Button>
 
-    <EzTag
-      as="h1"
+    <h1
       className={cn(
-        "flex items-center gap-2 transition-all duration-300 ease-in-out",
+        "flex items-center gap-2 transition-all duration-300 ease-in-out text-lg",
         {
           "translate-x-2": isConvSelected,
         },
       )}
     >
-      <EzTag
-        as="img"
-        src="/evento-logo.png"
-        alt="logo"
-        width={30}
-        height={30}
-      />
+      <SmartImage src="/evento-logo.png" alt="logo" width={30} height={30} />
       Evento Chats
-    </EzTag>
-    {/* <EzTag as="div" className="ml-auto">
-      <PresenceSwitcher />
-    </EzTag> */}
-  </EzTag>
+    </h1>
+  </header>
 );

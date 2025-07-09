@@ -1,6 +1,5 @@
 "use client";
 
-import EzTag from "@ezstart/ez-tag";
 import { MessagesList } from "../components/MessagesList";
 import { useChatMessages } from "../hooks/useChatMessages";
 import { ConversationType } from "../types";
@@ -26,12 +25,9 @@ export default function ChatMessages({
       className="flex flex-col overflow-y-auto px-4 py-2 space-y-4 text-xs"
     >
       {noMoreMessages && (
-        <EzTag
-          as="p"
-          className="text-center text-muted-foreground text-xs mb-4"
-        >
+        <p className="text-center text-muted-foreground text-xs mb-4">
           No more messages
-        </EzTag>
+        </p>
       )}
       <MessagesList
         messages={messages}

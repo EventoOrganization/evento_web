@@ -16,7 +16,6 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
-      // "@ezstart/ez-tag": ["../../@ezstart/ez-tag/src/components/EzTag.tsx"]
     },
     "plugins": [
       {

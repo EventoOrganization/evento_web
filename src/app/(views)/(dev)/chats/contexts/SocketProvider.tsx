@@ -97,7 +97,19 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
 
           return {
             ...conv,
-            recentMessages: [...(conv.recentMessages || []), payload],
+            recentMessages: (() => {
+              const existing = (conv.recentMessages || []).find(
+                (msg: MessageType) =>
+                  msg._id === payload._id ||
+                  (msg.clientId &&
+                    payload.clientId &&
+                    msg.clientId === payload.clientId),
+              );
+
+              if (existing) return conv.recentMessages; // ne pas doubler
+              return [...(conv.recentMessages || []), payload];
+            })(),
+
             lastMessage: payload,
             unreadCounts: {
               ...(conv.unreadCounts || {}),
@@ -153,6 +165,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
 
   const addPendingMessageToConversation = useCallback(
     (convId: string, msg: MessageType) => {
+      console.log("[addPendingMessageToConversation] 📨 Adding msg:", msg);
       updateConversations((prev) =>
         prev.map((conv) =>
           conv._id === convId
@@ -169,26 +182,52 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
 
   const replacePendingInConv = useCallback(
     (convId: string, official: MessageType) => {
+      console.log(
+        "[replacePendingInConv] 🔄 Trying to replace in conv:",
+        convId,
+      );
+      if (!official.clientId) {
+        console.warn(
+          "[replacePendingInConv] ⚠️ No clientId on official message:",
+          official._id,
+        );
+      }
+
       updateConversations((prev) =>
-        prev.map((conv) =>
-          conv._id === convId
-            ? {
-                ...conv,
-                recentMessages: (conv.recentMessages || []).map(
-                  (msg: MessageType) =>
-                    msg.clientId &&
-                    official.clientId &&
-                    msg.clientId === official.clientId
-                      ? official
-                      : msg,
-                ),
+        prev.map((conv) => {
+          if (conv._id !== convId) return conv;
+
+          const updatedMessages = (conv.recentMessages || []).map(
+            (msg: MessageType) => {
+              const shouldReplace =
+                msg.clientId &&
+                official.clientId &&
+                msg.clientId === official.clientId;
+
+              if (shouldReplace) {
+                console.log(
+                  "[replacePendingInConv] ✅ Replacing pending message",
+                  msg.clientId,
+                  "with official",
+                  official._id,
+                );
+                return official;
               }
-            : conv,
-        ),
+
+              return msg;
+            },
+          );
+
+          return {
+            ...conv,
+            recentMessages: updatedMessages,
+          };
+        }),
       );
     },
     [updateConversations],
   );
+
   return (
     <SocketContext.Provider
       value={{
