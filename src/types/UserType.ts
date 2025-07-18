@@ -1,6 +1,16 @@
 import { EventType, InterestType } from "./EventType";
 import { PwaSubscriptionType } from "./PwaSubscriptionType";
-
+export type StripeOnboardingResponse = StripeAccountType & {
+  onboardingUrl: string;
+};
+export type StripeAccountType = {
+  accountId: string | null;
+  country: string | null;
+  detailsSubmitted: boolean;
+  chargesEnabled: boolean;
+  payoutsEnabled: boolean;
+  lastSync: string | null;
+};
 export type UserType = {
   _id: string;
   username: string;
@@ -51,6 +61,7 @@ export type UserType = {
   socialLinks?: { platform: string; url: string }[];
   phone_verified?: string;
   is_block?: number;
+  stripeAccounts: StripeAccountType[];
   is_otp_verify?: number;
   countTotalEventIAttended?: number;
   countFollowing?: number;

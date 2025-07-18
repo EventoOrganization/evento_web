@@ -55,14 +55,21 @@ export const fetchData = async <T, B = any>(
     const contentType = response.headers.get("content-type");
 
     if (!response.ok) {
-      const errorMessage = contentType?.includes("application/json")
-        ? (await response.json()).message
-        : await response.text();
+      const errorData = contentType?.includes("application/json")
+        ? await response.json()
+        : { message: await response.text() };
+
+      const errorMessage =
+        errorData.message ||
+        errorData.details ||
+        errorData.error ||
+        "Unknown error";
 
       handleError(
         { message: errorMessage, statusCode: response.status },
         `fetchData: ${endpoint}`,
       );
+
       return {
         data: null,
         error: errorMessage,

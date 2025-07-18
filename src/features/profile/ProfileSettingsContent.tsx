@@ -1,5 +1,6 @@
 "use client";
 
+import StripeConnectButton from "@/app/(views)/(prod)/profile/settings/components/StripeConnectButton";
 import ComingSoon from "@/components/ComingSoon";
 import DeleteAccountBtn from "@/components/system/auth/DeleteAccountBtn";
 import LogoutBtn from "@/components/system/auth/LogoutBtn";
@@ -122,6 +123,10 @@ const ProfileSettingsContent = () => {
             <li className="flex justify-between items-center bg-white shadow-sm rounded-lg p-4">
               <span className="text-gray-700">Delete Account</span>
               <DeleteAccountBtn />
+            </li>
+            <li className="flex justify-between items-center bg-white shadow-sm rounded-lg p-4">
+              <span className="text-gray-700">Connect to Stripe</span>
+              <StripeConnectButton />
             </li>
           </ul>
         </section>
