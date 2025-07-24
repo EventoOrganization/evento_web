@@ -130,7 +130,6 @@ const FormQuestionsField = ({
 
   return (
     <div className="space-y-4">
-      <h4 className="text-eventoPurpleLight font-bold"></h4>
       <div className="flex items-center gap-2">
         <Label>Create RSVP Form</Label>
         <Button

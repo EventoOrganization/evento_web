@@ -23,6 +23,7 @@ import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import Confetti from "react-confetti";
 type SelectedUser = UserType | TempUserType;
 
 const EventSuccessPage = () => {
@@ -48,6 +49,7 @@ const EventSuccessPage = () => {
     : [];
   const excludedUserIds = [...attendeeIds, ...favouriteIds];
   const [isSubmitting, setIsSubmitting] = useState(false);
+
   useEffect(() => {
     const fetchEventData = async () => {
       try {
@@ -219,6 +221,19 @@ const EventSuccessPage = () => {
 
   return (
     <>
+      <Confetti
+        className="w-full h-screen"
+        recycle={false}
+        numberOfPieces={400}
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          zIndex: 9999,
+          pointerEvents: "none",
+        }}
+      />
+
       <Section className="px-4 xl:px-0 text-left  ">
         <h1 className="text-3xl font-bold w-full">
           Congratulations
@@ -227,7 +242,6 @@ const EventSuccessPage = () => {
         </h1>
         <p className="text-xl w-full">Next step, invite your guests</p>
       </Section>
-
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Section className="justify-start gap-2 pt-0 md:py-10 items-start pb-0">
           <div

@@ -223,4 +223,11 @@ export type EventFormValuesType = {
   predefinedMedia: PresetMedia[];
   interests: InterestType[];
   requiresApproval: boolean;
+  ticketing: {
+    enabled: boolean;
+    totalTickets: number;
+    price: number;
+    currency: string;
+    payoutStripeAccountId?: string;
+  };
 };

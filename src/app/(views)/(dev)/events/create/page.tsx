@@ -80,6 +80,14 @@ const PageEventsCreate = () => {
 
     toUploadFiles: [],
     predefinedMedia: [],
+
+    ticketing: {
+      enabled: false,
+      totalTickets: 0,
+      price: 0,
+      currency: "eur",
+      payoutStripeAccountId: "",
+    },
   });
   const handleInputChange = useMemo(
     () => handleInputChangeFactory(setFormValues),
@@ -99,6 +107,15 @@ const PageEventsCreate = () => {
       }));
     }
   }, [selectedPredefinedMedia]);
+
+  useEffect(() => {
+    if (user?.username) {
+      setFormValues((prev) => ({
+        ...prev,
+        username: user.username,
+      }));
+    }
+  }, [user?.username]);
 
   useEffect(() => {
     if (prevFormValues.current) {

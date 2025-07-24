@@ -25,6 +25,7 @@ import FormInterestsField from "./FormInterestsField";
 import FormMediaField from "./FormMediaField";
 import FormModeField from "./FormModeField";
 import FormQuestionsField from "./FormQuestionsField";
+import FormTicketingField from "./FormTicketingField";
 import FormTitleField from "./FormTitleField";
 import FormEventTypeField from "./FormTypeField";
 
@@ -140,6 +141,10 @@ export default function EventForm({
           allUsers={users as UserType[]}
           currentUserId={user?._id || ""}
           onChange={(e) => onChange("coHosts", e)}
+        />
+        <FormTicketingField
+          ticketing={formValues.ticketing}
+          onChange={(field, value) => onChange(field, value)}
         />
         <EnableChatButton onChange={(e) => onChange("includeChat", e)} />
         <EventURL onChange={onChange} />
