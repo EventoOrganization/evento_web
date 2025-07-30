@@ -30,7 +30,6 @@ import { Pencil } from "lucide-react";
 import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import BuyTicketButton from "./components/BuyTicketButton";
 export type EventStatusKeys = "isGoing" | "isFavourite" | "isRefused";
 
 const PageEvent = ({ evento }: { evento?: EventType }) => {
@@ -55,6 +54,7 @@ const PageEvent = ({ evento }: { evento?: EventType }) => {
     isTempGuest: false,
     hasAccess: true,
   });
+
   const handleUpdateField = (field: string, value: any) => {
     if (event) {
       const updateFunction = createUpdateEventField(event);
@@ -341,7 +341,6 @@ const PageEvent = ({ evento }: { evento?: EventType }) => {
                   setEvent={setEvent}
                 />
               )}
-              <BuyTicketButton eventId={event._id} />
               {selectedTab === "Attendees" && accessControl.hasAccess && (
                 <EventAttendeesTab
                   event={event}

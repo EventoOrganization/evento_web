@@ -1,6 +1,7 @@
 // components/EventDescriptionTab.tsx
 
 import { StartEventChatButton } from "@/app/(views)/(dev)/chats/components/StartEventChatButton";
+import BuyTicketButton from "@/app/(views)/(dev)/events/[id]/components/BuyTicketButton";
 import AddressModal from "@/components/AddressModal";
 import AddToCalendar from "@/components/AddToCalendar";
 import EventoLoader from "@/components/EventoLoader";
@@ -83,11 +84,15 @@ const EventDescriptionTab: React.FC<EventDescriptionTabProps> = ({
           {event?.details?.endTime ? ` - ${event?.details?.endTime}` : ""}
         </p>
       </div>
-      <EventActionIcons
-        event={event}
-        updateEventStatusLocally={updateEventStatusLocally}
-        isLocal
-      />
+      {event?.ticketing?.enabled ? (
+        <BuyTicketButton eventId={event._id} />
+      ) : (
+        <EventActionIcons
+          event={event}
+          updateEventStatusLocally={updateEventStatusLocally}
+          isLocal
+        />
+      )}
       <div className="flex justify-between">
         <AddToCalendar event={event} />
         {event?.details?.includeChat && event.conversation?._id && (

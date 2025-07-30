@@ -1,4 +1,5 @@
 "use client";
+import BuyTicketButton from "@/app/(views)/(dev)/events/[id]/components/BuyTicketButton";
 import AddressModal from "@/components/AddressModal";
 import AddToCalendar from "@/components/AddToCalendar";
 import AvatarStack from "@/components/AvatarStack";
@@ -145,7 +146,11 @@ const Event = ({
             onClick={(e) => e.stopPropagation()}
           >
             <AvatarStack event={event} />
-            <EventActionIcons event={event} />
+            {event?.ticketing?.enabled ? (
+              <BuyTicketButton eventId={event._id} />
+            ) : (
+              <EventActionIcons event={event} />
+            )}
           </div>
         </div>
       </div>

@@ -130,6 +130,7 @@ export type EventType = {
   approvedUserIds?: string[];
   eventComments?: CommentType[];
   ticketing?: TicketingType;
+  soldTickets?: SoldTicketsType[];
 };
 export type ReactionType = "like" | "love" | "laugh" | "angry" | "sad";
 
@@ -225,6 +226,7 @@ export type EventFormValuesType = {
   interests: InterestType[];
   requiresApproval: boolean;
   ticketing: TicketingType;
+  soldTickets: SoldTicketsType[];
 };
 
 export type TicketingType = {
@@ -234,4 +236,12 @@ export type TicketingType = {
   price: number;
   currency: string;
   payoutStripeAccountId?: string;
+};
+
+export type SoldTicketsType = {
+  buyerId: string;
+  stripePaymentIntent: string;
+  quantity: number;
+  purchasedAt: Date;
+  _id: string;
 };

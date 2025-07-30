@@ -1,13 +1,16 @@
 "use client";
 
+import AuthModal from "@/components/system/auth/AuthModal";
 import { Button } from "@/components/ui/button";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import { useSession } from "@/contexts/(prod)/SessionProvider";
 import { useEventStore } from "@/store/useEventsStore";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
@@ -18,16 +21,26 @@ type Props = {
 };
 
 export default function BuyTicketButton({ eventId }: Props) {
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
+  const { user, isAuthenticated, token } = useSession();
   const { events } = useEventStore();
   const event = events.find((e) => e._id === eventId);
-  const maxQuantity = event?.ticketing?.remainingTickets ?? 0;
-
+  const isBuyer = event?.soldTickets?.find((b) => b.buyerId === user?._id);
+  const [dialogOpen, setDialogOpen] = useState(false);
   const [quantity, setQuantity] = useState<number>(1);
-  const [loading, setLoading] = useState<boolean>(false);
-  const { token } = useSession();
+  const [loading, setLoading] = useState(false);
+  const ticketsOwned =
+    event?.soldTickets
+      ?.filter((t) => t.buyerId === user?._id)
+      ?.reduce((acc, t) => acc + (t.quantity || 0), 0) ?? 0;
 
+  const alreadyBought = ticketsOwned > 0;
+
+  const maxQuantity = event?.ticketing?.remainingTickets ?? 0;
+  const canBuyMore = maxQuantity > 0;
   const handleBuy = async () => {
     if (maxQuantity < 1) return;
+
     setLoading(true);
     try {
       const res = await fetchData<{ sessionUrl: string }>(
@@ -43,37 +56,82 @@ export default function BuyTicketButton({ eventId }: Props) {
       }
     } catch (err) {
       console.error("Checkout error:", err);
-      // Tu peux ajouter un toast ici pour informer l'utilisateur
     } finally {
       setLoading(false);
+      setDialogOpen(false);
     }
   };
-
+  if (!isAuthenticated)
+    return (
+      <>
+        <Button
+          onClick={() => setIsAuthModalOpen(true)}
+          variant={"eventoSecondary"}
+        >
+          Sign-up
+        </Button>
+        {isAuthModalOpen && (
+          <AuthModal
+            onAuthSuccess={() => setIsAuthModalOpen(false)}
+            onClose={() => setIsAuthModalOpen(false)}
+          />
+        )}
+      </>
+    );
   return (
-    <div className="flex items-center space-x-2">
-      <Select
-        value={String(quantity)}
-        onValueChange={(val) => setQuantity(Number(val))}
-      >
-        <SelectTrigger className="w-24">
-          <SelectValue placeholder="Qty" />
-        </SelectTrigger>
-        <SelectContent>
-          {Array.from({ length: maxQuantity }, (_, i) => (
-            <SelectItem key={i + 1} value={String(i + 1)}>
-              {i + 1}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+    <>
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <DialogTrigger asChild>
+          <Button
+            variant="outline"
+            disabled={!canBuyMore}
+            className="border flex p-2 rounded justify-center items-center w-full"
+          >
+            {!canBuyMore
+              ? "Sold Out"
+              : alreadyBought
+                ? `You have ${ticketsOwned} ticket${ticketsOwned > 1 ? "s" : ""}. Buy More`
+                : "Buy Ticket"}
+          </Button>
+        </DialogTrigger>
 
-      <Button onClick={handleBuy} disabled={loading || maxQuantity < 1}>
-        {loading
-          ? "Processing…"
-          : maxQuantity < 1
-            ? "Sold Out"
-            : `Buy ${quantity} Ticket${quantity > 1 ? "s" : ""}`}
-      </Button>
-    </div>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Buy Ticket</DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-2">
+            <label htmlFor="ticket-qty" className="text-sm font-medium">
+              Quantity
+            </label>
+            <Input
+              id="ticket-qty"
+              type="number"
+              min={1}
+              max={maxQuantity}
+              value={quantity}
+              onChange={(e) =>
+                setQuantity(Math.min(Number(e.target.value), maxQuantity))
+              }
+            />
+            <p className="text-xs text-muted-foreground">
+              Max available: {maxQuantity}
+            </p>
+          </div>
+
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button
+              onClick={handleBuy}
+              disabled={loading || quantity < 1 || quantity > maxQuantity}
+            >
+              {loading ? "Processing…" : `Confirm (${quantity})`}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>{" "}
+    </>
   );
 }

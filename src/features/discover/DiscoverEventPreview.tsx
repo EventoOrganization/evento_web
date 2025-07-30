@@ -1,4 +1,5 @@
 "use client";
+import BuyTicketButton from "@/app/(views)/(dev)/events/[id]/components/BuyTicketButton";
 import AvatarStack from "@/components/AvatarStack";
 import MapPinIcon2 from "@/components/icons/MappPinIcon2";
 import RenderMedia from "@/components/RenderMedia";
@@ -150,7 +151,11 @@ const DiscoverEventPreview = ({
             {eventEndDate && eventEndDate > currentDate && (
               <>
                 <AvatarStack event={event} />
-                <EventActionIcons event={currentEvent || event} />
+                {event?.ticketing?.enabled ? (
+                  <BuyTicketButton eventId={event._id} />
+                ) : (
+                  <EventActionIcons event={currentEvent || event} />
+                )}
               </>
             )}
           </div>
