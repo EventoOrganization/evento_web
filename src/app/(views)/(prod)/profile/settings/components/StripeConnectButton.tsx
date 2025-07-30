@@ -35,13 +35,12 @@ export default function StripeConnectButton() {
       const res = await fetchData<StripeOnboardingResponse>(
         "/stripe/me/stripe-account",
         HttpMethod.POST,
-        { country: selectedCountry }, // ✅ user choisit son pays
+        { country: selectedCountry },
         token,
       );
       const data = res.data;
 
       if (data) {
-        // ✅ Met à jour uniquement le premier compte
         useProfileStore.setState((state) => {
           if (!state.userInfo) return state;
           return {
@@ -73,7 +72,6 @@ export default function StripeConnectButton() {
         token,
       );
 
-      // ✅ Clear in store
       useProfileStore.setState((state) => {
         if (!state.userInfo) return state;
         return {
@@ -83,7 +81,7 @@ export default function StripeConnectButton() {
           },
         };
       });
-      setSelectedCountry(""); // reset du select
+      setSelectedCountry("");
     } catch (err) {
       console.error("Error deleting Stripe account:", err);
     }
@@ -92,22 +90,78 @@ export default function StripeConnectButton() {
   return (
     <div className="space-y-4">
       {primaryStripeAccount ? (
-        // ✅ Un seul compte affiché
         <div className="flex gap-2">
-          {!primaryStripeAccount.detailsSubmitted && (
-            <Button variant="eventoPrimary" onClick={handleConnectStripe}>
-              Continue Onboarding
-            </Button>
+          {primaryStripeAccount.detailsSubmitted &&
+          primaryStripeAccount.chargesEnabled ? (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant={"ghost"} asChild>
+                  <span>✅ Connected</span>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent className="text-sm text-muted-foreground max-w-xs">
+                <div className="flex flex-col gap-1">
+                  <div>
+                    <strong>Country:</strong>{" "}
+                    {primaryStripeAccount.country ?? "N/A"}
+                  </div>
+                  <div>
+                    <strong>Payouts:</strong>{" "}
+                    {primaryStripeAccount.payoutsEnabled
+                      ? "✅ Enabled"
+                      : "❌ Disabled"}
+                  </div>
+                  <div>
+                    <strong>Last sync:</strong>{" "}
+                    {primaryStripeAccount.lastSync
+                      ? new Date(primaryStripeAccount.lastSync).toLocaleString()
+                      : "N/A"}
+                  </div>
+                  <div>
+                    <strong>Account ID:</strong>{" "}
+                    <code className="text-xs">
+                      {primaryStripeAccount.accountId}
+                    </code>
+                  </div>
+                </div>
+              </TooltipContent>
+            </Tooltip>
+          ) : (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant="eventoPrimary" onClick={handleConnectStripe}>
+                  Continue Onboarding
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent className="text-sm text-muted-foreground max-w-xs">
+                <div className="flex flex-col gap-1">
+                  <p>
+                    {primaryStripeAccount.detailsSubmitted
+                      ? "Stripe account created, but still incomplete."
+                      : "Onboarding not yet started or abandoned."}
+                  </p>
+                  <p>
+                    {primaryStripeAccount.payoutsEnabled
+                      ? "✅ Payouts enabled"
+                      : "❌ Payouts not enabled"}
+                  </p>
+                  <p>
+                    {primaryStripeAccount.chargesEnabled
+                      ? "✅ Payments enabled"
+                      : "❌ Payments not enabled"}
+                  </p>
+                </div>
+              </TooltipContent>
+            </Tooltip>
           )}
+
           <Button
-            variant="destructive"
             onClick={() => handleDeleteAccount(primaryStripeAccount.accountId!)}
           >
             Delete
           </Button>
         </div>
       ) : (
-        // ✅ Pas encore de compte → choix du pays + bouton
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2 justify-end">
           <Tooltip>
             <TooltipTrigger asChild>

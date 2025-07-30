@@ -129,6 +129,7 @@ export type EventType = {
   requiresApproval?: boolean;
   approvedUserIds?: string[];
   eventComments?: CommentType[];
+  ticketing?: TicketingType;
 };
 export type ReactionType = "like" | "love" | "laugh" | "angry" | "sad";
 
@@ -223,11 +224,14 @@ export type EventFormValuesType = {
   predefinedMedia: PresetMedia[];
   interests: InterestType[];
   requiresApproval: boolean;
-  ticketing: {
-    enabled: boolean;
-    totalTickets: number;
-    price: number;
-    currency: string;
-    payoutStripeAccountId?: string;
-  };
+  ticketing: TicketingType;
+};
+
+export type TicketingType = {
+  enabled: boolean;
+  totalTickets: number;
+  remainingTickets?: number;
+  price: number;
+  currency: string;
+  payoutStripeAccountId?: string;
 };

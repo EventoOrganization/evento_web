@@ -12,26 +12,25 @@ export default function StripeOnboardingCheck() {
   useEffect(() => {
     let timer: NodeJS.Timeout;
 
-    // const checkStatus = async () => {
-    //   const res = await fetch("/api/me/profile");
-    //   const json = await res.json();
-    //   const stripeAccount = json.data?.stripeAccounts?.[0];
+    const checkStatus = async () => {
+      const res = await fetch("/api/me/profile");
+      const json = await res.json();
+      const stripeAccount = json.data?.stripeAccounts?.[0];
 
-    //   if (stripeAccount?.chargesEnabled) {
-    //     clearInterval(timer);
-    //     router.push("/profile/settings/onboarding/success");
-    //   } else {
-    //     setMessage(
-    //       "⏳ Votre compte est en cours de validation, ça peut prendre quelques secondes…",
-    //     );
-    //   }
-    // };
+      if (stripeAccount?.chargesEnabled) {
+        clearInterval(timer);
+        router.push("/profile/settings/onboarding/success");
+      } else {
+        setMessage(
+          "⏳ Votre compte est en cours de validation, ça peut prendre quelques secondes…",
+        );
+      }
+    };
 
-    // check immédiatement puis toutes les 3s
-    // checkStatus();
-    // timer = setInterval(checkStatus, 3000);
+    checkStatus();
+    timer = setInterval(checkStatus, 3000);
 
-    // return () => clearInterval(timer);
+    return () => clearInterval(timer);
   }, [router]);
 
   return (
