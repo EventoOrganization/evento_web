@@ -26,7 +26,6 @@ export const SUPPORTED_COUNTRIES = [
   { code: "LV", name: "Latvia", currency: "eur" },
   { code: "MT", name: "Malta", currency: "eur" },
   { code: "MX", name: "Mexico", currency: "mxn" },
-  { code: "MC", name: "Monaco", currency: "eur" },
   { code: "NL", name: "Netherlands", currency: "eur" },
   { code: "NZ", name: "New Zealand", currency: "nzd" },
   { code: "NO", name: "Norway", currency: "nok" },

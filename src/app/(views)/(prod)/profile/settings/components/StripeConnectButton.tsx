@@ -1,11 +1,20 @@
 import { Button } from "@/components/ui/button";
 import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useToast } from "@/hooks/use-toast";
+
 import {
   Tooltip,
   TooltipContent,
@@ -16,9 +25,13 @@ import { useSession } from "@/contexts/(prod)/SessionProvider";
 import { useProfileStore } from "@/store/useProfileStore";
 import { StripeOnboardingResponse } from "@/types/UserType";
 import { fetchData, HttpMethod } from "@/utils/fetchData";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function StripeConnectButton() {
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const { toast } = useToast();
+
   const [loading, setLoading] = useState(false);
   const [selectedCountry, setSelectedCountry] = useState<string>("");
 
@@ -26,7 +39,10 @@ export default function StripeConnectButton() {
   const { token } = useSession();
 
   const primaryStripeAccount = userInfo?.stripeAccounts?.[0] ?? null;
-
+  useEffect(() => {
+    primaryStripeAccount?.country &&
+      setSelectedCountry(primaryStripeAccount.country);
+  }, [userInfo]);
   const handleConnectStripe = async () => {
     if (!selectedCountry) return alert("Please select your country first");
     setLoading(true);
@@ -61,8 +77,13 @@ export default function StripeConnectButton() {
   };
 
   const handleDeleteAccount = async (accountId: string) => {
-    if (!confirm("Are you sure you want to delete your Stripe account?"))
+    setIsDeleting(true);
+
+    if (!token) {
+      console.error("No token found, aborting delete.");
       return;
+    }
+    console.log("Deleting Stripe account with token:", token);
 
     try {
       await fetchData(
@@ -82,8 +103,15 @@ export default function StripeConnectButton() {
         };
       });
       setSelectedCountry("");
+      toast({
+        title: "Success",
+        description: "Stripe account deleted successfully.",
+        variant: "eventoSuccess",
+      });
     } catch (err) {
       console.error("Error deleting Stripe account:", err);
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -155,11 +183,46 @@ export default function StripeConnectButton() {
             </Tooltip>
           )}
 
-          <Button
-            onClick={() => handleDeleteAccount(primaryStripeAccount.accountId!)}
-          >
-            Delete
-          </Button>
+          <>
+            <Button
+              variant="destructive"
+              onClick={() => setShowDeleteDialog(true)}
+              disabled={loading}
+            >
+              Delete
+            </Button>
+
+            <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+              <DialogContent className="w-[90%] max-w-xl rounded">
+                <DialogHeader>
+                  <DialogTitle>Delete Stripe Account</DialogTitle>
+                </DialogHeader>
+                <p className="text-muted-foreground">
+                  Are you sure you want to delete your Stripe account? You’ll
+                  need to start onboarding again to reconnect.
+                </p>
+                <DialogFooter className="flex justify-end gap-4 mt-4">
+                  <Button
+                    variant="ghost"
+                    onClick={() => setShowDeleteDialog(false)}
+                    disabled={isDeleting}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    variant="destructive"
+                    onClick={() =>
+                      handleDeleteAccount(
+                        primaryStripeAccount.accountId as string,
+                      )
+                    }
+                  >
+                    {isDeleting ? "Deleting..." : "Confirm"}
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          </>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2 justify-end">
