@@ -44,76 +44,61 @@ Welcome to the Evento Next.js project. This project aims to transition the exist
 
 2. **Open your browser and go to http://localhost:3000**:
 
-## Examples
 
-We have included some examples to help you get started with dependencies.
+## 🚀 EventoApp.io – Tech Stack Overview
 
-- [Zod_example](https://github.com/EventoOrganization/evento_web/tree/main/examples/zod-example.ts)
-- [jest_example](https://github.com/EventoOrganization/evento_web/tree/main/examples/jest-example.ts)
-- [commitizen_example](https://github.com/EventoOrganization/evento_web/tree/main/examples/commitizen-example.md)
+### 🖥️ Frontend – `evento-web` (Next.js PWA)
 
-## Project Goals
+**Core Stack**
+- **Framework**: Next.js 14 (App Router, PWA support)
+- **Language**: TypeScript
+- **UI**: Tailwind CSS with `tailwind-merge`, `clsx`, and `cva`
+- **Component System**: Radix UI, Lucide icons, custom `@ezstart/ez-tag`
+- **Forms**: React Hook Form + Zod + resolvers
+- **Maps & Geolocation**: `@react-google-maps/api`
+- **Media**: `react-easy-crop`, HEIC conversion, slick-carousel
+- **State Management**: Zustand (typed, slice-based architecture)
+- **WebSocket**: `socket.io-client`
+- **Accessibility & SEO**: semantic, variant-based components + `next-sitemap`
 
-- Créate a new mobile-first responsive frontend in Next.js to replace Swift.
-- Maintain existing backend in Express.js.
-- Implement PWA features.
+**Main Features**
+- Fully responsive and mobile-first UI
+- Local image cropping, preview, and upload (to S3)
+- Stripe Checkout integration (ticketing, onboarding)
+- Confetti effects, toasts, and animated UX
+- Multilingual routes (`/fr`, `/en`)
+- JWT-based authentication via global context
 
-## Key Features
+**Tooling**
+- ESLint, Prettier, Husky, Commitizen (conventional commits)
+- Testing: Jest
+- Scripts managed with `pnpm`
+- Build process with `next build` and `next-pwa`
 
-- User authentication and management.
-- Event creation and management.
-- Real-time messaging.
-- Progressive Web App support.
-- Add More...
+---
 
-## Directory Structure
+### 🛠️ Backend – `evento-backend` (Node.js API)
 
-- public\: Static assets.
-- src\components: Reusable components.
-- src\app: Contains `page.tsx` and `layout.tsx`.
-- src\app\globals.css: Global styles (preferably using Tailwind, use `@apply`).
-- src\app\api: API routes (preferably using Express.js).
-- src\lib: Library functions.
+**Core Stack**
+- **Language**: TypeScript
+- **Framework**: Express.js with EJS templating
+- **Database**: MongoDB with Mongoose ODM
+- **Authentication**: JWT, `express-session`
+- **WebSocket**: Socket.IO for chat and realtime updates
+- **File Handling**: Multer, AWS S3, ffmpeg, express-fileupload
+- **Email & Notifications**: Mailjet, Nodemailer, Web Push
+- **Stripe Integration**: Webhooks for checkout & onboarding
+- **Scheduled Tasks**: `node-schedule` (cron jobs)
+- **Validation**: `node-input-validator`
 
-## Contributing
+**Dev Tooling**
+- Hot reload with `nodemon`
+- Type safety via `@types` and strict TS config
+- Mongo migrations: `migrate-mongo`
+- Scripted build & asset copying: `tsc`, `cpx`, `pnpm`
 
-Please refer to [Contributing](CONTRIBUTING.md) for guidelines on contributing to this project.
+---
 
-## Branching and Pull Request Policy
+> ✅ Modular, full-typed architecture. Secure JWT-based communication between frontend and backend. Complete event management system including ticketing, file uploads, payments, and notifications.
 
-- Branching: Create a new branch for each feature or bug fix. Name your branch using the format feature/your-feature-name or bugfix/your-bugfix-name.
-- Pull Requests: Once your changes are ready, create a Pull Request (PR) to merge your branch into the main branch.
-- Review and Approval: Only the repository owner can approve and merge Pull Requests. Ensure your PR is clear and provides enough context for the review.
 
-## Code Quality Configuration
-
-### Configuration Files
-
-1. **.editorconfig**: Ensures coding style consistency across different text editors.
-2. **.eslintrc.js**: Configures ESLint to analyze and fix code issues.
-3. **.eslintignore**: Specifies files and directories to be ignored by ESLint.
-4. **.prettierrc**: Configures Prettier to format the code.
-5. **commitlint.config.js**: Configures commitlint to validate commit messages.
-6. **lint-staged.config.js**: Configures lint-staged to run ESLint and Prettier on modified files before committing.
-7. **.gitignore**: Specifies files and directories to be ignored by Git.
-
-### Issue Models
-
-We have provided templates to help you report bugs and request new features.
-
-- [bug_report](.github/ISSUE_TEMPLATE/bug_report.md)
-- [feature_request](.github/ISSUE_TEMPLATE/feature_request.md)
-
-## License
-
-This project is licensed under the MIT License. See the LICENSE file for details.
-
-## Contact
-
-For any questions or concerns, please open an issue or contact the project maintainers.
-
-## Useful Links
-
-- Next.js Documentation (https://nextjs.org/docs/)
-- Express.js Documentation (https://expressjs.com/en/)
-- PNPM Documentation (https://pnpm.io/)
