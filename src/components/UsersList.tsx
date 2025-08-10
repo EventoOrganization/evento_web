@@ -54,7 +54,6 @@ const UsersList = ({
   const [showMobileReason, setShowMobileReason] = useState(false);
   const [isTouchDevice, setIsTouchDevice] = useState(false);
 
-  // Détecte si on est sur un mobile/tactile
   useEffect(() => {
     setIsTouchDevice(typeof window !== "undefined" && window.innerWidth <= 768);
   }, []);
@@ -72,6 +71,7 @@ const UsersList = ({
   const [isLoggedUser, setIsLoggedUser] = useState<boolean>(false);
   const isFollowingMe = user?.isFollowingMe;
   const session = useSession();
+  const isTicketingEvent = event?.ticketing?.enabled;
   const { updateUser } = useUsersStore();
   const { updateEvent } = useEventStore();
   useEffect(() => {
@@ -286,6 +286,7 @@ const UsersList = ({
 
   if (user?.username === "anonymous") return;
   const isSuccessPage = pathname.includes(`/create-event/${eventId}/success`);
+  console.log("user", user);
   return (
     <div className="flex justify-between w-full items-center">
       {isSelectEnable ? (
@@ -340,7 +341,7 @@ const UsersList = ({
             </ul>
           </Label>
         </div>
-      ) : (
+      ) : !isTempGuest ? (
         <Link
           href={`/profile/${user?._id}`}
           className="flex items-center gap-4"
@@ -373,6 +374,36 @@ const UsersList = ({
             </li>
           </ul>
         </Link>
+      ) : (
+        <div className="flex items-center gap-4">
+          {user?.profileImage &&
+          user?.profileImage.startsWith("http") &&
+          user?.profileImage ? (
+            <SmartImage
+              src={user.profileImage}
+              alt="user image"
+              width={40}
+              height={40}
+              className="min-w-10 w-10 h-10 rounded-full"
+              forceImg
+            />
+          ) : (
+            <div className="flex flex-col min-w-10 w-10 h-10">
+              <Avatar className="min-w-10 w-10 h-10 ">
+                <AvatarImage src="/evento-logo.png" className="rounded-full" />
+                <AvatarFallback>CN</AvatarFallback>
+              </Avatar>
+            </div>
+          )}
+          <ul>
+            <li className="font-bold">
+              {user?.username.charAt(0).toUpperCase() + user?.username.slice(1)}
+            </li>
+            <li className="text-sm">
+              {user?.firstName} {user?.lastName}
+            </li>
+          </ul>
+        </div>
       )}
       <div className="flex gap-2 overflow-hidden">
         {user.reason && isAdmin ? (
@@ -446,12 +477,13 @@ const UsersList = ({
             setEvent={setEvent}
           />
         )}
-        {isAdmin && title === "Invited" && (
+        {isAdmin && title === "Invited" && !isTicketingEvent && (
           <Button variant="outline" onClick={handleUnGuest} disabled={loading}>
             {loading ? "Processing..." : <XIcon />}
           </Button>
         )}
         {isAdmin &&
+          !isTicketingEvent &&
           (title === "Going" || title === "Going Pending Approval") && (
             <Button
               variant="outline"

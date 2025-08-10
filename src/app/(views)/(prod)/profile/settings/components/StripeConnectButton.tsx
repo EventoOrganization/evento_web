@@ -65,7 +65,7 @@ export default function StripeConnectButton() {
         });
 
         if (data.onboardingUrl) {
-          window.open(data.onboardingUrl, "_blank", "noopener,noreferrer");
+          window.location.assign(data.onboardingUrl);
         }
       } else {
         setLoading(false);
