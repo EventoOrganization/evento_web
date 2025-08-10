@@ -24,10 +24,6 @@ const RenderMedia = ({ event }: { event: EventType }) => {
     setIsSwiping(false);
   };
 
-  const handleClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-  };
-
   return (
     <div
       className="relative w-full"

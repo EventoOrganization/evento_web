@@ -54,7 +54,11 @@ const EditEventMedia = ({
 
     const updatedMediaList = [...initialMedia, ...uploadedMedia];
     await updateEventMedia(updatedMediaList);
-    updateEvent(event._id, { initialMedia: [updatedMediaList[0]] });
+    updateEvent(event._id, {
+      initialMedia: [
+        updatedMediaList[0] as { url: string; type: "video" | "image" },
+      ],
+    });
     setInitialMedia(updatedMediaList);
     handleUpdateField("initialMedia", updatedMediaList);
     setTempMediaPreviews(tempMediaPreviews.filter((_, i) => i !== 0));
@@ -103,7 +107,14 @@ const EditEventMedia = ({
         const newMediaList = initialMedia.filter((_, i) => i !== index);
 
         await updateEventMedia(newMediaList);
-        updateEvent(event._id, { initialMedia: [newMediaList[0]] });
+        updateEvent(event._id, {
+          initialMedia: [
+            {
+              url: newMediaList[0].url,
+              type: getMediaType(newMediaList[0].type),
+            },
+          ],
+        });
         setInitialMedia(newMediaList);
         handleUpdateField("initialMedia", newMediaList);
         toast({

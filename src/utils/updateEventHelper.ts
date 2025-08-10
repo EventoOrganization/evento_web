@@ -80,10 +80,17 @@ export function createUpdateEventField(event: EventType) {
       case "initialMedia":
         if (
           Array.isArray(value) &&
-          value.every((item) => "url" in item && "type" in item)
+          value.every(
+            (item) =>
+              "url" in item &&
+              "type" in item &&
+              ["image", "video"].includes(item.type),
+          )
         ) {
           console.log("initialMedia helper", value);
-          updatedEvent.initialMedia = value as [{ url: string; type: string }];
+          updatedEvent.initialMedia = value as [
+            { url: string; type: "image" | "video" },
+          ];
         }
         break;
       case "includeChat":

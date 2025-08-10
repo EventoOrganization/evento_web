@@ -61,7 +61,7 @@ export type UserType = {
   socialLinks?: { platform: string; url: string }[];
   phone_verified?: string;
   is_block?: number;
-  stripeAccounts: StripeAccountType[];
+  stripeAccounts?: StripeAccountType[];
   is_otp_verify?: number;
   countTotalEventIAttended?: number;
   countFollowing?: number;

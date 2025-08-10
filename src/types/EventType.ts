@@ -226,7 +226,6 @@ export type EventFormValuesType = {
   interests: InterestType[];
   requiresApproval: boolean;
   ticketing: TicketingType;
-  soldTickets: SoldTicketsType[];
 };
 
 export type TicketingType = {

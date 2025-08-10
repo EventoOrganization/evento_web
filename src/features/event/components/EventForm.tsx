@@ -179,7 +179,7 @@ const EventForm = ({
             <h4 className="text-eventoPurpleLight">More Options</h4>
             <div className="flex flex-wrap gap-2">
               <EventCoHostsModal allUsers={allUsers as UserType[]} />
-              <EnableChatButton />
+              <EnableChatButton onChange={(value) => console.log(value)} />
             </div>
           </form>
         </FormProvider>

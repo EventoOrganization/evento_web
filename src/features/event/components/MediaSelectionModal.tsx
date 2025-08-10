@@ -29,6 +29,7 @@ const MediaSelectionModal = ({
     { url: string; type: string }[]
   >([]); // Temporary previews for display
   const [predefinedMedia, setPredefinedMedia] = useState<string[]>([]);
+
   // const [showPredefined, setShowPredefined] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const showPredefined = false;
@@ -45,6 +46,7 @@ const MediaSelectionModal = ({
       }));
 
       // Add the temporary previews to the state
+      setPredefinedMedia(previews.map((preview) => preview.url));
       setTempMediaPreviews((prev) => [...prev, ...previews]);
       handleFieldChange("TempMediaPreview", [
         ...tempMediaPreviews,

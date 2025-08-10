@@ -160,11 +160,7 @@ const EventDateComponent = ({
   const handleEndDateChange = (date: Date | undefined) => {
     if (date) {
       const formattedDate = format(date, "yyyy-MM-dd");
-      const computedEndDate = setDateWithTime(
-        formattedDate,
-        localEndTime,
-        true,
-      );
+      const computedEndDate = setDateWithTime(formattedDate, localEndTime, "");
 
       // Vérifie si la endDate est inférieure à la startDate, ajuste si nécessaire
       if (new Date(computedEndDate) < new Date(localStartDate)) {
@@ -325,7 +321,7 @@ const EventDateComponent = ({
           </PopoverContent>
         </Popover>
         <SelectTimeZone
-          selectedTimeZone={selectedTimeZone || ""}
+          selectedTimeZoneOffset={selectedTimeZone || ""}
           setSelectedTimeZone={(value) => {
             setSelectedTimeZone(value);
             !isEditMode && handleFieldChange("timeZone", value);

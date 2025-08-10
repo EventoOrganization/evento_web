@@ -661,6 +661,7 @@ const DuplicateEventContent = () => {
     }
     setIsSubmitting(false);
   };
+
   if (!existingEvent) return <div>Event not found</div>;
   return (
     <>
@@ -839,6 +840,7 @@ const DuplicateEventContent = () => {
               )}
               <div className="flex mt-2 w-full">
                 <FileUploadButton onChange={handleFileSelect} />
+
                 <ul className="flex gap-2 overflow-x-scroll max-w-full ml-2 scroll-container p-2">
                   {isConverting && <EventoLoader />}
                   {[...tempMediaPreviews, ...eventStore.mediaPreviews].map(
@@ -892,9 +894,11 @@ const DuplicateEventContent = () => {
                 allUsers={users as UserType[]}
                 currentUserId={user?._id || ""}
               />
-              <EnableChatButton />
-              <EventURL />
-              <CreateEventLimitedGuests />
+              <EnableChatButton onChange={(value) => console.log(value)} />
+              <EventURL onChange={(value) => console.log(value)} />
+              <CreateEventLimitedGuests
+                onChange={(value) => console.log(value)}
+              />
               <RequiresApprovalToggle />
             </div>
             <EventQuestionsForm />

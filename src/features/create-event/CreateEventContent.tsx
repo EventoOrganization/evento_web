@@ -829,9 +829,11 @@ const CreateEventContent = () => {
                 allUsers={users as UserType[]}
                 currentUserId={user?._id || ""}
               />
-              <EnableChatButton />
-              <EventURL />
-              <CreateEventLimitedGuests />
+              <EnableChatButton onChange={(value) => console.log(value)} />
+              <EventURL onChange={(value) => console.log(value)} />
+              <CreateEventLimitedGuests
+                onChange={(value) => console.log(value)}
+              />
               <RequiresApprovalToggle />
             </div>
             <EventQuestionsForm />

@@ -25,7 +25,6 @@ export default function BuyTicketButton({ eventId }: Props) {
   const { user, isAuthenticated, token } = useSession();
   const { events } = useEventStore();
   const event = events.find((e) => e._id === eventId);
-  const isBuyer = event?.soldTickets?.find((b) => b.buyerId === user?._id);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [quantity, setQuantity] = useState<number>(1);
   const [loading, setLoading] = useState(false);
