@@ -32,6 +32,10 @@ yarn-error.log*
 # local env files
 .env*.local
 .env
+.env-old
+env.local
+env.staging
+env.production
 # vercel
 .vercel
 remind.md
