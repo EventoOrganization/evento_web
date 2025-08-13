@@ -13,6 +13,7 @@ import {
 import { handleError } from "@/utils/handleError";
 import { parseApiError } from "@/utils/parseApiError";
 import { getUTCOffset } from "@/utils/timezones";
+import { Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import EventForm from "./components/CreateEventForm";
@@ -151,7 +152,12 @@ const PageEventsCreate = () => {
     setIsSubmitting(true);
     toast({
       title: "Creating Event",
-      description: "Please wait while we create your event.",
+      description: (
+        <>
+          Please wait while we create your event.{" "}
+          <Loader className="animate-spin" />
+        </>
+      ),
       variant: "eventoPending",
       duration: Infinity,
     });

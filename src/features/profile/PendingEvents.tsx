@@ -31,17 +31,40 @@ const PendingEvents = () => {
     );
   };
 
+  // Debug: Log all events and their guest status
+  console.log("🔍 PendingEvents Debug:", {
+    totalEvents: events.length,
+    userInfo: userInfo?._id,
+    eventsWithGuests: events
+      .filter((event) => event.guests && event.guests.length > 0)
+      .map((event) => ({
+        id: event._id,
+        title: event.title,
+        guests: event.guests?.map((g) => g._id),
+        isUserGuest: event.guests?.some((g) => g._id === userInfo?._id),
+        eventStatus: getEventStatus(event._id),
+        isUpcoming: isUpcomingOrOngoing(event),
+      })),
+  });
+
   const upcomingGuestedEvents = events.filter((event: EventType) => {
     const eventStatus = getEventStatus(event._id);
     const hasResponded =
       eventStatus.isGoing || eventStatus.isFavourite || eventStatus.isRefused;
     const hasHidden = event.hiddenByUsers?.some((id) => id === userInfo?._id);
-    return (
-      event.guests?.some((guest) => guest._id === userInfo?._id) &&
-      isUpcomingOrOngoing(event) &&
-      !hasResponded &&
-      !hasHidden
-    );
+    const isGuest = event.guests?.some((guest) => guest._id === userInfo?._id);
+    const isUpcoming = isUpcomingOrOngoing(event);
+
+    // Debug: Log each event's filtering criteria
+    console.log(`🔍 Event ${event.title} (${event._id}):`, {
+      isGuest,
+      isUpcoming,
+      hasResponded,
+      hasHidden,
+      willShow: isGuest && isUpcoming && !hasResponded && !hasHidden,
+    });
+
+    return isGuest && isUpcoming && !hasResponded && !hasHidden;
   });
 
   return (
